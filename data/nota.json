@@ -1,0 +1,51 @@
+{
+  "title": "Nota Alif: Bab 1 Warisan Negara Bangsa",
+  "pages": [
+    {"zone": "1_1", "title": "Garis Masa Kerajaan", "style": "timeline",
+     "items": [
+       {"icon": "res://assets/objects/gerbang_funan.png", "text": "Funan", "sub": "abad pertama"},
+       {"icon": "res://assets/objects/gerbang_champa.png", "text": "Champa", "sub": "abad kedua"},
+       {"icon": "res://assets/objects/gerbang_srivijaya.png", "text": "Srivijaya", "sub": "abad ke-7, Palembang"},
+       {"icon": "res://assets/objects/gerbang_melaka.png", "text": "Kesultanan Melayu Melaka", "sub": "abad ke-15"},
+       {"icon": "res://assets/objects/gerbang_johor.png", "text": "Kesultanan Johor-Riau", "sub": "abad ke-16"}
+     ]},
+    {"zone": "1_1", "title": "Empat Tiang Negara Bangsa", "style": "grid",
+     "items": [
+       {"icon": "res://assets/icons/mahkota.png", "text": "Raja", "sub": "Raja Champa dikaitkan dengan Dewa Siva"},
+       {"icon": "res://assets/icons/timbangan.png", "text": "Undang-undang", "sub": "Kutara Manawa (Majapahit)"},
+       {"icon": "res://assets/icons/peta.png", "text": "Wilayah Pengaruh", "sub": "Funan: Sungai Mekong hingga Segenting Kra"},
+       {"icon": "res://assets/icons/kumpulan.png", "text": "Rakyat", "sub": "Sumpah setia Prasasti Telaga Batu"}
+     ]},
+    {"zone": "1_2", "title": "Enam Panji Melaka", "style": "grid",
+     "items": [
+       {"icon": "res://assets/icons/mahkota.png", "text": "Kerajaan", "sub": "Sultan + Sistem Pembesar Empat Lipatan"},
+       {"icon": "res://assets/icons/kumpulan.png", "text": "Rakyat", "sub": "Pemerintah dan diperintah, timbal balik"},
+       {"icon": "res://assets/icons/bintang.png", "text": "Kedaulatan", "sub": "Diiktiraf Dinasti Ming"},
+       {"icon": "res://assets/icons/peta.png", "text": "Wilayah Pengaruh", "sub": "Taklukan, naungan, perkahwinan"},
+       {"icon": "res://assets/icons/gulungan.png", "text": "Undang-undang", "sub": "Hukum Kanun Melaka, Undang-Undang Laut Melaka"},
+       {"icon": "res://assets/icons/nobat.png", "text": "Lambang Kebesaran", "sub": "Adat istiadat, warna, nobat, regalia, cap mohor"}
+     ]},
+    {"zone": "1_3", "title": "Pembesar Melaka", "style": "grid",
+     "items": [
+       {"icon": "res://assets/portraits/tunperak.png", "text": "Bendahara", "sub": "Memangku sultan"},
+       {"icon": "res://assets/icons/syiling.png", "text": "Penghulu Bendahari", "sub": "Perbendaharaan dan cukai"},
+       {"icon": "res://assets/portraits/syahbandar.png", "text": "Syahbandar", "sub": "Pelabuhan dan cukai kapal"},
+       {"icon": "res://assets/icons/kunci.png", "text": "Temenggung", "sub": "Keamanan dalam kota"},
+       {"icon": "res://assets/icons/kapal.png", "text": "Laksamana", "sub": "Keselamatan perairan"}
+     ]},
+    {"zone": "1_3", "title": "Undang-undang Melaka", "style": "list",
+     "items": [
+       {"icon": "res://assets/icons/gulungan.png", "text": "UULM Fasal 9", "sub": "Malim lalai » pelayaran selamat, pedagang yakin"},
+       {"icon": "res://assets/icons/gulungan.png", "text": "HKM Fasal 30", "sub": "Riba diharamkan » perdagangan adil"},
+       {"icon": "res://assets/icons/gulungan.png", "text": "UULM Fasal 13", "sub": "Nakhoda bermesyuarat » kurang pertikaian"},
+       {"icon": "res://assets/icons/gulungan.png", "text": "HKM: bahasa istana", "sub": "Titah hanya untuk raja » kedaulatan terpelihara"}
+     ]},
+    {"zone": "1_4", "title": "Pohon dan Akar (Waadat)", "style": "list",
+     "items": [
+       {"icon": "res://assets/portraits/sapurba.png", "text": "Sang Sapurba (pemerintah)", "sub": "Adil, tidak zalim, jaga kebajikan"},
+       {"icon": "res://assets/portraits/demang.png", "text": "Demang Lebar Daun (rakyat)", "sub": "Taat setia, tidak derhaka, patuh"},
+       {"icon": "res://assets/objects/pokok_2.png", "text": "Rantaian kukuh", "sub": "Raja adil » rakyat setia » serah & kerah » kerajaan stabil"},
+       {"icon": "res://assets/objects/pokok_0.png", "text": "Rantaian runtuh", "sub": "Mungkir janji » kepercayaan hilang » kerajaan goyah"}
+     ]}
+  ]
+}

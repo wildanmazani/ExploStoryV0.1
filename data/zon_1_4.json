@@ -1,0 +1,112 @@
+{
+  "id": "1_4",
+  "no": "1.4",
+  "title": "Bukit Siguntang",
+  "subtopik": "1.4 Peranan Pemerintah dan Rakyat dalam Pembentukan Negara Bangsa",
+  "persoalan": "Apa yang berlaku jika pemerintah atau rakyat mungkir janji?",
+  "pemandu": "demang",
+  "ganjaran": {"id": "bendera1", "nama": "Bendera 1", "icon": "bendera",
+    "info": "Bendera 1 berkibar: Warisan Negara Bangsa difahami."},
+  "fakta_disemak": false,
+  "background": "res://assets/bg/zon_1_4.png",
+  "music": "",
+  "spawn": [640, 680],
+  "walk_rect": [60, 470, 1160, 230],
+  "intro": "z14_intro",
+  "any_order": false,
+  "objects": [
+    {"id": "pokok", "tree": true, "pos": [880, 560], "scale": 4, "label": "Pohon dan Akar"},
+    {"id": "sapurba", "sprite": "sapurba", "pos": [330, 600], "label": "Sang Sapurba"},
+    {"id": "demang", "sprite": "demang", "pos": [480, 600], "label": "Demang Lebar Daun"},
+    {"id": "batu", "texture": "res://assets/icons/prasasti.png", "pos": [190, 520], "scale": 3, "label": "Batu Renungan"}
+  ],
+  "steps": [
+    {"at": "demang", "before": "z14_a1_before", "puzzle": "janji", "after": "z14_a1_after"},
+    {"at": "sapurba", "before": "z14_a2_before", "puzzle": "tanggungjawab", "after": "z14_a2_after", "tree": 1},
+    {"at": "pokok", "before": "z14_b_before", "puzzle": "pohon_akar", "after": "z14_b_after", "tree": 2},
+    {"at": "batu", "before": "z14_c_before", "puzzle": "refleksi", "after": "z14_c_after"}
+  ],
+  "puzzles": {
+    "janji": {
+      "type": "drag_match",
+      "title": "Janji Dua Pihak",
+      "instruction": "Letakkan setiap janji pada pihak yang betul.",
+      "hint": "Sang Sapurba mewakili pemerintah. Demang Lebar Daun mewakili rakyat.",
+      "targets": [
+        {"id": "sapurba", "label": "Sang Sapurba", "sub": "Pemerintah", "icon": "res://assets/portraits/sapurba.png"},
+        {"id": "demang", "label": "Demang Lebar Daun", "sub": "Rakyat", "icon": "res://assets/portraits/demang.png"}
+      ],
+      "items": [
+        {"id": "adil", "label": "Memerintah dengan adil", "target": "sapurba", "fact": "Pemerintah berjanji berlaku adil."},
+        {"id": "taat", "label": "Taat setia", "target": "demang", "fact": "Rakyat berjanji taat setia."},
+        {"id": "zalim", "label": "Tidak menzalimi rakyat", "target": "sapurba", "fact": "Pemerintah berjanji tidak menzalimi rakyat."},
+        {"id": "derhaka", "label": "Tidak menderhaka", "target": "demang", "fact": "Rakyat berjanji tidak menderhaka."},
+        {"id": "kebajikan", "label": "Menjaga kebajikan rakyat", "target": "sapurba", "fact": "Pemerintah berjanji menjaga kebajikan rakyat."},
+        {"id": "patuh", "label": "Mematuhi perintah", "target": "demang", "fact": "Rakyat berjanji mematuhi perintah."}
+      ],
+      "done_text": "Waadat: janji dua pihak antara pemerintah dan rakyat."
+    },
+    "tanggungjawab": {
+      "type": "drag_match",
+      "title": "Siapa Bertanggungjawab?",
+      "instruction": "Isih setiap tanggungjawab kepada Sultan, Pembesar atau Rakyat.",
+      "hint": "Sistem Serah dan Sistem Kerah ialah tanggungjawab rakyat.",
+      "targets": [
+        {"id": "sultan", "label": "Sultan", "icon": "res://assets/icons/mahkota.png"},
+        {"id": "pembesar", "label": "Pembesar", "icon": "res://assets/icons/gulungan.png"},
+        {"id": "rakyat", "label": "Rakyat", "icon": "res://assets/icons/kumpulan.png"}
+      ],
+      "items": [
+        {"id": "t_kerah", "label": "Sistem Kerah: bekerja untuk kerajaan tanpa upah", "target": "rakyat", "fact": "Sistem Kerah ialah tanggungjawab rakyat kepada pemerintah.", "semak": true},
+        {"id": "t_adil", "label": "Memerintah negeri dengan adil", "target": "sultan", "fact": "Sultan bertanggungjawab memerintah dengan adil."},
+        {"id": "t_bantu", "label": "Membantu sultan mentadbir negeri", "target": "pembesar", "fact": "Pembesar membantu sultan mentadbir."},
+        {"id": "t_serah", "label": "Sistem Serah: menyerahkan hasil kepada pemerintah", "target": "rakyat", "fact": "Sistem Serah ialah tanggungjawab rakyat kepada pemerintah.", "semak": true},
+        {"id": "t_lindung", "label": "Menjaga kebajikan rakyat", "target": "sultan", "fact": "Sultan menjaga kebajikan rakyat."},
+        {"id": "t_kawasan", "label": "Mentadbir kawasan pegangan", "target": "pembesar", "fact": "Pembesar mentadbir kawasan pegangan masing-masing.", "semak": true}
+      ],
+      "done_text": "Sultan, pembesar dan rakyat masing-masing ada tanggungjawab."
+    },
+    "pohon_akar": {
+      "type": "board",
+      "title": "Pohon dan Akar",
+      "instruction": "Bina dua rantaian sebab dan akibat. Ketik satu kad, kemudian ketik kad seterusnya dalam rantaian.",
+      "hint": "Rantaian kukuh bermula dengan raja yang adil. Rantaian runtuh bermula dengan janji yang dimungkiri.",
+      "columns": ["Punca", "Akibat", "Kesan", "Pengakhiran"],
+      "cards": [
+        {"id": "c_adil", "col": 0, "text": "Raja memerintah dengan adil", "icon": "res://assets/icons/mahkota.png"},
+        {"id": "c_mungkir", "col": 0, "text": "Satu pihak mungkir janji", "icon": "res://assets/icons/kunci.png"},
+        {"id": "c_setia", "col": 1, "text": "Rakyat taat setia", "icon": "res://assets/icons/kumpulan.png"},
+        {"id": "c_hilang", "col": 1, "text": "Kepercayaan hilang", "icon": "res://assets/icons/orang.png"},
+        {"id": "c_serah", "col": 2, "text": "Sistem Serah dan Kerah berjalan", "icon": "res://assets/icons/syiling.png"},
+        {"id": "c_goyah", "col": 3, "text": "Kerajaan goyah", "icon": "res://assets/icons/pedang.png"},
+        {"id": "c_stabil", "col": 3, "text": "Kerajaan stabil", "icon": "res://assets/icons/pohon.png"}
+      ],
+      "links": [
+        ["c_adil", "c_setia"], ["c_setia", "c_serah"], ["c_serah", "c_stabil"],
+        ["c_mungkir", "c_hilang"], ["c_hilang", "c_goyah"]
+      ],
+      "link_facts": {
+        "c_adil|c_setia": "Raja yang adil mendapat kesetiaan rakyat.",
+        "c_setia|c_serah": "Rakyat yang setia melaksanakan Sistem Serah dan Kerah.",
+        "c_serah|c_stabil": "Rantaian kukuh: kerajaan stabil.",
+        "c_mungkir|c_hilang": "Bila janji dimungkiri, kepercayaan hilang.",
+        "c_hilang|c_goyah": "Rantaian runtuh: kerajaan goyah."
+      },
+      "grow_on_links": ["c_adil|c_setia", "c_setia|c_serah", "c_serah|c_stabil"],
+      "conclusion": "Pohon (raja) hanya subur jika akarnya (rakyat) kukuh, dan akar hanya kukuh jika pohon melindunginya."
+    },
+    "refleksi": {
+      "type": "choice",
+      "title": "Pilihan Alif",
+      "instruction": "Bagaimana Waadat ada dalam hidup kau? Pilih satu situasi.",
+      "options": [
+        {"id": "sekolah", "text": "Mematuhi peraturan sekolah", "icon": "res://assets/icons/sekolah.png",
+         "result": "Bila semua orang patuh peraturan, sekolah jadi tempat yang aman dan adil untuk semua."},
+        {"id": "kumpulan", "text": "Bermuafakat dalam kerja kumpulan", "icon": "res://assets/icons/kumpulan.png",
+         "result": "Bila setiap ahli tunaikan janji, kerja kumpulan siap dan semua orang dipercayai."},
+        {"id": "rakan", "text": "Menghormati rakan pelbagai budaya", "icon": "res://assets/icons/rakan.png",
+         "result": "Hormat-menghormati membina kepercayaan, sama seperti akar yang menguatkan pokok."}
+      ]
+    }
+  }
+}

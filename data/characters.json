@@ -1,0 +1,19 @@
+{
+  "alif": {"name": "Alif", "portrait": "alif_", "default_expr": "neutral", "sprite": "alif", "tokoh": false},
+  "pau": {"name": "Pau", "portrait": "pau_", "default_expr": "neutral", "sprite": "pau", "tokoh": false},
+  "penjaga": {"name": "Penjaga Gerbang Masa", "portrait": "penjaga", "sprite": "penjaga", "tokoh": true, "zon": "1_1",
+    "gelaran": "Pemandu Zon 1.1", "lore": "Watak rekaan. Berpakaian gabungan lima zaman dan menjaga benang warisan kerajaan awal Alam Melayu.", "rekaan": true},
+  "syahbandar": {"name": "Syahbandar", "portrait": "syahbandar", "sprite": "syahbandar", "tokoh": true, "zon": "1_2",
+    "gelaran": "Pemandu Zon 1.2", "lore": "Watak rekaan. Pegawai pelabuhan Melaka yang sibuk mengurus kapal dan pedagang asing.", "rekaan": true},
+  "chengho": {"name": "Laksamana Cheng Ho", "portrait": "chengho", "sprite": "chengho", "tokoh": true, "zon": "1_2",
+    "gelaran": "Utusan Dinasti Ming", "lore": "Kunjungannya menjadi bukti kedaulatan Melaka diiktiraf oleh kuasa luar."},
+  "tunperak": {"name": "Bendahara Tun Perak", "portrait": "tunperak", "sprite": "tunperak", "tokoh": true, "zon": "1_3",
+    "gelaran": "Bendahara Melaka", "lore": "Pembesar yang bijaksana dan tenang. Membantu sultan mentadbir Melaka."},
+  "sapurba": {"name": "Sang Sapurba", "portrait": "sapurba", "sprite": "sapurba", "tokoh": true, "zon": "1_4",
+    "gelaran": "Pihak pemerintah dalam Waadat", "lore": "Tokoh dalam Sejarah Melayu. Berjanji memerintah dengan adil."},
+  "demang": {"name": "Demang Lebar Daun", "portrait": "demang", "sprite": "demang", "tokoh": true, "zon": "1_4",
+    "gelaran": "Pihak rakyat dalam Waadat", "lore": "Tokoh dalam Sejarah Melayu. Berjanji rakyat akan taat setia."},
+  "sultan": {"name": "Sultan", "portrait": "sultan", "sprite": "", "tokoh": false},
+  "pedagang": {"name": "Pedagang", "portrait": "pedagang", "sprite": "pedagang", "tokoh": false},
+  "narator": {"name": "", "portrait": "", "sprite": "", "tokoh": false}
+}

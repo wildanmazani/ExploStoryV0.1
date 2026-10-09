@@ -1,0 +1,70 @@
+name: Build, test and deploy (web)
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.4.1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install export templates
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+
+      - name: Backend config from secrets (optional)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            printf '{\n  "supabase_url": "%s",\n  "supabase_anon_key": "%s"\n}\n' "$SUPABASE_URL" "$SUPABASE_ANON_KEY" > config/backend.json
+            echo "Supabase config written (online mode)."
+          else
+            echo "No Supabase secrets: building in offline mode."
+          fi
+
+      - name: Import project
+        run: godot --headless --import --path . || godot --headless --editor --quit --path .
+
+      - name: End-to-end play-through (Bab 1)
+        run: |
+          timeout 600 godot --headless --path . -- --autotest 2>&1 | tee autotest.log
+          grep -q "AUTOTEST PASS" autotest.log
+          if grep -E "SCRIPT ERROR|Parse Error" autotest.log; then echo "Script errors found"; exit 1; fi
+
+      - name: Export web build
+        run: |
+          mkdir -p build/web
+          godot --headless --path . --export-release "Web" build/web/index.html
+          ls -la build/web
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: explo-story-web
+          path: build/web
+
+      - name: Deploy to itch.io (when BUTLER_API_KEY is set)
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          ITCH_USER: ${{ vars.ITCH_USER }}
+          ITCH_GAME: ${{ vars.ITCH_GAME }}
+        if: github.event_name != 'pull_request'
+        run: |
+          if [ -z "$BUTLER_API_KEY" ] || [ -z "$ITCH_USER" ] || [ -z "$ITCH_GAME" ]; then
+            echo "itch.io deploy skipped (set secret BUTLER_API_KEY and variables ITCH_USER, ITCH_GAME)."
+            exit 0
+          fi
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler && chmod +x butler/butler
+          ./butler/butler push build/web "$ITCH_USER/$ITCH_GAME:html5" --userversion "${GITHUB_SHA::7}"

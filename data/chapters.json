@@ -1,0 +1,28 @@
+{
+  "arcs": [
+    {
+      "id": "t4",
+      "name": "Sejarah Tingkatan 4",
+      "open": true,
+      "chapters": [
+        {"no": 1, "title": "Warisan Negara Bangsa", "icon": "mahkota", "open": true,
+         "zones": ["1_1", "1_2", "1_3", "1_4"]},
+        {"no": 2, "title": "Kebangkitan Nasionalisme", "icon": "bendera", "open": false},
+        {"no": 3, "title": "Konflik Dunia dan Pendudukan Jepun di Negara Kita", "icon": "pedang", "open": false},
+        {"no": 4, "title": "Era Peralihan Kuasa British di Negara Kita", "icon": "kapal", "open": false},
+        {"no": 5, "title": "Persekutuan Tanah Melayu 1948", "icon": "gulungan", "open": false},
+        {"no": 6, "title": "Ancaman Komunis dan Perisytiharan Darurat", "icon": "kunci", "open": false},
+        {"no": 7, "title": "Usaha ke Arah Kemerdekaan", "icon": "kumpulan", "open": false},
+        {"no": 8, "title": "Pilihan Raya", "icon": "nota", "open": false},
+        {"no": 9, "title": "Perlembagaan Persekutuan Tanah Melayu 1957", "icon": "kitab", "open": false},
+        {"no": 10, "title": "Pemasyhuran Kemerdekaan", "icon": "bintang", "open": false}
+      ]
+    },
+    {
+      "id": "t5",
+      "name": "Sejarah Tingkatan 5",
+      "open": false,
+      "chapters": []
+    }
+  ]
+}

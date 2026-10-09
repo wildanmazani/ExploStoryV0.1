@@ -1,0 +1,89 @@
+{
+  "id": "1_3",
+  "no": "1.3",
+  "title": "Balai Penghadapan",
+  "subtopik": "1.3 Keunggulan Sistem Pentadbiran dan Perundangan",
+  "persoalan": "Bagaimana Melaka kekal aman dan makmur?",
+  "pemandu": "tunperak",
+  "ganjaran": {"id": "capmohor", "nama": "Cap Mohor", "icon": "capmohor",
+    "info": "Cap mohor ialah cop rasmi yang mengesahkan surat dan titah raja."},
+  "fakta_disemak": false,
+  "background": "res://assets/bg/zon_1_3.png",
+  "music": "",
+  "spawn": [640, 680],
+  "walk_rect": [120, 380, 1040, 320],
+  "intro": "z13_intro",
+  "any_order": false,
+  "objects": [
+    {"id": "sultan", "texture": "res://assets/portraits/sultan.png", "pos": [640, 210], "scale": 2.4},
+    {"id": "tunperak", "sprite": "tunperak", "pos": [470, 480], "label": "Bendahara Tun Perak"},
+    {"id": "mahkamah", "texture": "res://assets/icons/timbangan.png", "pos": [1110, 600], "scale": 4, "label": "Mahkamah Melaka"}
+  ],
+  "steps": [
+    {"at": "tunperak", "before": "z13_a_before", "puzzle": "hari_sibuk", "after": "z13_a_after"},
+    {"at": "mahkamah", "before": "z13_b_before", "puzzle": "mahkamah", "after": "z13_b_after"}
+  ],
+  "puzzles": {
+    "hari_sibuk": {
+      "type": "drag_match",
+      "title": "Hari Sibuk di Balai",
+      "instruction": "Seret setiap masalah kepada pembesar yang bertanggungjawab.",
+      "hint": "Temenggung menjaga keamanan di darat. Laksamana menjaga keselamatan di laut.",
+      "targets": [
+        {"id": "bendahara", "label": "Bendahara"},
+        {"id": "bendahari", "label": "Penghulu Bendahari"},
+        {"id": "syahbandar", "label": "Syahbandar"},
+        {"id": "temenggung", "label": "Temenggung"},
+        {"id": "laksamana", "label": "Laksamana"}
+      ],
+      "items": [
+        {"id": "m_lanun", "label": "Lanun mengganggu perairan Melaka", "icon": "res://assets/icons/kapal.png", "target": "laksamana",
+         "fact": "Laksamana bertanggungjawab terhadap keselamatan perairan."},
+        {"id": "m_berangkat", "label": "Sultan berangkat. Siapa memangku?", "icon": "res://assets/icons/mahkota.png", "target": "bendahara",
+         "fact": "Bendahara memangku sultan apabila sultan berangkat."},
+        {"id": "m_cukai_kapal", "label": "Kapal asing belum membayar cukai", "icon": "res://assets/icons/syiling.png", "target": "syahbandar",
+         "fact": "Syahbandar mengurus pelabuhan dan cukai kapal asing."},
+        {"id": "m_curi", "label": "Kecurian di dalam kota Melaka", "icon": "res://assets/icons/kunci.png", "target": "temenggung",
+         "fact": "Temenggung menjaga keamanan dalam kota."},
+        {"id": "m_perbendaharaan", "label": "Perbendaharaan perlu diurus dan cukai kawasan pegangan dikutip", "icon": "res://assets/icons/syiling.png", "target": "bendahari",
+         "fact": "Penghulu Bendahari mengurus perbendaharaan dan kutipan cukai."}
+      ],
+      "done_text": "Setiap pembesar ada tugas yang jelas. Pentadbiran Melaka teratur."
+    },
+    "mahkamah": {
+      "type": "board",
+      "title": "Mahkamah Melaka",
+      "instruction": "Sambungkan setiap kes kepada undang-undang yang betul, kemudian kepada kesannya kepada Melaka. Ketik satu kad, kemudian ketik kad yang berkaitan.",
+      "hint": "Kes di laut biasanya diadili dengan Undang-Undang Laut Melaka. Kes di darat dengan Hukum Kanun Melaka.",
+      "columns": ["Kes", "Undang-undang", "Kesan kepada Melaka"],
+      "cards": [
+        {"id": "k_malim", "col": 0, "text": "Malim lalai sehingga kapal melanggar karang", "icon": "res://assets/icons/kapal.png"},
+        {"id": "k_riba", "col": 0, "text": "Peniaga di pasar mengamalkan riba", "icon": "res://assets/icons/syiling.png"},
+        {"id": "k_nakhoda", "col": 0, "text": "Nakhoda mahu singgah di pelabuhan luar senarai", "icon": "res://assets/icons/peta.png"},
+        {"id": "k_titah", "col": 0, "text": "Rakyat biasa menggunakan perkataan \"titah\"", "icon": "res://assets/icons/orang.png"},
+        {"id": "u_9", "col": 1, "text": "Undang-Undang Laut Melaka, Fasal 9: malim mesti arif ilmu pelayaran", "icon": "res://assets/icons/gulungan.png"},
+        {"id": "u_30", "col": 1, "text": "Hukum Kanun Melaka, Fasal 30: riba diharamkan", "icon": "res://assets/icons/gulungan.png"},
+        {"id": "u_13", "col": 1, "text": "Undang-Undang Laut Melaka, Fasal 13: nakhoda mesti bermesyuarat dengan semua isi kapal", "icon": "res://assets/icons/gulungan.png"},
+        {"id": "u_titah", "col": 1, "text": "Hukum Kanun Melaka: titah, murka, kurnia dan anugerah hanya untuk raja", "icon": "res://assets/icons/gulungan.png"},
+        {"id": "e_selamat", "col": 2, "text": "Pelayaran selamat, pedagang yakin", "icon": "res://assets/icons/bintang.png"},
+        {"id": "e_adil", "col": 2, "text": "Perdagangan adil", "icon": "res://assets/icons/timbangan.png"},
+        {"id": "e_bersama", "col": 2, "text": "Keputusan bersama, kurang pertikaian", "icon": "res://assets/icons/kumpulan.png"},
+        {"id": "e_daulat", "col": 2, "text": "Kedaulatan raja terpelihara", "icon": "res://assets/icons/mahkota.png"}
+      ],
+      "links": [
+        ["k_malim", "u_9"], ["u_9", "e_selamat"],
+        ["k_riba", "u_30"], ["u_30", "e_adil"],
+        ["k_nakhoda", "u_13"], ["u_13", "e_bersama"],
+        ["k_titah", "u_titah"], ["u_titah", "e_daulat"]
+      ],
+      "link_facts": {
+        "k_malim|u_9": "Kelalaian malim dihukum berat kerana nyawa dan barang dagangan dipertaruhkan.",
+        "k_riba|u_30": "Perdagangan di Melaka selari dengan ajaran Islam.",
+        "k_nakhoda|u_13": "Keputusan penting di atas kapal dibuat secara bermesyuarat.",
+        "k_titah|u_titah": "Bahasa istana dikhaskan untuk raja."
+      },
+      "conclusion": "Undang-undang yang jelas dan adil menjadikan Melaka aman, makmur dan dipercayai pedagang.",
+      "nota": "Hukuman berat disebut dalam teks sahaja. Nombor fasal mesti disemak dengan buku teks."
+    }
+  }
+}

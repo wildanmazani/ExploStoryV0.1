@@ -1,0 +1,205 @@
+{
+  "_nota": "Semua dialog Bab 1. 's' = penutur (lihat characters.json), 'e' = ekspresi, 't' = teks. Dialog tokoh sejarah yang direka ditanda 'rekaan': true.",
+
+  "prolog_1a": [
+    {"s": "narator", "t": "Malam. Tiga hari sebelum SPM Sejarah."},
+    {"s": "alif", "e": "worried", "t": "Okey. Bab 1. Warisan Negara Bangsa. Baca sekali lagi..."}
+  ],
+  "prolog_1b": [
+    {"s": "alif", "e": "worried", "t": "Huruf-huruf ni... bergerak lagi."},
+    {"s": "alif", "e": "worried", "t": "Aku dah baca lima kali. Kenapa satu pun tak melekat?"}
+  ],
+  "prolog_1c": [
+    {"s": "alif", "e": "worried", "t": "Pau... kalau kau boleh cakap, mesti kau gelakkan aku."},
+    {"s": "narator", "t": "Jantung Alif berdegup laju. Bunyi jam makin kuat."}
+  ],
+  "prolog_2a": [
+    {"s": "alif", "e": "confused", "t": "Eh? Aku kat mana ni?"},
+    {"s": "pau", "e": "happy", "t": "Akhirnya! Lama aku tunggu kau tidur nyenyak."},
+    {"s": "alif", "e": "confused", "t": "Pau?! Kau... boleh cakap?"},
+    {"s": "pau", "e": "happy", "t": "Boleh! Di Dunia Explo-Story, aku hidup. Dan aku lapar. Tapi itu cerita lain."}
+  ],
+  "prolog_2b": [
+    {"s": "alif", "e": "confused", "t": "Papan tanda tu... tak ada perenggan panjang."},
+    {"s": "alif", "e": "happy", "t": "Gambar, objek, suara... Eh. Aku faham!"},
+    {"s": "pau", "t": "Kau tak bodoh, Alif. Kau cuma belajar dengan cara yang berbeza."}
+  ],
+  "prolog_2c": [
+    {"s": "pau", "t": "Ini Peta Jejak Pembelajaran. Setiap bendera ialah satu bab Sejarah Tingkatan 4."},
+    {"s": "pau", "t": "Bendera akan berkibar bila kau FAHAM bab itu. Bukan bila kau hafal."},
+    {"s": "alif", "e": "confident", "t": "Faham, bukan hafal. Okey. Aku boleh cuba."}
+  ],
+  "prolog_3": [
+    {"s": "pau", "t": "Tengok! Hanya Bendera 1 yang bercahaya. Warisan Negara Bangsa."},
+    {"s": "pau", "t": "Ketik aku bila-bila masa kalau perlukan petunjuk. Tekan lama kalau nak bertenang."},
+    {"s": "pau", "e": "happy", "t": "Jom. Kita mula dari akar."}
+  ],
+
+  "peta_first": [
+    {"s": "pau", "t": "Bendera 1 ada empat zon. Pergi ke bangunan yang ada tanda seru."},
+    {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau ketik sahaja ke mana kau nak pergi."}
+  ],
+  "flag_locked": [
+    {"s": "pau", "t": "Belum lagi, kita habiskan yang ini dulu."}
+  ],
+  "flag_1": [
+    {"s": "pau", "t": "Bendera 1: Warisan Negara Bangsa. Empat zon, empat subtopik."}
+  ],
+  "flag_1_done": [
+    {"s": "pau", "e": "happy", "t": "Bendera 1 sudah berkibar! Kau faham Warisan Negara Bangsa."}
+  ],
+  "zone_locked": [
+    {"s": "pau", "t": "Zon ini masih berkunci. Selesaikan zon sebelumnya dulu, ya."}
+  ],
+  "t5_locked": [
+    {"s": "pau", "t": "Itu laluan ke Sejarah Tingkatan 5. Masih berkunci. Satu langkah demi satu langkah."}
+  ],
+  "arena_locked": [
+    {"s": "pau", "t": "Arena Ulang Kaji! Di sini nanti kau boleh berlawan kuiz dengan rakan."},
+    {"s": "pau", "t": "Ia dibuka selepas Bab 1 selesai. Jom tengok lobinya."}
+  ],
+
+  "z11_intro": [
+    {"s": "pau", "e": "scared", "t": "Gerbang-gerbang ni bersepah. Seram sikit..."},
+    {"s": "penjaga", "t": "Selamat datang ke Gerbang Masa, anak muda.", "rekaan": true}
+  ],
+  "z11_a_before": [
+    {"s": "penjaga", "t": "Benang warisan yang menyambung gerbang-gerbang ini telah putus.", "rekaan": true},
+    {"s": "penjaga", "t": "Hanya orang yang faham asal-usul negara bangsa boleh menyambungnya semula.", "rekaan": true},
+    {"s": "penjaga", "t": "Susun lima gerbang ini ikut urutan masa.", "rekaan": true}
+  ],
+  "z11_a_after": [
+    {"s": "penjaga", "t": "Lihat! Benang emas mengalir dari gerbang pertama ke gerbang terakhir.", "rekaan": true},
+    {"s": "penjaga", "t": "Setiap kerajaan mewarisi ciri kerajaan sebelumnya.", "rekaan": true},
+    {"s": "alif", "e": "happy", "t": "Jadi negara bangsa kita tak muncul tiba-tiba. Ia bersambung!"}
+  ],
+  "z11_b_before": [
+    {"s": "pau", "e": "scared", "t": "Alif! Empat tiang ni runtuh!"},
+    {"s": "penjaga", "t": "Itulah empat ciri negara bangsa: Raja, Undang-undang, Wilayah Pengaruh dan Rakyat.", "rekaan": true},
+    {"s": "penjaga", "t": "Letakkan setiap artifak bukti pada tiang yang betul.", "rekaan": true}
+  ],
+  "z11_b_after": [
+    {"s": "penjaga", "t": "Keempat-empat tiang sudah berdiri. Gerbang ke Melaka kini terbuka.", "rekaan": true},
+    {"s": "penjaga", "t": "Ambil serpihan Prasasti Telaga Batu ini. Simpan di muzium kau.", "rekaan": true},
+    {"s": "pau", "e": "happy", "t": "Artifak pertama! Muzium kita dah ada isi."}
+  ],
+
+  "z12_intro": [
+    {"s": "pau", "e": "happy", "t": "Wah, Melaka abad ke-15! Bau rempah. Aku lapar lagi."},
+    {"s": "syahbandar", "t": "Cepat, cepat! Kapal utusan sedang datang!", "rekaan": true},
+    {"s": "syahbandar", "t": "Melaka mesti buktikan dirinya negara bangsa yang lengkap. Naikkan keenam-enam panji!", "rekaan": true},
+    {"s": "pau", "t": "Ada enam tiang panji. Pergi ke setiap satu. Ikut mana-mana urutan pun boleh."}
+  ],
+  "z12_kerajaan_before": [
+    {"s": "syahbandar", "t": "Panji Kerajaan! Susun pemerintah dan pembesar ikut lapisan.", "rekaan": true}
+  ],
+  "z12_kerajaan_after": [
+    {"s": "pau", "t": "Raja pemerintah tertinggi, dibantu Sistem Pembesar Empat Lipatan. Panji Kerajaan naik!"}
+  ],
+  "z12_rakyat_before": [
+    {"s": "syahbandar", "t": "Panji Rakyat! Kenal pasti golongan pemerintah dan golongan diperintah.", "rekaan": true}
+  ],
+  "z12_rakyat_after": [
+    {"s": "pau", "t": "Pemerintah dan rakyat ada hubungan timbal balik. Panji Rakyat naik!"}
+  ],
+  "z12_kedaulatan_before": [
+    {"s": "syahbandar", "t": "Kapal utusan sudah tiba! Sambut Laksamana Cheng Ho dengan hormat.", "rekaan": true},
+    {"s": "chengho", "t": "Dinasti Ming mengiktiraf Melaka sebagai sebuah kerajaan yang berdaulat.", "rekaan": true},
+    {"s": "pau", "t": "Apa maksud berdaulat? Jom isih bukti kedaulatan."}
+  ],
+  "z12_kedaulatan_after": [
+    {"s": "pau", "t": "Berdaulat bermaksud bebas daripada campur tangan asing. Panji Kedaulatan naik!"}
+  ],
+  "z12_wilayah_before": [
+    {"s": "syahbandar", "t": "Panji Wilayah Pengaruh! Isih wilayah ini ikut cara Melaka meluaskan pengaruhnya.", "rekaan": true}
+  ],
+  "z12_wilayah_after": [
+    {"s": "pau", "t": "Taklukan, naungan dan perkahwinan. Tiga cara meluaskan pengaruh. Panji Wilayah naik!"}
+  ],
+  "z12_undang_before": [
+    {"s": "syahbandar", "t": "Panji Undang-undang! Ambil dua gulungan undang-undang Melaka dari gudang.", "rekaan": true},
+    {"s": "pau", "t": "Hati-hati. Ada gulungan dari kerajaan lain juga."}
+  ],
+  "z12_undang_after": [
+    {"s": "pau", "t": "Hukum Kanun Melaka dan Undang-Undang Laut Melaka. Kita akan guna dua ni di Zon 1.3!"}
+  ],
+  "z12_lambang_before": [
+    {"s": "syahbandar", "t": "Panji Lambang Kebesaran! Padankan setiap lambang dengan maksudnya.", "rekaan": true}
+  ],
+  "z12_lambang_after": [
+    {"s": "pau", "t": "Lambang kebesaran menunjukkan kemegahan dan kedaulatan raja. Panji naik!"}
+  ],
+  "z12_outro": [
+    {"s": "syahbandar", "t": "Keenam-enam panji berkibar! Kapal utusan berlabuh. Melaka diiktiraf!", "rekaan": true},
+    {"s": "syahbandar", "t": "Terimalah nobat kecil ini sebagai kenangan.", "rekaan": true},
+    {"s": "alif", "e": "confident", "t": "Enam ciri. Kerajaan, Rakyat, Kedaulatan, Wilayah, Undang-undang, Lambang. Aku nampak semuanya!"}
+  ],
+
+  "z13_intro": [
+    {"s": "tunperak", "t": "Assalamualaikum. Hamba Bendahara Tun Perak. Selamat datang ke Balai Penghadapan.", "rekaan": true},
+    {"s": "tunperak", "t": "Hari ini sangat sibuk. Masalah datang bertubi-tubi.", "rekaan": true}
+  ],
+  "z13_a_before": [
+    {"s": "tunperak", "t": "Setiap masalah mesti diserahkan kepada pembesar yang betul.", "rekaan": true},
+    {"s": "pau", "t": "Seret setiap kad masalah kepada pembesar yang bertanggungjawab."}
+  ],
+  "z13_a_after": [
+    {"s": "tunperak", "t": "Bagus. Setiap pembesar ada tugas yang jelas. Itulah sebabnya Melaka teratur.", "rekaan": true}
+  ],
+  "z13_b_before": [
+    {"s": "tunperak", "t": "Sekarang, mari ke Mahkamah Melaka. Ada empat kes menunggu keputusan.", "rekaan": true},
+    {"s": "pau", "t": "Ini Papan Siasatan! Sambungkan kes kepada undang-undang, kemudian kepada kesannya."}
+  ],
+  "z13_b_after": [
+    {"s": "tunperak", "t": "Undang-undang yang adil membuat pedagang yakin dan rakyat aman.", "rekaan": true},
+    {"s": "tunperak", "t": "Ambil Cap Mohor ini. Ia lambang kuasa dan keabsahan titah.", "rekaan": true},
+    {"s": "alif", "e": "happy", "t": "Melaka kekal aman dan makmur sebab pentadbiran dan undang-undangnya kukuh!"}
+  ],
+
+  "z14_intro": [
+    {"s": "narator", "t": "Puncak Bukit Siguntang. Sang Sapurba dan Demang Lebar Daun sedang memeterai Waadat."},
+    {"s": "pau", "t": "Waadat ialah perjanjian. Antara pemerintah dan rakyat."},
+    {"s": "pau", "e": "scared", "t": "Alif, tengok pokok tu! Ribut datang... pokok tu mula layu!"}
+  ],
+  "z14_a1_before": [
+    {"s": "demang", "t": "Pokok ini ialah raja. Akarnya ialah rakyat.", "rekaan": true},
+    {"s": "sapurba", "t": "Bantu kami. Letakkan setiap janji pada pihak yang betul.", "rekaan": true}
+  ],
+  "z14_a1_after": [
+    {"s": "pau", "t": "Raja berjanji adil. Rakyat berjanji setia. Dua-dua pihak ada janji!"}
+  ],
+  "z14_a2_before": [
+    {"s": "pau", "t": "Sekarang isih tanggungjawab kepada Sultan, Pembesar atau Rakyat."}
+  ],
+  "z14_a2_after": [
+    {"s": "alif", "e": "happy", "t": "Sistem Serah dan Sistem Kerah. Itu tanggungjawab rakyat kepada pemerintah."}
+  ],
+  "z14_b_before": [
+    {"s": "pau", "e": "scared", "t": "Pokok masih layu! Kita perlu tunjukkan apa yang menguatkan akarnya."},
+    {"s": "pau", "t": "Bina dua rantaian: rantaian kukuh dan rantaian runtuh."}
+  ],
+  "z14_b_after": [
+    {"s": "pau", "e": "happy", "t": "Akar bercahaya! Pokok kembali subur!"},
+    {"s": "sapurba", "t": "Selagi janji dipegang, kerajaan akan kukuh.", "rekaan": true},
+    {"s": "demang", "t": "Jika satu pihak mungkir janji, kepercayaan hilang dan kerajaan goyah.", "rekaan": true}
+  ],
+  "z14_c_before": [
+    {"s": "pau", "t": "Alif, Waadat bukan cerita lama sahaja. Ia ada dalam hidup kau juga."},
+    {"s": "pau", "t": "Pilih satu situasi. Tiada jawapan salah."}
+  ],
+  "z14_c_after": [
+    {"s": "alif", "e": "confident", "t": "Janji, setia dan adil. Masih penting sampai sekarang."}
+  ],
+
+  "penutup_a": [
+    {"s": "pau", "e": "happy", "t": "Lihat! Bendera 1 berkibar!"},
+    {"s": "pau", "t": "Dan jalan ke Bendera 2 mula bercahaya."},
+    {"s": "alif", "e": "confident", "t": "Aku bukan tak boleh ingat. Aku cuma perlu nampak kenapa."},
+    {"s": "pau", "t": "Semua yang kau sambung tadi kini ada dalam Nota Alif. Buka bila-bila masa untuk ulang kaji."}
+  ],
+  "penutup_teaser": [
+    {"s": "pau", "t": "Bendera 2: Kebangkitan Nasionalisme. Angin dari tempat lain mula bertiup..."},
+    {"s": "alif", "e": "confident", "t": "Aku dah sedia. Jom!"},
+    {"s": "pau", "e": "happy", "t": "Sabar! Bab 2 akan datang. Aku nak makan dulu."}
+  ]
+}
