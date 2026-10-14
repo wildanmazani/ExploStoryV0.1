@@ -7,7 +7,8 @@
   "sapurba": "2d6ac8f4-a043-4ce3-bb9c-66fb898b0a27",
   "demang": "22ef5b68-53e0-4ffb-827d-ce240b7bdc8d",
   "makcik": "250124b7-b487-4b80-914d-d2eed2ab311a",
-  "nelayan": "e67aa74f-9f3e-427a-97f4-e54ed02b561e"
+  "nelayan": "e67aa74f-9f3e-427a-97f4-e54ed02b561e",
+  "chengho": "e01bacde-382f-461e-aa5f-afcdb7cdad79"
  },
  "animations": {
   "alif_walk": {
@@ -61,6 +62,13 @@
   "gate_srivijaya": "c0cdac06-1870-482c-a361-a1bc59eb2cb8",
   "gate_melaka": "a99f30a4-6693-491e-a440-988cfede5b54",
   "gate_johor": "b3c9d6af-52bf-43ee-b732-c4b9fe88beda",
-  "muzium": "953d0bfb-a3e8-435b-91d0-594a54b425b5"
+  "muzium": "953d0bfb-a3e8-435b-91d0-594a54b425b5",
+  "panji_turun": "a3abbe4d-7c17-4517-b233-0fd1015dfb71",
+  "panji_naik": "b7214b86-8c19-4b12-a5a0-b19ef3a6c60e",
+  "tiang_runtuh": "75283aa0-3f8d-4a17-be7c-565287a9da01",
+  "tiang_berdiri": "a975fe1e-7e1e-4574-bdfb-5a6618cee39d",
+  "meja_mahkamah": "86ef048c-2b24-4fc0-81a2-78260241dbda",
+  "arena": "815fe5ef-09bc-4882-aebc-736beac23b9a",
+  "batu_renungan": "1e00fc01-7388-47d0-bed8-2164dade2b53"
  }
 }

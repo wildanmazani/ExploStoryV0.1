@@ -37,6 +37,14 @@
    "facing": "south"
   },
   {
+   "id": "chengho",
+   "pos": [
+    65,
+    44
+   ],
+   "facing": "south"
+  },
+  {
    "id": "sapurba",
    "pos": [
     53,
@@ -93,6 +101,13 @@
     10,
     4
    ]
+  },
+  {
+   "pos": [
+    69,
+    30
+   ],
+   "id": "t5"
   },
   {
    "pos": [
@@ -199,5 +214,141 @@
     35
    ]
   }
- ]
+ ],
+ "spots": {
+  "tiang": {
+   "pos": [
+    37,
+    18
+   ],
+   "size": [
+    4,
+    1
+   ]
+  },
+  "p_kerajaan": {
+   "pos": [
+    58,
+    38
+   ],
+   "size": [
+    1,
+    1
+   ]
+  },
+  "p_rakyat": {
+   "pos": [
+    60,
+    35
+   ],
+   "size": [
+    1,
+    1
+   ]
+  },
+  "p_kedaulatan": {
+   "pos": [
+    64,
+    38
+   ],
+   "size": [
+    1,
+    1
+   ]
+  },
+  "p_wilayah": {
+   "pos": [
+    57,
+    42
+   ],
+   "size": [
+    1,
+    1
+   ]
+  },
+  "p_undang": {
+   "pos": [
+    59,
+    44
+   ],
+   "size": [
+    1,
+    1
+   ]
+  },
+  "p_lambang": {
+   "pos": [
+    63,
+    46
+   ],
+   "size": [
+    1,
+    1
+   ]
+  },
+  "arena": {
+   "pos": [
+    44,
+    33
+   ],
+   "size": [
+    6,
+    2
+   ]
+  },
+  "batu": {
+   "pos": [
+    50,
+    13
+   ],
+   "size": [
+    2,
+    1
+   ]
+  },
+  "pokok": {
+   "pos": [
+    54,
+    11
+   ],
+   "size": [
+    6,
+    2
+   ]
+  },
+  "kapal": {
+   "pos": [
+    70,
+    49
+   ],
+   "size": [
+    6,
+    4
+   ]
+  }
+ },
+ "kingdom_gates": {
+  "row": 15,
+  "slots": [
+   27,
+   30,
+   33,
+   36,
+   39
+  ],
+  "start": [
+   "johor",
+   "funan",
+   "srivijaya",
+   "melaka",
+   "champa"
+  ],
+  "order": [
+   "funan",
+   "champa",
+   "srivijaya",
+   "melaka",
+   "johor"
+  ]
+ }
 }

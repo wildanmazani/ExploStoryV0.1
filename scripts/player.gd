@@ -26,6 +26,8 @@ var _hold_time := 0.0
 var _held_dir := ""
 var _turned := false
 var _bump_cooldown := 0.0
+var _path: Array = []
+var _on_arrive: Callable
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -51,11 +53,44 @@ func facing_cell() -> Vector2i:
 	return cell + DIRS[facing]
 
 
+func face_cell(c: Vector2i) -> void:
+	var d := c - cell
+	if absi(d.x) > absi(d.y):
+		facing = "east" if d.x > 0 else "west"
+	else:
+		facing = "south" if d.y > 0 else "north"
+	_idle()
+
+
+## tap-to-walk: follow a list of cells, then call on_arrive
+func walk_path(path: Array, on_arrive := Callable()) -> void:
+	_path = path.duplicate()
+	_on_arrive = on_arrive
+
+
 func _process(delta: float) -> void:
 	_bump_cooldown = maxf(_bump_cooldown - delta, 0)
-	if moving or not can_move:
+	if moving or not can_move or Game.is_locked():
 		return
 	var dir := _input_dir()
+	if dir != "":
+		_path.clear()  # keyboard / D-pad always wins over a tap path
+	elif not _path.is_empty():
+		var next: Vector2i = _path.pop_front()
+		var d := next - cell
+		var pdir := "east" if d.x > 0 else "west" if d.x < 0 else "south" if d.y > 0 else "north"
+		facing = pdir
+		if world and not world.is_walkable(next):
+			_path.clear()
+			_idle()
+			return
+		_try_step(pdir)
+		if _path.is_empty() and _on_arrive.is_valid():
+			var cb := _on_arrive
+			_on_arrive = Callable()
+			await step_finished
+			cb.call()
+		return
 	if dir == "":
 		_held_dir = ""
 		_hold_time = 0.0
@@ -104,7 +139,7 @@ func _try_step(dir: String) -> void:
 	await tween.finished
 	moving = false
 	step_finished.emit(cell)
-	if _input_dir() == "":
+	if _input_dir() == "" and _path.is_empty():
 		_idle()
 
 

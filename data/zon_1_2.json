@@ -1,0 +1,507 @@
+{
+  "id": "1_2",
+  "no": "1.2",
+  "title": "Pelabuhan Melaka",
+  "subtopik": "1.2 Ciri-ciri Negara Bangsa Kesultanan Melayu Melaka",
+  "persoalan": "Apa yang menjadikan Melaka sebuah negara bangsa yang lengkap?",
+  "pemandu": "syahbandar",
+  "ganjaran": {
+    "id": "nobat",
+    "nama": "Nobat Kecil",
+    "icon": "nobat",
+    "info": "Nobat ialah salah satu lambang kebesaran Kesultanan Melayu Melaka."
+  },
+  "fakta_disemak": false,
+  "background": "res://assets/backgrounds/bg_zon1_2_pelabuhan_melaka.png",
+  "music": "",
+  "spawn": [
+    640,
+    680
+  ],
+  "walk_rect": [
+    40,
+    400,
+    1200,
+    300
+  ],
+  "intro": "z12_intro",
+  "any_order": true,
+  "objects": [
+    {
+      "id": "kapal",
+      "texture": "res://assets/proto/objects/kapal_utusan.png",
+      "pos": [
+        1010,
+        250
+      ],
+      "scale": 4
+    },
+    {
+      "id": "syahbandar",
+      "sprite": "syahbandar",
+      "pos": [
+        560,
+        520
+      ],
+      "label": "Syahbandar",
+      "talk": "z12_intro"
+    },
+    {
+      "id": "chengho",
+      "sprite": "chengho",
+      "pos": [
+        760,
+        400
+      ],
+      "label": "Laksamana Cheng Ho"
+    },
+    {
+      "id": "p_kerajaan",
+      "panji": true,
+      "pos": [
+        170,
+        470
+      ],
+      "label": "Panji Kerajaan"
+    },
+    {
+      "id": "p_rakyat",
+      "panji": true,
+      "pos": [
+        370,
+        470
+      ],
+      "label": "Panji Rakyat"
+    },
+    {
+      "id": "p_kedaulatan",
+      "panji": true,
+      "pos": [
+        660,
+        420
+      ],
+      "label": "Panji Kedaulatan"
+    },
+    {
+      "id": "p_wilayah",
+      "panji": true,
+      "pos": [
+        890,
+        520
+      ],
+      "label": "Panji Wilayah Pengaruh"
+    },
+    {
+      "id": "p_undang",
+      "panji": true,
+      "pos": [
+        1180,
+        600
+      ],
+      "label": "Panji Undang-undang"
+    },
+    {
+      "id": "p_lambang",
+      "panji": true,
+      "pos": [
+        300,
+        650
+      ],
+      "label": "Panji Lambang Kebesaran"
+    }
+  ],
+  "steps": [
+    {
+      "at": "p_kerajaan",
+      "before": "z12_kerajaan_before",
+      "puzzle": "kerajaan",
+      "after": "z12_kerajaan_after"
+    },
+    {
+      "at": "p_rakyat",
+      "before": "z12_rakyat_before",
+      "puzzle": "rakyat",
+      "after": "z12_rakyat_after"
+    },
+    {
+      "at": "p_kedaulatan",
+      "before": "z12_kedaulatan_before",
+      "puzzle": "kedaulatan",
+      "after": "z12_kedaulatan_after"
+    },
+    {
+      "at": "p_wilayah",
+      "before": "z12_wilayah_before",
+      "puzzle": "wilayah",
+      "after": "z12_wilayah_after"
+    },
+    {
+      "at": "p_undang",
+      "before": "z12_undang_before",
+      "puzzle": "undang",
+      "after": "z12_undang_after"
+    },
+    {
+      "at": "p_lambang",
+      "before": "z12_lambang_before",
+      "puzzle": "lambang",
+      "after": "z12_lambang_after"
+    }
+  ],
+  "outro": "z12_outro",
+  "puzzles": {
+    "kerajaan": {
+      "type": "drag_match",
+      "title": "Panji Kerajaan",
+      "instruction": "Susun pemerintah dan pembesar ikut lapisan, dari atas ke bawah.",
+      "hint": "Raja ialah pemerintah tertinggi. Bilangan pembesar bertambah dua kali ganda setiap lapisan.",
+      "targets": [
+        {
+          "id": "l1",
+          "label": "Lapisan 1",
+          "sub": "Tertinggi"
+        },
+        {
+          "id": "l2",
+          "label": "Lapisan 2"
+        },
+        {
+          "id": "l3",
+          "label": "Lapisan 3"
+        },
+        {
+          "id": "l4",
+          "label": "Lapisan 4"
+        },
+        {
+          "id": "l5",
+          "label": "Lapisan 5"
+        }
+      ],
+      "items": [
+        {
+          "id": "p8",
+          "label": "Pembesar Berlapan",
+          "target": "l3",
+          "fact": "Pembesar Berlapan di bawah Pembesar Berempat."
+        },
+        {
+          "id": "sultan",
+          "label": "Sultan",
+          "icon": "res://assets/icons/mahkota.png",
+          "target": "l1",
+          "fact": "Raja ialah pemerintah tertinggi. Gelaran Sultan digunakan selepas kedatangan Islam."
+        },
+        {
+          "id": "p32",
+          "label": "Pembesar Tiga Puluh Dua",
+          "target": "l5",
+          "fact": "Pembesar Tiga Puluh Dua di lapisan paling bawah."
+        },
+        {
+          "id": "p4",
+          "label": "Pembesar Berempat",
+          "target": "l2",
+          "fact": "Pembesar Berempat: Bendahara, Penghulu Bendahari, Temenggung dan Laksamana."
+        },
+        {
+          "id": "p16",
+          "label": "Pembesar Enam Belas",
+          "target": "l4",
+          "fact": "Pembesar Enam Belas di bawah Pembesar Berlapan."
+        }
+      ],
+      "done_text": "Raja dibantu oleh Sistem Pembesar Empat Lipatan."
+    },
+    "rakyat": {
+      "type": "drag_match",
+      "title": "Panji Rakyat",
+      "instruction": "Bawa setiap penduduk pelabuhan ke golongan yang betul.",
+      "hint": "Golongan pemerintah memerintah negeri. Golongan diperintah terdiri daripada rakyat merdeka dan hamba.",
+      "targets": [
+        {
+          "id": "pemerintah",
+          "label": "Golongan Pemerintah",
+          "icon": "res://assets/icons/mahkota.png"
+        },
+        {
+          "id": "diperintah",
+          "label": "Golongan Diperintah",
+          "icon": "res://assets/icons/kumpulan.png"
+        }
+      ],
+      "items": [
+        {
+          "id": "kerabat",
+          "label": "Kerabat diraja",
+          "target": "pemerintah",
+          "fact": "Kerabat diraja termasuk dalam golongan pemerintah."
+        },
+        {
+          "id": "orglaut",
+          "label": "Orang Laut",
+          "target": "diperintah",
+          "fact": "Orang Laut ialah sebahagian daripada rakyat Melaka."
+        },
+        {
+          "id": "pembesar",
+          "label": "Pembesar",
+          "target": "pemerintah",
+          "fact": "Pembesar membantu sultan memerintah."
+        },
+        {
+          "id": "hamba",
+          "label": "Hamba",
+          "target": "diperintah",
+          "fact": "Golongan hamba ialah sebahagian masyarakat Melayu tradisional."
+        },
+        {
+          "id": "orgmelayu",
+          "label": "Orang Melayu (rakyat merdeka)",
+          "target": "diperintah",
+          "fact": "Rakyat merdeka termasuk Orang Melayu."
+        }
+      ],
+      "done_text": "Pemerintah dan rakyat mempunyai hubungan timbal balik."
+    },
+    "kedaulatan": {
+      "type": "drag_match",
+      "title": "Panji Kedaulatan",
+      "instruction": "Isih setiap kenyataan: adakah ia bukti kedaulatan Melaka?",
+      "hint": "Berdaulat bermaksud sebuah kerajaan bebas memerintah tanpa campur tangan kuasa asing.",
+      "targets": [
+        {
+          "id": "ya",
+          "label": "Bukti kedaulatan",
+          "icon": "res://assets/icons/bintang.png"
+        },
+        {
+          "id": "tidak",
+          "label": "Bukan bukti kedaulatan",
+          "icon": "res://assets/icons/kunci.png"
+        }
+      ],
+      "items": [
+        {
+          "id": "ming",
+          "label": "Kedaulatan Melaka diiktiraf oleh Dinasti Ming",
+          "icon": "res://assets/icons/kapal.png",
+          "target": "ya",
+          "fact": "Kunjungan utusan seperti Laksamana Cheng Ho menunjukkan Melaka diiktiraf kuasa luar."
+        },
+        {
+          "id": "bebas",
+          "label": "Melaka bebas daripada campur tangan asing",
+          "target": "ya",
+          "fact": "Kerajaan berdaulat mentadbir urusannya sendiri."
+        },
+        {
+          "id": "tunduk",
+          "label": "Kuasa asing menentukan undang-undang Melaka",
+          "target": "tidak",
+          "fact": "Jika kuasa asing menentukan undang-undang, kerajaan itu tidak berdaulat."
+        }
+      ],
+      "done_text": "Melaka berdaulat: diiktiraf Dinasti Ming dan bebas daripada campur tangan asing."
+    },
+    "wilayah": {
+      "type": "drag_match",
+      "title": "Panji Wilayah Pengaruh",
+      "instruction": "Isih setiap wilayah ke dalam bekas yang betul.",
+      "hint": "Kebanyakan wilayah ialah taklukan. Hanya satu wilayah melalui perkahwinan.",
+      "targets": [
+        {
+          "id": "takluk",
+          "label": "Taklukan",
+          "icon": "res://assets/icons/pedang.png"
+        },
+        {
+          "id": "naung",
+          "label": "Naungan",
+          "icon": "res://assets/icons/regalia.png"
+        },
+        {
+          "id": "kahwin",
+          "label": "Perkahwinan",
+          "icon": "res://assets/icons/rakan.png"
+        }
+      ],
+      "items": [
+        {
+          "id": "pahang",
+          "label": "Pahang",
+          "target": "takluk",
+          "fact": "Pahang ialah wilayah taklukan Melaka."
+        },
+        {
+          "id": "kedah",
+          "label": "Kedah",
+          "target": "naung",
+          "fact": "Kedah berada di bawah naungan Melaka."
+        },
+        {
+          "id": "siantan",
+          "label": "Siantan",
+          "target": "kahwin",
+          "fact": "Siantan menjadi wilayah pengaruh Melaka melalui perkahwinan."
+        },
+        {
+          "id": "kualalinggi",
+          "label": "Kuala Linggi",
+          "target": "takluk",
+          "fact": "Kuala Linggi ialah wilayah taklukan Melaka."
+        },
+        {
+          "id": "lingga",
+          "label": "Lingga",
+          "target": "naung",
+          "fact": "Lingga berada di bawah naungan Melaka."
+        },
+        {
+          "id": "kelantan",
+          "label": "Kelantan",
+          "target": "takluk",
+          "fact": "Kelantan ialah wilayah taklukan Melaka."
+        },
+        {
+          "id": "rokan",
+          "label": "Rokan",
+          "target": "takluk",
+          "fact": "Rokan ialah wilayah taklukan Melaka."
+        },
+        {
+          "id": "patani",
+          "label": "Patani",
+          "target": "naung",
+          "fact": "Patani berada di bawah naungan Melaka."
+        },
+        {
+          "id": "inderagiri",
+          "label": "Inderagiri",
+          "target": "takluk",
+          "fact": "Inderagiri ialah wilayah taklukan Melaka."
+        },
+        {
+          "id": "kampar",
+          "label": "Kampar",
+          "target": "takluk",
+          "fact": "Kampar ialah wilayah taklukan Melaka."
+        }
+      ],
+      "done_text": "Taklukan: 6 wilayah. Naungan: 3 wilayah. Perkahwinan: Siantan."
+    },
+    "undang": {
+      "type": "drag_match",
+      "title": "Panji Undang-undang",
+      "instruction": "Ambil hanya gulungan undang-undang Kesultanan Melayu Melaka.",
+      "hint": "Satu gulungan untuk daratan, satu lagi untuk lautan.",
+      "targets": [
+        {
+          "id": "melaka",
+          "label": "Undang-undang Melaka",
+          "icon": "res://assets/icons/gulungan.png"
+        },
+        {
+          "id": "lain",
+          "label": "Kerajaan lain",
+          "icon": "res://assets/icons/kunci.png"
+        }
+      ],
+      "items": [
+        {
+          "id": "hkm",
+          "label": "Hukum Kanun Melaka",
+          "icon": "res://assets/icons/gulungan.png",
+          "target": "melaka",
+          "fact": "Hukum Kanun Melaka ialah undang-undang darat Melaka."
+        },
+        {
+          "id": "kutara2",
+          "label": "Kitab Kutara Manawa",
+          "icon": "res://assets/icons/kitab.png",
+          "target": "lain",
+          "fact": "Kutara Manawa ialah undang-undang bertulis Majapahit, bukan Melaka."
+        },
+        {
+          "id": "uulm",
+          "label": "Undang-Undang Laut Melaka",
+          "icon": "res://assets/icons/gulungan.png",
+          "target": "melaka",
+          "fact": "Undang-Undang Laut Melaka mengatur urusan pelayaran dan perdagangan laut."
+        }
+      ],
+      "done_text": "Dua gulungan undang-undang Melaka diambil. Kita akan melihatnya di mahkamah nanti."
+    },
+    "lambang": {
+      "type": "drag_match",
+      "title": "Panji Lambang Kebesaran",
+      "instruction": "Padankan setiap lambang kebesaran dengan maksudnya.",
+      "hint": "Nobat ialah alat muzik. Cap mohor ialah cop rasmi.",
+      "targets": [
+        {
+          "id": "d_nobat",
+          "label": "Alat muzik diraja"
+        },
+        {
+          "id": "d_cap",
+          "label": "Cop rasmi pada surat raja"
+        },
+        {
+          "id": "d_warna",
+          "label": "Warna khas untuk raja"
+        },
+        {
+          "id": "d_regalia",
+          "label": "Alat kebesaran diraja"
+        },
+        {
+          "id": "d_adat",
+          "label": "Upacara rasmi istana"
+        }
+      ],
+      "items": [
+        {
+          "id": "nobat",
+          "label": "Nobat",
+          "icon": "res://assets/icons/nobat.png",
+          "target": "d_nobat",
+          "fact": "Nobat dimainkan dalam upacara diraja.",
+          "semak": true
+        },
+        {
+          "id": "cap",
+          "label": "Cap Mohor",
+          "icon": "res://assets/icons/capmohor.png",
+          "target": "d_cap",
+          "fact": "Cap mohor ialah cop rasmi raja.",
+          "semak": true
+        },
+        {
+          "id": "kuning",
+          "label": "Warna kuning",
+          "icon": "res://assets/icons/kain.png",
+          "target": "d_warna",
+          "fact": "Warna kuning dikhaskan untuk raja.",
+          "semak": true
+        },
+        {
+          "id": "regalia",
+          "label": "Regalia",
+          "icon": "res://assets/icons/regalia.png",
+          "target": "d_regalia",
+          "fact": "Regalia ialah alat kebesaran diraja.",
+          "semak": true
+        },
+        {
+          "id": "adat",
+          "label": "Adat istiadat",
+          "icon": "res://assets/icons/mahkota.png",
+          "target": "d_adat",
+          "fact": "Adat istiadat ialah upacara rasmi istana.",
+          "semak": true
+        }
+      ],
+      "done_text": "Adat istiadat, warna, nobat, regalia dan cap mohor: lambang kebesaran Melaka."
+    }
+  }
+}

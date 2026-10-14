@@ -11,7 +11,9 @@ config_version=5
 [application]
 
 config/name="Explo-Story"
-config/description="Bab 1: Warisan Negara Bangsa"
+config/description="Explo-Story: Sejarah Tingkatan 4, Bab 1 Warisan Negara Bangsa"
+boot_splash/bg_color=Color(0.117647, 0.141176, 0.2, 1)
+boot_splash/show_image=false
 run/main_scene="res://scenes/title.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
@@ -22,12 +24,27 @@ general/text_to_speech=true
 [autoload]
 
 GameState="*res://scripts/game_state.gd"
+Backend="*res://scripts/autoload/backend.gd"
+Game="*res://scripts/autoload/game.gd"
+Tts="*res://scripts/autoload/tts.gd"
 Dialogue="*res://scripts/dialogue.gd"
 Sfx="*res://scripts/audio/sfx.gd"
+MusicDirector="*res://scripts/audio/music_director.gd"
+Main="*res://scripts/main.gd"
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[importer_defaults]
+
+wav={
+"compress/mode": 2
+}
 
 [input_devices]
 
-pointing/emulate_touch_from_mouse=false
+pointing/emulate_mouse_from_touch=true
 
 [display]
 

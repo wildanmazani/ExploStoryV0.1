@@ -16,7 +16,7 @@ func _ready() -> void:
 	_add_button("move_down", _arrow_tex(2), pad_center + Vector2(-SIZE / 2.0, SIZE * 0.5))
 	_add_button("move_left", _arrow_tex(3), pad_center + Vector2(-SIZE * 1.5, -SIZE / 2.0))
 	_add_button("move_right", _arrow_tex(1), pad_center + Vector2(SIZE * 0.5, -SIZE / 2.0))
-	_add_button("act", _round_tex("A", Color("e8b04a")), Vector2(1280 - MARGIN - BTN, 720 - MARGIN - BTN * 1.45), "A")
+	_add_button("interact", _round_tex("A", Color("e8b04a")), Vector2(1280 - MARGIN - BTN, 720 - MARGIN - BTN * 1.45), "A")
 	_add_button("run", _round_tex("B", Color("7aa7d9")), Vector2(1280 - MARGIN - BTN * 2.1, 720 - MARGIN - BTN * 0.9), "B")
 
 

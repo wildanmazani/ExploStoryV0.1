@@ -10,6 +10,8 @@ Object chars (anchor = bottom-left cell of the footprint):
   K Peta Jejak monument  Y banyan  G open flag gate  L locked flag gate  S sign
   U muzium  I istana  J jetty (walkable over sea)  X Ming ship  b perahu
   1-5 the five kingdom gates of Zon 1.1 (Funan, Champa, Srivijaya, Melaka, Johor-Riau)
+  A Empat Tiang (Zon 1.1)  Q panji pole (Zon 1.2)  W Arena Ulang Kaji  Z Batu Renungan (Zon 1.4)
+"spots" in entities.json names the puzzle locations used by data/zon_1_x.json steps.
 
 Run: python tools/gen_world.py   (deterministic; edit shapes below and re-run)
 """
@@ -115,7 +117,8 @@ for y in range(H):
 FOOT = {  # footprint (w, h) in cells; anchored at bottom-left
     "P": (1, 1), "T": (2, 1), "B": (2, 1), "R": (2, 1), "F": (2, 1), "f": (2, 1),
     "H": (6, 3), "U": (6, 3), "M": (4, 2), "I": (10, 4), "J": (2, 6), "X": (6, 4), "b": (3, 1),
-    "1": (3, 1), "2": (3, 1), "3": (3, 1), "4": (3, 1), "5": (3, 1), "K": (4, 2), "Y": (6, 2), "G": (4, 1), "L": (4, 1), "S": (1, 1),
+    "1": (3, 1), "2": (3, 1), "3": (3, 1), "4": (3, 1), "5": (3, 1),
+    "A": (4, 1), "Q": (1, 1), "W": (6, 2), "Z": (2, 1), "K": (4, 2), "Y": (6, 2), "G": (4, 1), "L": (4, 1), "S": (1, 1),
 }
 
 
@@ -143,7 +146,25 @@ def place(ch, x, y, ground=".#=s", force=False):
     return True
 
 
-entities = {"spawn": [19, 50], "npcs": [], "signs": [], "gates": [], "areas": []}
+entities = {"spawn": [19, 50], "npcs": [], "signs": [], "gates": [], "areas": [], "spots": {}}
+
+
+def place_near(ch, x, y, ground=".s", radius=6):
+    """Place at (x, y) or the nearest legal cell; returns the anchor used."""
+    for r in range(radius + 1):
+        for dy in range(-r, r + 1):
+            for dx in range(-r, r + 1):
+                if max(abs(dx), abs(dy)) != r:
+                    continue
+                if can_place(ch, x + dx, y + dy, ground):
+                    place(ch, x + dx, y + dy, ground)
+                    return [x + dx, y + dy]
+    raise SystemExit("no room for %s near %d,%d" % (ch, x, y))
+
+
+def spot(name, at, ch):
+    w, h = FOOT[ch]
+    entities["spots"][name] = {"pos": at, "size": [w, h]}
 
 # keep a clearing around the spawn so the opening shot is clean
 sx, sy = entities["spawn"]
@@ -161,11 +182,26 @@ for hx, hy in [(25, 27), (40, 27)]:
     place("H", hx, hy, force=True)
 place("U", 25, 39, force=True)
 entities["signs"].append({"pos": [25, 39], "id": "muzium", "size": [6, 3]})
-for i, gx in enumerate([27, 30, 33, 36, 39]):  # five kingdoms, left to right in a jumble
-    place(str(i + 1), gx, 15, force=True)
+# five kingdom gates start in a jumble; the Zon 1.1 puzzle puts them in order
+# (1 Funan, 2 Champa, 3 Srivijaya, 4 Melaka, 5 Johor-Riau)
+GATE_SLOTS = [27, 30, 33, 36, 39]
+for slot, kingdom in zip(GATE_SLOTS, ["5", "1", "3", "4", "2"]):
+    place(kingdom, slot, 15, force=True)
+entities["kingdom_gates"] = {"row": 15, "slots": GATE_SLOTS, "start": ["johor", "funan", "srivijaya", "melaka", "champa"],
+    "order": ["funan", "champa", "srivijaya", "melaka", "johor"]}
+spot("tiang", place_near("A", 37, 18, ".#"), "A")
 place("I", 51, 28, force=True)
 entities["signs"].append({"pos": [51, 28], "id": "istana", "size": [10, 4]})
 place("J", 66, 47, force=True)
+for name, (px, py) in zip(["p_kerajaan", "p_rakyat", "p_kedaulatan", "p_wilayah", "p_undang", "p_lambang"],
+                          [(58, 38), (60, 36), (64, 38), (57, 42), (59, 44), (63, 46)]):
+    spot(name, place_near("Q", px, py), "Q")
+spot("arena", place_near("W", 44, 33, ".=#"), "W")
+spot("batu", place_near("Z", 50, 13), "Z")
+place("S", 69, 30, force=True)
+entities["signs"].append({"pos": [69, 30], "id": "t5"})
+entities["spots"]["pokok"] = {"pos": [54, 11], "size": [6, 2]}
+entities["spots"]["kapal"] = {"pos": [70, 49], "size": [6, 4]}
 place("X", 70, 49, force=True)
 place("b", 62, 51, force=True)
 place("b", 72, 42, force=True)
@@ -186,12 +222,22 @@ entities["npcs"] += [
     {"id": "nelayan", "pos": [63, 43], "facing": "east"},
     {"id": "penjaga", "pos": [34, 17], "facing": "south"},
     {"id": "syahbandar", "pos": [61, 40], "facing": "south"},
+    {"id": "chengho", "pos": [65, 44], "facing": "south"},
     {"id": "sapurba", "pos": [53, 14], "facing": "east"},
     {"id": "demang", "pos": [61, 14], "facing": "west"},
 ]
+reserved = set()
+def reserve(x0, y0, w, h, r=2):
+    for yy in range(y0 - h + 1 - r, y0 + 1 + r):
+        for xx in range(x0 - r, x0 + w + r):
+            reserved.add((xx, yy))
 for n in entities["npcs"]:
     x, y = n["pos"]
     blocked[y][x] = True
+    reserve(x, y, 1, 1)
+for name, sp in entities["spots"].items():
+    if name not in ("kapal",):
+        reserve(sp["pos"][0], sp["pos"][1], sp["size"][0], sp["size"][1])
 
 entities["areas"] = [  # name, rect x0,y0,x1,y1 (used for music + area titles)
     {"id": "permulaan", "name": "Bukit Permulaan", "rect": [6, 40, 30, 58]},
@@ -218,6 +264,8 @@ random.shuffle(cells)
 for x, y in cells:
     t = terrain[y][x]
     in_village = village[0] <= x <= village[2] and village[1] <= y <= village[3]
+    if any((x + dx, y - dy) in reserved for dx in range(2) for dy in range(2)):
+        continue
     if t == "." and dist_to(x, y, "=#", 2) >= 2:
         d_sand = dist_to(x, y, "s", 4)
         r = random.random()

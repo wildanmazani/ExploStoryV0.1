@@ -21,7 +21,8 @@ var _t := 0.0
 
 
 func _ready() -> void:
-	layer = 30
+	layer = 28
+	Game.lock_input()
 	$Close.pressed.connect(_close)
 	Sfx.play("whoosh", -10.0)
 	for i in FLAGS.size():
@@ -62,13 +63,13 @@ func _on_flag_input(event: InputEvent, i: int) -> void:
 
 func _show_info(i: int) -> void:
 	var status := "Sedang diterokai" if i < GameState.unlocked_chapters else "Berkunci"
-	if i < GameState.completed_chapters:
+	if Game.chapter_done(i + 1):
 		status = "Selesai!"
 	info.text = "Bab %d: %s   ·   %s" % [i + 1, GameState.CHAPTERS[i], status]
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("act") or event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("interact") or event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		_close()
 
@@ -78,5 +79,6 @@ func _close() -> void:
 	var t := create_tween()
 	t.tween_property(map, "modulate:a", 0.0, 0.2)
 	await t.finished
+	Game.unlock_input()
 	closed.emit()
 	queue_free()

@@ -51,10 +51,16 @@ jobs:
           cp /tmp/tpl/templates/web_* $dest/
           cp /tmp/tpl/templates/version.txt $dest/
 
+      - name: End-to-end play-through (whole of Bab 1)
+        run: |
+          ~/godot/godot --headless --import || true
+          timeout 900 ~/godot/godot --headless --path . -- --autotest 2>&1 | tee autotest.log
+          grep -q "AUTOTEST PASS" autotest.log
+          if grep -E "SCRIPT ERROR|Parse Error" autotest.log; then echo "Script errors found"; exit 1; fi
+
       - name: Export web build
         run: |
           mkdir -p build/web
-          ~/godot/godot --headless --import || true
           ~/godot/godot --headless --export-release "Web" build/web/index.html
           test -f build/web/index.html
           du -sh build/web

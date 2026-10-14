@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/prologue.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/backgrounds/bg_bilik_alif_malam.png" id="2"]
 [ext_resource type="Texture2D" path="res://assets/characters/pau.png" id="3"]
-[ext_resource type="Script" path="res://scripts/dialog_box.gd" id="4"]
 
 [sub_resource type="Gradient" id="VignetteGradient"]
 offsets = PackedFloat32Array(0.45, 1)
@@ -160,11 +159,10 @@ offset_bottom = 720.0
 mouse_filter = 2
 color = Color(1, 0.97, 0.88, 1)
 
-[node name="Dialog" type="CanvasLayer" parent="."]
-script = ExtResource("4")
+[node name="SkipLayer" type="CanvasLayer" parent="."]
+layer = 26
 
-[node name="Skip" type="Button" parent="." groups=["dialog_passthrough"]]
-layout_mode = 0
+[node name="Skip" type="Button" parent="SkipLayer"]
 offset_left = 1060.0
 offset_top = 20.0
 offset_right = 1256.0

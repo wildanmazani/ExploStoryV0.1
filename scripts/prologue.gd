@@ -25,11 +25,12 @@ var _heart_gap := 0.0  ## 0 = no heartbeat
 @onready var lid_bottom: ColorRect = $LidBottom
 @onready var pages: CPUParticles2D = $Pages
 @onready var flash: ColorRect = $Flash
-@onready var dialog: DialogBox = $Dialog
-@onready var skip: Button = $Skip
+@onready var skip: Button = $SkipLayer/Skip
 
 
 func _ready() -> void:
+	Main.set_pau_visible(false)
+	MusicDirector.play("bilik", 2.5)
 	skip.pressed.connect(_skip)
 	pages.texture = _page_texture()
 	book.modulate.a = 0.0
@@ -88,6 +89,7 @@ func _run() -> void:
 
 	# golden pages carry him away
 	if _skipping: return
+	MusicDirector.stop(2.0)
 	Sfx.play("whoosh")
 	Sfx.play("chime", -2.0)
 	pages.emitting = true
@@ -103,7 +105,7 @@ func _run() -> void:
 # --- helpers ----------------------------------------------------------------
 func _say(id: String) -> void:
 	if _skipping: return
-	await dialog.play(Dialogue.lines(id))
+	await Game.say(Dialogue.lines(id))
 
 
 func _wait(seconds: float) -> void:
@@ -207,6 +209,7 @@ func _skip() -> void:
 		return
 	_skipping = true
 	Sfx.play("select")
+	Main.dialog_box.cancel()
 	_go_to_world()
 
 
@@ -215,6 +218,7 @@ func _go_to_world() -> void:
 	if _leaving:
 		return
 	_leaving = true
-	GameState.flags["prologue_done"] = true
+	Game.save["prolog_done"] = true
+	Game.persist()
 	GameState.flags["world_intro"] = true
 	GameState.go_to(WORLD, Color(1, 0.97, 0.88))

@@ -3,25 +3,8 @@
 [ext_resource type="Script" path="res://scripts/world/world.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/pau.tscn" id="3"]
-[ext_resource type="Script" path="res://scripts/dialog_box.gd" id="4"]
 [ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="5"]
 [ext_resource type="Script" path="res://scripts/world/ambience.gd" id="6"]
-
-[sub_resource type="StyleBoxFlat" id="BannerStyle"]
-bg_color = Color(0.984, 0.953, 0.878, 0.95)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0.478, 0.306, 0.176, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 24.0
-content_margin_top = 10.0
-content_margin_right = 24.0
-content_margin_bottom = 10.0
 
 [node name="World" type="Node2D"]
 script = ExtResource("1")
@@ -47,19 +30,6 @@ script = ExtResource("6")
 color = Color(1, 0.98, 0.93, 1)
 
 [node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="AreaBanner" type="PanelContainer" parent="HUD"]
-offset_left = 24.0
-offset_top = -90.0
-offset_right = 324.0
-offset_bottom = -30.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("BannerStyle")
-
-[node name="Label" type="Label" parent="HUD/AreaBanner"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.169, 0.129, 0.094, 1)
-theme_override_font_sizes/font_size = 30
 
 [node name="Emote" type="Label" parent="HUD"]
 visible = false
@@ -98,18 +68,25 @@ theme_override_font_sizes/font_size = 34
 text = "Bab 1: Warisan Negara Bangsa"
 horizontal_alignment = 1
 
-[node name="Skip" type="Button" parent="HUD" groups=["dialog_passthrough"]]
+[node name="Prompt" type="Button" parent="HUD"]
+visible = false
+offset_right = 220.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_type_variation = &"Primary"
+text = "E / Ketik"
+
+[node name="SkipLayer" type="CanvasLayer" parent="."]
+layer = 26
+
+[node name="Skip" type="Button" parent="SkipLayer"]
 visible = false
 offset_left = 1060.0
 offset_top = 20.0
 offset_right = 1256.0
 offset_bottom = 70.0
 focus_mode = 0
-theme_override_font_sizes/font_size = 24
 text = "Langkau >>"
-
-[node name="Dialog" type="CanvasLayer" parent="."]
-script = ExtResource("4")
 
 [node name="TouchControls" type="CanvasLayer" parent="."]
 script = ExtResource("5")

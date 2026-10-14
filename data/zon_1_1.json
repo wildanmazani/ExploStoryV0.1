@@ -1,0 +1,265 @@
+{
+  "id": "1_1",
+  "no": "1.1",
+  "title": "Gerbang Masa",
+  "subtopik": "1.1 Negara Bangsa Kerajaan Alam Melayu",
+  "persoalan": "Dari mana asal negara bangsa kita?",
+  "pemandu": "penjaga",
+  "ganjaran": {
+    "id": "prasasti",
+    "nama": "Serpihan Prasasti Telaga Batu",
+    "icon": "prasasti",
+    "info": "Rakyat Srivijaya meminum air sumpah yang dituang ke atas prasasti ini sebagai tanda setia."
+  },
+  "fakta_disemak": false,
+  "background": "res://assets/backgrounds/bg_zon1_1_gerbang_masa.png",
+  "music": "",
+  "spawn": [
+    640,
+    660
+  ],
+  "walk_rect": [
+    80,
+    430,
+    1120,
+    270
+  ],
+  "intro": "z11_intro",
+  "any_order": false,
+  "objects": [
+    {
+      "id": "g_johor",
+      "texture": "res://assets/objects/gate_johor.png",
+      "pos": [
+        190,
+        440
+      ],
+      "scale": 4
+    },
+    {
+      "id": "g_funan",
+      "texture": "res://assets/objects/gate_funan.png",
+      "pos": [
+        400,
+        420
+      ],
+      "scale": 4
+    },
+    {
+      "id": "g_melaka",
+      "texture": "res://assets/objects/gate_melaka.png",
+      "pos": [
+        880,
+        420
+      ],
+      "scale": 4
+    },
+    {
+      "id": "g_champa",
+      "texture": "res://assets/objects/gate_champa.png",
+      "pos": [
+        1090,
+        440
+      ],
+      "scale": 4
+    },
+    {
+      "id": "g_srivijaya",
+      "texture": "res://assets/objects/gate_srivijaya.png",
+      "pos": [
+        640,
+        400
+      ],
+      "scale": 4
+    },
+    {
+      "id": "penjaga",
+      "sprite": "penjaga",
+      "pos": [
+        520,
+        540
+      ],
+      "label": "Penjaga Gerbang Masa"
+    },
+    {
+      "id": "tiang",
+      "texture": "res://assets/icons/muzium.png",
+      "pos": [
+        860,
+        600
+      ],
+      "scale": 4,
+      "label": "Empat Tiang Runtuh"
+    }
+  ],
+  "after_step": {
+    "susun_gerbang": {
+      "arrange": {
+        "g_funan": [
+          190,
+          420
+        ],
+        "g_champa": [
+          415,
+          420
+        ],
+        "g_srivijaya": [
+          640,
+          420
+        ],
+        "g_melaka": [
+          865,
+          420
+        ],
+        "g_johor": [
+          1090,
+          420
+        ]
+      },
+      "thread": true
+    }
+  },
+  "steps": [
+    {
+      "at": "penjaga",
+      "before": "z11_a_before",
+      "puzzle": "susun_gerbang",
+      "after": "z11_a_after"
+    },
+    {
+      "at": "tiang",
+      "before": "z11_b_before",
+      "puzzle": "empat_tiang",
+      "after": "z11_b_after"
+    }
+  ],
+  "puzzles": {
+    "susun_gerbang": {
+      "type": "drag_match",
+      "title": "Susun Benang Warisan",
+      "instruction": "Seret setiap gerbang ke kedudukan yang betul ikut urutan masa.",
+      "hint": "Mulakan dengan kerajaan yang paling awal. Kesultanan Melayu Melaka muncul pada abad ke-15.",
+      "targets": [
+        {
+          "id": "t1",
+          "label": "1",
+          "sub": "Paling awal"
+        },
+        {
+          "id": "t2",
+          "label": "2"
+        },
+        {
+          "id": "t3",
+          "label": "3"
+        },
+        {
+          "id": "t4",
+          "label": "4"
+        },
+        {
+          "id": "t5",
+          "label": "5",
+          "sub": "Paling akhir"
+        }
+      ],
+      "items": [
+        {
+          "id": "melaka",
+          "label": "Kesultanan Melayu Melaka",
+          "icon": "res://assets/objects/gate_melaka.png",
+          "target": "t4",
+          "fact": "Kesultanan Melayu Melaka: abad ke-15."
+        },
+        {
+          "id": "funan",
+          "label": "Funan",
+          "icon": "res://assets/objects/gate_funan.png",
+          "target": "t1",
+          "fact": "Funan: abad pertama."
+        },
+        {
+          "id": "johor",
+          "label": "Kesultanan Johor-Riau",
+          "icon": "res://assets/objects/gate_johor.png",
+          "target": "t5",
+          "fact": "Kesultanan Johor-Riau: abad ke-16."
+        },
+        {
+          "id": "srivijaya",
+          "label": "Srivijaya",
+          "icon": "res://assets/objects/gate_srivijaya.png",
+          "target": "t3",
+          "fact": "Srivijaya: abad ke-7, berpusat di Palembang."
+        },
+        {
+          "id": "champa",
+          "label": "Champa",
+          "icon": "res://assets/objects/gate_champa.png",
+          "target": "t2",
+          "fact": "Champa: abad kedua."
+        }
+      ],
+      "done_text": "Benang emas mengalir dari Funan hingga Johor-Riau. Setiap kerajaan mewarisi ciri kerajaan sebelumnya."
+    },
+    "empat_tiang": {
+      "type": "drag_match",
+      "title": "Empat Tiang Negara Bangsa",
+      "instruction": "Letakkan setiap artifak bukti pada tiang yang betul.",
+      "hint": "Fikir apa yang dibuktikan oleh setiap artifak: pemerintah, peraturan, kawasan atau kesetiaan.",
+      "targets": [
+        {
+          "id": "raja",
+          "label": "Raja",
+          "icon": "res://assets/icons/mahkota.png"
+        },
+        {
+          "id": "undang",
+          "label": "Undang-undang",
+          "icon": "res://assets/icons/timbangan.png"
+        },
+        {
+          "id": "wilayah",
+          "label": "Wilayah Pengaruh",
+          "icon": "res://assets/icons/peta.png"
+        },
+        {
+          "id": "rakyat",
+          "label": "Rakyat",
+          "icon": "res://assets/icons/kumpulan.png"
+        }
+      ],
+      "items": [
+        {
+          "id": "siva",
+          "label": "Patung Dewa Siva",
+          "icon": "res://assets/icons/siva.png",
+          "target": "raja",
+          "fact": "Raja Champa dianggap suci dan dikaitkan dengan Dewa Siva."
+        },
+        {
+          "id": "kutara",
+          "label": "Kitab Kutara Manawa",
+          "icon": "res://assets/icons/kitab.png",
+          "target": "undang",
+          "fact": "Majapahit mengamalkan undang-undang bertulis Kutara Manawa."
+        },
+        {
+          "id": "petafunan",
+          "label": "Peta Funan",
+          "icon": "res://assets/icons/peta.png",
+          "target": "wilayah",
+          "fact": "Wilayah Funan meliputi kawasan Sungai Mekong, Teluk Cam Ranh, selatan Myanmar dan Segenting Kra."
+        },
+        {
+          "id": "telagabatu",
+          "label": "Prasasti Telaga Batu",
+          "icon": "res://assets/icons/prasasti.png",
+          "target": "rakyat",
+          "fact": "Rakyat Srivijaya meminum air sumpah yang dituang ke atas Inskripsi Telaga Batu sebagai tanda setia."
+        }
+      ],
+      "done_text": "Empat tiang naik semula: Raja, Undang-undang, Wilayah Pengaruh dan Rakyat."
+    }
+  }
+}

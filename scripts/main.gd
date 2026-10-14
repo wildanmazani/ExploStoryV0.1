@@ -1,0 +1,204 @@
+extends Node
+## Autoload "Main": global UI layers that live above every scene (from the
+## first prototype's root node): dialogue (20), Pau button + hint bubble (25)
+## and overlays (30: settings, Nota Alif, Muzium, calm moment, toasts).
+## Game.main points here, so Game.say(), pau_say(), toast() work anywhere.
+
+const UI = preload("res://scripts/ui/ui.gd")
+const DialogueBox = preload("res://scripts/ui/dialogue_box.gd")
+const PauButton = preload("res://scripts/ui/pau_button.gd")
+const SettingsPanel = preload("res://scripts/ui/settings_panel.gd")
+const NotaPanel = preload("res://scripts/ui/nota_panel.gd")
+const MuziumPanel = preload("res://scripts/ui/muzium_panel.gd")
+const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
+
+var dialog_layer: CanvasLayer
+var pau_layer: CanvasLayer
+var overlay_layer: CanvasLayer
+var dialog_box: Control
+var pau_button: Control
+var bubble: PanelContainer
+var bubble_label: Label
+var toast_box: VBoxContainer
+var _bubble_timer: Timer
+
+
+func _ready() -> void:
+	Game.main = self
+	get_tree().root.theme = Game.theme  # dyslexia-friendly fonts everywhere
+	dialog_layer = _layer(20)
+	pau_layer = _layer(25)
+	overlay_layer = _layer(30)
+
+	dialog_box = DialogueBox.new()
+	dialog_box.theme = Game.theme
+	dialog_layer.add_child(dialog_box)
+
+	var pau_root := Control.new()
+	UI.full(pau_root)
+	pau_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pau_root.theme = Game.theme
+	pau_layer.add_child(pau_root)
+	pau_button = PauButton.new()
+	pau_root.add_child(pau_button)
+	pau_button.tapped.connect(_on_pau_tap)
+	pau_button.held.connect(open_calm)
+	bubble = UI.panel("Bubble")
+	bubble.visible = false
+	bubble.custom_minimum_size = Vector2(420, 0)
+	var bb := UI.hbox(10)
+	bubble_label = UI.label("", "Ink", true)
+	bubble_label.custom_minimum_size.x = 340
+	bubble_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bb.add_child(bubble_label)
+	var speak := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(60, 56))
+	speak.tooltip_text = "Baca dengan suara"
+	speak.pressed.connect(func(): Tts.speak(bubble_label.text))
+	bb.add_child(speak)
+	bubble.add_child(bb)
+	bubble.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed:
+			bubble.visible = false)
+	pau_root.add_child(bubble)
+	_bubble_timer = Timer.new()
+	_bubble_timer.one_shot = true
+	_bubble_timer.timeout.connect(func(): bubble.visible = false)
+	add_child(_bubble_timer)
+
+	var ov := Control.new()
+	UI.full(ov)
+	ov.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ov.theme = Game.theme
+	overlay_layer.add_child(ov)
+	toast_box = UI.vbox(8)
+	toast_box.position = Vector2(390, 96)
+	toast_box.custom_minimum_size = Vector2(500, 0)
+	toast_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ov.add_child(toast_box)
+
+	# phones: the touch A/B buttons own the bottom-right, so Pau moves up
+	if DisplayServer.is_touchscreen_available():
+		pau_button.position = Vector2(1280 - 130, 150)
+	set_pau_visible(false)
+	Game.settings_changed.connect(func(): get_tree().root.theme = Game.theme)
+	if "--autotest" in OS.get_cmdline_user_args():
+		add_child(load("res://scripts/dev/autotest.gd").new())
+
+
+func _layer(n: int) -> CanvasLayer:
+	var l := CanvasLayer.new()
+	l.layer = n
+	add_child(l)
+	return l
+
+
+func overlay_root() -> Control:
+	return overlay_layer.get_child(0) as Control
+
+
+# ------------------------------------------------------------------ dialogue
+func dialogue(key_or_lines: Variant) -> void:
+	var arr: Array = []
+	if key_or_lines is String:
+		arr = Game.lines(key_or_lines)
+		if not Game.save["seen"].has(key_or_lines):
+			Game.save["seen"].append(key_or_lines)
+	elif key_or_lines is Array:
+		arr = key_or_lines
+	if arr.is_empty():
+		return
+	for l in arr:
+		Game.add_figure(str(l.get("s", "")))
+	Game.lock_input()
+	MusicDirector.duck(true)
+	await dialog_box.play(arr)
+	MusicDirector.duck(false)
+	Game.unlock_input()
+
+
+func is_dialogue_open() -> bool:
+	return dialog_box.visible
+
+
+# ------------------------------------------------------------------ Pau
+func set_pau_visible(v: bool) -> void:
+	pau_button.visible = v
+	if not v:
+		bubble.visible = false
+
+
+func pau_say(text: String, seconds: float = 7.0) -> void:
+	pau_button.happy()
+	Sfx.play("pop", -8.0, 1.3)
+	if Game.active_puzzle != null and is_instance_valid(Game.active_puzzle) and Game.active_puzzle.has_method("show_pau_hint"):
+		Game.active_puzzle.show_pau_hint(text)
+		return
+	bubble_label.text = text
+	bubble.visible = true
+	bubble.reset_size()
+	bubble.position = pau_button.position + Vector2(-20 - bubble.size.x, 10 - (bubble.size.y if pau_button.position.y > 360 else 0.0))
+	_bubble_timer.start(seconds)
+	if bool(Game.settings.get("auto_read", false)):
+		Tts.speak(text)
+
+
+func _on_pau_tap() -> void:
+	Game.pau_pressed.emit()
+	if Game.active_puzzle != null and is_instance_valid(Game.active_puzzle):
+		Game.active_puzzle.call("request_hint")
+		return
+	if is_dialogue_open():
+		return
+	var t := Game.context_hint
+	if t == "":
+		t = "Aku kat sini! Ketik aku untuk petunjuk. Tekan lama kalau nak bertenang."
+	pau_say(t)
+
+
+func open_calm() -> void:
+	overlay_root().add_child(CalmOverlay.new())
+
+
+# ------------------------------------------------------------------ overlays
+func open_settings() -> Control:
+	var p := SettingsPanel.new()
+	overlay_root().add_child(p)
+	return p
+
+
+func open_nota() -> Control:
+	var p := NotaPanel.new()
+	overlay_root().add_child(p)
+	return p
+
+
+func open_muzium() -> Control:
+	var p := MuziumPanel.new()
+	overlay_root().add_child(p)
+	return p
+
+
+func toast(text: String, color: Color = UI.GOLD) -> void:
+	var p := UI.panel()
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var l := UI.label(text, "", true)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.add_theme_color_override("font_color", color)
+	p.add_child(l)
+	toast_box.add_child(p)
+	p.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(p, "modulate:a", 1.0, 0.2)
+	tw.tween_interval(2.4)
+	tw.tween_property(p, "modulate:a", 0.0, 0.4)
+	tw.tween_callback(p.queue_free)
+
+
+func shake(strength: float = 8.0, duration: float = 0.4) -> void:
+	var cam := get_viewport().get_camera_2d()
+	if cam == null:
+		return
+	var tw := create_tween()
+	for i in int(duration / 0.04):
+		tw.tween_property(cam, "offset", Vector2(randf_range(-strength, strength), randf_range(-strength, strength)) / cam.zoom.x, 0.04)
+	tw.tween_property(cam, "offset", Vector2.ZERO, 0.04)

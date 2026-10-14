@@ -434,5 +434,168 @@
         }
       ]
     ]
+  },
+  "tiang": {
+    "variants": [
+      [
+        {
+          "who": "alif",
+          "text": "Empat tiang. Raja, undang-undang, wilayah, rakyat.",
+          "e": "confident"
+        },
+        {
+          "who": "pau",
+          "text": "Tegak semula sebab kau faham kenapa dia penting."
+        }
+      ]
+    ]
+  },
+  "panji": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Panji ni dah naik. Angin laut pun macam bangga.",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "alif",
+          "text": "Enam panji, enam ciri. Kerajaan, rakyat, kedaulatan...",
+          "e": "confident"
+        },
+        {
+          "who": "pau",
+          "text": "...wilayah, undang-undang, lambang kebesaran. Hafal pun tak sengaja, kan?",
+          "e": "happy"
+        }
+      ]
+    ]
+  },
+  "chengho": {
+    "rekaan": true,
+    "variants": [
+      [
+        {
+          "who": "chengho",
+          "text": "Melaka pelabuhan yang tertib. Kami rasa selamat berlabuh di sini."
+        },
+        {
+          "who": "alif",
+          "text": "Jauh ke perjalanan dari negeri China?"
+        },
+        {
+          "who": "chengho",
+          "text": "Jauh. Tapi berbaloi, untuk kawan yang dihormati."
+        }
+      ],
+      [
+        {
+          "who": "chengho",
+          "text": "Sampaikan salam kami kepada Syahbandar yang sibuk itu."
+        }
+      ]
+    ]
+  },
+  "arena": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Arena Ulang Kaji! Nanti kau boleh lawan kuiz dengan kawan-kawan kat sini.",
+          "e": "happy"
+        },
+        {
+          "who": "alif",
+          "text": "Lawan kuiz? Aku... aku cuba je la.",
+          "e": "worried"
+        }
+      ],
+      [
+        {
+          "who": "pau",
+          "text": "Jom tengok lobi dia sekejap."
+        }
+      ]
+    ]
+  },
+  "batu": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Batu Renungan. Duduk sekejap, fikir tentang janji."
+        }
+      ],
+      [
+        {
+          "who": "alif",
+          "text": "Sunyi kat sini. Sedap."
+        }
+      ]
+    ]
+  },
+  "pokok": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Pokok ni macam raja. Akar dia macam rakyat. Dua-dua kena kuat."
+        }
+      ],
+      [
+        {
+          "who": "alif",
+          "text": "Daun dia dah hijau balik. Lega aku.",
+          "e": "happy"
+        }
+      ]
+    ]
+  },
+  "t5": {
+    "variants": [
+      [
+        {
+          "who": "papan",
+          "text": "Laluan Sejarah Tingkatan 5. Berkunci."
+        },
+        {
+          "who": "pau",
+          "text": "Satu langkah demi satu langkah, Alif."
+        }
+      ]
+    ]
+  },
+  "mahkamah": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Meja mahkamah. Semua kes dah diputuskan dengan adil."
+        }
+      ]
+    ]
+  },
+  "sultan": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Kita tunduk hormat. Jangan buat bising.",
+          "e": "scared"
+        }
+      ]
+    ]
+  },
+  "kapal": {
+    "variants": [
+      [
+        {
+          "who": "alif",
+          "text": "Besarnya kapal tu... layar merah dia macam api."
+        }
+      ]
+    ]
   }
 }
