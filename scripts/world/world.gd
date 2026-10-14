@@ -56,6 +56,8 @@ var _banner_tween: Tween
 @onready var dialog: DialogBox = $Dialog
 @onready var banner: PanelContainer = $HUD/AreaBanner
 @onready var banner_label: Label = $HUD/AreaBanner/Label
+@onready var emote: Label = $HUD/Emote
+@onready var title_card: Control = $HUD/TitleCard
 
 
 func _ready() -> void:
@@ -67,19 +69,128 @@ func _ready() -> void:
 
 	_build_objects()
 	_build_entities()
+	$Ambience.setup(self, _entities()["gates"])
 
 	camera.limit_right = terrain.width * TILE
 	camera.limit_bottom = terrain.height * TILE
 
 	player.world = self
 	player.step_finished.connect(_on_step_finished)
+	player.step_finished.connect(_footstep)
+	player.bumped.connect(func(_c): Sfx.play_varied("bump", -4.0))
 	pau.follow(player)
 	var ent := _entities()
 	var spawn: Vector2i = GameState.spawn_cell if GameState.spawn_cell != null else Vector2i(ent["spawn"][0], ent["spawn"][1])
 	player.place_at(spawn, GameState.spawn_facing)
 	pau.place_at(spawn + Vector2i(-1, 0))
 	camera.reset_smoothing()
-	_on_step_finished(spawn)
+	$HUD/Skip.pressed.connect(_skip_intro)
+	if GameState.flags.get("world_intro", false):
+		GameState.flags["world_intro"] = false
+		_play_intro()
+	else:
+		_on_step_finished(spawn)
+
+
+func _process(_delta: float) -> void:
+	if emote.visible:  # keep the "!" / "z z" bubble above Alif's head on screen
+		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, -38))
+		emote.position = screen - emote.size / 2.0
+
+
+# --- Babak 2: waking up in Dunia Explo-Story --------------------------------
+var _intro_skipped := false
+var _intro_tween: Tween
+
+
+func _play_intro() -> void:
+	busy = true
+	player.can_move = false
+	$HUD/Skip.visible = true
+	pau.visible = false
+	player.sprite.rotation_degrees = -90.0  # lying on the grass
+	_show_emote("z z z")
+
+	# camera starts high over the island and drifts down to Alif
+	camera.position_smoothing_enabled = false
+	camera.zoom = Vector2(1.5, 1.5)
+	camera.position = Vector2(700, 330) - player.position
+	title_card.modulate.a = 0.0
+	Sfx.play("whoosh", -8.0)
+	_intro_tween = create_tween().set_parallel()
+	_intro_tween.tween_property(camera, "position", Vector2.ZERO, 6.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_intro_tween.tween_property(camera, "zoom", Vector2(4, 4), 6.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_intro_tween.tween_property(title_card, "modulate:a", 1.0, 1.2).set_delay(0.6)
+	_intro_tween.tween_property(title_card, "modulate:a", 0.0, 1.0).set_delay(4.4)
+	await _intro_tween.finished
+	if _intro_skipped: return
+	camera.position_smoothing_enabled = true
+	await get_tree().create_timer(0.8).timeout
+	if _intro_skipped: return
+
+	# Pau pops out of Alif's pocket
+	pau.visible = true
+	pau.position = player.position
+	Sfx.play("pop")
+	pau.place_at(player.cell + Vector2i(-1, 0))
+	var p := Player.cell_to_pos(pau.cell)
+	pau.position = player.position
+	var t := create_tween()
+	t.tween_property(pau, "position", p, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	pau.hop()
+	await t.finished
+	if _intro_skipped: return
+	await dialog.play(Dialogue.lines("pro_wake_1"))
+	if _intro_skipped: return
+
+	# Alif jolts awake
+	_show_emote("!")
+	Sfx.play("pop", 0.0, 1.4)
+	player.sprite.rotation_degrees = 0.0
+	player.facing = "west"
+	player.sprite.play("idle_west")
+	var j := create_tween()
+	j.tween_property(player.sprite, "position:y", -6.0, 0.1)
+	j.tween_property(player.sprite, "position:y", 0.0, 0.15)
+	await get_tree().create_timer(0.7).timeout
+	emote.visible = false
+	if _intro_skipped: return
+	await dialog.play(Dialogue.lines("pro_wake_2"))
+	_end_intro()
+
+
+func _skip_intro() -> void:
+	if _intro_skipped:
+		return
+	_intro_skipped = true
+	Sfx.play("select")
+	if _intro_tween:
+		_intro_tween.kill()
+	dialog.cancel()
+	_end_intro()
+
+
+func _end_intro() -> void:
+	$HUD/Skip.visible = false
+	emote.visible = false
+	title_card.modulate.a = 0.0
+	camera.zoom = Vector2(4, 4)
+	camera.position = Vector2.ZERO
+	camera.position_smoothing_enabled = true
+	player.sprite.rotation_degrees = 0.0
+	player.sprite.position = Vector2.ZERO
+	pau.visible = true
+	if pau.cell == player.cell or pau.cell == Vector2i.ZERO:
+		pau.place_at(player.cell + Vector2i(-1, 0))
+	player.can_move = true
+	busy = false
+	current_area = ""
+	_on_step_finished(player.cell)
+
+
+func _show_emote(text: String) -> void:
+	emote.text = text
+	emote.visible = true
 
 
 func _entities() -> Dictionary:
@@ -183,6 +294,27 @@ func _interact(c: Vector2i) -> void:
 	if it["type"] == "npc":
 		npcs[c].face_towards(player.cell)
 	await talk(it["id"])
+	if it["id"] == "istana":
+		_enter("res://scenes/interior/balai.tscn")
+	elif it["id"] == "monument":
+		_open_peta()
+
+
+func _enter(scene: String) -> void:
+	busy = true
+	player.can_move = false
+	Sfx.play("select")
+	GameState.go_to(scene)
+
+
+func _open_peta() -> void:
+	busy = true
+	player.can_move = false
+	var peta: CanvasLayer = load("res://scenes/ui/peta_jejak.tscn").instantiate()
+	add_child(peta)
+	await peta.closed
+	player.can_move = true
+	busy = false
 
 
 func _talk_to_pau() -> void:
@@ -196,6 +328,17 @@ func talk(id: String) -> void:
 	await dialog.play(Dialogue.lines(id))
 	player.can_move = true
 	busy = false
+
+
+const STEP_SOUNDS := {
+	TerrainBuilder.SAND: "step_sand", TerrainBuilder.GRASS: "step_grass",
+	TerrainBuilder.PATH: "step_sand", TerrainBuilder.STONE: "step_stone",
+}
+
+
+func _footstep(c: Vector2i) -> void:
+	var sound: String = "step_wood" if walk_over.has(c) else STEP_SOUNDS.get(terrain.terrain_at(c), "step_grass")
+	Sfx.play_varied(sound, -6.0, 0.12)
 
 
 # --- areas ---------------------------------------------------------------

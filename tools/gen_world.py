@@ -147,7 +147,7 @@ entities = {"spawn": [19, 50], "npcs": [], "signs": [], "gates": [], "areas": []
 
 # keep a clearing around the spawn so the opening shot is clean
 sx, sy = entities["spawn"]
-for yy in range(sy - 3, sy + 3):
+for yy in range(sy - 3, sy + 5):
     for xx in range(sx - 4, sx + 5):
         if inside(xx, yy):
             blocked[yy][xx] = True
@@ -186,7 +186,6 @@ entities["npcs"] += [
     {"id": "nelayan", "pos": [63, 43], "facing": "east"},
     {"id": "penjaga", "pos": [34, 17], "facing": "south"},
     {"id": "syahbandar", "pos": [61, 40], "facing": "south"},
-    {"id": "tunperak", "pos": [55, 30], "facing": "south"},
     {"id": "sapurba", "pos": [53, 14], "facing": "east"},
     {"id": "demang", "pos": [61, 14], "facing": "west"},
 ]

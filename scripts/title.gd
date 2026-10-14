@@ -21,4 +21,6 @@ func _input(event: InputEvent) -> void:
 		or (event is InputEventKey and event.pressed and not event.echo)
 	if pressed:
 		_leaving = true
-		GameState.go_to("res://scenes/world/world.tscn")
+		Sfx.play("select")
+		var next := "res://scenes/world/world.tscn" if GameState.flags.get("prologue_done", false) else "res://scenes/prologue.tscn"
+		GameState.go_to(next)

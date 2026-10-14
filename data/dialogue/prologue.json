@@ -1,0 +1,34 @@
+{
+  "pro_read": {"variants": [[
+    {"who": "alif", "text": "\"Kesultanan Melayu Melaka diasaskan oleh... Para... Parameswara.\""},
+    {"who": "alif", "text": "Okey. Okey. Sekali lagi."}
+  ]]},
+
+  "pro_scramble": {"variants": [[
+    {"who": "alif", "text": "...Kejap. Tadi ayat ni lain."},
+    {"who": "alif", "text": "Aku dah baca lima kali."},
+    {"who": "alif", "text": "Kenapa satu pun tak melekat?"}
+  ]]},
+
+  "pro_pau": {"variants": [[
+    {"who": "alif", "text": "Kau senang la, Pau. Squishy je. Tak payah ambil SPM."},
+    {"who": "alif", "text": "...Rehat lima minit. Lima minit je."}
+  ]]},
+
+  "pro_wake_1": {"variants": [[
+    {"who": "pau", "text": "Weh. Weh! Bangun!"},
+    {"who": "alif", "text": "Mm... lima minit lagi, mak..."},
+    {"who": "pau", "text": "Aku bukan mak kau la!"}
+  ]]},
+
+  "pro_wake_2": {"variants": [[
+    {"who": "alif", "text": "Pau?! Kau... kau CAKAP?"},
+    {"who": "pau", "text": "Akhirnya! Lama aku tunggu kau tidur nyenyak."},
+    {"who": "alif", "text": "Kejap, kejap. Mana bilik aku? Mana nota aku?"},
+    {"who": "pau", "text": "Ni Dunia Explo-Story. Kat sini sejarah tak duduk diam dalam buku."},
+    {"who": "pau", "text": "Dia hidup. Kau boleh jalan dalam dia."},
+    {"who": "alif", "text": "...Aku mimpi ke ni?"},
+    {"who": "pau", "text": "Mungkin. Tapi apa yang kau faham kat sini, kau bawa balik."},
+    {"who": "pau", "text": "Jom. Kampung Jejak kat atas sana. Kita mula dari akar."}
+  ]]}
+}

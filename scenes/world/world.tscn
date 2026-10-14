@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/world.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/pau.tscn" id="3"]
 [ext_resource type="Script" path="res://scripts/dialog_box.gd" id="4"]
 [ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/world/ambience.gd" id="6"]
 
 [sub_resource type="StyleBoxFlat" id="BannerStyle"]
 bg_color = Color(0.984, 0.953, 0.878, 0.95)
@@ -36,6 +37,15 @@ y_sort_enabled = true
 
 [node name="Pau" parent="Objects" instance=ExtResource("3")]
 
+[node name="Ambience" type="Node2D" parent="."]
+z_index = 4
+script = ExtResource("6")
+
+[node name="Clouds" type="Node2D" parent="Ambience"]
+
+[node name="Tint" type="CanvasModulate" parent="."]
+color = Color(1, 0.98, 0.93, 1)
+
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="AreaBanner" type="PanelContainer" parent="HUD"]
@@ -50,6 +60,53 @@ theme_override_styles/panel = SubResource("BannerStyle")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.169, 0.129, 0.094, 1)
 theme_override_font_sizes/font_size = 30
+
+[node name="Emote" type="Label" parent="HUD"]
+visible = false
+offset_right = 120.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.17, 0.11, 0.06, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TitleCard" type="VBoxContainer" parent="HUD"]
+modulate = Color(1, 1, 1, 0)
+offset_top = 230.0
+offset_right = 1280.0
+offset_bottom = 420.0
+mouse_filter = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/TitleCard"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.94, 0.75, 1)
+theme_override_colors/font_outline_color = Color(0.23, 0.12, 0.05, 1)
+theme_override_constants/outline_size = 22
+theme_override_font_sizes/font_size = 84
+text = "Dunia Explo-Story"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="HUD/TitleCard"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.23, 0.12, 0.05, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 34
+text = "Bab 1: Warisan Negara Bangsa"
+horizontal_alignment = 1
+
+[node name="Skip" type="Button" parent="HUD" groups=["dialog_passthrough"]]
+visible = false
+offset_left = 1060.0
+offset_top = 20.0
+offset_right = 1256.0
+offset_bottom = 70.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+text = "Langkau >>"
 
 [node name="Dialog" type="CanvasLayer" parent="."]
 script = ExtResource("4")

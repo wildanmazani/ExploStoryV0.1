@@ -107,12 +107,25 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if _listen.get_global_rect().has_point(event.position):
 			return  # let the button handle it
+		for c in get_tree().get_nodes_in_group("dialog_passthrough"):
+			if c is Control and c.is_visible_in_tree() and c.get_global_rect().has_point(event.position):
+				return  # e.g. the Skip button
 		pressed = true
 	elif event.is_action_pressed("act") or event.is_action_pressed("ui_accept"):
 		pressed = true
 	if pressed:
 		get_viewport().set_input_as_handled()
 		_advance()
+
+
+## close immediately (used by Skip)
+func cancel() -> void:
+	if not active:
+		return
+	DisplayServer.tts_stop()
+	active = false
+	_panel.hide()
+	finished.emit()
 
 
 func _advance() -> void:

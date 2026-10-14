@@ -23,6 +23,7 @@ general/text_to_speech=true
 
 GameState="*res://scripts/game_state.gd"
 Dialogue="*res://scripts/dialogue.gd"
+Sfx="*res://scripts/audio/sfx.gd"
 
 [input_devices]
 

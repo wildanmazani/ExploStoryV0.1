@@ -10,6 +10,7 @@ const MARGIN := 36
 
 func _ready() -> void:
 	layer = 20
+	visible = DisplayServer.is_touchscreen_available()
 	var pad_center := Vector2(MARGIN + SIZE * 1.5, 720 - MARGIN - SIZE * 1.5)
 	_add_button("move_up", _arrow_tex(0), pad_center + Vector2(-SIZE / 2.0, -SIZE * 1.5))
 	_add_button("move_down", _arrow_tex(2), pad_center + Vector2(-SIZE / 2.0, SIZE * 0.5))

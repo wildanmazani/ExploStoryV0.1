@@ -1,0 +1,175 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/prologue.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/bg_bilik_alif_malam.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/characters/pau.png" id="3"]
+[ext_resource type="Script" path="res://scripts/dialog_box.gd" id="4"]
+
+[sub_resource type="Gradient" id="VignetteGradient"]
+offsets = PackedFloat32Array(0.45, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.05, 0, 0.08, 0.85)
+
+[sub_resource type="GradientTexture2D" id="VignetteTex"]
+gradient = SubResource("VignetteGradient")
+width = 128
+height = 72
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="PaperStyle"]
+bg_color = Color(0.984, 0.953, 0.878, 1)
+border_width_bottom = 6
+border_color = Color(0.82, 0.74, 0.58, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 36.0
+content_margin_top = 28.0
+content_margin_right = 36.0
+content_margin_bottom = 28.0
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 14
+
+[sub_resource type="Gradient" id="PageColors"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.9, 0.5, 0)
+
+[node name="Prologue" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+
+[node name="Room" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 1288.0
+offset_bottom = 728.0
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LampGlow" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(1, 0.62, 0.25, 0.08)
+
+[node name="Vignette" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.55)
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+texture = SubResource("VignetteTex")
+expand_mode = 1
+
+[node name="Caption" type="Label" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 30.0
+offset_right = 900.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(1, 0.94, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.06, 0.15, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 32
+text = "Malam. 3 hari sebelum SPM Sejarah."
+
+[node name="Book" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 110.0
+offset_right = 1080.0
+offset_bottom = 420.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("PaperStyle")
+
+[node name="Text" type="RichTextLabel" parent="Book"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.17, 0.13, 0.09, 1)
+theme_override_font_sizes/normal_font_size = 32
+theme_override_constants/line_separation = 12
+bbcode_enabled = true
+scroll_active = false
+
+[node name="Pau" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 1030.0
+offset_top = 330.0
+offset_right = 1222.0
+offset_bottom = 522.0
+pivot_offset = Vector2(96, 192)
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Pages" type="CPUParticles2D" parent="."]
+position = Vector2(640, 800)
+emitting = false
+amount = 90
+lifetime = 2.6
+one_shot = true
+explosiveness = 0.35
+emission_shape = 3
+emission_rect_extents = Vector2(700, 20)
+direction = Vector2(0.2, -1)
+spread = 30.0
+gravity = Vector2(0, -60)
+initial_velocity_min = 260.0
+initial_velocity_max = 520.0
+angular_velocity_min = -240.0
+angular_velocity_max = 240.0
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+color_ramp = SubResource("PageColors")
+
+[node name="LidTop" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="LidBottom" type="ColorRect" parent="."]
+layout_mode = 0
+offset_top = 720.0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Flash" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(1, 0.97, 0.88, 1)
+
+[node name="Dialog" type="CanvasLayer" parent="."]
+script = ExtResource("4")
+
+[node name="Skip" type="Button" parent="." groups=["dialog_passthrough"]]
+layout_mode = 0
+offset_left = 1060.0
+offset_top = 20.0
+offset_right = 1256.0
+offset_bottom = 70.0
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+text = "Langkau >>"
+flat = false
