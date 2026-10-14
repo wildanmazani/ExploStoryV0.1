@@ -1,0 +1,66 @@
+{
+ "characters": {
+  "alif": "83827c33-fbf2-4387-8560-f01538bdb2a7",
+  "tunperak": "01ccd118-b5e2-4122-83f3-4e13ad6f45be",
+  "syahbandar": "ce019e36-6842-4e91-9cb3-f8b451584ce8",
+  "penjaga": "2893025b-a10b-4f53-8c8b-6d7a9a9bcb3a",
+  "sapurba": "2d6ac8f4-a043-4ce3-bb9c-66fb898b0a27",
+  "demang": "22ef5b68-53e0-4ffb-827d-ce240b7bdc8d",
+  "makcik": "250124b7-b487-4b80-914d-d2eed2ab311a",
+  "nelayan": "e67aa74f-9f3e-427a-97f4-e54ed02b561e"
+ },
+ "animations": {
+  "alif_walk": {
+   "character": "83827c33-fbf2-4387-8560-f01538bdb2a7",
+   "dirs": {
+    "south": [
+     "6c6ca0c0-fd78-4492-88c3-8d7acb869a05",
+     6
+    ],
+    "west": [
+     "0dda0034-221c-4f54-a0f2-9bb28051ec5e",
+     6
+    ],
+    "north": [
+     "189770e9-1235-423d-8c1c-aca67ae25ec1",
+     6
+    ],
+    "east": [
+     "a872bd6b-6b60-437f-98e9-05bfda1c96c2",
+     6
+    ]
+   }
+  }
+ },
+ "tilesets": {
+  "sea_sand": "c46759e2-eb72-4517-9e83-98ca1cf478f4",
+  "sand_grass": "67c3ebe7-b53c-493b-9af0-57ae479ebea8",
+  "grass_path": "e3054525-b4fe-497d-97f9-46dca3e8ccbb",
+  "grass_stone": "f0ae685e-2271-4ab8-837e-7362c4998dbb"
+ },
+ "objects": {
+  "palm": "86941192-060b-4a26-88ed-ace88c9c071d",
+  "tree": "82449079-a63c-4802-9f59-d6d6cde0df0e",
+  "house": "00f3c38a-850f-452e-b56a-73b1150bb016",
+  "sign": "9b5f7eca-aa18-44db-9fb8-baea22be03fe",
+  "bush": "ff88a253-fee1-4bdf-93e8-5e9670f02b93",
+  "rocks": "2d215d9a-28e1-4f2f-a92f-d2dbefc71428",
+  "flowers": "fc91c919-21e9-41d2-aa09-1fb88bd21b4d",
+  "stall": "dc899060-9bd0-4d2b-ae5c-bc4a2d76651c",
+  "fence": "6dd506a4-b90c-4d5f-a56c-b88b57f0c9bd",
+  "monument": "f6b06f18-9280-4767-b4c1-c4cdbc08470c",
+  "gate_open": "df1501e9-829b-49a4-9afc-6f87eff226ea",
+  "gate_locked": "044d993f-c201-4e49-8fa1-4d276a7743f9",
+  "banyan": "02e121ba-17b3-4eca-ad88-0e74994a5539",
+  "istana": "c33e7324-29f3-4305-927d-7d78d75cf80a",
+  "ship": "0d5d7d30-a63e-4f11-bbd4-9e6571200be9",
+  "perahu": "7b2a1084-4aeb-4dc3-840d-624ada8b1160",
+  "jetty": "e0a6c242-c2e1-4320-8c51-761dc29aa264",
+  "gate_funan": "313beb45-3b91-40fc-8b94-1ddb331d8b34",
+  "gate_champa": "bb5d2dc1-e700-4ccd-b47e-4e4673cb88f9",
+  "gate_srivijaya": "c0cdac06-1870-482c-a361-a1bc59eb2cb8",
+  "gate_melaka": "a99f30a4-6693-491e-a440-988cfede5b54",
+  "gate_johor": "b3c9d6af-52bf-43ee-b732-c4b9fe88beda",
+  "muzium": "953d0bfb-a3e8-435b-91d0-594a54b425b5"
+ }
+}

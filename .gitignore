@@ -1,0 +1,5 @@
+# Godot 4
+.godot/
+/android/
+/build/
+*.tmp

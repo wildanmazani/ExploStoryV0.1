@@ -1,0 +1,152 @@
+{
+  "_note": "Each id has 'variants': a list of conversations. First talk plays variant 0, next talk variant 1, and so on; after the last one it picks randomly. 'rekaan': true marks invented lines for historical figures (GDS rule).",
+
+  "sign_start": {"variants": [[
+    {"who": "papan", "text": "Dunia Explo-Story.\nKampung Jejak: ikut jalan ni ke atas."}
+  ]]},
+
+  "sign_sea": {"variants": [[
+    {"who": "papan", "text": "Bab 8, 9 dan 10: seberang laut."},
+    {"who": "alif", "text": "Tak ada jambatan. Tak ada perahu."},
+    {"who": "pau", "text": "Nanti ada la tu. Sabar."}
+  ]]},
+
+  "monument": {"variants": [
+    [
+      {"who": "alif", "text": "Ni... peta ke? Ada sepuluh bendera."},
+      {"who": "pau", "text": "Satu bendera, satu bab. Yang menyala tu Bab 1."},
+      {"who": "alif", "text": "Sepuluh bab. Tiga hari lagi SPM."},
+      {"who": "pau", "text": "Eh, jangan kira dulu. Kita buat satu-satu je."}
+    ],
+    [
+      {"who": "pau", "text": "Bendera 1 masih tunggu kita. Gerbang dia kat utara kampung."}
+    ]
+  ]},
+
+  "muzium": {"variants": [
+    [
+      {"who": "pau", "text": "Ni muzium kau. Kosong lagi... macam perut aku."},
+      {"who": "alif", "text": "Muzium aku? Sejak bila?"},
+      {"who": "pau", "text": "Sejak sekarang. Setiap zon ada satu benda untuk kau simpan."}
+    ],
+    [
+      {"who": "alif", "text": "Rak dia masih kosong."}
+    ]
+  ]},
+
+  "istana": {"variants": [[
+    {"who": "alif", "text": "Besarnya... ni istana Melaka ke?"},
+    {"who": "pau", "text": "Jangan masuk sesuka hati. Kena jumpa Bendahara dulu."}
+  ]]},
+
+  "house": {"variants": [
+    [{"who": "alif", "text": "Berkunci. Takkan nak redah rumah orang kot."}],
+    [{"who": "pau", "text": "Ada bau ikan goreng dari dalam..."}, {"who": "alif", "text": "Pau. Fokus."}]
+  ]},
+
+  "gate_open_1": {"variants": [
+    [
+      {"who": "pau", "text": "Ha, ni dia. Gerbang Bab 1."},
+      {"who": "pau", "text": "Lepas ni kita masuk zaman kerajaan-kerajaan awal."},
+      {"who": "alif", "text": "Okey. Aku... rasa nervous sikit."},
+      {"who": "pau", "text": "Biasa la tu. Aku pun. Jom."}
+    ],
+    [{"who": "pau", "text": "Jalan terus. Gerbang Masa kat depan."}]
+  ]},
+
+  "gate_locked": {"variants": [
+    [
+      {"who": "alif", "text": "Kabus apa ni... tebal gila."},
+      {"who": "pau", "text": "Belum lagi, kita habiskan yang ini dulu."}
+    ],
+    [{"who": "pau", "text": "Belum lagi, kita habiskan yang ini dulu."}],
+    [{"who": "pau", "text": "Aku tak nak masuk situ. Seram."}]
+  ]},
+
+  "makcik": {"variants": [
+    [
+      {"who": "makcik", "text": "Eh, muka baru. Budak mana ni?"},
+      {"who": "alif", "text": "Saya... Alif. Saya pun tak tahu macam mana saya sampai sini."},
+      {"who": "makcik", "text": "Hm, ramai yang cakap macam tu. Biasanya yang tertidur atas buku."},
+      {"who": "pau", "text": "Ehem."}
+    ],
+    [
+      {"who": "makcik", "text": "Panggil Mak Som je. Kalau lapar, singgah gerai depan tu."},
+      {"who": "pau", "text": "Lapar? Siapa lapar? Aku lapar."}
+    ],
+    [{"who": "makcik", "text": "Jangan lupa makan, nak. Belajar pun perlukan tenaga."}]
+  ]},
+
+  "nelayan": {"variants": [
+    [
+      {"who": "nelayan", "text": "Laut tenang hari ni. Elok nak turun."},
+      {"who": "nelayan", "text": "Semalam kapal besar dari negeri China singgah. Layar merah, tinggi macam bukit."},
+      {"who": "alif", "text": "Kapal Cheng Ho ke tu?"},
+      {"who": "nelayan", "text": "Entah. Aku kira ikan, bukan nama orang."}
+    ],
+    [{"who": "nelayan", "text": "Syahbandar kat hujung dermaga tu. Sibuk memanjang, tegur je dia."}]
+  ]},
+
+  "syahbandar": {"rekaan": true, "variants": [
+    [
+      {"who": "syahbandar", "text": "Tiga, empat, lima... kapal Gujerat satu lagi— hah? Kau siapa?"},
+      {"who": "alif", "text": "Alif. Saya cuma—"},
+      {"who": "syahbandar", "text": "Bagus, bagus. Kapal utusan nak sampai, tak cukup tangan aku ni."},
+      {"who": "syahbandar", "text": "Melaka kena tunjuk dia negara yang lengkap. Faham?"},
+      {"who": "alif", "text": "...Tak berapa."},
+      {"who": "syahbandar", "text": "Nanti kau faham. Jangan berdiri tengah laluan!"}
+    ],
+    [{"who": "syahbandar", "text": "Enam panji, enam panji... mana satu belum naik lagi?"}]
+  ]},
+
+  "penjaga": {"rekaan": true, "variants": [
+    [
+      {"who": "penjaga", "text": "Hmm. Seorang lagi pengembara yang tertidur atas buku."},
+      {"who": "alif", "text": "Macam mana pakcik tahu?"},
+      {"who": "penjaga", "text": "Ada kesan dakwat kat pipi kau."},
+      {"who": "penjaga", "text": "Lima gerbang ni, lima kerajaan. Tapi susunan dia dah kacau."},
+      {"who": "penjaga", "text": "Kau rasa... mana satu yang datang dulu?"},
+      {"who": "alif", "text": "Err. Yang paling buruk kot?"},
+      {"who": "penjaga", "text": "Heh. Kadang-kadang betul. Kadang-kadang tidak."}
+    ],
+    [{"who": "penjaga", "text": "Benang warisan tu tak putus sendiri. Ada yang lupa dari mana dia datang."}]
+  ]},
+
+  "tunperak": {"rekaan": true, "variants": [
+    [
+      {"who": "tunperak", "text": "Anak muda. Kau nampak penat."},
+      {"who": "alif", "text": "Sikit, Tun. Banyak benda nak ingat."},
+      {"who": "tunperak", "text": "Jangan ingat dulu. Tengok dulu."},
+      {"who": "tunperak", "text": "Melaka ni kaya. Tapi kaya saja tak cukup untuk kekal aman. Kenapa agaknya?"},
+      {"who": "alif", "text": "Sebab... ada orang jaga?"},
+      {"who": "tunperak", "text": "Itu permulaan yang baik."}
+    ],
+    [{"who": "tunperak", "text": "Setiap masalah ada tuannya. Nanti kau akan nampak sendiri."}]
+  ]},
+
+  "sapurba": {"rekaan": true, "variants": [
+    [
+      {"who": "sapurba", "text": "Kau datang tepat masanya."},
+      {"who": "sapurba", "text": "Hari ini satu janji akan dibuat. Bukan untuk sehari dua, tapi untuk anak cucu."},
+      {"who": "alif", "text": "Janji apa?"},
+      {"who": "sapurba", "text": "Tanya Demang. Janji ini perlukan dua pihak."}
+    ]
+  ]},
+
+  "demang": {"rekaan": true, "variants": [
+    [
+      {"who": "demang", "text": "Patik akan taat, Tuanku."},
+      {"who": "demang", "text": "Selagi anak cucu patik tidak dizalimi dan tidak diaibkan."},
+      {"who": "alif", "text": "Jadi kalau raja mungkir...?"},
+      {"who": "demang", "text": "Itulah yang patik takutkan, anak muda."}
+    ]
+  ]},
+
+  "pau_tap": {"variants": [
+    [{"who": "pau", "text": "Hup! Geli la."}],
+    [{"who": "pau", "text": "Jangan risau. Kita jalan pelan-pelan je."}],
+    [{"who": "pau", "text": "Kalau sesat, cari benda yang bercahaya."}],
+    [{"who": "pau", "text": "Aku tak takut pun. Cuma... jangan tinggal aku."}],
+    [{"who": "pau", "text": "Kau dah makan? Aku belum. Dari tadi."}]
+  ]}
+}

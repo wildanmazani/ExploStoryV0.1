@@ -1,0 +1,81 @@
+name: Web export
+
+# Builds the Godot web version on every push and publishes it to GitHub Pages.
+# One-time setup on GitHub: Settings -> Pages -> Source: "GitHub Actions".
+# The build is also attached to each run as a downloadable artifact.
+
+on:
+  push:
+    branches: [main, wildan-part]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.7.2
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot and export templates
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Install Godot and web templates
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          base=https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable
+          if [ ! -f godot ]; then
+            wget -q $base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+            unzip -q Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+            mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot && rm -f *.zip
+          fi
+          if [ ! -f templates.tpz ]; then
+            wget -q -O templates.tpz $base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          fi
+          dest=~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -p $dest /tmp/tpl
+          unzip -q -o templates.tpz -d /tmp/tpl
+          cp /tmp/tpl/templates/web_* $dest/
+          cp /tmp/tpl/templates/version.txt $dest/
+
+      - name: Export web build
+        run: |
+          mkdir -p build/web
+          ~/godot/godot --headless --import || true
+          ~/godot/godot --headless --export-release "Web" build/web/index.html
+          test -f build/web/index.html
+          du -sh build/web
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: explostory-web
+          path: build/web
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: export
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
