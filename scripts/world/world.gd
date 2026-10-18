@@ -10,6 +10,8 @@ const WATER := preload("res://shaders/water.gdshader")
 const UI = preload("res://scripts/ui/ui.gd")
 const Hud = preload("res://scripts/ui/hud.gd")
 const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
+const Minimap = preload("res://scripts/ui/minimap.gd")
+const HOLD_TIME := 0.6  ## long-press Pau = calm moment
 
 ## char -> texture in assets/objects/, footprint (w, h) in cells,
 ## sway = wind shader, flat = drawn under characters with no collision,
@@ -64,9 +66,12 @@ var current_area := ""
 var busy := false
 var runner := ZoneRunner.new()
 var hud: Control
+var minimap: Control
+var map_texture: Texture2D  ## 1 px per tile, for the mini map
 var _ent: Dictionary
 var _last_move := 0.0
 var _thread: Line2D
+var _pau_press := -1.0  ## time Pau was pressed (long-press), -1 = not pressed
 
 @onready var ground: TileMapLayer = $Ground
 @onready var decor: Node2D = $Decor
@@ -91,14 +96,23 @@ func _ready() -> void:
 	spots = _ent["spots"]
 	_build_objects()
 	_build_entities()
+	map_texture = MapView.build_texture(self)
 	$Ambience.setup(self, _ent["gates"])
 
 	camera.limit_right = terrain.width * TILE
 	camera.limit_bottom = terrain.height * TILE
 
 	hud = Hud.new()
+	hud.world = self
 	$HUD.add_child(hud)
 	$HUD.move_child(hud, 0)
+	# the mini map takes the Pau button's corner (phones: under the player card,
+	# the touch A/B buttons own the bottom-right)
+	minimap = Minimap.new()
+	minimap.world = self
+	$HUD.add_child(minimap)
+	minimap.position = Vector2(1280 - 16 - minimap.size.x, 150 if DisplayServer.is_touchscreen_available() else 720 - 16 - minimap.size.y)
+	minimap.open_requested.connect(open_map)
 	prompt.pressed.connect(func(): _interact(player.facing_cell()))
 	prompt.theme = Game.theme
 
@@ -125,11 +139,20 @@ func _ready() -> void:
 		GameState.flags["world_intro"] = false
 		_play_intro()
 	else:
-		Main.set_pau_visible(true)
 		_on_step_finished(spawn)
 
 
 func _process(_delta: float) -> void:
+	# mini map in the corner while exploring; the Pau button comes back for
+	# puzzle hints (puzzle_base.gd talks to it)
+	var in_puzzle := Game.active_puzzle != null
+	Main.pau_button.visible = in_puzzle
+	minimap.visible = hud.visible and not in_puzzle
+	if _pau_press >= 0.0 and Time.get_ticks_msec() / 1000.0 - _pau_press >= HOLD_TIME:
+		_pau_press = -1.0
+		if not (busy or runner.busy or Game.is_locked()):
+			pau.hop()
+			Main.open_calm()
 	if emote.visible:  # keep the "!" / "z z" bubble above Alif's head on screen
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, -38))
 		emote.position = screen - emote.size / 2.0
@@ -224,7 +247,6 @@ func _end_intro() -> void:
 	pau.visible = true
 	if pau.cell == player.cell or pau.cell == Vector2i.ZERO:
 		pau.place_at(_free_neighbour(player.cell))
-	Main.set_pau_visible(true)
 	busy = false
 	current_area = ""
 	_on_step_finished(player.cell)
@@ -305,6 +327,10 @@ func _build_entities() -> void:
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
 	areas = _ent["areas"]
+
+
+func entities() -> Dictionary:
+	return _ent
 
 
 # --- ZoneRunner host API -------------------------------------------------------
@@ -459,17 +485,35 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("menu"):
 		get_viewport().set_input_as_handled()
 		Main.open_settings()
-	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	elif event.is_action_pressed("map"):
 		get_viewport().set_input_as_handled()
-		_tap(Vector2i((get_global_mouse_position() / TILE).floor()))
+		open_map()
+	elif event.is_action_pressed("pau"):
+		get_viewport().set_input_as_handled()
+		_talk_to_pau()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		var cell := Vector2i((get_global_mouse_position() / TILE).floor())
+		var on_pau := cell == pau.cell or cell == pau.cell + Vector2i(0, -1)
+		if event.pressed and on_pau:
+			_pau_press = Time.get_ticks_msec() / 1000.0  # tap = talk, hold = calm
+		elif not event.pressed and _pau_press >= 0.0:
+			_pau_press = -1.0
+			_talk_to_pau()
+		elif event.pressed:
+			_tap(cell)
+
+
+func open_map() -> void:
+	if busy or runner.busy or Game.is_locked():
+		return
+	Sfx.play("select", -6.0)
+	Main.open_map(self)
 
 
 ## tap-to-walk (phones): path to the tapped tile, or next to a tapped
 ## person / object and then talk to it
 func _tap(cell: Vector2i) -> void:
-	if cell == pau.cell or cell == pau.cell + Vector2i(0, -1):
-		_talk_to_pau()
-		return
 	var target := cell
 	if interact.has(cell + Vector2i(0, 1)) and not interact.has(cell):
 		target = cell + Vector2i(0, 1)  # tapped the tall part of an object
@@ -554,7 +598,11 @@ func _talk_to_pau() -> void:
 	busy = true
 	pau.hop()
 	Sfx.play("squish", -6.0, 1.3)
-	await Game.say(Dialogue.lines("pau_tap"))
+	# a bit of Pau, then the hint the corner Pau button used to give
+	var lines: Array = Dialogue.lines("pau_tap")
+	if Game.context_hint != "":
+		lines.append({"s": "pau", "t": Game.context_hint})
+	await Game.say(lines)
 	busy = false
 
 

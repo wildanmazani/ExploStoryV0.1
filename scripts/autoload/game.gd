@@ -303,7 +303,7 @@ func _setup_input() -> void:
 	var map := {
 		"move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
 		"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN],
-		"interact": [KEY_E, KEY_SPACE, KEY_ENTER, KEY_Z], "pau": [KEY_H], "menu": [KEY_ESCAPE],
+		"interact": [KEY_E, KEY_SPACE, KEY_ENTER, KEY_Z], "pau": [KEY_H], "menu": [KEY_ESCAPE], "map": [KEY_M],
 		"run": [KEY_SHIFT, KEY_X],
 	}
 	for action in map.keys():

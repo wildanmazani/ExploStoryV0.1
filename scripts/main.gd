@@ -11,6 +11,7 @@ const SettingsPanel = preload("res://scripts/ui/settings_panel.gd")
 const NotaPanel = preload("res://scripts/ui/nota_panel.gd")
 const MuziumPanel = preload("res://scripts/ui/muzium_panel.gd")
 const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
+const MapOverlay = preload("res://scripts/ui/map_overlay.gd")
 
 var dialog_layer: CanvasLayer
 var pau_layer: CanvasLayer
@@ -174,6 +175,14 @@ func open_nota() -> Control:
 
 func open_muzium() -> Control:
 	var p := MuziumPanel.new()
+	overlay_root().add_child(p)
+	return p
+
+
+## Full world map with legend (world scene only).
+func open_map(world: Node) -> Control:
+	var p := MapOverlay.new()
+	p.world = world
 	overlay_root().add_child(p)
 	return p
 

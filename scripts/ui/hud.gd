@@ -7,6 +7,7 @@ const UI = preload("res://scripts/ui/ui.gd")
 var location_title: String = ""
 var location_sub: String = ""
 var show_map_button: bool = false
+var world: Node = null  ## overworld: adds the Peta (map) and Tenang (calm) buttons
 
 var _level: Label
 var _exp: ProgressBar
@@ -46,6 +47,20 @@ func _ready() -> void:
 	muz.tooltip_text = "Muzium"
 	muz.pressed.connect(func(): Game.main.open_muzium())
 	menu.add_child(muz)
+	if world:
+		var pm := UI.icon_button("res://assets/icons/peta.png", "", Vector2(64, 60))
+		pm.tooltip_text = "Peta (M)"
+		pm.pressed.connect(func(): Game.main.open_map(world))
+		menu.add_child(pm)
+		var calm := UI.button("", "", 0)
+		calm.icon = UI.sheet_frame("res://assets/proto/sprites/pau.png", 3, 0, 16, 16)
+		calm.expand_icon = true
+		calm.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		calm.custom_minimum_size = Vector2(64, 60)
+		calm.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		calm.tooltip_text = "Bertenang bersama Pau (atau tekan lama Pau)"
+		calm.pressed.connect(func(): Game.main.open_calm())
+		menu.add_child(calm)
 	var st := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(64, 60))
 	st.tooltip_text = "Tetapan"
 	st.pressed.connect(func(): Game.main.open_settings())

@@ -160,6 +160,7 @@ func _run() -> void:
 	await wait(0.4)
 	await shot("settings")
 	close_top_overlay()
+	await _check_map()
 	Main._on_pau_tap()
 	await wait(0.3)
 	await shot("pau_hint_bubble")
@@ -230,6 +231,14 @@ func _run() -> void:
 	await wait_screen("world")
 	await wait_idle()
 	await shot("world_after_bab1")
+	scene().open_map()
+	await wait(0.5)
+	var mo: Node = Main.overlay_root().get_child(Main.overlay_root().get_child_count() - 1)
+	mo._select_tab(1, "_show_keywords")
+	await wait(0.3)
+	await shot("map_keywords_bab1")
+	mo.close()
+	await wait(0.2)
 	Main.open_muzium()
 	await wait(0.4)
 	await shot("muzium")
@@ -255,6 +264,36 @@ func _run() -> void:
 		return
 	print("AUTOTEST PASS level=%d exp=%d coins=%d figures=%s" % [Game.save["level"], Game.save["exp"], Game.save["coins"], str(Game.save["figures"])])
 	get_tree().quit(0)
+
+
+## Mini map in the corner (Pau button hidden), zoom levels, full map + legend.
+func _check_map() -> void:
+	var w := scene()
+	if not w.minimap.visible or Main.pau_button.visible:
+		_fail("mini map should replace the Pau button in the world")
+		return
+	await shot("minimap")
+	w.minimap._set_zoom(2)
+	await wait(0.3)
+	await shot("minimap_whole")
+	w.minimap._set_zoom(0)
+	w.open_map()
+	await wait(0.5)
+	var m: Node = Main.overlay_root().get_child(Main.overlay_root().get_child_count() - 1)
+	if not m.has_method("_show_keywords"):
+		_fail("full map did not open")
+		return
+	await shot("map_places")
+	m._zoom(1.5)
+	m._select_tab(1, "_show_keywords")
+	await wait(0.3)
+	await shot("map_keywords")
+	m._select_tab(2, "_show_symbols")
+	m.view.set_zoom(0.0)
+	await wait(0.3)
+	await shot("map_symbols_whole")
+	m.close()
+	await wait(0.2)
 
 
 ## Put Alif next to a spot (NPC, object or prop), face it and interact.

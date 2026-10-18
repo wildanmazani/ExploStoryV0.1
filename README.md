@@ -14,8 +14,9 @@ diterokai, 4 zon dengan 13 teka-teki, penutup dan teaser Bab 2.
 | --- | --- | --- |
 | Berjalan (satu petak) | WASD / anak panah, Shift = lari | D-pad, atau ketik ke mana-mana |
 | Bercakap / guna | E, Space, Enter | Butang A, atau ketik watak / objek |
-| Petunjuk Pau | H | Ketik Pau |
-| Momen tenang | - | Tekan lama Pau |
+| Petunjuk Pau | H | Ketik Pau (di dunia: Pau yang mengikut Alif) |
+| Momen tenang | Butang Pau di bar menu | Tekan lama Pau |
+| Peta penuh + legenda | M | Ketik peta mini (bucu kanan) |
 | Tetapan | Esc | Butang gear |
 
 Tanda seru **(!)** menunjukkan tugasan seterusnya. Teka-teki: **Seret dan Padankan** dan
@@ -28,7 +29,7 @@ bangun di Dunia Explo-Story -> Kampung Jejak -> Zon 1.1 Gerbang Masa -> Zon 1.2 
 Melaka -> Zon 1.3 Balai Penghadapan (dalam Istana) -> Zon 1.4 Bukit Siguntang -> Ringkasan
 setiap zon -> Penutup (Bendera 1 berkibar, Nota Alif, teaser Bab 2).
 
-Ciri lain: HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
+Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
 Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.
 

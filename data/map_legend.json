@@ -1,0 +1,18 @@
+{
+  "_info": "Legenda peta mini. 'at' = petak [x, y] dalam dunia (80x60). 'zone' = zon Bab 1 di tempat itu. Kata kunci diambil dari data/nota.json.",
+  "places": [
+    {"id": "permulaan", "name": "Bukit Permulaan", "icon": "res://assets/icons/bintang.png", "at": [19, 50], "info": "Tempat Alif terjaga"},
+    {"id": "kampung", "name": "Kampung Jejak", "icon": "res://assets/icons/kumpulan.png", "at": [33, 33], "info": "Peta Jejak, Muzium, Arena"},
+    {"id": "gerbang", "zone": "1_1", "name": "Zon 1.1: Gerbang Masa", "at": [34, 16]},
+    {"id": "pelabuhan", "zone": "1_2", "name": "Zon 1.2: Pelabuhan Melaka", "at": [61, 41]},
+    {"id": "melaka", "zone": "1_3", "name": "Zon 1.3: Balai Penghadapan", "at": [55, 29], "info": "Masuk ikut pintu Istana"},
+    {"id": "siguntang", "zone": "1_4", "name": "Zon 1.4: Bukit Siguntang", "at": [57, 13]},
+    {"id": "kabus", "name": "Kabus Masa", "icon": "res://assets/icons/kunci.png", "at": [6, 26], "info": "Bab 2 dan seterusnya, belum dibuka"}
+  ],
+  "landmarks": {
+    "monument": {"name": "Peta Jejak", "icon": "res://assets/icons/peta.png"},
+    "muzium": {"name": "Muzium", "icon": "res://assets/icons/muzium.png"},
+    "istana": {"name": "Istana Melaka", "icon": "res://assets/icons/mahkota.png"},
+    "arena": {"name": "Arena Ulang Kaji", "icon": "res://assets/icons/pedang.png"}
+  }
+}

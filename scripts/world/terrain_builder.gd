@@ -57,6 +57,9 @@ func _bit(corner: String) -> int:
 func load_layout(path: String) -> void:
 	cells.clear()
 	for line in FileAccess.get_file_as_string(path).split("\n", false):
+		line = line.strip_edges(false, true)  # Windows checkouts end lines with \r
+		if line == "":
+			continue
 		var row: Array[int] = []
 		for ch in line:
 			row.append(CHARS.get(ch, GRASS))
