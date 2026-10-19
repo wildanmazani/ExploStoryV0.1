@@ -58,7 +58,7 @@ func _show(i: int) -> void:
 	if not unlocked:
 		var lock := UI.hbox(16)
 		lock.add_child(UI.icon("res://assets/icons/kunci.png", 72))
-		lock.add_child(UI.label("Selesaikan Zon %s untuk membuka halaman ini." % str(p["zone"]).replace("_", "."), "Ink", true))
+		lock.add_child(UI.label("Selesaikan Misi %s untuk membuka halaman ini." % str(p["zone"]).replace("_", "."), "Ink", true))
 		_page_box.add_child(lock)
 		return
 	var items: Array = p.get("items", [])

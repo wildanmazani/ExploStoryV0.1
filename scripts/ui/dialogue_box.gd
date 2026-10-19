@@ -130,7 +130,7 @@ func _process(delta: float) -> void:
 		_blip_at = _text.visible_characters
 		var ch := _text.text.substr(_text.visible_characters - 1, 1)
 		if ch.strip_edges() != "" and not bool(Game.settings.get("auto_read", false)):
-			Sfx.play("blip", -10.0, VOICE[_who] * randf_range(0.94, 1.06))
+			Sfx.play("blip", -10.0, VOICE[_who] * randf_range(0.94, 1.06), "Voice")
 	if _text.visible_characters >= _text.text.length():
 		_text.visible_characters = -1
 		_typing = false

@@ -29,6 +29,13 @@ bangun di Dunia Explo-Story -> Kampung Jejak -> Zon 1.1 Gerbang Masa -> Zon 1.2 
 Melaka -> Zon 1.3 Balai Penghadapan (dalam Istana) -> Zon 1.4 Bukit Siguntang -> Ringkasan
 setiap zon -> Penutup (Bendera 1 berkibar, Nota Alif, teaser Bab 2).
 
+Ciri baharu (pek 2): skrin **Arka & Zon** (Arka = Tingkatan, Zon = Bab, Misi 1.1-1.4 = subtopik),
+**Profil & Kedai** (ID Pemain, 6 pakaian Alif dibeli dengan syiling), **Tetapan** bertab (fon, audio Muzik/Bunyi/Suara,
+Bahasa menu BM/English), soalan **objektif** dan **suaikan** selain seret-padan dan papan siasatan, dan
+**Bilik Pertarungan**: jawab betul untuk serang lawan pilihan, yang terakhir berdiri menang 20 syiling.
+Lawan Bot berfungsi tanpa internet; main dengan rakan (tambah rakan guna ID) memerlukan Supabase:
+jalankan `supabase/schema.sql` kemudian `supabase/multiplayer.sql` (belum diuji pada projek sebenar).
+
 Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
 Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.

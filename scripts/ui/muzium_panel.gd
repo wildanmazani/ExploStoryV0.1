@@ -25,7 +25,7 @@ func _build() -> void:
 		var n := UI.label(str(g.get("nama", "?")) if have else "???", "Heading" if have else "", true)
 		n.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		c.add_child(n)
-		var info := UI.label(str(g.get("info", "")) if have else "Selesaikan Zon %s" % str(zd.get("no", "")), "Small", true)
+		var info := UI.label(str(g.get("info", "")) if have else "Selesaikan Misi %s" % str(zd.get("no", "")), "Small", true)
 		info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		c.add_child(info)
 		slot.add_child(c)
@@ -40,7 +40,7 @@ func _build() -> void:
 		var met: bool = Game.save["figures"].has(id)
 		var card := UI.panel("Card" if met else "CardLocked")
 		card.custom_minimum_size = Vector2(140, 0)
-		card.tooltip_text = str(ch.get("lore", "")) if met else "Temui tokoh ini di Zon %s" % str(ch.get("zon", "")).replace("_", ".")
+		card.tooltip_text = str(ch.get("lore", "")) if met else "Temui tokoh ini di Misi %s" % str(ch.get("zon", "")).replace("_", ".")
 		var cc := UI.vbox(2)
 		var pic := UI.icon(Game.portrait_path(id), 80)
 		if not met:

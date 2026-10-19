@@ -1,0 +1,390 @@
+{
+ "_info": "Bank soalan objektif Bab 1 untuk Bilik Pertarungan. Semua fakta diambil daripada data/zon_1_*.json. 'answer' = indeks jawapan betul (0-3).",
+ "bab": 1,
+ "questions": [
+  {
+   "id": 0,
+   "q": "Kerajaan manakah yang paling awal?",
+   "options": [
+    "Kesultanan Johor-Riau",
+    "Srivijaya",
+    "Funan",
+    "Kesultanan Melayu Melaka"
+   ],
+   "answer": 2,
+   "explain": "Funan muncul pada abad pertama."
+  },
+  {
+   "id": 1,
+   "q": "Bilakah Kesultanan Melayu Melaka muncul?",
+   "options": [
+    "Abad pertama",
+    "Abad ke-7",
+    "Abad kedua",
+    "Abad ke-15"
+   ],
+   "answer": 3,
+   "explain": "Kesultanan Melayu Melaka muncul pada abad ke-15."
+  },
+  {
+   "id": 2,
+   "q": "Srivijaya berpusat di...",
+   "options": [
+    "Melaka",
+    "Palembang",
+    "Kedah",
+    "Sungai Mekong"
+   ],
+   "answer": 1,
+   "explain": "Srivijaya muncul pada abad ke-7 dan berpusat di Palembang."
+  },
+  {
+   "id": 3,
+   "q": "Kerajaan manakah yang muncul pada abad ke-16?",
+   "options": [
+    "Srivijaya",
+    "Funan",
+    "Kesultanan Johor-Riau",
+    "Champa"
+   ],
+   "answer": 2,
+   "explain": "Kesultanan Johor-Riau muncul pada abad ke-16."
+  },
+  {
+   "id": 4,
+   "q": "Champa muncul pada abad ke berapa?",
+   "options": [
+    "Abad ke-16",
+    "Abad kedua",
+    "Abad ke-15",
+    "Abad ke-7"
+   ],
+   "answer": 1,
+   "explain": "Champa muncul pada abad kedua."
+  },
+  {
+   "id": 5,
+   "q": "Raja Champa dikaitkan dengan dewa apa?",
+   "options": [
+    "Dewa Bayu",
+    "Dewa Laut",
+    "Dewa Siva",
+    "Dewa Indra"
+   ],
+   "answer": 2,
+   "explain": "Raja Champa dianggap suci dan dikaitkan dengan Dewa Siva."
+  },
+  {
+   "id": 6,
+   "q": "Kutara Manawa ialah undang-undang bertulis kerajaan...",
+   "options": [
+    "Melaka",
+    "Champa",
+    "Funan",
+    "Majapahit"
+   ],
+   "answer": 3,
+   "explain": "Majapahit mengamalkan undang-undang bertulis Kutara Manawa."
+  },
+  {
+   "id": 7,
+   "q": "Rakyat Srivijaya meminum air sumpah yang dituang ke atas...",
+   "options": [
+    "Patung Dewa Siva",
+    "Inskripsi Telaga Batu",
+    "Hukum Kanun Melaka",
+    "Cap Mohor"
+   ],
+   "answer": 1,
+   "explain": "Air sumpah Telaga Batu ialah tanda taat setia rakyat Srivijaya."
+  },
+  {
+   "id": 8,
+   "q": "Wilayah Funan meliputi kawasan...",
+   "options": [
+    "Palembang",
+    "Pahang",
+    "Sungai Mekong",
+    "Kedah"
+   ],
+   "answer": 2,
+   "explain": "Wilayah Funan meliputi kawasan Sungai Mekong hingga Segenting Kra."
+  },
+  {
+   "id": 9,
+   "q": "Siapakah pemerintah tertinggi Melaka?",
+   "options": [
+    "Bendahara",
+    "Syahbandar",
+    "Laksamana",
+    "Sultan"
+   ],
+   "answer": 3,
+   "explain": "Raja ialah pemerintah tertinggi. Gelaran Sultan digunakan selepas kedatangan Islam."
+  },
+  {
+   "id": 10,
+   "q": "Yang manakah BUKAN Pembesar Berempat?",
+   "options": [
+    "Laksamana",
+    "Syahbandar",
+    "Bendahara",
+    "Temenggung"
+   ],
+   "answer": 1,
+   "explain": "Pembesar Berempat: Bendahara, Penghulu Bendahari, Temenggung dan Laksamana."
+  },
+  {
+   "id": 11,
+   "q": "Lapisan paling bawah Sistem Pembesar Empat Lipatan ialah...",
+   "options": [
+    "Pembesar Enam Belas",
+    "Pembesar Berempat",
+    "Pembesar Berlapan",
+    "Pembesar Tiga Puluh Dua"
+   ],
+   "answer": 3,
+   "explain": "Pembesar Tiga Puluh Dua berada di lapisan paling bawah."
+  },
+  {
+   "id": 12,
+   "q": "Siapakah yang memangku sultan apabila sultan berangkat?",
+   "options": [
+    "Syahbandar",
+    "Laksamana",
+    "Bendahara",
+    "Temenggung"
+   ],
+   "answer": 2,
+   "explain": "Bendahara memangku sultan apabila sultan berangkat."
+  },
+  {
+   "id": 13,
+   "q": "Siapakah yang menjaga keselamatan perairan Melaka?",
+   "options": [
+    "Bendahara",
+    "Temenggung",
+    "Laksamana",
+    "Penghulu Bendahari"
+   ],
+   "answer": 2,
+   "explain": "Laksamana bertanggungjawab terhadap keselamatan perairan."
+  },
+  {
+   "id": 14,
+   "q": "Siapakah yang mengurus pelabuhan dan cukai kapal asing?",
+   "options": [
+    "Temenggung",
+    "Laksamana",
+    "Bendahara",
+    "Syahbandar"
+   ],
+   "answer": 3,
+   "explain": "Syahbandar mengurus pelabuhan dan cukai kapal asing."
+  },
+  {
+   "id": 15,
+   "q": "Siapakah yang menjaga keamanan di dalam kota Melaka?",
+   "options": [
+    "Temenggung",
+    "Laksamana",
+    "Syahbandar",
+    "Penghulu Bendahari"
+   ],
+   "answer": 0,
+   "explain": "Temenggung menjaga keamanan dalam kota."
+  },
+  {
+   "id": 16,
+   "q": "Siapakah yang mengurus perbendaharaan negeri?",
+   "options": [
+    "Penghulu Bendahari",
+    "Syahbandar",
+    "Laksamana",
+    "Temenggung"
+   ],
+   "answer": 0,
+   "explain": "Penghulu Bendahari mengurus perbendaharaan dan kutipan cukai."
+  },
+  {
+   "id": 17,
+   "q": "Golongan manakah termasuk golongan pemerintah?",
+   "options": [
+    "Rakyat merdeka",
+    "Kerabat diraja",
+    "Orang Laut",
+    "Hamba"
+   ],
+   "answer": 1,
+   "explain": "Kerabat diraja dan pembesar ialah golongan pemerintah."
+  },
+  {
+   "id": 18,
+   "q": "Orang Laut termasuk dalam golongan...",
+   "options": [
+    "Kerabat diraja",
+    "Diperintah",
+    "Pembesar",
+    "Pemerintah"
+   ],
+   "answer": 1,
+   "explain": "Orang Laut ialah sebahagian daripada rakyat Melaka."
+  },
+  {
+   "id": 19,
+   "q": "Kedaulatan Melaka diiktiraf oleh...",
+   "options": [
+    "Champa",
+    "Majapahit",
+    "Funan",
+    "Dinasti Ming"
+   ],
+   "answer": 3,
+   "explain": "Kunjungan utusan seperti Laksamana Cheng Ho menunjukkan Melaka diiktiraf kuasa luar."
+  },
+  {
+   "id": 20,
+   "q": "Pahang ialah wilayah ___ Melaka.",
+   "options": [
+    "Taklukan",
+    "Perkahwinan",
+    "Naungan",
+    "Pajakan"
+   ],
+   "answer": 0,
+   "explain": "Pahang ialah wilayah taklukan Melaka."
+  },
+  {
+   "id": 21,
+   "q": "Kedah berada di bawah ___ Melaka.",
+   "options": [
+    "Taklukan",
+    "Naungan",
+    "Pajakan",
+    "Perkahwinan"
+   ],
+   "answer": 1,
+   "explain": "Kedah berada di bawah naungan Melaka."
+  },
+  {
+   "id": 22,
+   "q": "Siantan menjadi wilayah pengaruh Melaka melalui...",
+   "options": [
+    "Perdagangan",
+    "Taklukan",
+    "Naungan",
+    "Perkahwinan"
+   ],
+   "answer": 3,
+   "explain": "Siantan menjadi wilayah pengaruh Melaka melalui perkahwinan."
+  },
+  {
+   "id": 23,
+   "q": "Undang-undang darat Melaka ialah...",
+   "options": [
+    "Kutara Manawa",
+    "Hukum Kanun Melaka",
+    "Inskripsi Telaga Batu",
+    "Undang-Undang Laut Melaka"
+   ],
+   "answer": 1,
+   "explain": "Hukum Kanun Melaka ialah undang-undang darat Melaka."
+  },
+  {
+   "id": 24,
+   "q": "Undang-Undang Laut Melaka mengatur urusan...",
+   "options": [
+    "Pertanian padi",
+    "Pelayaran dan perdagangan laut",
+    "Perkahwinan diraja",
+    "Adat istiadat istana"
+   ],
+   "answer": 1,
+   "explain": "Undang-Undang Laut Melaka mengatur urusan pelayaran dan perdagangan laut."
+  },
+  {
+   "id": 25,
+   "q": "Warna yang dikhaskan untuk raja ialah...",
+   "options": [
+    "Putih",
+    "Merah",
+    "Hijau",
+    "Kuning"
+   ],
+   "answer": 3,
+   "explain": "Warna kuning dikhaskan untuk raja."
+  },
+  {
+   "id": 26,
+   "q": "Nobat ialah...",
+   "options": [
+    "Alat muzik diraja",
+    "Cop rasmi raja",
+    "Pakaian diraja",
+    "Upacara rasmi istana"
+   ],
+   "answer": 0,
+   "explain": "Nobat dimainkan dalam upacara diraja."
+  },
+  {
+   "id": 27,
+   "q": "Cap Mohor ialah...",
+   "options": [
+    "Cop rasmi pada surat raja",
+    "Alat muzik diraja",
+    "Warna khas raja",
+    "Senjata diraja"
+   ],
+   "answer": 0,
+   "explain": "Cap mohor ialah cop rasmi raja."
+  },
+  {
+   "id": 28,
+   "q": "Dalam Waadat, siapakah yang mewakili rakyat?",
+   "options": [
+    "Tun Perak",
+    "Sang Sapurba",
+    "Laksamana Cheng Ho",
+    "Demang Lebar Daun"
+   ],
+   "answer": 3,
+   "explain": "Demang Lebar Daun mewakili rakyat; Sang Sapurba mewakili pemerintah."
+  },
+  {
+   "id": 29,
+   "q": "Apakah janji rakyat dalam Waadat?",
+   "options": [
+    "Memerintah dengan adil",
+    "Taat setia dan tidak menderhaka",
+    "Tidak menzalimi rakyat",
+    "Menjaga kebajikan rakyat"
+   ],
+   "answer": 1,
+   "explain": "Rakyat berjanji taat setia dan tidak menderhaka."
+  },
+  {
+   "id": 30,
+   "q": "Apakah janji pemerintah dalam Waadat?",
+   "options": [
+    "Mematuhi perintah",
+    "Taat setia",
+    "Tidak menderhaka",
+    "Memerintah dengan adil dan tidak menzalimi rakyat"
+   ],
+   "answer": 3,
+   "explain": "Pemerintah berjanji berlaku adil dan tidak menzalimi rakyat."
+  },
+  {
+   "id": 31,
+   "q": "Sistem Kerah bermaksud...",
+   "options": [
+    "Bekerja untuk kerajaan tanpa upah",
+    "Mentadbir kawasan pegangan",
+    "Menyerahkan hasil kepada pemerintah",
+    "Mengutip cukai kapal"
+   ],
+   "answer": 0,
+   "explain": "Sistem Kerah ialah tanggungjawab rakyat kepada pemerintah."
+  }
+ ]
+}

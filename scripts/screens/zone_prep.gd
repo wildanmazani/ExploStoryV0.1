@@ -1,5 +1,5 @@
 extends Control
-## "Persiapan Zon": a calm briefing the first time Alif walks into a zone
+## "Persiapan Misi": a calm briefing the first time Alif walks into a zone
 ## (no time pressure, UR-LO-02) plus the Kad Tokoh collection. Shown as an
 ## overlay in the world; emits `closed`.
 
@@ -20,11 +20,11 @@ func _ready() -> void:
 	Sfx.play("whoosh", -10.0)
 	var zid: String = params.get("zone", "1_1")
 	_zone = Game.zone_data(zid)
-	Game.context_hint = "Baca persoalan zon ini. Tiada had masa. Ketik Mula Meneroka bila sedia."
+	Game.context_hint = "Baca persoalan misi ini. Tiada had masa. Ketik Mula Meneroka bila sedia."
 	add_child(UI.bg_image(str(_zone.get("background", "")), Color(0.55, 0.55, 0.62)))
 	var root := UI.vbox(0)
 	UI.full(root)
-	root.add_child(UI.header_bar("PERSIAPAN ZON", "TOPIK: SEJARAH TINGKATAN 4 - BAB 1 (WARISAN NEGARA BANGSA)"))
+	root.add_child(UI.header_bar("PERSIAPAN MISI", "TOPIK: SEJARAH TINGKATAN 4 - BAB 1 (WARISAN NEGARA BANGSA)"))
 	var mid := UI.hbox(30)
 	mid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var left := Control.new()
@@ -50,7 +50,7 @@ func _ready() -> void:
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var ic := UI.vbox(10)
-	_row(ic, "ZON:", "Zon %s: %s" % [_zone["no"], _zone["title"]])
+	_row(ic, "MISI:", "Misi %s: %s" % [_zone["no"], _zone["title"]])
 	_row(ic, "SUBTOPIK:", str(_zone.get("subtopik", "")))
 	_row(ic, "PERSOALAN:", str(_zone.get("persoalan", "")))
 	_row(ic, "PEMANDU:", Game.char_name(guide_id))
@@ -59,10 +59,10 @@ func _ready() -> void:
 	ic.get_child(ic.get_child_count() - 1).add_child(UI.icon("res://assets/icons/%s.png" % g.get("icon", "bintang"), 48))
 	var speak := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56), "  Dengar")
 	speak.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	speak.pressed.connect(func(): Tts.speak("Zon %s, %s. Persoalan: %s" % [_zone["no"], _zone["title"], _zone["persoalan"]]))
+	speak.pressed.connect(func(): Tts.speak("Misi %s, %s. Persoalan: %s" % [_zone["no"], _zone["title"], _zone["persoalan"]]))
 	ic.add_child(speak)
 	if Game.zone_done(zid):
-		ic.add_child(UI.label("Zon ini sudah selesai. Kau boleh main semula untuk ulang kaji.", "InkSmall", true))
+		ic.add_child(UI.label("Misi ini sudah selesai. Kau boleh main semula untuk ulang kaji.", "InkSmall", true))
 	info.add_child(ic)
 	mid.add_child(info)
 	root.add_child(UI.margin(mid, 30, 10, 40, 0))
@@ -86,7 +86,7 @@ func _ready() -> void:
 		var nm := UI.label(str(ch["name"]) if (met or here) else "BERKUNCI", "InkSmall" if (met or here) else "Small", true)
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cc.add_child(nm)
-		var st := UI.label("DI ZON INI" if here else ("DITEMUI" if met else "Zon " + str(ch.get("zon", "")).replace("_", ".")), "Small")
+		var st := UI.label("DI MISI INI" if here else ("DITEMUI" if met else "Misi " + str(ch.get("zon", "")).replace("_", ".")), "Small")
 		st.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		st.add_theme_color_override("font_color", Color("2f6a2c") if here or met else UI.CREAM)
 		cc.add_child(st)

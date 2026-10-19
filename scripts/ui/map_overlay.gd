@@ -130,7 +130,7 @@ func _show_places() -> void:
 			var st := MapView.zone_status(str(p["zone"]))
 			sym = MapView.Symbol.new("flag", MapView.status_color(st))
 			col = MapView.status_color(st)
-			sub = MapView.status_text(st) + ("  - SETERUSNYA" if str(p["zone"]) == nz else "") + ("\n" + sub if sub != "" else "")
+			sub = tr(MapView.status_text(st)) + (tr("  - SETERUSNYA") if str(p["zone"]) == nz else "") + ("\n" + tr(sub) if sub != "" else "")
 		else:
 			sym = MapView.Symbol.new("badge", Color.WHITE, UI.tex(str(p["icon"])))
 		# the whole row is a button: tap = show this place on the map
@@ -173,10 +173,10 @@ func _show_keywords() -> void:
 	for z in Game.ZONES:
 		var zd := Game.zone_data(z)
 		var st := MapView.zone_status(z)
-		var head := _row(MapView.Symbol.new("flag", MapView.status_color(st)), "Zon %s: %s" % [str(zd.get("no", z.replace("_", "."))), str(zd.get("title", ""))], MapView.status_text(st), MapView.status_color(st))
+		var head := _row(MapView.Symbol.new("flag", MapView.status_color(st)), "Misi %s: %s" % [str(zd.get("no", z.replace("_", "."))), str(zd.get("title", ""))], MapView.status_text(st), MapView.status_color(st))
 		_list.add_child(head)
 		if st != "done":
-			var l := UI.label("???  Siapkan zon ini untuk buka kata kuncinya.", "Small", true)
+			var l := UI.label("???  Siapkan misi ini untuk buka kata kuncinya.", "Small", true)
 			l.add_theme_color_override("font_color", UI.GREY)
 			_list.add_child(UI.margin(l, 50, 0, 0, 6))
 			continue
@@ -195,9 +195,9 @@ func _show_keywords() -> void:
 func _show_symbols() -> void:
 	_list.add_child(_row(MapView.Symbol.new("me"), "Alif (kau di sini)", "Titik merah berkelip"))
 	_list.add_child(_row(MapView.Symbol.new("bang"), "Tugasan seterusnya", "Pergi ke tanda seru"))
-	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_DONE), "Zon siap", "Bendera hijau"))
-	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_OPEN), "Zon terbuka", "Bendera emas"))
-	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_LOCKED), "Zon berkunci", "Bendera kelabu: siapkan zon sebelumnya"))
+	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_DONE), "Misi siap", "Bendera hijau"))
+	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_OPEN), "Misi terbuka", "Bendera emas"))
+	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_LOCKED), "Misi berkunci", "Bendera kelabu: siapkan misi sebelumnya"))
 	_list.add_child(_row(MapView.Symbol.new("npc"), "Orang", "Ketik untuk bercakap"))
 	for id in MapView.legend()["landmarks"]:
 		var lm: Dictionary = MapView.legend()["landmarks"][id]

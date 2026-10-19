@@ -15,6 +15,8 @@ extends Node
 const DragMatch = preload("res://scripts/puzzles/drag_match.gd")
 const Board = preload("res://scripts/puzzles/board.gd")
 const Choice = preload("res://scripts/puzzles/choice.gd")
+const Objektif = preload("res://scripts/puzzles/objektif.gd")
+const Suaikan = preload("res://scripts/puzzles/suaikan.gd")
 
 signal changed
 
@@ -90,7 +92,7 @@ func handle(id: String) -> bool:
 	var zid: String = found["zid"]
 	if not Game.zone_unlocked(zid):
 		var prev: String = Game.ZONES[Game.ZONES.find(zid) - 1]
-		Game.main.pau_say("Belum lagi. Habiskan Zon %s dulu, baru tempat ni terbuka." % prev.replace("_", "."))
+		Game.main.pau_say("Belum lagi. Habiskan Misi %s dulu, baru tempat ni terbuka." % prev.replace("_", "."))
 		return true
 	if not _available(zid, found["i"]):
 		Game.main.pau_say("Belum lagi. Selesaikan tugasan sebelumnya dulu, ikut tanda seru.")
@@ -133,6 +135,8 @@ func run_puzzle(def: Dictionary, puzzle_id: String) -> Dictionary:
 	match str(def.get("type", "drag_match")):
 		"board": p = Board.new()
 		"choice": p = Choice.new()
+		"objektif": p = Objektif.new()
+		"suaikan": p = Suaikan.new()
 		_: p = DragMatch.new()
 	p.theme = Game.theme
 	p.set("def", def)

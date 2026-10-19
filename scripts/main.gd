@@ -12,6 +12,7 @@ const NotaPanel = preload("res://scripts/ui/nota_panel.gd")
 const MuziumPanel = preload("res://scripts/ui/muzium_panel.gd")
 const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
 const MapOverlay = preload("res://scripts/ui/map_overlay.gd")
+const ProfilePanel = preload("res://scripts/ui/profile_panel.gd")
 
 var dialog_layer: CanvasLayer
 var pau_layer: CanvasLayer
@@ -124,8 +125,7 @@ func is_dialogue_open() -> bool:
 # ------------------------------------------------------------------ Pau
 func set_pau_visible(v: bool) -> void:
 	pau_button.visible = v
-	if not v:
-		bubble.visible = false
+	bubble.visible = false  # every screen calls this on entry: no leftover bubble
 
 
 func pau_say(text: String, seconds: float = 7.0) -> void:
@@ -175,6 +175,14 @@ func open_nota() -> Control:
 
 func open_muzium() -> Control:
 	var p := MuziumPanel.new()
+	overlay_root().add_child(p)
+	return p
+
+
+## Profil & Kedai (tab 0 = profile, 1 = skin shop)
+func open_profile(tab: int = 0) -> Control:
+	var p := ProfilePanel.new()
+	p.start_tab = tab
 	overlay_root().add_child(p)
 	return p
 

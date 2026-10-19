@@ -1,5 +1,5 @@
 extends Control
-## Module 5: Ringkasan Zon (post-zone summary, GDS "Post-Match Summary").
+## Module 5: Ringkasan Misi (post-zone summary, GDS "Post-Match Summary").
 ## Level, EXP bar, coins, artifact earned and syllabus mastery for the subtopic.
 
 const UI = preload("res://scripts/ui/ui.gd")
@@ -19,7 +19,7 @@ func _ready() -> void:
 	add_child(UI.bg_image(str(zone.get("background", "")), Color(0.5, 0.5, 0.58)))
 	var root := UI.vbox(0)
 	UI.full(root)
-	root.add_child(UI.header_bar("RINGKASAN ZON", "Zon %s: %s" % [zone["no"], zone["title"]]))
+	root.add_child(UI.header_bar("RINGKASAN MISI", "Misi %s: %s" % [zone["no"], zone["title"]]))
 	var card := UI.panel("Glass")
 	card.custom_minimum_size = Vector2(1000, 0)
 	var row := UI.hbox(40)

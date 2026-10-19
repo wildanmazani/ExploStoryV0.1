@@ -36,20 +36,20 @@
   ],
 
   "peta_first": [
-    {"s": "pau", "t": "Bendera 1 ada empat zon. Pergi ke bangunan yang ada tanda seru."},
+    {"s": "pau", "t": "Bendera 1 ada empat misi. Pergi ke bangunan yang ada tanda seru."},
     {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau ketik sahaja ke mana kau nak pergi."}
   ],
   "flag_locked": [
     {"s": "pau", "t": "Belum lagi, kita habiskan yang ini dulu."}
   ],
   "flag_1": [
-    {"s": "pau", "t": "Bendera 1: Warisan Negara Bangsa. Empat zon, empat subtopik."}
+    {"s": "pau", "t": "Bendera 1: Warisan Negara Bangsa. Empat misi, empat subtopik."}
   ],
   "flag_1_done": [
     {"s": "pau", "e": "happy", "t": "Bendera 1 sudah berkibar! Kau faham Warisan Negara Bangsa."}
   ],
   "zone_locked": [
-    {"s": "pau", "t": "Zon ini masih berkunci. Selesaikan zon sebelumnya dulu, ya."}
+    {"s": "pau", "t": "Misi ini masih berkunci. Selesaikan misi sebelumnya dulu, ya."}
   ],
   "t5_locked": [
     {"s": "pau", "t": "Itu laluan ke Sejarah Tingkatan 5. Masih berkunci. Satu langkah demi satu langkah."}
@@ -121,7 +121,7 @@
     {"s": "pau", "t": "Hati-hati. Ada gulungan dari kerajaan lain juga."}
   ],
   "z12_undang_after": [
-    {"s": "pau", "t": "Hukum Kanun Melaka dan Undang-Undang Laut Melaka. Kita akan guna dua ni di Zon 1.3!"}
+    {"s": "pau", "t": "Hukum Kanun Melaka dan Undang-Undang Laut Melaka. Kita akan guna dua ni di Misi 1.3!"}
   ],
   "z12_lambang_before": [
     {"s": "syahbandar", "t": "Panji Lambang Kebesaran! Padankan setiap lambang dengan maksudnya.", "rekaan": true}

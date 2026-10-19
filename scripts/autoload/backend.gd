@@ -224,3 +224,64 @@ func log_hint(puzzle_id: String, tier: int) -> void:
 		return
 	_request("/rest/v1/hint_usage", HTTPClient.METHOD_POST, {"puzzle_id": puzzle_id, "tier": tier}, false,
 		PackedStringArray(["Prefer: return=minimal"]))
+
+
+# ------------------------------------------------------------------ Bilik Pertarungan
+## Friends and battle rooms (supabase/multiplayer.sql). All need a signed-in
+## online account; offline the game offers the bot battle instead.
+## NOTE: not tested against a live Supabase project yet.
+
+func can_play_online() -> bool:
+	return is_online() and is_signed_in()
+
+
+## Calls a Postgres function. {"ok", "code", "data"}
+func db_call(fn: String, args: Dictionary = {}) -> Dictionary:
+	if not can_play_online():
+		return {"ok": false, "code": 0, "data": null}
+	return await _request("/rest/v1/rpc/" + fn, HTTPClient.METHOD_POST, args, true)
+
+
+## The server's Player ID replaces the local one so friends can find you.
+func sync_player_code() -> void:
+	var r := await db_call("ensure_player_code")
+	if r["ok"] and r["data"] is String and str(r["data"]) != "":
+		Game.save["player_id"] = str(r["data"])
+		Game.persist()
+
+
+func add_friend(code: String) -> String:
+	var r := await db_call("add_friend", {"p_code": code.strip_edges().to_upper()})
+	return str(r["data"]) if r["ok"] else "error"
+
+
+func my_friends() -> Array:
+	var r := await db_call("my_friends")
+	return r["data"] if r["ok"] and r["data"] is Array else []
+
+
+func _me_args() -> Dictionary:
+	var p: Dictionary = Game.save["profile"]
+	return {"p_name": str(p.get("display_name", p["username"])), "p_avatar": str(p.get("avatar", "pelajar_1")), "p_skin": Game.skin_folder()}
+
+
+func create_room() -> String:
+	var r := await db_call("create_room", _me_args())
+	return str(r["data"]) if r["ok"] else ""
+
+
+func join_room(code: String) -> String:
+	var args := _me_args()
+	args["p_code"] = code.strip_edges().to_upper()
+	var r := await db_call("join_room", args)
+	return str(r["data"]) if r["ok"] else "error"
+
+
+func room_state(code: String) -> Dictionary:
+	var r := await db_call("battle_state", {"p_code": code})
+	return r["data"] if r["ok"] and r["data"] is Dictionary else {}
+
+
+func start_battle(code: String) -> String:
+	var r := await db_call("start_battle", {"p_code": code})
+	return str(r["data"]) if r["ok"] else "error"

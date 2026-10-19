@@ -13,6 +13,8 @@ var _level: Label
 var _exp: ProgressBar
 var _coins: Label
 var _title: Label
+var _name: Label
+var _avatar: TextureRect
 var _sub: Label
 
 
@@ -71,15 +73,24 @@ func _ready() -> void:
 	# top-right: player card
 	var card := UI.panel()
 	card.position = Vector2(1280 - 16 - 360, 14)
+	# tap the card: Profil & Kedai
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	card.tooltip_text = tr("Profil & Kedai")
+	card.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT and not Game.is_locked():
+			Game.main.open_profile())
 	card.custom_minimum_size = Vector2(360, 0)
 	var row := UI.hbox(12)
 	var av := UI.panel("Slot")
 	av.add_theme_stylebox_override("panel", UI.sb(UI.NAVY2, UI.GOLD, 3, 6, 4))
-	av.add_child(UI.icon("res://assets/portraits/%s.png" % str(Game.save["profile"].get("avatar", "pelajar_1")), 76))
+	_avatar = UI.icon("res://assets/portraits/%s.png" % str(Game.save["profile"].get("avatar", "pelajar_1")), 76)
+	av.add_child(_avatar)
 	row.add_child(av)
 	var info := UI.vbox(4)
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var name_l := UI.label(str(Game.save["profile"]["username"]), "Small")
+	var name_l := UI.label("", "Small")
+	_name = name_l
 	name_l.clip_text = true
 	info.add_child(name_l)
 	_level = UI.label("", "Heading")
@@ -104,9 +115,18 @@ func _ready() -> void:
 	info.add_child(coin_row)
 	row.add_child(info)
 	card.add_child(row)
+	_pass_clicks(row)
 	add_child(card)
 	Game.stats_changed.connect(_refresh)
+	Game.settings_changed.connect(_refresh)  # language switch
 	_refresh()
+
+
+func _pass_clicks(n: Node) -> void:
+	if n is Control:
+		(n as Control).mouse_filter = Control.MOUSE_FILTER_PASS
+	for c in n.get_children():
+		_pass_clicks(c)
 
 
 func set_location(t: String, s: String = "") -> void:
@@ -119,6 +139,9 @@ func set_location(t: String, s: String = "") -> void:
 
 
 func _refresh() -> void:
-	_level.text = "TAHAP %d" % int(Game.save["level"])
+	var prof: Dictionary = Game.save["profile"]
+	_name.text = str(prof.get("display_name", prof["username"]))
+	_avatar.texture = UI.tex("res://assets/portraits/%s.png" % str(prof.get("avatar", "pelajar_1")))
+	_level.text = tr("TAHAP %d") % int(Game.save["level"])
 	_exp.value = int(Game.save["exp"]) % Game.EXP_PER_LEVEL
-	_coins.text = "SYILING: %d" % int(Game.save["coins"])
+	_coins.text = tr("SYILING: %d") % int(Game.save["coins"])

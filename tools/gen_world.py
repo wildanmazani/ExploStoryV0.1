@@ -9,8 +9,8 @@ Object chars (anchor = bottom-left cell of the footprint):
   P palm  T tree  B bush  R rocks  F flowers  f fence  H house  M market stall
   K Peta Jejak monument  Y banyan  G open flag gate  L locked flag gate  S sign
   U muzium  I istana  J jetty (walkable over sea)  X Ming ship  b perahu
-  1-5 the five kingdom gates of Zon 1.1 (Funan, Champa, Srivijaya, Melaka, Johor-Riau)
-  A Empat Tiang (Zon 1.1)  Q panji pole (Zon 1.2)  W Arena Ulang Kaji  Z Batu Renungan (Zon 1.4)
+  1-5 the five kingdom gates of Misi 1.1 (Funan, Champa, Srivijaya, Melaka, Johor-Riau)
+  A Empat Tiang (Misi 1.1)  Q panji pole (Misi 1.2)  W Arena Ulang Kaji  Z Batu Renungan (Misi 1.4)
 "spots" in entities.json names the puzzle locations used by data/zon_1_x.json steps.
 
 Run: python tools/gen_world.py   (deterministic; edit shapes below and re-run)
@@ -71,7 +71,7 @@ def path(points, ch="=", width=2):
 
 
 # --- plazas and roads ---------------------------------------------------
-rect(26, 13, 41, 18, "#")    # Zon 1.1 Gerbang Masa ruins
+rect(26, 13, 41, 18, "#")    # Misi 1.1 Gerbang Masa ruins
 rect(49, 24, 62, 33, "#")    # Kota Melaka (Balai / Istana square)
 rect(33, 29, 37, 32, "#")    # monument square in Kampung Jejak
 
@@ -182,7 +182,7 @@ for hx, hy in [(25, 27), (40, 27)]:
     place("H", hx, hy, force=True)
 place("U", 25, 39, force=True)
 entities["signs"].append({"pos": [25, 39], "id": "muzium", "size": [6, 3]})
-# five kingdom gates start in a jumble; the Zon 1.1 puzzle puts them in order
+# five kingdom gates start in a jumble; the Misi 1.1 puzzle puts them in order
 # (1 Funan, 2 Champa, 3 Srivijaya, 4 Melaka, 5 Johor-Riau)
 GATE_SLOTS = [27, 30, 33, 36, 39]
 for slot, kingdom in zip(GATE_SLOTS, ["5", "1", "3", "4", "2"]):
@@ -242,10 +242,10 @@ for name, sp in entities["spots"].items():
 entities["areas"] = [  # name, rect x0,y0,x1,y1 (used for music + area titles)
     {"id": "permulaan", "name": "Bukit Permulaan", "rect": [6, 40, 30, 58]},
     {"id": "kampung", "name": "Kampung Jejak", "rect": [20, 22, 47, 40]},
-    {"id": "gerbang", "name": "Zon 1.1: Gerbang Masa", "rect": [24, 4, 44, 21]},
-    {"id": "siguntang", "name": "Zon 1.4: Bukit Siguntang", "rect": [45, 2, 74, 20]},
-    {"id": "melaka", "name": "Zon 1.3: Kota Melaka", "rect": [48, 21, 66, 35]},
-    {"id": "pelabuhan", "name": "Zon 1.2: Pelabuhan Melaka", "rect": [56, 36, 79, 52]},
+    {"id": "gerbang", "name": "Misi 1.1: Gerbang Masa", "rect": [24, 4, 44, 21]},
+    {"id": "siguntang", "name": "Misi 1.4: Bukit Siguntang", "rect": [45, 2, 74, 20]},
+    {"id": "melaka", "name": "Misi 1.3: Kota Melaka", "rect": [48, 21, 66, 35]},
+    {"id": "pelabuhan", "name": "Misi 1.2: Pelabuhan Melaka", "rect": [56, 36, 79, 52]},
     {"id": "kabus", "name": "Kabus Masa", "rect": [0, 15, 13, 35]},
 ]
 

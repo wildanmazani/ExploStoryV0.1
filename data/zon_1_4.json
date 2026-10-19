@@ -155,66 +155,58 @@
       "done_text": "Waadat: janji dua pihak antara pemerintah dan rakyat."
     },
     "tanggungjawab": {
-      "type": "drag_match",
+      "type": "objektif",
       "title": "Siapa Bertanggungjawab?",
-      "instruction": "Isih setiap tanggungjawab kepada Sultan, Pembesar atau Rakyat.",
+      "instruction": "Jawab soalan tentang tanggungjawab sultan, pembesar dan rakyat.",
       "hint": "Sistem Serah dan Sistem Kerah ialah tanggungjawab rakyat.",
-      "targets": [
+      "questions": [
         {
-          "id": "sultan",
-          "label": "Sultan",
-          "icon": "res://assets/icons/mahkota.png"
+          "q": "Apakah maksud Sistem Kerah?",
+          "options": [
+            "Bekerja untuk kerajaan tanpa upah",
+            "Menyerahkan hasil kepada pemerintah",
+            "Membantu sultan mentadbir negeri",
+            "Mentadbir kawasan pegangan"
+          ],
+          "answer": 0,
+          "explain": "Sistem Kerah ialah tanggungjawab rakyat kepada pemerintah.",
+          "hint": "Kerah = tenaga, bukan barang."
         },
         {
-          "id": "pembesar",
-          "label": "Pembesar",
-          "icon": "res://assets/icons/gulungan.png"
+          "q": "Apakah maksud Sistem Serah?",
+          "options": [
+            "Bekerja tanpa upah",
+            "Memerintah negeri dengan adil",
+            "Menyerahkan hasil kepada pemerintah",
+            "Menjaga keamanan dalam kota"
+          ],
+          "answer": 2,
+          "explain": "Sistem Serah ialah tanggungjawab rakyat kepada pemerintah.",
+          "hint": "Serah = memberi sesuatu."
         },
         {
-          "id": "rakyat",
-          "label": "Rakyat",
-          "icon": "res://assets/icons/kumpulan.png"
-        }
-      ],
-      "items": [
-        {
-          "id": "t_kerah",
-          "label": "Sistem Kerah: bekerja untuk kerajaan tanpa upah",
-          "target": "rakyat",
-          "fact": "Sistem Kerah ialah tanggungjawab rakyat kepada pemerintah.",
-          "semak": true
+          "q": "Siapakah yang membantu sultan mentadbir negeri dan mentadbir kawasan pegangan?",
+          "options": [
+            "Rakyat",
+            "Pembesar",
+            "Orang Laut",
+            "Hamba"
+          ],
+          "answer": 1,
+          "explain": "Pembesar membantu sultan mentadbir dan mentadbir kawasan pegangan masing-masing.",
+          "hint": "Ingat Sistem Pembesar Empat Lipatan."
         },
         {
-          "id": "t_adil",
-          "label": "Memerintah negeri dengan adil",
-          "target": "sultan",
-          "fact": "Sultan bertanggungjawab memerintah dengan adil."
-        },
-        {
-          "id": "t_bantu",
-          "label": "Membantu sultan mentadbir negeri",
-          "target": "pembesar",
-          "fact": "Pembesar membantu sultan mentadbir."
-        },
-        {
-          "id": "t_serah",
-          "label": "Sistem Serah: menyerahkan hasil kepada pemerintah",
-          "target": "rakyat",
-          "fact": "Sistem Serah ialah tanggungjawab rakyat kepada pemerintah.",
-          "semak": true
-        },
-        {
-          "id": "t_lindung",
-          "label": "Menjaga kebajikan rakyat",
-          "target": "sultan",
-          "fact": "Sultan menjaga kebajikan rakyat."
-        },
-        {
-          "id": "t_kawasan",
-          "label": "Mentadbir kawasan pegangan",
-          "target": "pembesar",
-          "fact": "Pembesar mentadbir kawasan pegangan masing-masing.",
-          "semak": true
+          "q": "Apakah tanggungjawab Sultan kepada rakyat?",
+          "options": [
+            "Melaksanakan Sistem Kerah",
+            "Menyerahkan hasil kepada pembesar",
+            "Mentadbir kawasan pegangan",
+            "Memerintah dengan adil dan menjaga kebajikan rakyat"
+          ],
+          "answer": 3,
+          "explain": "Sultan bertanggungjawab memerintah dengan adil dan menjaga kebajikan rakyat.",
+          "hint": "Ingat janji Sang Sapurba."
         }
       ],
       "done_text": "Sultan, pembesar dan rakyat masing-masing ada tanggungjawab."

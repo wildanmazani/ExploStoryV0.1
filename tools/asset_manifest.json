@@ -1,6 +1,6 @@
 {
  "characters": {
-  "alif": "83827c33-fbf2-4387-8560-f01538bdb2a7",
+  "alif": "c94f966a-677f-4df7-a53a-786b2b84d92d",
   "tunperak": "01ccd118-b5e2-4122-83f3-4e13ad6f45be",
   "syahbandar": "ce019e36-6842-4e91-9cb3-f8b451584ce8",
   "penjaga": "2893025b-a10b-4f53-8c8b-6d7a9a9bcb3a",
@@ -8,26 +8,112 @@
   "demang": "22ef5b68-53e0-4ffb-827d-ce240b7bdc8d",
   "makcik": "250124b7-b487-4b80-914d-d2eed2ab311a",
   "nelayan": "e67aa74f-9f3e-427a-97f4-e54ed02b561e",
-  "chengho": "e01bacde-382f-461e-aa5f-afcdb7cdad79"
+  "chengho": "e01bacde-382f-461e-aa5f-afcdb7cdad79",
+  "alif_melayu": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+  "alif_pengakap": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+  "alif_sukan": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+  "alif_bomba": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+  "alif_pahlawan": "dfb4c038-c102-4c65-932c-692adabd418e"
  },
  "animations": {
   "alif_walk": {
-   "character": "83827c33-fbf2-4387-8560-f01538bdb2a7",
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
    "dirs": {
     "south": [
-     "6c6ca0c0-fd78-4492-88c3-8d7acb869a05",
-     6
-    ],
-    "west": [
-     "0dda0034-221c-4f54-a0f2-9bb28051ec5e",
-     6
-    ],
-    "north": [
-     "189770e9-1235-423d-8c1c-aca67ae25ec1",
+     "0f15d6ff-c807-4e92-8a48-d1c79a1714c4",
      6
     ],
     "east": [
-     "a872bd6b-6b60-437f-98e9-05bfda1c96c2",
+     "29f3b90d-29cb-4ea0-b9cf-7a2bec3a2a76",
+     6
+    ],
+    "north": [
+     "af16fbf2-a0ce-482c-a4df-128f6476d2e4",
+     6
+    ]
+   }
+  },
+  "alif_melayu_walk": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "south": [
+     "ef01d4bc-a5dc-450b-b9a5-21347ff923e5",
+     6
+    ],
+    "east": [
+     "c9226bfc-9941-4758-a09b-c22132bd1971",
+     6
+    ],
+    "north": [
+     "5a389447-ed73-488e-bb48-52378f75874f",
+     6
+    ]
+   }
+  },
+  "alif_pengakap_walk": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "south": [
+     "7f939254-a609-4c5f-9d66-73e8b6c34a21",
+     6
+    ],
+    "east": [
+     "16c76c31-a706-4e84-9078-1618a8140a64",
+     6
+    ],
+    "north": [
+     "c3209f19-214b-4ee2-ad95-25e5bda2fa80",
+     6
+    ]
+   }
+  },
+  "alif_sukan_walk": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "south": [
+     "87729e49-0e96-443d-93f1-cb862f5117dd",
+     6
+    ],
+    "east": [
+     "474ff1d1-7588-4505-919e-c4e7c30e8e09",
+     6
+    ],
+    "north": [
+     "b5d37551-0ae0-4f73-9767-a542080e46bb",
+     6
+    ]
+   }
+  },
+  "alif_bomba_walk": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "south": [
+     "18d38563-47ef-4f8a-8d0e-aabab9225807",
+     6
+    ],
+    "east": [
+     "6d9a2913-d16e-4801-9322-26ad520d8393",
+     6
+    ],
+    "north": [
+     "80978bce-e321-4b03-98be-43843de43924",
+     6
+    ]
+   }
+  },
+  "alif_pahlawan_walk": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "south": [
+     "273bf393-5541-48ba-890a-90f1ec93aeed",
+     6
+    ],
+    "east": [
+     "cf8c3026-93aa-48a2-ba19-77665ea0f039",
+     6
+    ],
+    "north": [
+     "175da5cb-0d7f-4408-bab1-9cabb1c1b1e9",
      6
     ]
    }
@@ -70,5 +156,13 @@
   "meja_mahkamah": "86ef048c-2b24-4fc0-81a2-78260241dbda",
   "arena": "815fe5ef-09bc-4882-aebc-736beac23b9a",
   "batu_renungan": "1e00fc01-7388-47d0-bed8-2164dade2b53"
- }
+ },
+ "mirror_west": [
+  "alif",
+  "alif_melayu",
+  "alif_pengakap",
+  "alif_sukan",
+  "alif_bomba",
+  "alif_pahlawan"
+ ]
 }

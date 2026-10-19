@@ -265,41 +265,46 @@
       "done_text": "Pemerintah dan rakyat mempunyai hubungan timbal balik."
     },
     "kedaulatan": {
-      "type": "drag_match",
+      "type": "objektif",
       "title": "Panji Kedaulatan",
-      "instruction": "Isih setiap kenyataan: adakah ia bukti kedaulatan Melaka?",
+      "instruction": "Jawab soalan tentang kedaulatan Melaka. Pilih satu jawapan.",
       "hint": "Berdaulat bermaksud sebuah kerajaan bebas memerintah tanpa campur tangan kuasa asing.",
-      "targets": [
+      "questions": [
         {
-          "id": "ya",
-          "label": "Bukti kedaulatan",
-          "icon": "res://assets/icons/bintang.png"
+          "q": "Yang manakah bukti bahawa Melaka sebuah kerajaan berdaulat?",
+          "options": [
+            "Kuasa asing menentukan undang-undang Melaka",
+            "Kedaulatan Melaka diiktiraf oleh Dinasti Ming",
+            "Kitab Kutara Manawa menjadi undang-undang Melaka",
+            "Melaka berada di bawah naungan Kedah"
+          ],
+          "answer": 1,
+          "explain": "Kunjungan utusan seperti Laksamana Cheng Ho menunjukkan Melaka diiktiraf kuasa luar.",
+          "hint": "Kerajaan berdaulat diiktiraf oleh kuasa luar."
         },
         {
-          "id": "tidak",
-          "label": "Bukan bukti kedaulatan",
-          "icon": "res://assets/icons/kunci.png"
-        }
-      ],
-      "items": [
-        {
-          "id": "ming",
-          "label": "Kedaulatan Melaka diiktiraf oleh Dinasti Ming",
-          "icon": "res://assets/icons/kapal.png",
-          "target": "ya",
-          "fact": "Kunjungan utusan seperti Laksamana Cheng Ho menunjukkan Melaka diiktiraf kuasa luar."
+          "q": "Kerajaan yang berdaulat ialah kerajaan yang...",
+          "options": [
+            "membenarkan kuasa asing membuat undang-undangnya",
+            "tidak mempunyai wilayah sendiri",
+            "mentadbir urusannya sendiri tanpa campur tangan asing",
+            "menyerahkan hasil kepada kerajaan lain"
+          ],
+          "answer": 2,
+          "explain": "Melaka bebas daripada campur tangan asing, jadi Melaka berdaulat.",
+          "hint": "Berdaulat bermaksud bebas mentadbir sendiri."
         },
         {
-          "id": "bebas",
-          "label": "Melaka bebas daripada campur tangan asing",
-          "target": "ya",
-          "fact": "Kerajaan berdaulat mentadbir urusannya sendiri."
-        },
-        {
-          "id": "tunduk",
-          "label": "Kuasa asing menentukan undang-undang Melaka",
-          "target": "tidak",
-          "fact": "Jika kuasa asing menentukan undang-undang, kerajaan itu tidak berdaulat."
+          "q": "Siapakah utusan Dinasti Ming yang melawat Melaka?",
+          "options": [
+            "Tun Perak",
+            "Sang Sapurba",
+            "Demang Lebar Daun",
+            "Laksamana Cheng Ho"
+          ],
+          "answer": 3,
+          "explain": "Kunjungan Laksamana Cheng Ho menunjukkan Melaka diiktiraf oleh Dinasti Ming.",
+          "hint": "Dia datang dengan kapal besar dari China."
         }
       ],
       "done_text": "Melaka berdaulat: diiktiraf Dinasti Ming dan bebas daripada campur tangan asing."
@@ -433,72 +438,42 @@
       "done_text": "Dua gulungan undang-undang Melaka diambil. Kita akan melihatnya di mahkamah nanti."
     },
     "lambang": {
-      "type": "drag_match",
+      "type": "suaikan",
       "title": "Panji Lambang Kebesaran",
       "instruction": "Padankan setiap lambang kebesaran dengan maksudnya.",
       "hint": "Nobat ialah alat muzik. Cap mohor ialah cop rasmi.",
-      "targets": [
+      "left_title": "Lambang",
+      "right_title": "Maksud",
+      "pairs": [
         {
-          "id": "d_nobat",
-          "label": "Alat muzik diraja"
-        },
-        {
-          "id": "d_cap",
-          "label": "Cop rasmi pada surat raja"
-        },
-        {
-          "id": "d_warna",
-          "label": "Warna khas untuk raja"
-        },
-        {
-          "id": "d_regalia",
-          "label": "Alat kebesaran diraja"
-        },
-        {
-          "id": "d_adat",
-          "label": "Upacara rasmi istana"
-        }
-      ],
-      "items": [
-        {
-          "id": "nobat",
-          "label": "Nobat",
-          "icon": "res://assets/icons/nobat.png",
-          "target": "d_nobat",
+          "left": "Nobat",
+          "right": "Alat muzik diraja",
           "fact": "Nobat dimainkan dalam upacara diraja.",
-          "semak": true
+          "icon": "res://assets/icons/nobat.png"
         },
         {
-          "id": "cap",
-          "label": "Cap Mohor",
-          "icon": "res://assets/icons/capmohor.png",
-          "target": "d_cap",
+          "left": "Cap Mohor",
+          "right": "Cop rasmi pada surat raja",
           "fact": "Cap mohor ialah cop rasmi raja.",
-          "semak": true
+          "icon": "res://assets/icons/capmohor.png"
         },
         {
-          "id": "kuning",
-          "label": "Warna kuning",
-          "icon": "res://assets/icons/kain.png",
-          "target": "d_warna",
+          "left": "Warna kuning",
+          "right": "Warna khas untuk raja",
           "fact": "Warna kuning dikhaskan untuk raja.",
-          "semak": true
+          "icon": "res://assets/icons/kain.png"
         },
         {
-          "id": "regalia",
-          "label": "Regalia",
-          "icon": "res://assets/icons/regalia.png",
-          "target": "d_regalia",
+          "left": "Regalia",
+          "right": "Alat kebesaran diraja",
           "fact": "Regalia ialah alat kebesaran diraja.",
-          "semak": true
+          "icon": "res://assets/icons/regalia.png"
         },
         {
-          "id": "adat",
-          "label": "Adat istiadat",
-          "icon": "res://assets/icons/mahkota.png",
-          "target": "d_adat",
+          "left": "Adat istiadat",
+          "right": "Upacara rasmi istana",
           "fact": "Adat istiadat ialah upacara rasmi istana.",
-          "semak": true
+          "icon": "res://assets/icons/mahkota.png"
         }
       ],
       "done_text": "Adat istiadat, warna, nobat, regalia dan cap mohor: lambang kebesaran Melaka."

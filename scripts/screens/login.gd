@@ -70,7 +70,7 @@ func _ready() -> void:
 	col.add_child(mode)
 	frame.add_child(col)
 	add_child(UI.center(frame))
-	var logo := UI.label("EXPLO-STORY", "Title")
+	var logo := UI.label("EXPLO-STORY", "Logo")
 	logo.position = Vector2(30, 20)
 	add_child(logo)
 	_user.grab_focus()
@@ -101,6 +101,9 @@ func _do_login() -> void:
 	Game.load_profile(str(r["username"]), mode, str(r.get("role", "student")), str(r.get("avatar", "pelajar_1")), str(r.get("email", "")))
 	if r.has("cloud_save") and r["cloud_save"] is Dictionary and r["cloud_save"].has("profile"):
 		Game.save = r["cloud_save"]
+		Game._ensure_fields()
+	if Backend.can_play_online():
+		Backend.sync_player_code()  # friends add you by the server's Player ID
 	_enter_game()
 
 
@@ -111,7 +114,7 @@ func _guest() -> void:
 
 func _enter_game() -> void:
 	if bool(Game.save.get("prolog_done", false)):
-		Game.goto("peta")
+		Game.goto("arka")
 	else:
 		Game.goto("prolog")
 

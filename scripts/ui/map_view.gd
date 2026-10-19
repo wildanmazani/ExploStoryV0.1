@@ -186,7 +186,7 @@ func _draw() -> void:
 		for a in world.areas:
 			var r: Array = a["rect"]
 			var p := to_screen(Vector2((r[0] + r[2] + 1) / 2.0, r[1] + 1.2))
-			var name_s := str(a["name"]).replace("Zon ", "").to_upper()
+			var name_s := str(a["name"]).replace("Misi ", "").to_upper()
 			var fs := int(14 * s)
 			var w := font.get_string_size(name_s, HORIZONTAL_ALIGNMENT_CENTER, -1, fs).x
 			draw_string_outline(font, p - Vector2(w / 2.0, 0), name_s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 5, Color(0.1, 0.1, 0.15, 0.9))

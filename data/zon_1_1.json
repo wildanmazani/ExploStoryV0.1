@@ -203,60 +203,36 @@
       "done_text": "Benang emas mengalir dari Funan hingga Johor-Riau. Setiap kerajaan mewarisi ciri kerajaan sebelumnya."
     },
     "empat_tiang": {
-      "type": "drag_match",
+      "type": "suaikan",
       "title": "Empat Tiang Negara Bangsa",
-      "instruction": "Letakkan setiap artifak bukti pada tiang yang betul.",
+      "instruction": "Padankan setiap artifak bukti dengan tiang negara bangsa yang dibuktikannya.",
       "hint": "Fikir apa yang dibuktikan oleh setiap artifak: pemerintah, peraturan, kawasan atau kesetiaan.",
-      "targets": [
+      "left_title": "Artifak bukti",
+      "right_title": "Tiang",
+      "pairs": [
         {
-          "id": "raja",
-          "label": "Raja",
-          "icon": "res://assets/icons/mahkota.png"
+          "left": "Patung Dewa Siva",
+          "right": "Raja",
+          "fact": "Raja Champa dianggap suci dan dikaitkan dengan Dewa Siva.",
+          "icon": "res://assets/icons/siva.png"
         },
         {
-          "id": "undang",
-          "label": "Undang-undang",
-          "icon": "res://assets/icons/timbangan.png"
+          "left": "Kitab Kutara Manawa",
+          "right": "Undang-undang",
+          "fact": "Majapahit mengamalkan undang-undang bertulis Kutara Manawa.",
+          "icon": "res://assets/icons/kitab.png"
         },
         {
-          "id": "wilayah",
-          "label": "Wilayah Pengaruh",
+          "left": "Peta Funan",
+          "right": "Wilayah Pengaruh",
+          "fact": "Wilayah Funan meliputi kawasan Sungai Mekong, Teluk Cam Ranh, selatan Myanmar dan Segenting Kra.",
           "icon": "res://assets/icons/peta.png"
         },
         {
-          "id": "rakyat",
-          "label": "Rakyat",
-          "icon": "res://assets/icons/kumpulan.png"
-        }
-      ],
-      "items": [
-        {
-          "id": "siva",
-          "label": "Patung Dewa Siva",
-          "icon": "res://assets/icons/siva.png",
-          "target": "raja",
-          "fact": "Raja Champa dianggap suci dan dikaitkan dengan Dewa Siva."
-        },
-        {
-          "id": "kutara",
-          "label": "Kitab Kutara Manawa",
-          "icon": "res://assets/icons/kitab.png",
-          "target": "undang",
-          "fact": "Majapahit mengamalkan undang-undang bertulis Kutara Manawa."
-        },
-        {
-          "id": "petafunan",
-          "label": "Peta Funan",
-          "icon": "res://assets/icons/peta.png",
-          "target": "wilayah",
-          "fact": "Wilayah Funan meliputi kawasan Sungai Mekong, Teluk Cam Ranh, selatan Myanmar dan Segenting Kra."
-        },
-        {
-          "id": "telagabatu",
-          "label": "Prasasti Telaga Batu",
-          "icon": "res://assets/icons/prasasti.png",
-          "target": "rakyat",
-          "fact": "Rakyat Srivijaya meminum air sumpah yang dituang ke atas Inskripsi Telaga Batu sebagai tanda setia."
+          "left": "Prasasti Telaga Batu",
+          "right": "Rakyat",
+          "fact": "Rakyat Srivijaya meminum air sumpah yang dituang ke atas Inskripsi Telaga Batu sebagai tanda setia.",
+          "icon": "res://assets/icons/prasasti.png"
         }
       ],
       "done_text": "Empat tiang naik semula: Raja, Undang-undang, Wilayah Pengaruh dan Rakyat."

@@ -397,7 +397,7 @@ func _swap(s: Sprite2D, tex_name: String, animate: bool) -> void:
 		t.tween_property(s, "modulate", Color.WHITE, 0.6)
 
 
-## Zon 1.1: the five kingdom gates glide into time order and a golden
+## Misi 1.1: the five kingdom gates glide into time order and a golden
 ## thread of heritage runs through them.
 func _arrange_gates(animate: bool) -> void:
 	var kg: Dictionary = _ent["kingdom_gates"]
@@ -431,7 +431,7 @@ func _arrange_gates(animate: bool) -> void:
 		t.tween_property(_thread, "modulate:a", 1.0, 1.0)
 
 
-## Zon 1.4: the banyan (pohon = raja, akar = rakyat) wilts in the storm and
+## Misi 1.4: the banyan (pohon = raja, akar = rakyat) wilts in the storm and
 ## grows healthy again as the Waadat is understood.
 func _update_tree(animate: bool) -> void:
 	var tree: Sprite2D = spot_sprites.get("pokok")
@@ -567,7 +567,9 @@ func _talk_or_act(id: String) -> void:
 	elif Game.story.has(key):
 		await Game.say(key)
 	match id:
-		"monument": await _open_peta()
+		"monument":  # Peta Jejak: the Arka & Zon screen (Tingkatan / Bab)
+			_leave_to("")
+			Game.goto("arka")
 		"muzium": await Main.open_muzium().closed
 		"arena":
 			GameState.spawn_cell = player.cell
@@ -578,18 +580,13 @@ func _leave_to(scene: String) -> void:
 	busy = true
 	Sfx.play("select")
 	_save_pos()
-	GameState.go_to(scene)
+	if scene != "":
+		GameState.go_to(scene)
 
 
 func _save_pos() -> void:
 	Game.save["map_pos"] = [player.cell.x, player.cell.y]
 	Game.persist()
-
-
-func _open_peta() -> void:
-	var peta: CanvasLayer = load("res://scenes/ui/peta_jejak.tscn").instantiate()
-	add_child(peta)
-	await peta.closed
 
 
 func _talk_to_pau() -> void:
@@ -617,7 +614,7 @@ func _update_prompt() -> void:
 			label = _label_for(it)
 	prompt.visible = label != ""
 	if prompt.visible:
-		prompt.text = "E / Ketik: " + label
+		prompt.text = tr("E / Ketik: ") + tr(label)
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
 		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(screen.y + 8, 120, 640))
@@ -673,12 +670,12 @@ func _enter_area(a: Dictionary) -> void:
 		_zone_welcome(zid)
 
 
-## First visit to an open zone: the prototype's "Persiapan Zon" briefing,
+## First visit to an open zone: the prototype's "Persiapan Misi" briefing,
 ## then the zone's intro conversation.
 func _zone_welcome(zid: String) -> void:
 	if not Game.zone_unlocked(zid):
 		var prev: String = Game.ZONES[Game.ZONES.find(zid) - 1]
-		Main.pau_say("Tempat ni untuk Zon %s. Kita kena habiskan Zon %s dulu." % [zid.replace("_", "."), prev.replace("_", ".")], 5.0)
+		Main.pau_say("Tempat ni untuk Misi %s. Kita kena habiskan Misi %s dulu." % [zid.replace("_", "."), prev.replace("_", ".")], 5.0)
 		return
 	if Game.zone_done(zid) or not Game.zone_state(zid)["steps"].is_empty():
 		return

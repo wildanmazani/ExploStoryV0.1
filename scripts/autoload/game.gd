@@ -6,6 +6,7 @@ const UI = preload("res://scripts/ui/ui.gd")
 
 signal settings_changed
 signal stats_changed
+signal skin_changed
 signal pau_pressed
 signal hint_requested(tier: int)
 
@@ -23,6 +24,8 @@ const SCREENS := {
 	"zone_summary": "res://scripts/screens/zone_summary.gd",
 	"penutup": "res://scripts/screens/penutup.gd",
 	"lobby": "res://scripts/screens/lobby.gd",
+	"arka": "res://scripts/screens/arka.gd",
+	"pertarungan": "res://scripts/screens/pertarungan.gd",
 }
 
 const ZONES := ["1_1", "1_2", "1_3", "1_4"]
@@ -30,8 +33,9 @@ const EXP_PER_LEVEL := 200
 const SETTINGS_PATH := "user://tetapan.json"
 const DEFAULT_SETTINGS := {
 	"font": "lexend", "text_size": 1, "text_speed": 1, "auto_read": false,
-	"muted": false, "music": 0.8, "sfx": 0.8,
+	"muted": false, "music": 0.8, "sfx": 0.8, "voice": 0.8, "lang": "ms",
 }
+const I18N_PATH := "res://data/i18n/en.json"  ## BM menu text -> English
 
 var main: Node = null
 var theme: Theme
@@ -41,6 +45,8 @@ var characters: Dictionary = {}
 var chapters: Dictionary = {}
 var story: Dictionary = {}
 var _zone_cache: Dictionary = {}
+var _skins: Array = []
+var _tr_en: Translation
 var input_lock: int = 0
 ## screen waiting to be shown by scenes/screen_host.tscn
 var pending_screen: String = ""
@@ -59,6 +65,7 @@ func _ready() -> void:
 		for k in s.keys():
 			settings[k] = s[k]
 	theme = UI.build_theme(settings)
+	_load_translations()
 	characters = load_json("res://data/characters.json")
 	chapters = load_json("res://data/chapters.json")
 	story = load_json("res://data/story.json")
@@ -131,12 +138,36 @@ func set_setting(key: String, value: Variant) -> void:
 	write_json_user(SETTINGS_PATH, settings)
 	UI.apply_settings(theme, settings)
 	apply_audio()
+	if key == "lang":
+		_set_language(str(value))
 	settings_changed.emit()
+
+
+## Menus can be in English; history content stays in BM (see data/i18n/en.json).
+func _load_translations() -> void:
+	_tr_en = Translation.new()
+	_tr_en.locale = "en"
+	var d = JSON.parse_string(FileAccess.get_file_as_string(I18N_PATH))
+	if d is Dictionary:
+		for k in d:
+			if not str(k).begins_with("_"):
+				_tr_en.add_message(str(k), str(d[k]))
+	_set_language(str(settings.get("lang", "ms")))
+
+
+## The English table is only registered while English is chosen: Godot falls
+## back to English for any locale without its own table, so BM would show English.
+func _set_language(lang: String) -> void:
+	if lang == "en":
+		TranslationServer.add_translation(_tr_en)
+	else:
+		TranslationServer.remove_translation(_tr_en)
+	TranslationServer.set_locale(lang)
 
 
 func apply_audio() -> void:
 	AudioServer.set_bus_mute(0, bool(settings.get("muted", false)))
-	for bus in [["Music", "music"], ["SFX", "sfx"], ["Ambient", "sfx"], ["Voice", "sfx"]]:
+	for bus in [["Music", "music"], ["SFX", "sfx"], ["Ambient", "sfx"], ["Voice", "voice"]]:
 		var i := AudioServer.get_bus_index(bus[0])
 		if i >= 0:
 			AudioServer.set_bus_volume_db(i, linear_to_db(maxf(float(settings.get(bus[1], 0.8)), 0.001)))
@@ -163,6 +194,32 @@ func new_save(username: String, mode: String, role: String = "student", avatar: 
 		"map_pos": [],
 		"reflection": "",
 	}
+	_ensure_fields()
+
+
+## Fields added after the first release; old saves get them on load.
+func _ensure_fields() -> void:
+	var defaults := {
+		"player_id": "", "skins_owned": ["sekolah", "melayu"], "skin": "sekolah",
+		"battle": {"played": 0, "wins": 0},
+	}
+	for k in defaults:
+		if not save.has(k):
+			save[k] = defaults[k].duplicate() if defaults[k] is Array or defaults[k] is Dictionary else defaults[k]
+	if str(save["player_id"]) == "":
+		save["player_id"] = _new_player_id()
+	for k in ["display_name", "motto"]:
+		if not save["profile"].has(k):
+			save["profile"][k] = save["profile"]["username"] if k == "display_name" else ""
+
+
+## 6 characters, no look-alikes (0/O, 1/I) so it is easy to read out to a friend
+func _new_player_id() -> String:
+	const CH := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+	var s := ""
+	for i in 6:
+		s += CH[randi() % CH.length()]
+	return s
 
 
 func save_path_for(username: String) -> String:
@@ -179,6 +236,7 @@ func load_profile(username: String, mode: String, role: String = "student", avat
 			save["profile"]["email"] = email
 	else:
 		new_save(username, mode, role, avatar, email)
+	_ensure_fields()
 	persist()
 
 
@@ -188,9 +246,60 @@ func persist() -> void:
 
 
 func reset_progress() -> void:
+	# Bab 1 starts again; the player keeps their ID, profile and bought skins
+	var keep := {"profile": save["profile"], "player_id": save["player_id"], "skins_owned": save["skins_owned"], "skin": save["skin"], "battle": save["battle"]}
 	var p: Dictionary = save["profile"]
 	new_save(str(p["username"]), str(p["mode"]), str(p["role"]), str(p["avatar"]), str(p.get("email", "")))
+	for k in keep:
+		save[k] = keep[k]
 	persist()
+
+
+# ------------------------------------------------------------------ skins and shop
+func skins() -> Array:
+	if _skins.is_empty():
+		_skins = load_json("res://data/skins.json").get("skins", [])
+	return _skins
+
+
+func skin_def(id: String) -> Dictionary:
+	for s in skins():
+		if str(s["id"]) == id:
+			return s
+	return skins()[0]
+
+
+## Character folder for the equipped skin (falls back to plain Alif).
+func skin_folder() -> String:
+	var f := str(skin_def(str(save.get("skin", "sekolah")))["folder"])
+	return f if ResourceLoader.exists("res://assets/characters32/%s/%s_south.png" % [f, f]) else "alif"
+
+
+func spend(amount: int) -> bool:
+	if int(save["coins"]) < amount:
+		return false
+	save["coins"] = int(save["coins"]) - amount
+	stats_changed.emit()
+	return true
+
+
+## "" when bought, otherwise why not
+func buy_skin(id: String) -> String:
+	if save["skins_owned"].has(id):
+		return "Sudah dimiliki"
+	var price := int(skin_def(id)["price"])
+	if not spend(price):
+		return tr("Syiling tak cukup. Perlu %d lagi.") % (price - int(save["coins"]))
+	save["skins_owned"].append(id)
+	persist()
+	return ""
+
+
+func equip_skin(id: String) -> void:
+	if save["skins_owned"].has(id):
+		save["skin"] = id
+		persist()
+		skin_changed.emit()
 	stats_changed.emit()
 
 

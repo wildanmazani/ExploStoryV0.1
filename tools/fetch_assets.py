@@ -1,6 +1,7 @@
 """Download PixelLab assets listed in tools/asset_manifest.json into assets/.
 
 Run: python tools/fetch_assets.py   (skips files that already exist)
+then: godot --headless --path . -s tools/mirror_west.gd  (west = mirrored east for Alif)
 """
 import json
 import os

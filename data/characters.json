@@ -19,7 +19,7 @@
     "sprite": "penjaga",
     "tokoh": true,
     "zon": "1_1",
-    "gelaran": "Pemandu Zon 1.1",
+    "gelaran": "Pemandu Misi 1.1",
     "lore": "Watak rekaan. Berpakaian gabungan lima zaman dan menjaga benang warisan kerajaan awal Alam Melayu.",
     "rekaan": true
   },
@@ -29,7 +29,7 @@
     "sprite": "syahbandar",
     "tokoh": true,
     "zon": "1_2",
-    "gelaran": "Pemandu Zon 1.2",
+    "gelaran": "Pemandu Misi 1.2",
     "lore": "Watak rekaan. Pegawai pelabuhan Melaka yang sibuk mengurus kapal dan pedagang asing.",
     "rekaan": true
   },

@@ -166,7 +166,7 @@
   },
   {
    "id": "gerbang",
-   "name": "Zon 1.1: Gerbang Masa",
+   "name": "Misi 1.1: Gerbang Masa",
    "rect": [
     24,
     4,
@@ -176,7 +176,7 @@
   },
   {
    "id": "siguntang",
-   "name": "Zon 1.4: Bukit Siguntang",
+   "name": "Misi 1.4: Bukit Siguntang",
    "rect": [
     45,
     2,
@@ -186,7 +186,7 @@
   },
   {
    "id": "melaka",
-   "name": "Zon 1.3: Kota Melaka",
+   "name": "Misi 1.3: Kota Melaka",
    "rect": [
     48,
     21,
@@ -196,7 +196,7 @@
   },
   {
    "id": "pelabuhan",
-   "name": "Zon 1.2: Pelabuhan Melaka",
+   "name": "Misi 1.2: Pelabuhan Melaka",
    "rect": [
     56,
     36,

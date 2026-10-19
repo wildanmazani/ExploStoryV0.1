@@ -35,11 +35,13 @@ func _ready() -> void:
 	}
 
 
-func play(name: String, volume_db := 0.0, pitch := 1.0) -> void:
+## bus: "SFX", or "Voice" for the dialogue voice blips (own volume slider)
+func play(name: String, volume_db := 0.0, pitch := 1.0, bus := "SFX") -> void:
 	if not _sounds.has(name):
 		return
 	var p := _players[_next]
 	_next = (_next + 1) % POOL
+	p.bus = bus if AudioServer.get_bus_index(bus) >= 0 else "Master"
 	p.stream = _sounds[name]
 	p.volume_db = volume_db
 	p.pitch_scale = pitch

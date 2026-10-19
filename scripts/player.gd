@@ -33,9 +33,17 @@ var _on_arrive: Callable
 
 
 func _ready() -> void:
-	sprite.sprite_frames = CharacterFrames.build("alif", true)
-	sprite.offset = CharacterFrames.feet_offset("alif")
+	_apply_skin()
+	Game.skin_changed.connect(_apply_skin)
 	_idle()
+
+
+## Alif's outfit from the shop (Game.save.skin)
+func _apply_skin() -> void:
+	var folder := Game.skin_folder()
+	sprite.sprite_frames = CharacterFrames.build(folder, true)
+	sprite.offset = CharacterFrames.feet_offset(folder)
+	sprite.play("idle_" + facing)
 
 
 func place_at(c: Vector2i, face := "south") -> void:
