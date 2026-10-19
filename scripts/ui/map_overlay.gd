@@ -14,7 +14,7 @@ var _pinch_d := 0.0
 
 func _init() -> void:
 	title_text = "PETA DUNIA EXPLO-STORY"
-	panel_size = Vector2(1220, 670)
+	panel_size = Vector2(1250, 690)
 
 
 func _build() -> void:
@@ -32,7 +32,7 @@ func _build() -> void:
 	view.follow_player = false
 	view.show_names = true
 	view.icon_scale = 1.4
-	view.custom_minimum_size = Vector2(720, 500)
+	view.custom_minimum_size = Vector2(820, 520)
 	view.mouse_filter = Control.MOUSE_FILTER_STOP
 	view.mouse_default_cursor_shape = Control.CURSOR_DRAG
 	view.gui_input.connect(_on_map_input)
@@ -58,7 +58,7 @@ func _build() -> void:
 
 	# legend
 	var right := UI.vbox(8)
-	right.custom_minimum_size = Vector2(400, 0)
+	right.custom_minimum_size = Vector2(360, 0)
 	var tabs := UI.hbox(6)
 	for t in [["Tempat", "_show_places"], ["Kata Kunci", "_show_keywords"], ["Simbol", "_show_symbols"]]:
 		var b := UI.button(t[0])

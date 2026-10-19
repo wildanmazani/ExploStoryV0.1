@@ -6,7 +6,7 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const MAP := 156.0
-const ZOOMS := [8.0, 4.0, 0.0]  ## px per tile; 0 = whole map
+const ZOOMS := [7.0, 3.5, 0.0]  ## px per tile; 0 = whole map
 
 signal open_requested
 

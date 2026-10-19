@@ -67,7 +67,8 @@ var busy := false
 var runner := ZoneRunner.new()
 var hud: Control
 var minimap: Control
-var map_texture: Texture2D  ## 1 px per tile, for the mini map
+var map_texture: Texture2D  ## picture of the whole world for the maps (see _capture_map)
+var map_sea := Color("3b8fc4")  ## sea colour around the map picture
 var _ent: Dictionary
 var _last_move := 0.0
 var _thread: Line2D
@@ -134,6 +135,7 @@ func _ready() -> void:
 
 	add_child(runner)
 	runner.setup(self)
+	_capture_map()
 	skip.pressed.connect(_skip_intro)
 	if GameState.flags.get("world_intro", false):
 		GameState.flags["world_intro"] = false
@@ -327,6 +329,42 @@ func _build_entities() -> void:
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
 	areas = _ent["areas"]
+
+
+## Photographs the whole island once (every tile, tree, house and boat) for the
+## mini map and the full map. People, Pau and quest marks are left out: the
+## maps draw them as live icons. Headless runs keep the simple 1 px map.
+func _capture_map() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var sub := SubViewport.new()
+	sub.size = Vector2i(terrain.width * TILE, terrain.height * TILE)
+	sub.world_2d = get_viewport().world_2d  # same world, own camera
+	sub.render_target_update_mode = SubViewport.UPDATE_ONCE
+	sub.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+	sub.canvas_cull_mask = 1  # characters live on layer 2 too: this camera skips them
+	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values():
+		_to_layer2(n)
+	var cam := Camera2D.new()
+	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
+	sub.add_child(cam)
+	add_child(sub)
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var img := sub.get_texture().get_image()
+	sub.queue_free()
+	if img == null or img.is_empty():
+		return
+	map_sea = img.get_pixel(2, 2)  # open sea in the corner
+	img.generate_mipmaps()
+	map_texture = ImageTexture.create_from_image(img)
+
+
+func _to_layer2(n: Node) -> void:
+	if n is CanvasItem:
+		(n as CanvasItem).visibility_layer = 2
+	for c in n.get_children():
+		_to_layer2(c)
 
 
 func entities() -> Dictionary:

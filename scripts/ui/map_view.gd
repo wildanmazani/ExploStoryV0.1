@@ -31,7 +31,6 @@ var icon_scale: float = 1.0
 var highlight: Vector2 = Vector2(-1, -1)  ## pulsing ring (legend tap)
 
 var _t: float = 0.0
-var _tex: Texture2D
 var _map_size: Vector2 = Vector2(80, 60)
 var _icons := {}  ## path -> Texture2D
 
@@ -79,9 +78,7 @@ static func build_texture(w: Node) -> Texture2D:
 func _ready() -> void:
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_PASS
-	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if world:
-		_tex = world.map_texture
 		_map_size = Vector2(world.terrain.width, world.terrain.height)
 
 
@@ -117,7 +114,7 @@ func to_tile(screen: Vector2) -> Vector2:
 
 func set_zoom(ppt: float, anchor: Vector2 = Vector2(-1, -1)) -> void:
 	var before := to_tile(anchor) if anchor.x >= 0 else center
-	px_per_tile = clampf(ppt, fit_scale(), 24.0)
+	px_per_tile = clampf(ppt, fit_scale(), 32.0)
 	if anchor.x >= 0:  # keep the point under the cursor still
 		center += before - to_tile(anchor)
 	clamp_center()
@@ -173,24 +170,32 @@ func _icon(path: String) -> Texture2D:
 
 # ------------------------------------------------------------------ drawing
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), COL_SEA_D)
-	if _tex == null or world == null:
+	draw_rect(Rect2(Vector2.ZERO, size), world.map_sea if world else COL_SEA)
+	if world == null or world.map_texture == null:
 		return
+	# the world's own picture (photographed when it loads); smooth when shrunk,
+	# crisp pixels when zoomed in close
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST if px_per_tile >= 14.0 else CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	var origin := to_screen(Vector2.ZERO)
-	draw_texture_rect(_tex, Rect2(origin, _map_size * px_per_tile), false)
+	draw_texture_rect(world.map_texture, Rect2(origin, _map_size * px_per_tile), false)
 	var s := icon_scale
 	var ent: Dictionary = world.entities()
+	var close := show_names and px_per_tile >= 10.0  # zoomed in: name every place and person
+
+	for a in world.areas:  # the Mist of Time stays purple and mysterious
+		if a["id"] == "kabus":
+			var r: Array = a["rect"]
+			# soft drifting puffs instead of a hard box
+			for y in range(r[1], r[3] + 1, 3):
+				for x in range(r[0], r[2] + 1, 3):
+					var wob := Vector2(sin(_t * 0.6 + x * 0.7), cos(_t * 0.5 + y * 0.9)) * 0.6
+					draw_circle(to_screen(Vector2(x + 1.5, y + 1.5) + wob), 2.6 * px_per_tile, Color(0.62, 0.48, 0.85, 0.13))
 
 	if show_names:
-		var font := get_theme_default_font()
 		for a in world.areas:
 			var r: Array = a["rect"]
-			var p := to_screen(Vector2((r[0] + r[2] + 1) / 2.0, r[1] + 1.2))
 			var name_s := str(a["name"]).replace("Misi ", "").to_upper()
-			var fs := int(14 * s)
-			var w := font.get_string_size(name_s, HORIZONTAL_ALIGNMENT_CENTER, -1, fs).x
-			draw_string_outline(font, p - Vector2(w / 2.0, 0), name_s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 5, Color(0.1, 0.1, 0.15, 0.9))
-			draw_string(font, p - Vector2(w / 2.0, 0), name_s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, UI.CREAM)
+			_label(name_s, to_screen(Vector2((r[0] + r[2] + 1) / 2.0, r[1] + 1.2)), int((16 if close else 14) * s), UI.GOLD if close else UI.CREAM)
 
 	# chapter gates (locked = padlock)
 	for g in ent["gates"]:
@@ -205,15 +210,21 @@ func _draw() -> void:
 			var size_a: Array = sg.get("size", [1, 1])
 			var c := Vector2(sg["pos"][0] + size_a[0] / 2.0, sg["pos"][1] - size_a[1] / 2.0 + 1)
 			draw_badge(self, to_screen(c), _icon(lm[sg["id"]]["icon"]), 18 * s)
+			if close:
+				_label(str(lm[sg["id"]]["name"]), to_screen(c) + Vector2(0, 22 * s), int(12 * s), UI.CREAM)
 	for id in lm:
 		if world.spots.has(id):
 			draw_badge(self, to_screen(spot_tile(id)), _icon(lm[id]["icon"]), 18 * s)
+			if close:
+				_label(str(lm[id]["name"]), to_screen(spot_tile(id)) + Vector2(0, 22 * s), int(12 * s), UI.CREAM)
 
 	# people
 	for at in world.npcs:
 		var np := to_screen(Vector2(at) + Vector2(0.5, 0.5))
-		draw_circle(np, 3.5 * s, Color(0.1, 0.1, 0.12))
-		draw_circle(np, 2.5 * s, UI.CREAM)
+		draw_circle(np, 4.0 * s, Color(0.1, 0.1, 0.12))
+		draw_circle(np, 3.0 * s, UI.CREAM)
+		if close:
+			_label(Game.char_name(world.npcs[at].id), np + Vector2(0, 16 * s), int(11 * s), Color("cfe8ff"))
 
 	# zone flags
 	for p in legend()["places"]:
@@ -239,6 +250,15 @@ func _draw() -> void:
 	draw_circle(me, 6.0 * s, Color(0.08, 0.08, 0.12))
 	draw_circle(me, 4.5 * s, Color("ff5a4a") if on else Color("ffd0c8"))
 	draw_arc(me, 6.5 * s, 0, TAU, 20, Color.WHITE, 1.5)
+
+
+## text with a dark outline, centred on p (baseline)
+func _label(text: String, p: Vector2, fs: int, col: Color) -> void:
+	var font := get_theme_default_font()
+	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var at := p - Vector2(w / 2.0, 0)
+	draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 5, Color(0.08, 0.08, 0.12, 0.95))
+	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
 
 # ------------------------------------------------------------------ symbols
