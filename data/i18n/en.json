@@ -212,5 +212,19 @@
   "Syabas! Fakta Bab 1 memang melekat dalam kepala kau.": "Well done! Chapter 1 facts really stick with you.",
   "Main lagi": "Play again",
   "Kembali": "Back",
-  "Sambungan ke bilik terputus.": "Lost connection to the room."
+  "Sambungan ke bilik terputus.": "Lost connection to the room.",
+  "Kawalan": "Controls",
+  "Kawalan skrin sentuh": "Touchscreen controls",
+  "Jenis": "Type",
+  "Automatik": "Automatic",
+  "D-pad": "D-pad",
+  "Joystick": "Joystick",
+  "Ketik sahaja": "Tap only",
+  "Saiz butang": "Button size",
+  "Kelegapan": "Opacity",
+  "Tangan kiri": "Left-handed",
+  "Automatik: D-pad muncul di telefon dan tablet. Di komputer, guna papan kekunci (WASD / anak panah) atau klik peta.": "Automatic: the D-pad shows on phones and tablets. On a computer, use the keyboard (WASD / arrow keys) or click the map.",
+  "D-pad: anak panah untuk berjalan, A untuk bercakap atau periksa, B (tekan lama) untuk berlari.": "D-pad: arrows to walk, A to talk or check, hold B to run.",
+  "Joystick: letak ibu jari di mana-mana sebelah bawah kiri dan tolak. Tolak sampai hujung untuk berlari. A untuk bercakap.": "Joystick: put your thumb anywhere in the bottom-left and push. Push all the way to run. A to talk.",
+  "Ketik sahaja: tiada butang. Ketik tempat atau orang di peta, Alif akan jalan ke sana sendiri.": "Tap only: no buttons. Tap a place or a person on the map and Alif walks there by himself."
 }

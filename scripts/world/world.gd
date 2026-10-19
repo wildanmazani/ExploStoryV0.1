@@ -107,12 +107,13 @@ func _ready() -> void:
 	hud.world = self
 	$HUD.add_child(hud)
 	$HUD.move_child(hud, 0)
-	# the mini map takes the Pau button's corner (phones: under the player card,
-	# the touch A/B buttons own the bottom-right)
+	# the mini map takes the Pau button's corner (with on-screen controls it
+	# moves up: the thumbs own the bottom corners)
 	minimap = Minimap.new()
 	minimap.world = self
 	$HUD.add_child(minimap)
-	minimap.position = Vector2(1280 - 16 - minimap.size.x, 150 if DisplayServer.is_touchscreen_available() else 720 - 16 - minimap.size.y)
+	_place_minimap()
+	Game.settings_changed.connect(_place_minimap)
 	minimap.open_requested.connect(open_map)
 	prompt.pressed.connect(func(): _interact(player.facing_cell()))
 	prompt.theme = Game.theme
@@ -142,6 +143,29 @@ func _ready() -> void:
 		_play_intro()
 	else:
 		_on_step_finished(spawn)
+		_controls_tip()
+
+
+## once, on a phone: Pau points at Tetapan > Kawalan
+func _controls_tip() -> void:
+	if not DisplayServer.is_touchscreen_available() or "tip_kawalan" in Game.save["seen"]:
+		return
+	await get_tree().create_timer(4.0).timeout
+	if busy or runner.busy or Game.is_locked():
+		return
+	Game.save["seen"].append("tip_kawalan")
+	Main.pau_say("Susah nak gerak? Tukar kawalan dalam Tetapan > Kawalan. Ada joystick pun!", 8.0)
+
+
+## bottom-right normally; under the player card with on-screen controls, or
+## under the menu buttons for left-handed players (the pad is on the right)
+func _place_minimap() -> void:
+	if not Game.controls_on_screen():
+		minimap.position = Vector2(1280 - 16 - minimap.size.x, 720 - 16 - minimap.size.y)
+	elif Game.settings.get("left_handed", false):
+		minimap.position = Vector2(16, 166)
+	else:
+		minimap.position = Vector2(1280 - 16 - minimap.size.x, 150)
 
 
 func _process(_delta: float) -> void:
@@ -252,6 +276,7 @@ func _end_intro() -> void:
 	busy = false
 	current_area = ""
 	_on_step_finished(player.cell)
+	_controls_tip()
 
 
 func _show_emote(text: String) -> void:
@@ -531,7 +556,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_talk_to_pau()
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
-		var cell := Vector2i((get_global_mouse_position() / TILE).floor())
+		if $TouchControls.owns(event.position):
+			return  # a thumb on the D-pad / joystick, not a tap on the map
+		var cell :=Vector2i((get_global_mouse_position() / TILE).floor())
 		var on_pau := cell == pau.cell or cell == pau.cell + Vector2i(0, -1)
 		if event.pressed and on_pau:
 			_pau_press = Time.get_ticks_msec() / 1000.0  # tap = talk, hold = calm

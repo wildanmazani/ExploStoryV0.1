@@ -34,6 +34,7 @@ const SETTINGS_PATH := "user://tetapan.json"
 const DEFAULT_SETTINGS := {
 	"font": "lexend", "text_size": 1, "text_speed": 1, "auto_read": false,
 	"muted": false, "music": 0.8, "sfx": 0.8, "voice": 0.8, "lang": "ms",
+	"controls": "auto", "pad_size": 1, "pad_alpha": 0.7, "left_handed": false,
 }
 const I18N_PATH := "res://data/i18n/en.json"  ## BM menu text -> English
 
@@ -394,6 +395,19 @@ func unlock_input() -> void:
 
 func is_locked() -> bool:
 	return input_lock > 0
+
+
+## on-screen controller for walking (Tetapan > Kawalan): "dpad", "joystick" or
+## "none". Automatik = D-pad on phones/tablets, nothing on a laptop.
+func touch_mode() -> String:
+	var m := str(settings.get("controls", "auto"))
+	if m == "auto":
+		return "dpad" if DisplayServer.is_touchscreen_available() else "none"
+	return m if m in ["dpad", "joystick"] else "none"
+
+
+func controls_on_screen() -> bool:
+	return touch_mode() != "none"
 
 
 func toast(text: String, color: Color = UI.GOLD) -> void:

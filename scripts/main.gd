@@ -78,13 +78,24 @@ func _ready() -> void:
 	toast_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ov.add_child(toast_box)
 
-	# phones: the touch A/B buttons own the bottom-right, so Pau moves up
-	if DisplayServer.is_touchscreen_available():
-		pau_button.position = Vector2(1280 - 130, 150)
+	_place_pau()
 	set_pau_visible(false)
-	Game.settings_changed.connect(func(): get_tree().root.theme = Game.theme)
+	Game.settings_changed.connect(func():
+		get_tree().root.theme = Game.theme
+		_place_pau())
 	if "--autotest" in OS.get_cmdline_user_args():
 		add_child(load("res://scripts/dev/autotest.gd").new())
+
+
+## with on-screen controls (Tetapan > Kawalan) the bottom corners belong to
+## the thumbs, so Pau moves up (left side for left-handed: the pad is right)
+func _place_pau() -> void:
+	if not Game.controls_on_screen():
+		pau_button.position = Vector2(1280 - 130, 720 - 140)
+	elif Game.settings.get("left_handed", false):
+		pau_button.position = Vector2(16, 166)
+	else:
+		pau_button.position = Vector2(1280 - 130, 150)
 
 
 func _layer(n: int) -> CanvasLayer:
@@ -137,7 +148,8 @@ func pau_say(text: String, seconds: float = 7.0) -> void:
 	bubble_label.text = text
 	bubble.visible = true
 	bubble.reset_size()
-	bubble.position = pau_button.position + Vector2(-20 - bubble.size.x, 10 - (bubble.size.y if pau_button.position.y > 360 else 0.0))
+	var bx := pau_button.size.x + 20.0 if pau_button.position.x < 640 else -20.0 - bubble.size.x  # Pau on the left: bubble opens right
+	bubble.position = pau_button.position + Vector2(bx, 10 - (bubble.size.y if pau_button.position.y > 360 else 0.0))
 	_bubble_timer.start(seconds)
 	if bool(Game.settings.get("auto_read", false)):
 		Tts.speak(text)

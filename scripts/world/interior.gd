@@ -182,6 +182,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		Main.open_settings()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
+		var tc := get_node_or_null("TouchControls")
+		if tc and tc.owns(event.position):
+			return  # a thumb on the D-pad / joystick, not a tap on the floor
 		var cell := Vector2i((get_global_mouse_position() / TILE).floor())
 		var target_id := ""
 		if npc and (cell == npc.cell or cell == npc.cell + Vector2i(0, -1)):

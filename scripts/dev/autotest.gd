@@ -171,6 +171,7 @@ func _run() -> void:
 		return
 	Game.set_setting("lang", "ms")
 	await _check_map()
+	await _check_controls()
 	Main._on_pau_tap()
 	await wait(0.3)
 	await shot("pau_hint_bubble")
@@ -382,6 +383,80 @@ func _check_map() -> void:
 	await shot("map_symbols_whole")
 	m.close()
 	await wait(0.2)
+
+
+## Tetapan > Kawalan: D-pad, joystick (fake thumb drag walks Alif east),
+## left-handed + big, tap only; then back to Automatik.
+func _check_controls() -> void:
+	Game.set_setting("controls", "joystick")
+	var sp: Node = Main.open_settings()
+	sp._show(2)
+	await wait(0.3)
+	await shot("settings_kawalan")
+	close_top_overlay()
+	var w := scene()
+	var tc: Node = w.get_node("TouchControls")
+	Game.set_setting("controls", "dpad")
+	await wait(0.3)
+	if tc.get_child_count() != 6 or not tc.visible:
+		_fail("D-pad should have 6 buttons (has %d)" % tc.get_child_count())
+		return
+	if w.minimap.position.y > 300:
+		_fail("mini map should move up when controls are on screen")
+		return
+	await shot("controls_dpad")
+	Game.set_setting("controls", "joystick")
+	await wait(0.3)
+	var st: Node = tc._stick
+	if st == null:
+		_fail("joystick not built")
+		return
+	await shot("controls_joystick_idle")
+	var down := InputEventScreenTouch.new()
+	down.index = 3
+	down.pressed = true
+	down.position = st.rest
+	st._input(down)
+	var drag := InputEventScreenDrag.new()
+	drag.index = 3
+	drag.position = st.rest + Vector2(st.radius * 0.6, 4)
+	st._input(drag)
+	if not Input.is_action_pressed("move_right") or Input.is_action_pressed("run"):
+		_fail("joystick push right should press move_right only")
+		return
+	await wait(0.5)
+	await shot("controls_joystick_push")
+	if w.player.facing != "east":
+		_fail("joystick did not turn Alif east (%s)" % w.player.facing)
+		return
+	if not tc.owns(st.rest) or tc.owns(Vector2(900, 200)):
+		_fail("joystick zone should block tap-to-walk only in its corner")
+		return
+	var up := InputEventScreenTouch.new()
+	up.index = 3
+	up.pressed = false
+	up.position = drag.position
+	st._input(up)
+	if Input.is_action_pressed("move_right"):
+		_fail("joystick release should let go of move_right")
+		return
+	Game.set_setting("left_handed", true)
+	Game.set_setting("pad_size", 2)
+	Game.set_setting("controls", "dpad")
+	await wait(0.3)
+	await shot("controls_dpad_lefty_big")
+	if w.minimap.position.x > 640:
+		_fail("left-handed: mini map should move to the left side")
+		return
+	Game.set_setting("controls", "tap")
+	await wait(0.3)
+	if tc.get_child_count() != 0 or tc.visible:
+		_fail("Ketik sahaja should show no buttons")
+		return
+	Game.set_setting("left_handed", false)
+	Game.set_setting("pad_size", 1)
+	Game.set_setting("controls", "auto")
+	await wait(0.4)  # let the player stop walking before the zones start
 
 
 ## Put Alif next to a spot (NPC, object or prop), face it and interact.
