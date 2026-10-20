@@ -1,0 +1,200 @@
+{
+  "id": "2_6",
+  "no": "2.6",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_6.png",
+  "title": "Kompleks Intelektual & Jelutong Press",
+  "subtopik": "2.6 Faktor Kemunculan Gerakan Nasionalisme",
+  "hint_go": "Kompleks Intelektual ada di utara dataran. Cari Syed Sheikh al-Hadi di madrasah.",
+  "persoalan": "Apakah faktor yang mencetuskan gerakan nasionalisme?",
+  "pemandu": "syed_sheikh",
+  "ganjaran": {
+    "id": "jawi_peranakan",
+    "nama": "Akhbar Jawi Peranakan",
+    "icon": "nota",
+    "info": "Antara akhbar terawal. Menegur campur tangan British dalam soal agama Islam di Singapura dan membangkitkan isu bahasa Melayu."
+  },
+  "intro": "z26_intro",
+  "objects": [
+    {
+      "id": "syed_sheikh",
+      "label": "Syed Sheikh al-Hadi"
+    },
+    {
+      "id": "jelutong_press",
+      "label": "Jelutong Press"
+    },
+    {
+      "id": "meja_pengarang",
+      "label": "Meja Pengarang"
+    }
+  ],
+  "steps": [
+    {
+      "at": "syed_sheikh",
+      "before": "z26_a_before",
+      "puzzle": "madrasah",
+      "after": "z26_a_after"
+    },
+    {
+      "at": "jelutong_press",
+      "before": "z26_b_before",
+      "puzzle": "enam_faktor",
+      "after": "z26_b_after"
+    },
+    {
+      "at": "meja_pengarang",
+      "before": "z26_c_before",
+      "puzzle": "meja",
+      "after": "z26_c_after"
+    }
+  ],
+  "puzzles": {
+    "madrasah": {
+      "type": "drag_match",
+      "title": "Madrasah Moden",
+      "instruction": "Seret setiap madrasah ke tahun penubuhannya.",
+      "hint": "Madrasah al-Attas di Johor Bahru paling awal.",
+      "targets": [
+        {
+          "id": "y1914",
+          "label": "1914"
+        },
+        {
+          "id": "y1916",
+          "label": "1916"
+        },
+        {
+          "id": "y1926",
+          "label": "1926"
+        }
+      ],
+      "items": [
+        {
+          "id": "attas",
+          "label": "Madrasah al-Attas, Johor Bahru",
+          "target": "y1914",
+          "fact": "Ditubuhkan pada 1914."
+        },
+        {
+          "id": "masyhur",
+          "label": "Madrasah al-Masyhur, Pulau Pinang",
+          "target": "y1916",
+          "fact": "Ditubuhkan pada 1916."
+        },
+        {
+          "id": "idrisiyah",
+          "label": "Madrasah al-Idrisiyah, Kuala Kangsar",
+          "target": "y1926",
+          "fact": "Ditubuhkan pada 1926."
+        }
+      ],
+      "done_text": "Madrasah moden menyebarkan idea Islah dan kesedaran bangsa."
+    },
+    "enam_faktor": {
+      "type": "drag_match",
+      "title": "Kertas Faktor Jelutong Press",
+      "instruction": "Seret setiap contoh ke faktor yang betul.",
+      "hint": "Putera Gunung Tahan ialah novel, jadi penulisan kreatif.",
+      "targets": [
+        {
+          "id": "agama",
+          "label": "Agama"
+        },
+        {
+          "id": "kreatif",
+          "label": "Penulisan kreatif"
+        },
+        {
+          "id": "media",
+          "label": "Media cetak"
+        },
+        {
+          "id": "didik",
+          "label": "Pendidikan"
+        },
+        {
+          "id": "luar",
+          "label": "Pengaruh luar"
+        }
+      ],
+      "items": [
+        {
+          "id": "mesir",
+          "label": "Pelajar di Mesir belajar falsafah Islah",
+          "target": "agama",
+          "fact": "Al-Afghani, Muhammad Abduh dan Rashid Rida."
+        },
+        {
+          "id": "putera",
+          "label": "Novel Putera Gunung Tahan",
+          "target": "kreatif",
+          "fact": "Pak Sako menyindir penjajah."
+        },
+        {
+          "id": "fajar",
+          "label": "Akhbar Fajar Sarawak",
+          "target": "media",
+          "fact": "\"Fajar telah tersinsing, bangunlah wahai bangsaku.\""
+        },
+        {
+          "id": "sitc",
+          "label": "Maktab Perguruan Sultan Idris (SITC)",
+          "target": "didik",
+          "fact": "Bersama MCKK dan Raffles Institution."
+        },
+        {
+          "id": "indon",
+          "label": "Gerakan di Indonesia dan Asia",
+          "target": "luar",
+          "fact": "Pengaruh luar dan serantau."
+        }
+      ],
+      "done_text": "Agama, penulisan, media, pendidikan, intelektual dan pengaruh luar: enam pemangkin nasionalisme."
+    },
+    "meja": {
+      "type": "objektif",
+      "title": "Meja Pengarang",
+      "instruction": "Jawab soalan tentang akhbar dan novel.",
+      "hint": "Ishak Haji Muhammad dikenali sebagai Pak Sako.",
+      "questions": [
+        {
+          "q": "Siapakah pengarang bagi novel 'Putera Gunung Tahan' dan 'Anak Mat Lela Gila' yang menyindir penjajah serta mengingatkan anak bangsa akan kepentingan menikmati kebebasan?",
+          "options": [
+            "Abdul Rahim Kajai",
+            "Harun Aminurrashid",
+            "Ishak Haji Muhammad (Pak Sako)",
+            "Abdullah Sidek"
+          ],
+          "answer": 2,
+          "explain": "Ishak Haji Muhammad (Pak Sako)."
+        },
+        {
+          "q": "Apakah peranan akhbar 'Jawi Peranakan' sebagai antara media cetak terawal di negara kita?",
+          "options": [
+            "Mempromosikan dasar desentralisasi British di Negeri-negeri Melayu Tidak Bersekutu",
+            "Menjadi bahan bacaan rasmi untuk sekolah Inggeris di London",
+            "Menyeru rakyat menyertai pemberontakan bersenjata di Sarawak",
+            "Menegur campur tangan British dalam soal agama Islam di Singapura dan membangkitkan isu bahasa Melayu"
+          ],
+          "answer": 3,
+          "explain": "Menegur campur tangan British dalam soal agama Islam di Singapura dan membangkitkan isu bahasa Melayu."
+        },
+        {
+          "q": "Akhbar manakah yang diterajui oleh angkatan intelektual Melayu di Sarawak seperti Muhammad Rakawi Yusuf sebagai wadah mengkritik dasar pemerintahan Brooke yang mengabaikan hak bumiputera?",
+          "options": [
+            "Lembaga Melayu",
+            "Utusan Sarawak",
+            "Fajar Sarawak",
+            "Lidah Teruna"
+          ],
+          "answer": 2,
+          "explain": "Fajar Sarawak."
+        }
+      ],
+      "done_text": "Akhbar dan novel membangkitkan semangat bangsa."
+    }
+  }
+}

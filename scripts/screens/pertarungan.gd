@@ -380,7 +380,7 @@ func _show_result(s: Dictionary) -> void:
 	var r := UI.label(reward, "Ink")
 	r.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(r)
-	var note := UI.label(tr("Bagus! Setiap soalan yang kau jawab ialah ulang kaji Bab 1.") if not won else tr("Syabas! Fakta Bab 1 memang melekat dalam kepala kau."), "InkSmall", true)
+	var note := UI.label((tr("Bagus! Setiap soalan yang kau jawab ialah ulang kaji %s.") if not won else tr("Syabas! Fakta %s memang melekat dalam kepala kau.")) % BattleRules.chapter_name(), "InkSmall", true)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(note)
 	var row := UI.hbox(12)

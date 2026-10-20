@@ -72,7 +72,8 @@ func _poll() -> void:
 	var s: Dictionary = r["data"]
 	# the bank lives in the game; the server sends only the question number
 	if s.has("qid"):
-		var q: Dictionary = BattleRules.bank()[int(s["qid"]) % BattleRules.bank().size()]
+		var online_bank := BattleRules.bank_of(1)
+		var q: Dictionary = online_bank[int(s["qid"]) % online_bank.size()]
 		s["q"] = {"q": q["q"], "options": q["options"]}
 		s["explain"] = str(q.get("explain", ""))
 	for p in s.get("players", []):

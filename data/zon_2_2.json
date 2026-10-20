@@ -1,0 +1,185 @@
+{
+  "id": "2_2",
+  "no": "2.2",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_2.png",
+  "title": "Rumah Falsafah Sejagat",
+  "subtopik": "2.2 Perkembangan Idea Nasionalisme di Barat",
+  "hint_go": "Rumah Falsafah Sejagat ada di sebelah Dewan Kedaulatan Rakyat.",
+  "persoalan": "Dari mana datangnya idea kedaulatan rakyat?",
+  "pemandu": "profesor",
+  "ganjaran": {
+    "id": "bill_of_rights",
+    "nama": "Bill of Rights & The Social Contract",
+    "icon": "gulungan",
+    "info": "Bill of Rights lahir daripada Revolusi Keagungan 1688. The Social Contract tulisan Rousseau menggerakkan Revolusi Perancis 1789."
+  },
+  "intro": "z22_intro",
+  "objects": [
+    {
+      "id": "rumah_falsafah",
+      "label": "Rumah Falsafah Sejagat"
+    },
+    {
+      "id": "rak_buku",
+      "label": "Rak Buku Falsafah"
+    },
+    {
+      "id": "papan_slogan",
+      "label": "Papan Slogan"
+    }
+  ],
+  "steps": [
+    {
+      "at": "rumah_falsafah",
+      "before": "z22_a_before",
+      "puzzle": "tiga_revolusi",
+      "after": "z22_a_after"
+    },
+    {
+      "at": "rak_buku",
+      "before": "z22_b_before",
+      "puzzle": "karya_tokoh",
+      "after": "z22_b_after"
+    },
+    {
+      "at": "papan_slogan",
+      "before": "z22_c_before",
+      "puzzle": "slogan",
+      "after": "z22_c_after"
+    }
+  ],
+  "puzzles": {
+    "tiga_revolusi": {
+      "type": "drag_match",
+      "title": "Tiga Revolusi",
+      "instruction": "Seret setiap revolusi ke kedudukan yang betul ikut urutan masa.",
+      "hint": "Revolusi Keagungan di England berlaku tanpa pertumpahan darah, paling awal.",
+      "targets": [
+        {
+          "id": "t1",
+          "label": "1",
+          "sub": "Paling awal"
+        },
+        {
+          "id": "t2",
+          "label": "2"
+        },
+        {
+          "id": "t3",
+          "label": "3",
+          "sub": "Paling akhir"
+        }
+      ],
+      "items": [
+        {
+          "id": "eng",
+          "label": "Revolusi Keagungan, England (1688)",
+          "target": "t1",
+          "fact": "Peralihan kuasa secara aman; lahir Bill of Rights."
+        },
+        {
+          "id": "ame",
+          "label": "Revolusi Amerika (1776)",
+          "target": "t2",
+          "fact": "Perisytiharan Kemerdekaan Amerika tulisan Thomas Jefferson, Julai 1776."
+        },
+        {
+          "id": "fra",
+          "label": "Revolusi Perancis (1789)",
+          "target": "t3",
+          "fact": "Penjara Bastile digempur; tamat pemerintahan Raja Louis XVI."
+        }
+      ],
+      "done_text": "England 1688, Amerika 1776, Perancis 1789."
+    },
+    "karya_tokoh": {
+      "type": "suaikan",
+      "title": "Rak Buku Falsafah",
+      "instruction": "Padankan tokoh dengan karya atau sumbangannya.",
+      "hint": "John Locke dari England. Rousseau dari Perancis.",
+      "left_title": "Tokoh",
+      "right_title": "Karya / Sumbangan",
+      "pairs": [
+        {
+          "left": "John Locke",
+          "right": "Two Treatises of Government",
+          "fact": "Menolak raja berkuasa mutlak; mempopularkan raja berperlembagaan."
+        },
+        {
+          "left": "Jean Jacques Rousseau",
+          "right": "The Social Contract",
+          "fact": "Suara rakyat atau 'hasrat umum' mengatasi raja."
+        },
+        {
+          "left": "Thomas Jefferson",
+          "right": "Perisytiharan Kemerdekaan Amerika",
+          "fact": "Diluluskan pada Julai 1776."
+        },
+        {
+          "left": "George Washington",
+          "right": "Memimpin kongres di Amerika",
+          "fact": "British mengakui kemerdekaan Amerika Syarikat pada 1783."
+        }
+      ],
+      "done_text": "Idea dalam buku menjadi api revolusi."
+    },
+    "slogan": {
+      "type": "objektif",
+      "title": "Papan Slogan",
+      "instruction": "Jawab soalan tentang revolusi di Barat.",
+      "hint": "Orang Amerika marah sebab dikenakan cukai tanpa wakil dalam Parlimen British.",
+      "questions": [
+        {
+          "q": "Penduduk di 13 buah tanah jajahan British di Amerika telah melaungkan slogan berikut semasa menentang Akta Pelayaran, Akta Gula, Akta Setem, dan Akta Teh. Apakah slogan tersebut?",
+          "options": [
+            "Tiada cukai tanpa perwakilan",
+            "Kebebasan, Persamaan dan Persaudaraan",
+            "Asia untuk Orang Asia",
+            "Satu Tanah Air, Satu Bangsa, Satu Bahasa"
+          ],
+          "answer": 0,
+          "explain": "Tiada cukai tanpa perwakilan.",
+          "hint": "Tiada wakil, tiada cukai!"
+        },
+        {
+          "q": "Mengapakah peristiwa peralihan kuasa di England pada tahun 1688 dikenali sebagai Revolusi Keagungan (Glorious Revolution)?",
+          "options": [
+            "Kerana Raja James II berjaya menawan seluruh negara Perancis",
+            "Kerana berjaya menghapuskan institusi parlimen di England",
+            "Kerana melibatkan peperangan laut terbesar di Eropah",
+            "Kerana peralihan kuasa berlaku secara aman tanpa pertumpahan darah"
+          ],
+          "answer": 3,
+          "explain": "Kerana peralihan kuasa berlaku secara aman tanpa pertumpahan darah.",
+          "hint": "Glorious = agung, tanpa darah."
+        },
+        {
+          "q": "Apakah karya ahli falsafah Inggeris, John Locke, yang menolak konsep pemerintahan raja berkuasa mutlak dan mempopularkan prinsip raja berperlembagaan?",
+          "options": [
+            "The Idea of Nationalism",
+            "The Social Contract",
+            "Two Treatises of Government",
+            "Letters of a Javanese Princess"
+          ],
+          "answer": 2,
+          "explain": "Two Treatises of Government."
+        },
+        {
+          "q": "Siapakah tokoh ahli falsafah Perancis yang menulis karya 'The Social Contract' dan mengemukakan keunggulan suara rakyat yang digelar sebagai 'hasrat umum'?",
+          "options": [
+            "George Washington",
+            "Jean Jacques Rousseau",
+            "Thomas Jefferson",
+            "John Locke"
+          ],
+          "answer": 1,
+          "explain": "Jean Jacques Rousseau."
+        }
+      ],
+      "done_text": "Di Barat, rakyat bangkit menentang raja berkuasa mutlak dan cukai yang tidak adil."
+    }
+  }
+}

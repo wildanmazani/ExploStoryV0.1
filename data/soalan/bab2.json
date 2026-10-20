@@ -1,0 +1,583 @@
+{
+ "_info": "Bank soalan objektif Bab 2 (Kebangkitan Nasionalisme) untuk Bilik Pertarungan dan Gelanggang. Sumber: STORYTELLING/bab2_kebangkitan_nasionalisme.json (soalan mcq). 'answer' = indeks jawapan betul (0-3). 'semak' = fakta perlu disemak guru.",
+ "bab": 2,
+ "questions": [
+  {
+   "id": 0,
+   "src": "B2_Q001",
+   "sub": "2.1",
+   "q": "Apakah maksud asas nasionalisme dalam konteks perjuangan sesebuah bangsa?",
+   "options": [
+    "Usaha meluaskan tanah jajahan ke benua lain melalui kekuatan tentera",
+    "Dasar menutup sempadan negara daripada sebarang hubungan perdagangan luar",
+    "Sistem pentadbiran yang menyerahkan kuasa mutlak sepenuhnya kepada golongan bangsawan",
+    "Perasaan cinta yang mendalam terhadap bangsa dan negara serta perjuangan menentang penjajahan"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Perasaan cinta yang mendalam terhadap bangsa dan negara serta perjuangan menentang penjajahan."
+  },
+  {
+   "id": 1,
+   "src": "B2_Q002",
+   "sub": "2.1",
+   "q": "Siapakah tokoh sejarawan yang menyatakan bahawa nasionalisme merupakan satu gerakan yang meletakkan kesetiaan seseorang hanya kepada negara atau bangsanya melalui karya 'The Idea of Nationalism'?",
+   "options": [
+    "Profesor Emeritus Tan Sri Dr. Khoo Kay Kim",
+    "Hans Kohn",
+    "Profesor William R. Roff",
+    "Dr. R. Suntharalingam"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Hans Kohn."
+  },
+  {
+   "id": 2,
+   "src": "B2_Q003",
+   "sub": "2.1",
+   "q": "Menurut Profesor William R. Roff, apakah faktor yang mencetuskan kebangkitan nasionalisme Melayu pada dekad terakhir sebelum Perang Dunia Kedua?",
+   "options": [
+    "Ancaman terhadap hak kepentingan orang Melayu, faktor ekonomi, serta kebimbangan terhadap sekularisme dan imperialisme Barat",
+    "Keinginan untuk menghapuskan sistem kesultanan tradisional",
+    "Kejayaan kuasa Perancis menakluki seluruh kepulauan Asia Tenggara",
+    "Gesaan daripada pihak British supaya orang Melayu menubuhkan parti komunis"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Ancaman terhadap hak kepentingan orang Melayu, faktor ekonomi, serta kebimbangan terhadap sekularisme dan imperialisme Barat."
+  },
+  {
+   "id": 3,
+   "src": "B2_Q004",
+   "sub": "2.1",
+   "q": "Tokoh manakah yang menegaskan bahawa perjuangan menentang penjajahan hendaklah mempunyai persatuan dan perpaduan yang kuat (National Fronts) dengan tetap berpegang pada tatatertib bangsa Melayu dan agama Islam?",
+   "options": [
+    "Dr. Burhanuddin al-Helmi",
+    "Hans Kohn",
+    "Profesor Datuk Zainal Abidin Abdul Wahid",
+    "Dato' Onn Jaafar"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Dr. Burhanuddin al-Helmi."
+  },
+  {
+   "id": 4,
+   "src": "B2_Q005",
+   "sub": "2.1",
+   "q": "Apakah pandangan Profesor Datuk Zainal Abidin Abdul Wahid berkaitan kewujudan nasionalisme Melayu?",
+   "options": [
+    "Nasionalisme Melayu hanya bermula selepas pengenalan Malayan Union pada tahun 1946",
+    "Nasionalisme Melayu telah wujud sejak zaman Kesultanan Melayu Melaka dengan kesetiaan kepada raja sebagai ciri utama dan bersifat ke-'Tanah Melayuan'",
+    "Nasionalisme Melayu adalah tiruan sepenuhnya daripada Revolusi Perancis 1789",
+    "Nasionalisme Melayu hanya digerakkan oleh golongan imigran dari luar"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Nasionalisme Melayu telah wujud sejak zaman Kesultanan Melayu Melaka dengan kesetiaan kepada raja sebagai ciri utama dan bersifat ke-'Tanah Melayuan'."
+  },
+  {
+   "id": 5,
+   "src": "B2_Q007",
+   "sub": "2.2",
+   "q": "Mengapakah peristiwa peralihan kuasa di England pada tahun 1688 dikenali sebagai Revolusi Keagungan (Glorious Revolution)?",
+   "options": [
+    "Kerana melibatkan peperangan laut terbesar di Eropah",
+    "Kerana peralihan kuasa berlaku secara aman tanpa pertumpahan darah",
+    "Kerana Raja James II berjaya menawan seluruh negara Perancis",
+    "Kerana berjaya menghapuskan institusi parlimen di England"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Kerana peralihan kuasa berlaku secara aman tanpa pertumpahan darah."
+  },
+  {
+   "id": 6,
+   "src": "B2_Q008",
+   "sub": "2.2",
+   "q": "Apakah karya ahli falsafah Inggeris, John Locke, yang menolak konsep pemerintahan raja berkuasa mutlak dan mempopularkan prinsip raja berperlembagaan?",
+   "options": [
+    "Two Treatises of Government",
+    "Letters of a Javanese Princess",
+    "The Social Contract",
+    "The Idea of Nationalism"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Two Treatises of Government."
+  },
+  {
+   "id": 7,
+   "src": "B2_Q009",
+   "sub": "2.2",
+   "q": "Penduduk di 13 buah tanah jajahan British di Amerika telah melaungkan slogan berikut semasa menentang Akta Pelayaran, Akta Gula, Akta Setem, dan Akta Teh. Apakah slogan tersebut?",
+   "options": [
+    "Kebebasan, Persamaan dan Persaudaraan",
+    "Satu Tanah Air, Satu Bangsa, Satu Bahasa",
+    "Tiada cukai tanpa perwakilan",
+    "Asia untuk Orang Asia"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Tiada cukai tanpa perwakilan."
+  },
+  {
+   "id": 8,
+   "src": "B2_Q010",
+   "sub": "2.2",
+   "q": "Siapakah tokoh ahli falsafah Perancis yang menulis karya 'The Social Contract' dan mengemukakan keunggulan suara rakyat yang digelar sebagai 'hasrat umum'?",
+   "options": [
+    "Jean Jacques Rousseau",
+    "Thomas Jefferson",
+    "George Washington",
+    "John Locke"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Jean Jacques Rousseau."
+  },
+  {
+   "id": 9,
+   "src": "B2_Q012",
+   "sub": "2.3",
+   "q": "Apakah konsep pegangan Mahatma Gandhi yang bermaksud 'berpegang teguh kepada kebenaran' dan menjadi asas perjuangan tanpa keganasan menentang British di India?",
+   "options": [
+    "Hakko Ichiu",
+    "San Min Chu-i",
+    "Bushido",
+    "Satyagraha"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Satyagraha."
+  },
+  {
+   "id": 10,
+   "src": "B2_Q013",
+   "sub": "2.3",
+   "q": "Pada awal abad ke-20, siapakah dua tokoh nasionalis radikal di India yang menggerakkan semangat penentangan secara militan terhadap British?",
+   "options": [
+    "Muhammad Ali Jinnah dan Syed Ahmad Khan",
+    "Bal Gangadhar Tilak dan Bipin Chandra Pal",
+    "Subhas Chandra Bose dan Rabindranath Tagore",
+    "Mahatma Gandhi dan Jawaharlal Nehru"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Bal Gangadhar Tilak dan Bipin Chandra Pal."
+  },
+  {
+   "id": 11,
+   "src": "B2_Q014",
+   "sub": "2.3",
+   "q": "Dr. Sun Yat Sen telah mengemukakan Tiga Prinsip Rakyat (San Min Chu-i) sebagai ideologi perjuangan Revolusi China 1911. Apakah tiga prinsip tersebut?",
+   "options": [
+    "Satu Tanah Air, Satu Bangsa, dan Satu Bahasa",
+    "Ketenteraan, Perindustrian, dan Kesetiaan Maharaja",
+    "Kebebasan, Persamaan, dan Persaudaraan",
+    "Nasionalisme, Demokrasi, dan Kebajikan Sosial"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Nasionalisme, Demokrasi, dan Kebajikan Sosial."
+  },
+  {
+   "id": 12,
+   "src": "B2_Q015",
+   "sub": "2.3",
+   "q": "Apakah tujuan Sayyid Jamal al-Din al-Afghani menubuhkan kumpulan dan menerbitkan akhbar 'al-Urwah al-Wuthqa' (Ikatan yang Kuat) pada tahun 1883?",
+   "options": [
+    "Menyokong perluasan kuasa British di Timur Tengah",
+    "Menuntut pembubaran sistem khalifah di Empayar Uthmaniyah",
+    "Memperkenalkan sistem birokrasi Barat di Mesir",
+    "Memperkuat rasa persaudaraan umat Islam dan menyebarkan idea Pan-Islamisme bagi menghalang peluasan kuasa Barat"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Memperkuat rasa persaudaraan umat Islam dan menyebarkan idea Pan-Islamisme bagi menghalang peluasan kuasa Barat."
+  },
+  {
+   "id": 13,
+   "src": "B2_Q016",
+   "sub": "2.3",
+   "q": "Semasa era Pemulihan Meiji (1868), apakah prinsip yang dijadikan asas membina nasionalisme Jepun yang bermaksud sikap sanggup menanggung risiko dan sedia berkorban demi ketua dan negara?",
+   "options": [
+    "Satyagraha",
+    "Semangat Bushido",
+    "Islah",
+    "San Min Chu-i"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Semangat Bushido."
+  },
+  {
+   "id": 14,
+   "src": "B2_Q018",
+   "sub": "2.4",
+   "q": "Apabila Gerakan Propaganda dan Liga Filipina (1892) pimpinan Jose Rizal gagal, Andres Bonifacio telah menubuhkan pertubuhan revolusioner Katipunan. Apakah akhbar yang digunakan oleh Katipunan untuk menyebarkan idea revolusi?",
+   "options": [
+    "Al-Imam",
+    "Tribune Indige",
+    "Kalayan",
+    "Cloche Felee"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Kalayan."
+  },
+  {
+   "id": 15,
+   "src": "B2_Q019",
+   "sub": "2.4",
+   "q": "Persatuan Belia Buddha yang ditubuhkan pada tahun 1906 di Burma (Myanmar) telah menggunakan satu isu sensitif untuk membangkitkan nasionalisme menentang British. Apakah isu tersebut?",
+   "options": [
+    "Isu Cukai Beras",
+    "Isu Kasut (perbuatan orang British memakai kasut semasa memasuki kuil Buddha)",
+    "Isu Bahasa Mandarin",
+    "Isu Penutupan Universiti"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Isu Kasut (perbuatan orang British memakai kasut semasa memasuki kuil Buddha)."
+  },
+  {
+   "id": 16,
+   "src": "B2_Q020",
+   "sub": "2.4",
+   "q": "Di Burma, golongan siswazah universiti menubuhkan Parti Do Bama Asiayone (Kami Orang Burma) untuk memperjuangkan kemerdekaan. Apakah gelaran yang digunakan oleh pemimpinnya seperti Aung San, Kyaw Nein, dan U Nu yang bermaksud 'Tuan'?",
+   "options": [
+    "Pongyi",
+    "Mandarin",
+    "Sensei",
+    "Thakin"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Thakin."
+  },
+  {
+   "id": 17,
+   "src": "B2_Q021",
+   "sub": "2.4",
+   "q": "Apakah dua akhbar utama di Vietnam yang digunakan untuk mengkritik penindasan Perancis dan menuntut hak rakyat Vietnam?",
+   "options": [
+    "Kalayan dan La Solidaridad",
+    "Tribune Indige dan Cloche Felee",
+    "Lat Pau dan Modern Daily News",
+    "Neracha dan Pengasoh"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Tribune Indige dan Cloche Felee."
+  },
+  {
+   "id": 18,
+   "src": "B2_Q022",
+   "sub": "2.4",
+   "q": "Karya Raden Adjeng Kartini yang mendedahkan dasar diskriminasi Belanda di Indonesia telah diterbitkan pada tahun 1911 dan diterjemahkan ke dalam bahasa Inggeris sebagai 'Letters of a Javanese Princess'. Apakah judul asal karya tersebut?",
+   "options": [
+    "Putera Gunung Tahan",
+    "Sumpah Pemuda",
+    "Hilang Gelap Terbitlah Terang",
+    "Melor Kuala Lumpur"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Hilang Gelap Terbitlah Terang.",
+   "semak": true
+  },
+  {
+   "id": 19,
+   "src": "B2_Q023",
+   "sub": "2.4",
+   "q": "Apakah tiga asas utama yang terkandung dalam ikrar 'Sumpah Pemuda' hasil Kongres Pemuda Indonesia pada tahun 1928?",
+   "options": [
+    "Nasionalisme, Agama, dan Komunisme",
+    "Satu Raja, Satu Undang-undang, Satu Agama",
+    "Satu Tanah Air, Satu Bangsa, Satu Bahasa",
+    "Kebebasan, Keadilan, dan Kemakmuran"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Satu Tanah Air, Satu Bangsa, Satu Bahasa."
+  },
+  {
+   "id": 20,
+   "src": "B2_Q024",
+   "sub": "2.4",
+   "q": "Bagaimanakah Raja Mongkut dan Raja Chulalongkorn berjaya mengekalkan kemerdekaan Thailand daripada penjajahan kuasa Barat?",
+   "options": [
+    "Melaksanakan usaha diplomasi dan pemodenan birokrasi Barat dengan membawa masuk 80 orang penasihat Barat dari pelbagai bidang",
+    "Melancarkan serangan ketenteraan ke atas pangkalan British di Burma dan Perancis di Indochina",
+    "Menyerahkan pentadbiran dalam negeri sepenuhnya kepada Parti Rakyat pada tahun 1885",
+    "Menutup semua pelabuhan Siam daripada pedagang asing selama 50 tahun"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Melaksanakan usaha diplomasi dan pemodenan birokrasi Barat dengan membawa masuk 80 orang penasihat Barat dari pelbagai bidang."
+  },
+  {
+   "id": 21,
+   "src": "B2_Q025",
+   "sub": "2.4",
+   "q": "Siapakah dua tokoh yang menubuhkan Parti Rakyat dan melancarkan Revolusi Thai pada tahun 1932 bagi menamatkan pemerintahan raja berkuasa mutlak semasa era Raja Vajiravudh?",
+   "options": [
+    "Raja Mongkut dan Raja Chulalongkorn",
+    "Emilio Aguinaldo dan Sergio Osmena",
+    "Nai Pridi Phanomyong dan Field Marshal Phibulsongkram",
+    "Nguyen Thai Hoc dan Ho Chi Minh"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Nai Pridi Phanomyong dan Field Marshal Phibulsongkram.",
+   "semak": true
+  },
+  {
+   "id": 22,
+   "src": "B2_Q027",
+   "sub": "2.5",
+   "q": "Siapakah pemerintah Kesultanan Kedah yang merupakan tokoh terawal menentang Syarikat Hindia Timur Inggeris (SHTI) bagi mendapatkan kembali Pulau Pinang?",
+   "options": [
+    "Sultan Mahmud Shah",
+    "Sultan Muzaffar Shah",
+    "Sultan Abu Bakar",
+    "Sultan Abdullah Mukarram Shah"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Sultan Abdullah Mukarram Shah."
+  },
+  {
+   "id": 23,
+   "src": "B2_Q028",
+   "sub": "2.5",
+   "q": "Mengapakah masyarakat tempatan di negara kita terpaksa mengubah strategi penentangan daripada gerakan bersenjata secara terbuka kepada gerakan penulisan dan berpersatuan yang lebih sederhana?",
+   "options": [
+    "Kerana semua masalah cukai dan pentadbiran telah diselesaikan sepenuhnya oleh British",
+    "Kerana kesedaran awal mendapat reaksi dan tindak balas yang keras daripada penjajah serta kekangan undang-undang dan pengawasan ketat pemerintah",
+    "Kerana mendapat arahan daripada Maharaja Jepun sejak awal abad ke-19",
+    "Kerana ketiadaan tokoh intelektual yang mampu menulis dalam bahasa Melayu"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Kerana kesedaran awal mendapat reaksi dan tindak balas yang keras daripada penjajah serta kekangan undang-undang dan pengawasan ketat pemerintah."
+  },
+  {
+   "id": 24,
+   "src": "B2_Q029",
+   "sub": "2.6",
+   "q": "Siapakah pengarang bagi novel 'Putera Gunung Tahan' dan 'Anak Mat Lela Gila' yang menyindir penjajah serta mengingatkan anak bangsa akan kepentingan menikmati kebebasan?",
+   "options": [
+    "Harun Aminurrashid",
+    "Abdul Rahim Kajai",
+    "Ishak Haji Muhammad (Pak Sako)",
+    "Abdullah Sidek"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Ishak Haji Muhammad (Pak Sako)."
+  },
+  {
+   "id": 25,
+   "src": "B2_Q030",
+   "sub": "2.6",
+   "q": "Apakah peranan akhbar 'Jawi Peranakan' sebagai antara media cetak terawal di negara kita?",
+   "options": [
+    "Mempromosikan dasar desentralisasi British di Negeri-negeri Melayu Tidak Bersekutu",
+    "Menjadi bahan bacaan rasmi untuk sekolah Inggeris di London",
+    "Menyeru rakyat menyertai pemberontakan bersenjata di Sarawak",
+    "Menegur campur tangan British dalam soal agama Islam di Singapura dan membangkitkan isu bahasa Melayu"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Menegur campur tangan British dalam soal agama Islam di Singapura dan membangkitkan isu bahasa Melayu."
+  },
+  {
+   "id": 26,
+   "src": "B2_Q031",
+   "sub": "2.6",
+   "q": "Akhbar manakah yang diterajui oleh angkatan intelektual Melayu di Sarawak seperti Muhammad Rakawi Yusuf sebagai wadah mengkritik dasar pemerintahan Brooke yang mengabaikan hak bumiputera?",
+   "options": [
+    "Lembaga Melayu",
+    "Utusan Sarawak",
+    "Lidah Teruna",
+    "Fajar Sarawak"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Fajar Sarawak."
+  },
+  {
+   "id": 27,
+   "src": "B2_Q033",
+   "sub": "2.7",
+   "q": "Manakah antara berikut merupakan kumpulan tokoh intelektual berpendidikan agama yang digelar sebagai Kaum Muda?",
+   "options": [
+    "Sheikh Muhammad Tahir Jalaluddin, Syed Sheikh al-Hadi, dan Haji Abbas Mohd Taha",
+    "Ibrahim Haji Yaakob, Ishak Haji Muhammad, dan Ahmad Boestamam",
+    "O.T. Dussek, Abdul Hadi Hassan, dan Buyong Adil",
+    "Raja Chulan Raja Abdullah, Mahmud Mat, dan Raja Uda Raja Muhammad"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Sheikh Muhammad Tahir Jalaluddin, Syed Sheikh al-Hadi, dan Haji Abbas Mohd Taha."
+  },
+  {
+   "id": 28,
+   "src": "B2_Q034",
+   "sub": "2.7",
+   "q": "Bilakah akhbar 'Al-Imam' mula diterbitkan di Singapura bagi menyeru umat Islam kembali kepada ajaran Islam yang sebenar berpandukan al-Quran dan Hadis?",
+   "options": [
+    "11 November 1914",
+    "23 Julai 1906",
+    "8 Disember 1941",
+    "28 Jun 1919"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: 23 Julai 1906."
+  },
+  {
+   "id": 29,
+   "src": "B2_Q035",
+   "sub": "2.7",
+   "q": "Apakah peranan Pejabat Karang Mengarang di Maktab Perguruan Sultan Idris (SITC) yang diketuai oleh Ketua Penterjemahnya, Za'ba?",
+   "options": [
+    "Menghasilkan buku berkualiti dan menjadi pemangkin mengasah bakat pelajar dalam membangkitkan semangat kebangsaan",
+    "Menjalankan tapisan undang-undang ke atas semua akhbar berbahasa Cina dan Tamil",
+    "Mencetak wang kertas bagi kegunaan pentadbiran Negeri-negeri Melayu Bersekutu",
+    "Melatih anak bangsawan Melayu untuk menjadi pegawai daerah British"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Menghasilkan buku berkualiti dan menjadi pemangkin mengasah bakat pelajar dalam membangkitkan semangat kebangsaan."
+  },
+  {
+   "id": 30,
+   "src": "B2_Q036",
+   "sub": "2.7",
+   "q": "Pada tahun 1929, apakah dua pertubuhan yang lahir di SITC yang akhirnya melahirkan persatuan radikal Kesatuan Melayu Muda (KMM)?",
+   "options": [
+    "Ikatan Pemuda Pelajar dan Ikatan Semenanjung Borneo",
+    "Persatuan Melayu Sarawak dan Parti Kebangsaan Melayu Labuan",
+    "Kesatuan Melayu Singapura dan Persaudaraan Sahabat Pena",
+    "Majlis Agama Negeri dan al-Jamiah al-Khairiah"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Ikatan Pemuda Pelajar dan Ikatan Semenanjung Borneo."
+  },
+  {
+   "id": 31,
+   "src": "B2_Q037",
+   "sub": "2.7",
+   "q": "Di Sabah, bagaimanakah isu berkaitan pendidikan, tanah bumiputera, dan kewangan petani disuarakan pada peringkat awal sebelum kemunculan cawangan PASPAM pada tahun 1939?",
+   "options": [
+    "Melalui pemberontakan bersenjata di bawah pimpinan Katipunan",
+    "Melalui petisyen rasmi di Parlimen Belanda",
+    "Disuarakan oleh Ketua-ketua Anak Negeri dalam mesyuarat mereka dan melalui aktiviti persatuan sosiobudaya",
+    "Melalui penerbitan akhbar harian berbahasa Portugis"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Disuarakan oleh Ketua-ketua Anak Negeri dalam mesyuarat mereka dan melalui aktiviti persatuan sosiobudaya."
+  },
+  {
+   "id": 32,
+   "src": "B2_Q038",
+   "sub": "2.7",
+   "q": "Sekitar tahun 1930-an, akhbar berbahasa Cina manakah di Pulau Pinang yang mula memperjuangkan soal kesatuan sekerja dan keadilan sosioekonomi bagi masyarakat kelas bawahan?",
+   "options": [
+    "Chong Shin Yit Pao",
+    "Modern Daily News",
+    "Nanyang Siang Pao",
+    "Lat Pau"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Nanyang Siang Pao.",
+   "semak": true
+  },
+  {
+   "id": 33,
+   "src": "B2_Q039",
+   "sub": "2.7",
+   "q": "Antara berikut, manakah dua akhbar masyarakat India yang memuatkan pemikiran dan kepentingan perpaduan bagi masyarakat kelas menengah India di negara ini?",
+   "options": [
+    "Al-Ikhwan dan Tunas Melayu",
+    "Tribune Indige dan Cloche Felee",
+    "The Malay Mail dan The Malaya Tribune",
+    "The Indian dan Indian Pioneer"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: The Indian dan Indian Pioneer."
+  },
+  {
+   "id": 34,
+   "src": "B2_Q042",
+   "sub": "2.7",
+   "q": "Siapakah tokoh yang menubuhkan Kesatuan Melayu Singapura (KMS) pada tahun 1926 bagi memperjuangkan kepentingan orang Melayu dalam pentadbiran, politik, serta pelajaran teknik dan pengajian tinggi?",
+   "options": [
+    "Mohammad Eunos Abdullah",
+    "Tengku Mahmood Mahyiddeen",
+    "Abdul Kadir Adabi",
+    "Ibrahim Haji Yaakob"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Mohammad Eunos Abdullah."
+  },
+  {
+   "id": 35,
+   "src": "B2_Q043",
+   "sub": "2.7",
+   "q": "Di manakah cawangan Persaudaraan Sahabat Pena (PASPAM) ditubuhkan di Sabah pada tahun 1939 yang dianggotai oleh tokoh seperti Mohammad Yaakob, Mohammad Shamsudin Osman, dan Zakaria Gunn?",
+   "options": [
+    "Jesselton (Kota Kinabalu), Tawau, dan Labuan",
+    "Kuching, Sibu, dan Miri",
+    "Ranau, Tambunan, dan Pensiangan",
+    "Sandakan, Kudat, dan Semporna"
+   ],
+   "answer": 0,
+   "explain": "Jawapan: Jesselton (Kota Kinabalu), Tawau, dan Labuan."
+  },
+  {
+   "id": 36,
+   "src": "B2_Q044",
+   "sub": "2.7",
+   "q": "Kesatuan Melayu Muda (KMM) yang ditubuhkan oleh Ibrahim Haji Yaakob pada Mei 1937 berjuang melalui akhbar 'Majlis' untuk mewujudkan satu gagasan gabungan Tanah Melayu dan Indonesia. Apakah nama gagasan tersebut?",
+   "options": [
+    "Orde Baharu Asia",
+    "Malai Baru",
+    "Melayu Raya",
+    "Kita Boruneo"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Melayu Raya."
+  },
+  {
+   "id": 37,
+   "src": "B2_Q046",
+   "sub": "2.8",
+   "q": "Apakah bukti kejayaan kesan politik hasil desakan golongan intelektual berpendidikan Inggeris dan KMS terhadap pentadbiran British?",
+   "options": [
+    "Majlis Perundangan Persekutuan dibubarkan serta-merta",
+    "Bilangan orang Melayu dalam Malayan Civil Service (MCS) bertambah daripada 7 orang pada tahun 1930 kepada 20 orang pada tahun 1937",
+    "Semua jawatan Residen British diserahkan kepada lepasan SITC pada tahun 1937",
+    "British memberikan kemerdekaan penuh kepada Negeri-negeri Selat pada tahun 1935"
+   ],
+   "answer": 1,
+   "explain": "Jawapan: Bilangan orang Melayu dalam Malayan Civil Service (MCS) bertambah daripada 7 orang pada tahun 1930 kepada 20 orang pada tahun 1937."
+  },
+  {
+   "id": 38,
+   "src": "B2_Q047",
+   "sub": "2.8",
+   "q": "Apakah nama persatuan kebajikan di Singapura yang tertubuh hasil gesaan Kaum Muda dan berjaya membangkitkan semangat berniaga dalam kalangan masyarakat Melayu?",
+   "options": [
+    "al-Urwah al-Wuthqa",
+    "Muhammadiyah",
+    "al-Jamiah al-Khairiah",
+    "Kakeo Kokokai"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: al-Jamiah al-Khairiah."
+  },
+  {
+   "id": 39,
+   "src": "B2_Q048",
+   "sub": "2.8",
+   "q": "Pada tahun 1930, guru wanita di Johor Bahru yang digerakkan oleh Ibu Zain (Hajah Zainon Munshi Sulaiman) telah menerbitkan sebuah majalah untuk memuatkan berita kemajuan dan pendidikan wanita. Apakah nama majalah tersebut?",
+   "options": [
+    "Pengasoh",
+    "Tunas Melayu",
+    "Majalah Guru",
+    "Bulan Melayu"
+   ],
+   "answer": 3,
+   "explain": "Jawapan: Bulan Melayu."
+  },
+  {
+   "id": 40,
+   "src": "B2_Q049",
+   "sub": "2.8",
+   "q": "Berapakah peningkatan bilangan guru lepasan SITC antara bulan Mac 1924 hingga bulan September 1940 yang berkhidmat membantu meningkatkan taraf pendidikan masyarakat?",
+   "options": [
+    "Daripada 100 orang kepada 500 orang",
+    "Daripada 12 orang kepada 80 orang",
+    "Daripada 58 orang kepada 141 orang",
+    "Daripada 7 orang kepada 20 orang"
+   ],
+   "answer": 2,
+   "explain": "Jawapan: Daripada 58 orang kepada 141 orang."
+  }
+ ]
+}

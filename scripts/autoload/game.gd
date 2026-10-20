@@ -29,7 +29,8 @@ const SCREENS := {
 	"pertarungan": "res://scripts/screens/pertarungan.gd",
 }
 
-const ZONES := ["1_1", "1_2", "1_3", "1_4"]
+## every zone of every open chapter, in play order (filled from data/chapters.json)
+var ZONES: Array = []
 const EXP_PER_LEVEL := 200
 const SETTINGS_PATH := "user://tetapan.json"
 ## for Papan Markah (leaderboard by negeri)
@@ -77,6 +78,8 @@ func _ready() -> void:
 	_load_translations()
 	characters = load_json("res://data/characters.json")
 	chapters = load_json("res://data/chapters.json")
+	for ch in chapter_list():
+		ZONES.append_array(ch.get("zones", []))
 	story = load_json("res://data/story.json")
 	new_save("Tetamu", "guest")
 	apply_audio.call_deferred()
@@ -338,10 +341,21 @@ func zone_done(id: String) -> bool:
 
 
 func zone_unlocked(id: String) -> bool:
-	var i := ZONES.find(id)
-	if i <= 0:
-		return true
-	return zone_done(ZONES[i - 1])
+	var ch := chapter_of(id)
+	var list := chapter_zones(ch)
+	var i := list.find(id)
+	if i < 0:
+		return false
+	if i == 0:
+		return ch <= 1 or chapter_done(ch - 1)
+	return zone_done(list[i - 1])
+
+
+## the mission before zid in the same chapter ("" for a chapter's first one)
+func prev_zone(zid: String) -> String:
+	var list := chapter_zones(chapter_of(zid))
+	var i := list.find(zid)
+	return list[i - 1] if i > 0 else ""
 
 
 func next_zone() -> String:
@@ -352,7 +366,43 @@ func next_zone() -> String:
 
 
 func chapter_done(no: int) -> bool:
-	return save["chapters_done"].has(no)
+	return save["chapters_done"].has(no) or save["chapters_done"].has(float(no))
+
+
+## Tingkatan 4 chapters from data/chapters.json (dictionaries with no, title, zones)
+func chapter_list() -> Array:
+	var arcs: Array = chapters.get("arcs", [])
+	return arcs[0].get("chapters", []) if arcs.size() > 0 else []
+
+
+func chapter_info(no: int) -> Dictionary:
+	for ch in chapter_list():
+		if int(ch["no"]) == no:
+			return ch
+	return {}
+
+
+func chapter_zones(no: int) -> Array:
+	return chapter_info(no).get("zones", [])
+
+
+## "2_5" -> 2
+func chapter_of(zid: String) -> int:
+	return int(zid.get_slice("_", 0))
+
+
+## true when zid is the last mission of its chapter
+func is_last_zone(zid: String) -> bool:
+	var list := chapter_zones(chapter_of(zid))
+	return list.size() > 0 and list[-1] == zid
+
+
+## highest chapter the player may play now (1 + finished chapters in a row)
+func current_chapter() -> int:
+	var n := 1
+	while chapter_done(n) and not chapter_zones(n + 1).is_empty():
+		n += 1
+	return n
 
 
 func add_figure(id: String) -> void:

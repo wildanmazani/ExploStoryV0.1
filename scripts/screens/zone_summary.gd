@@ -145,7 +145,8 @@ func _bar(parent: VBoxContainer, text: String, v: int, mx: int, variation: Strin
 
 func _continue() -> void:
 	var zid: String = params.get("zone", "1_1")
-	if zid == "1_4" and params.get("first_time", true) and not Game.chapter_done(1):
-		Game.goto("penutup")
+	var ch := Game.chapter_of(zid)
+	if Game.is_last_zone(zid) and params.get("first_time", true) and not Game.chapter_done(ch):
+		Game.goto("penutup", {"chapter": ch})
 	else:
 		Game.goto("peta")

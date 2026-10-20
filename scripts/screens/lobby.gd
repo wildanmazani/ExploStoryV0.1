@@ -26,7 +26,7 @@ func _ready() -> void:
 	add_child(UI.bg_image("res://assets/backgrounds/bg_zon1_3_balai_penghadapan.png", Color(0.6, 0.55, 0.58)))
 	var root := UI.vbox(12)
 	UI.full(root)
-	root.add_child(UI.header_bar("BILIK PERTARUNGAN", tr("Soalan Bab 1. Jawab betul, serang lawan. Yang terakhir berdiri menang %d syiling.") % BattleRules.REWARD_COINS))
+	root.add_child(UI.header_bar("BILIK PERTARUNGAN", tr("Jawab betul, serang lawan. Yang terakhir berdiri menang %d syiling.") % BattleRules.REWARD_COINS))
 	var row := UI.hbox(20)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -88,6 +88,21 @@ func _bot_card() -> Control:
 		b.theme_type_variation = "Primary" if l == _level else ""
 		lv.add_child(b)
 	c.add_child(lv)
+	# which chapter the questions come from (only chapters the player has opened)
+	var open := BattleRules.chapters_open()
+	if not open.has(BattleRules.chapter) and BattleRules.chapter != 0:
+		BattleRules.chapter = open[-1] if not open.is_empty() else 1
+	if open.size() > 1:
+		c.add_child(UI.label("Soalan", "InkSmall"))
+		var ch_row := UI.hbox(6)
+		for n in open + [0]:
+			var b := UI.button(tr("Campur") if n == 0 else tr("Bab %d") % n, "", 110)
+			b.pressed.connect(func():
+				BattleRules.chapter = n
+				_pick(ch_row, b))
+			b.theme_type_variation = "Primary" if n == BattleRules.chapter else ""
+			ch_row.add_child(b)
+		c.add_child(ch_row)
 	c.add_child(UI.spacer(false))
 	var go := UI.button("MASUK GELANGGANG", "Primary", 360)
 	go.pressed.connect(func():

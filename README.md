@@ -51,6 +51,22 @@ lebam, "PENGSAN"), tiada darah. Kod: `scripts/brawl/`, data gerakan: `data/brawl
 Kekunci: WASD gerak, J tumbuk, K sepak, Space lompat, L ambil/baling, I tangkis, U jurus, Shift lari; telefon guna
 joystick/D-pad + butang aksi. "Kuiz sahaja" masih ada untuk yang mahu soalan tanpa aksi.
 
+**Dunia baharu yang lebih ceria**: rumput cerah, jalan tanah berliku (tiada lantai batu lagi), sungai dari mata air
+Bukit Siguntang ke lagun di tepi pasar dengan 3 jambatan kayu, rumah kampung bertiang menghadap ke depan dengan pagar
+dan bunga, pokok berwarna (bunga merah jambu, semarak api, rambutan), pelita, perigi, tong dan peti di pasar dan
+pelabuhan, gudang. Hidup: ayam mematuk di halaman, itik di sungai, ikan melompat, asap dapur, rama-rama dan burung.
+Susun atur dijana oleh `tools/gen_world.py` (semak sendiri: semua tempat boleh dicapai, tiada sambungan jubin yang salah).
+
+**Bab 2: Kebangkitan Nasionalisme** (lengkap): selepas Bab 1, Pintu Kabus di barat Kampung Jejak terbuka ke
+**Lembah Kebangkitan**, pekan tahun 1900-an hingga 1941 di pulau kedua. Kabus Lupa mengelabukan setiap kawasan
+sehingga misinya selesai. 8 misi, satu bagi setiap subtopik: 2.1 Dewan Kedaulatan Rakyat (maksud nasionalisme),
+2.2 Rumah Falsafah Sejagat (revolusi di Barat), 2.3 Dermaga Asia, 2.4 Balai Serantau (Asia Tenggara), 2.5 Tugu
+Pahlawan (kesedaran di negara kita), 2.6 Kompleks Intelektual & Jelutong Press (faktor), 2.7 Maktab SITC
+(perkembangan) dan 2.8 Menara Pentadbiran (kesan, lawan Gabenor Sekatan 1941). Tokoh: Za'ba, Syed Sheikh al-Hadi,
+Ibu Zain, Ibrahim Haji Yaakob, Mohammad Eunos Abdullah, serta pemandu rekaan (Profesor Sejarawan, Nakhoda Warkah,
+Ketua Pengarang). Data: `data/zon_2_*.json`, `data/nota_bab2.json`, `data/soalan/bab2.json` (bank soalan
+pertarungan; pilih Bab 1 / Bab 2 / Campur di Bilik Pertarungan). Soalan bertanda `"semak": true` perlu disemak guru.
+
 Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
 Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.

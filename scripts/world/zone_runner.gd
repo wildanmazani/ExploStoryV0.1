@@ -1,6 +1,6 @@
 class_name ZoneRunner
 extends Node
-## Runs the Bab 1 zones (data/zon_1_x.json, from the first prototype) inside
+## Runs the mission zones (data/zon_<bab>_<n>.json) inside
 ## the explorable world. Each step is: dialogue -> puzzle -> rewards ->
 ## dialogue -> a visible change in the world. Steps live at "spots" (NPC ids
 ## or objects), shown with bouncing "!" markers.
@@ -91,8 +91,11 @@ func handle(id: String) -> bool:
 		return false
 	var zid: String = found["zid"]
 	if not Game.zone_unlocked(zid):
-		var prev: String = Game.ZONES[Game.ZONES.find(zid) - 1]
-		Game.main.pau_say("Belum lagi. Habiskan Misi %s dulu, baru tempat ni terbuka." % prev.replace("_", "."))
+		var prev := Game.prev_zone(zid)
+		if prev == "":
+			Game.main.pau_say("Belum lagi. Habiskan Bab %d dulu, baru tempat ni terbuka." % (Game.chapter_of(zid) - 1))
+		else:
+			Game.main.pau_say("Belum lagi. Habiskan Misi %s dulu, baru tempat ni terbuka." % prev.replace("_", "."))
 		return true
 	if not _available(zid, found["i"]):
 		Game.main.pau_say("Belum lagi. Selesaikan tugasan sebelumnya dulu, ikut tanda seru.")
@@ -184,12 +187,10 @@ func refresh() -> void:
 			hint = "Pergi ke tanda seru (!) di %s." % Game.zone_data(f["zid"])["title"]
 	if hint == "":
 		var next := Game.next_zone()
-		hint = {
-			"1_1": "Gerbang Masa ada di utara Kampung Jejak. Ikut jalan ke atas.",
-			"1_2": "Pelabuhan Melaka ada di pantai timur. Cari Syahbandar.",
-			"1_3": "Balai Penghadapan ada dalam Istana di Kota Melaka.",
-			"1_4": "Bukit Siguntang ada di timur laut. Ikut jalan dari Gerbang Masa.",
-		}.get(next, "Bab 1 selesai! Buka Nota Alif untuk ulang kaji.")
+		if next == "":
+			hint = "Semua bab yang dibuka sudah selesai! Buka Nota Alif untuk ulang kaji."
+		else:
+			hint = str(Game.zone_data(next).get("hint_go", "Ikut tanda seru (!) ke Misi %s." % next.replace("_", ".")))
 	Game.context_hint = hint
 	changed.emit()
 

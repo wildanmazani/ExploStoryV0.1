@@ -1,12 +1,18 @@
 extends Control
-## Penutup Bab 1: Bendera 1 waves, the road to Bendera 2 lights up,
-## Nota Alif opens, then a teaser for Bab 2.
+## Penutup of a chapter (params.chapter, default 1): its flag waves, the road
+## to the next flag lights up, Nota Alif opens, then a teaser for the next Bab.
 
 const UI = preload("res://scripts/ui/ui.gd")
 const ORIGIN := Vector2(40, 140)  # map-pixel crop origin (map is drawn x4)
 
 var params: Dictionary = {}
 var _road: Line2D
+var _ch := 1
+
+
+## story key for this chapter: Bab 1 keeps its original keys (penutup_a ...)
+func _key(part: String) -> String:
+	return "penutup_" + part if _ch == 1 else "penutup_%d_%s" % [_ch, part]
 
 
 func _ready() -> void:
@@ -19,9 +25,10 @@ func _ready() -> void:
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	UI.full(bg)
 	add_child(bg)
+	_ch = int(params.get("chapter", 1))
 	var flags: Array = load("res://scripts/ui/peta_jejak.gd").FLAGS
-	var f1: Vector2 = flags[0] * 4.0
-	var f2: Vector2 = flags[1] * 4.0
+	var f1: Vector2 = flags[_ch - 1] * 4.0
+	var f2: Vector2 = flags[mini(_ch, flags.size() - 1)] * 4.0
 	_road = Line2D.new()
 	_road.width = 26
 	_road.default_color = Color(1, 0.85, 0.3, 0.0)
@@ -78,8 +85,8 @@ func _img_pau(feet: Vector2) -> TextureRect:
 
 func _run(flag1: TextureRect, flag2: TextureRect, pau: TextureRect) -> void:
 	# chapter complete
-	if not Game.chapter_done(1):
-		Game.save["chapters_done"].append(1)
+	if not Game.chapter_done(_ch):
+		Game.save["chapters_done"].append(_ch)
 		Game.add_reward(150, 100)
 		Game.persist()
 	await get_tree().create_timer(0.6).timeout
@@ -92,13 +99,13 @@ func _run(flag1: TextureRect, flag2: TextureRect, pau: TextureRect) -> void:
 	var road := create_tween()
 	road.tween_property(_road, "default_color:a", 0.75, 1.5)
 	create_tween().tween_property(flag2, "modulate", Color(1.3, 1.2, 0.8), 1.5)
-	var banner := UI.label("BENDERA 1 BERKIBAR!", "Title")
+	var banner := UI.label(tr("BENDERA %d BERKIBAR!") % _ch, "Title")
 	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	banner.position = Vector2(0, 40)
 	banner.size = Vector2(1280, 100)
 	add_child(banner)
 	MusicDirector.stinger("st_zone")
-	await Game.say("penutup_a")
+	await Game.say(_key("a"))
 	hop.kill()
 	# Nota Alif
 	var nota_panel = load("res://scripts/ui/nota_panel.gd").new()
@@ -106,7 +113,7 @@ func _run(flag1: TextureRect, flag2: TextureRect, pau: TextureRect) -> void:
 	await nota_panel.closed
 	# gentle wellbeing card
 	await _card("Satu nota kecil", "Jika rasa tertekan menjelang peperiksaan, bercakaplah dengan guru, kaunselor atau keluarga. Kau tidak keseorangan.", "res://assets/icons/rakan.png")
-	# teaser Bab 2
+	# teaser for the next Bab
 	banner.queue_free()
 	await _teaser()
 	Game.save["map_pos"] = []
@@ -155,15 +162,19 @@ func _teaser() -> void:
 	await tw.finished
 	var col := UI.vbox(10)
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
-	col.add_child(UI.icon("res://assets/icons/bendera.png", 120))
-	var a := UI.label("BAB 2", "Title")
+	var next := Game.chapter_info(_ch + 1)
+	var icon := "res://assets/icons/%s.png" % str(next.get("icon", "bendera"))
+	col.add_child(UI.icon(icon if ResourceLoader.exists(icon) else "res://assets/icons/bendera.png", 120))
+	var a := UI.label("BAB %d" % (_ch + 1), "Title")
 	a.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(a)
-	var b := UI.label("KEBANGKITAN NASIONALISME", "Heading")
-	b.add_theme_font_size_override("font_size", 44)
+	var b := UI.label(str(next.get("title", "")).to_upper(), "Heading")
+	b.add_theme_font_size_override("font_size", 44 if b.text.length() <= 30 else 30)
+	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	b.custom_minimum_size.x = 1100
 	b.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(b)
-	var c := UI.label("Akan Datang", "Small")
+	var c := UI.label(tr("Sudah dibuka!") if not Game.chapter_zones(_ch + 1).is_empty() else tr("Akan Datang"), "Small")
 	c.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(c)
 	var cc := UI.center(col)
@@ -172,7 +183,7 @@ func _teaser() -> void:
 	col.modulate.a = 0.0
 	create_tween().tween_property(col, "modulate:a", 1.0, 1.2)
 	await get_tree().create_timer(1.4).timeout
-	await Game.say("penutup_teaser")
+	await Game.say(_key("teaser"))
 	var btn := UI.button("KEMBALI MENEROKA", "Primary", 320)
 	btn.position = Vector2(480, 600)
 	add_child(btn)

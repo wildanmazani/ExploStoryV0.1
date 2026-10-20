@@ -17,16 +17,54 @@ const REWARD_COINS := 20
 const REWARD_EXP := 30       ## everyone who plays gets this much EXP
 const MIN_FRIENDS := 2       ## room = you + 2 to 4 friends (or bots)
 const MAX_FRIENDS := 4
-const BANK := "res://data/soalan/bab1.json"
+const BANK := "res://data/soalan/bab%d.json"
+## which chapter the next battle asks about (0 = every finished chapter mixed)
+static var chapter := 1
 
 static var _bank: Array = []
+static var _bank_for := -1
 
 
+## Questions for the chosen chapter. The online room always uses Bab 1, the
+## answer key the server holds (supabase/multiplayer.sql).
 static func bank() -> Array:
-	if _bank.is_empty():
-		var d = JSON.parse_string(FileAccess.get_file_as_string(BANK))
-		_bank = d.get("questions", []) if d is Dictionary else []
+	if _bank_for != chapter:
+		_bank = []
+		var nos: Array = [chapter]
+		if chapter == 0:
+			nos = []
+			for n in range(1, 11):
+				if n == 1 or Game.chapter_done(n) or Game.chapter_done(n - 1):
+					nos.append(n)
+		for n in nos:
+			_bank.append_array(bank_of(n))
+		_bank_for = chapter
 	return _bank
+
+
+static func chapter_name() -> String:
+	return tr_safe("semua bab") if chapter == 0 else tr_safe("Bab %d") % chapter
+
+
+static func tr_safe(s: String) -> String:
+	return TranslationServer.translate(s)
+
+
+static func bank_of(no: int) -> Array:
+	var path := BANK % no
+	if not FileAccess.file_exists(path):
+		return []
+	var d = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return d.get("questions", []) if d is Dictionary else []
+
+
+## chapters that have a question bank and are open to this player
+static func chapters_open() -> Array:
+	var out: Array = []
+	for n in range(1, 11):
+		if FileAccess.file_exists(BANK % n) and Game.zone_unlocked(str(Game.chapter_zones(n)[0]) if not Game.chapter_zones(n).is_empty() else "%d_1" % n):
+			out.append(n)
+	return out
 
 
 static func alive(players: Array) -> Array:

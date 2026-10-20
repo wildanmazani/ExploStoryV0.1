@@ -1,0 +1,248 @@
+{
+  "id": "2_7",
+  "no": "2.7",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_7.png",
+  "title": "Maktab Perguruan Sultan Idris",
+  "subtopik": "2.7 Perkembangan Nasionalisme",
+  "hint_go": "Maktab SITC ada di timur laut Lembah Kebangkitan. Cari Za'ba.",
+  "persoalan": "Bagaimana nasionalisme berkembang di negara kita?",
+  "pemandu": "zaba",
+  "ganjaran": {
+    "id": "al_imam",
+    "nama": "Naskhah Al-Imam (1906)",
+    "icon": "kitab",
+    "info": "Majalah Kaum Muda yang terbit pada 23 Julai 1906 di Singapura, menyeru umat Islam kembali kepada al-Quran dan Hadis."
+  },
+  "intro": "z27_intro",
+  "objects": [
+    {
+      "id": "zaba",
+      "label": "Za'ba"
+    },
+    {
+      "id": "eunos",
+      "label": "Mohammad Eunos Abdullah"
+    },
+    {
+      "id": "ibrahim",
+      "label": "Ibrahim Haji Yaakob"
+    },
+    {
+      "id": "papan_persatuan",
+      "label": "Papan Persatuan"
+    }
+  ],
+  "steps": [
+    {
+      "at": "zaba",
+      "before": "z27_a_before",
+      "puzzle": "intelektual",
+      "after": "z27_a_after"
+    },
+    {
+      "at": "eunos",
+      "before": "z27_b_before",
+      "puzzle": "garis_persatuan",
+      "after": "z27_b_after"
+    },
+    {
+      "at": "ibrahim",
+      "before": "z27_c_before",
+      "puzzle": "karya_penulis",
+      "after": "z27_c_after"
+    },
+    {
+      "at": "papan_persatuan",
+      "before": "z27_d_before",
+      "puzzle": "persatuan_kaum",
+      "after": "z27_d_after"
+    }
+  ],
+  "puzzles": {
+    "intelektual": {
+      "type": "objektif",
+      "title": "Golongan Intelektual",
+      "instruction": "Jawab soalan tentang golongan intelektual.",
+      "hint": "Kaum Muda berpendidikan agama: Sheikh Tahir Jalaluddin, Syed Sheikh al-Hadi, Haji Abbas Mohd Taha.",
+      "questions": [
+        {
+          "q": "Manakah antara berikut merupakan kumpulan tokoh intelektual berpendidikan agama yang digelar sebagai Kaum Muda?",
+          "options": [
+            "Raja Chulan Raja Abdullah, Mahmud Mat, dan Raja Uda Raja Muhammad",
+            "O.T. Dussek, Abdul Hadi Hassan, dan Buyong Adil",
+            "Sheikh Muhammad Tahir Jalaluddin, Syed Sheikh al-Hadi, dan Haji Abbas Mohd Taha",
+            "Ibrahim Haji Yaakob, Ishak Haji Muhammad, dan Ahmad Boestamam"
+          ],
+          "answer": 2,
+          "explain": "Sheikh Muhammad Tahir Jalaluddin, Syed Sheikh al-Hadi, dan Haji Abbas Mohd Taha."
+        },
+        {
+          "q": "Bilakah akhbar 'Al-Imam' mula diterbitkan di Singapura bagi menyeru umat Islam kembali kepada ajaran Islam yang sebenar berpandukan al-Quran dan Hadis?",
+          "options": [
+            "28 Jun 1919",
+            "8 Disember 1941",
+            "11 November 1914",
+            "23 Julai 1906"
+          ],
+          "answer": 3,
+          "explain": "23 Julai 1906."
+        },
+        {
+          "q": "Apakah peranan Pejabat Karang Mengarang di Maktab Perguruan Sultan Idris (SITC) yang diketuai oleh Ketua Penterjemahnya, Za'ba?",
+          "options": [
+            "Menjalankan tapisan undang-undang ke atas semua akhbar berbahasa Cina dan Tamil",
+            "Melatih anak bangsawan Melayu untuk menjadi pegawai daerah British",
+            "Mencetak wang kertas bagi kegunaan pentadbiran Negeri-negeri Melayu Bersekutu",
+            "Menghasilkan buku berkualiti dan menjadi pemangkin mengasah bakat pelajar dalam membangkitkan semangat kebangsaan"
+          ],
+          "answer": 3,
+          "explain": "Menghasilkan buku berkualiti dan menjadi pemangkin mengasah bakat pelajar dalam membangkitkan semangat kebangsaan."
+        },
+        {
+          "q": "Pada tahun 1929, apakah dua pertubuhan yang lahir di SITC yang akhirnya melahirkan persatuan radikal Kesatuan Melayu Muda (KMM)?",
+          "options": [
+            "Majlis Agama Negeri dan al-Jamiah al-Khairiah",
+            "Ikatan Pemuda Pelajar dan Ikatan Semenanjung Borneo",
+            "Persatuan Melayu Sarawak dan Parti Kebangsaan Melayu Labuan",
+            "Kesatuan Melayu Singapura dan Persaudaraan Sahabat Pena"
+          ],
+          "answer": 1,
+          "explain": "Ikatan Pemuda Pelajar dan Ikatan Semenanjung Borneo."
+        },
+        {
+          "q": "Kesatuan Melayu Muda (KMM) yang ditubuhkan oleh Ibrahim Haji Yaakob pada Mei 1937 berjuang melalui akhbar 'Majlis' untuk mewujudkan satu gagasan gabungan Tanah Melayu dan Indonesia. Apakah nama gagasan tersebut?",
+          "options": [
+            "Malai Baru",
+            "Melayu Raya",
+            "Orde Baharu Asia",
+            "Kita Boruneo"
+          ],
+          "answer": 1,
+          "explain": "Melayu Raya."
+        }
+      ],
+      "done_text": "Intelektual agama, Inggeris dan Melayu masing-masing memainkan peranan."
+    },
+    "garis_persatuan": {
+      "type": "drag_match",
+      "title": "Garis Masa Persatuan",
+      "instruction": "Seret setiap persatuan ke tahun penubuhannya.",
+      "hint": "Khalsa Diwan Malaya paling awal, 1902 di Taiping.",
+      "targets": [
+        {
+          "id": "y1902",
+          "label": "1902"
+        },
+        {
+          "id": "y1926",
+          "label": "1926"
+        },
+        {
+          "id": "y1934",
+          "label": "1934"
+        },
+        {
+          "id": "y1937",
+          "label": "1937"
+        }
+      ],
+      "items": [
+        {
+          "id": "khalsa",
+          "label": "Khalsa Diwan Malaya, Taiping",
+          "target": "y1902",
+          "fact": "Menjaga kepentingan masyarakat Sikh."
+        },
+        {
+          "id": "kms",
+          "label": "Kesatuan Melayu Singapura (KMS)",
+          "target": "y1926",
+          "fact": "Ditubuhkan oleh Mohammad Eunos Abdullah."
+        },
+        {
+          "id": "paspam",
+          "label": "Persaudaraan Sahabat Pena (PASPAM)",
+          "target": "y1934",
+          "fact": "Bermula di Pulau Pinang."
+        },
+        {
+          "id": "kmm",
+          "label": "Kesatuan Melayu Muda (KMM)",
+          "target": "y1937",
+          "fact": "Ibrahim Haji Yaakob; gagasan Melayu Raya."
+        }
+      ],
+      "done_text": "1902, 1926, 1934, 1937: persatuan semakin berani."
+    },
+    "karya_penulis": {
+      "type": "suaikan",
+      "title": "Rak Karya Kreatif",
+      "instruction": "Padankan karya dengan penulisnya.",
+      "hint": "Melor Kuala Lumpur ditulis oleh Harun Aminurrashid.",
+      "left_title": "Karya",
+      "right_title": "Penulis",
+      "pairs": [
+        {
+          "left": "Novel Putera Gunung Tahan",
+          "right": "Ishak Haji Muhammad (Pak Sako)",
+          "fact": "Menyindir penjajah."
+        },
+        {
+          "left": "Novel Melor Kuala Lumpur",
+          "right": "Harun Aminurrashid",
+          "fact": "Beliau juga menulis puisi Semenanjung."
+        },
+        {
+          "left": "Novel Mari Kita Berjuang",
+          "right": "Abdullah Sidek",
+          "fact": "Mengajak masyarakat bebas dari segi ekonomi."
+        },
+        {
+          "left": "Cerpen Cerita Awang Putat",
+          "right": "Abdul Rahim Kajai",
+          "fact": "Karya kreatif sebelum Perang Dunia Kedua."
+        },
+        {
+          "left": "Cerpen Di Sini Kita Bukannya Orang Dagang",
+          "right": "Shamsuddin Salleh",
+          "fact": "Tajuknya sendiri sudah satu seruan."
+        }
+      ],
+      "done_text": "Novel, cerpen dan puisi menyemarakkan semangat kebangsaan."
+    },
+    "persatuan_kaum": {
+      "type": "suaikan",
+      "title": "Papan Persatuan",
+      "instruction": "Padankan persatuan dengan tokoh atau peranannya.",
+      "hint": "Dr. A.M. Soosay memimpin CIAM.",
+      "left_title": "Persatuan",
+      "right_title": "Tokoh / Peranan",
+      "pairs": [
+        {
+          "left": "SCBA (Cina Peranakan British)",
+          "right": "Tan Jiak Kim dan Tan Cheng Lock",
+          "fact": "Menggalakkan pelajaran tinggi dan teknikal."
+        },
+        {
+          "left": "CIAM (1936)",
+          "right": "Dr. A.M. Soosay",
+          "fact": "Menggabungkan 12 persatuan India dan empat dewan perniagaan."
+        },
+        {
+          "left": "Khalsa Diwan Malaya (1902)",
+          "right": "Kepentingan masyarakat Sikh",
+          "fact": "Ditubuhkan di Taiping, Perak."
+        },
+        {
+          "left": "PASPAM cawangan Sabah (1939)",
+          "right": "Jesselton, Tawau dan Labuan",
+          "fact": "Dianggotai Mohammad Yaakob, Mohammad Shamsudin Osman dan Zakaria Gunn."
+        }
+      ],
+      "done_text": "Semua kaum bersuara melalui persatuan."
+    }
+  }
+}

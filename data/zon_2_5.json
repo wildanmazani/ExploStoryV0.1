@@ -1,0 +1,142 @@
+{
+  "id": "2_5",
+  "no": "2.5",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_5.png",
+  "title": "Tugu Pahlawan",
+  "subtopik": "2.5 Kesedaran Nasionalisme di Negara Kita",
+  "hint_go": "Tugu Pahlawan ada di dataran tengah Lembah Kebangkitan. Cari Ketua Pengarang.",
+  "persoalan": "Bagaimana kesedaran nasionalisme bermula di negara kita?",
+  "pemandu": "pengarang",
+  "ganjaran": {
+    "id": "pena_kebangkitan",
+    "nama": "Pena Kebangkitan",
+    "icon": "nota",
+    "info": "Lambang peralihan perjuangan: daripada penentangan bersenjata kepada penulisan dan persatuan."
+  },
+  "intro": "z25_intro",
+  "objects": [
+    {
+      "id": "tugu_pahlawan",
+      "label": "Tugu Pahlawan"
+    },
+    {
+      "id": "pengarang",
+      "label": "Ketua Pengarang"
+    }
+  ],
+  "steps": [
+    {
+      "at": "tugu_pahlawan",
+      "before": "z25_a_before",
+      "puzzle": "pahlawan",
+      "after": "z25_a_after"
+    },
+    {
+      "at": "pengarang",
+      "before": "z25_b_before",
+      "puzzle": "senjata_minda",
+      "after": "z25_b_after"
+    }
+  ],
+  "puzzles": {
+    "pahlawan": {
+      "type": "drag_match",
+      "title": "Tugu Pahlawan",
+      "instruction": "Seret setiap pahlawan ke negeri tempat dia berjuang.",
+      "hint": "Mat Salleh di Sabah, Rentap di Sarawak, Tok Janggut di Kelantan.",
+      "targets": [
+        {
+          "id": "semenanjung_barat",
+          "label": "Naning dan Perak"
+        },
+        {
+          "id": "pantai_timur",
+          "label": "Pahang, Kelantan, Terengganu"
+        },
+        {
+          "id": "borneo",
+          "label": "Sarawak dan Sabah"
+        }
+      ],
+      "items": [
+        {
+          "id": "dol",
+          "label": "Penghulu Dol Said",
+          "target": "semenanjung_barat",
+          "fact": "Naning menentang British."
+        },
+        {
+          "id": "lela",
+          "label": "Dato' Maharaja Lela",
+          "target": "semenanjung_barat",
+          "fact": "Perak menentang British."
+        },
+        {
+          "id": "bahaman",
+          "label": "Dato' Bahaman",
+          "target": "pantai_timur",
+          "fact": "Pahang."
+        },
+        {
+          "id": "janggut",
+          "label": "Tok Janggut (1915)",
+          "target": "pantai_timur",
+          "fact": "Kelantan; dipengaruhi seruan Pan-Islamisme."
+        },
+        {
+          "id": "limbong",
+          "label": "Haji Abdul Rahman Limbong",
+          "target": "pantai_timur",
+          "fact": "Terengganu."
+        },
+        {
+          "id": "rentap",
+          "label": "Rentap",
+          "target": "borneo",
+          "fact": "Sarawak."
+        },
+        {
+          "id": "salleh",
+          "label": "Mat Salleh",
+          "target": "borneo",
+          "fact": "Sabah."
+        }
+      ],
+      "done_text": "Penentangan bersenjata berlaku di seluruh negara kita."
+    },
+    "senjata_minda": {
+      "type": "objektif",
+      "title": "Dari Senjata ke Pena",
+      "instruction": "Jawab soalan tentang kesedaran awal di negara kita.",
+      "hint": "Sultan Kedah ini mahu mendapatkan kembali Pulau Pinang.",
+      "questions": [
+        {
+          "q": "Siapakah pemerintah Kesultanan Kedah yang merupakan tokoh terawal menentang Syarikat Hindia Timur Inggeris (SHTI) bagi mendapatkan kembali Pulau Pinang?",
+          "options": [
+            "Sultan Mahmud Shah",
+            "Sultan Abu Bakar",
+            "Sultan Muzaffar Shah",
+            "Sultan Abdullah Mukarram Shah"
+          ],
+          "answer": 3,
+          "explain": "Sultan Abdullah Mukarram Shah."
+        },
+        {
+          "q": "Mengapakah masyarakat tempatan di negara kita terpaksa mengubah strategi penentangan daripada gerakan bersenjata secara terbuka kepada gerakan penulisan dan berpersatuan yang lebih sederhana?",
+          "options": [
+            "Kerana mendapat arahan daripada Maharaja Jepun sejak awal abad ke-19",
+            "Kerana semua masalah cukai dan pentadbiran telah diselesaikan sepenuhnya oleh British",
+            "Kerana kesedaran awal mendapat reaksi dan tindak balas yang keras daripada penjajah serta kekangan undang-undang dan pengawasan ketat pemerintah",
+            "Kerana ketiadaan tokoh intelektual yang mampu menulis dalam bahasa Melayu"
+          ],
+          "answer": 2,
+          "explain": "Kerana kesedaran awal mendapat reaksi dan tindak balas yang keras daripada penjajah serta kekangan undang-undang dan pengawasan ketat pemerintah."
+        }
+      ],
+      "done_text": "Tindak balas keras penjajah memaksa orang kita beralih kepada penulisan dan persatuan."
+    }
+  }
+}

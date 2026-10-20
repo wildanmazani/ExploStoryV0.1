@@ -311,7 +311,7 @@ func _show_result() -> void:
 	var r := UI.label(reward, "Ink")
 	r.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(r)
-	var note := UI.label(tr("Syabas! Setiap soalan yang kau jawab ialah ulang kaji Bab 1.") if won else tr("Takpe, cuba lagi! Lagi banyak jawapan betul, lagi kuat serangan kau."), "InkSmall", true)
+	var note := UI.label(tr("Syabas! Setiap soalan yang kau jawab ialah ulang kaji %s.") % BattleRules.chapter_name() if won else tr("Takpe, cuba lagi! Lagi banyak jawapan betul, lagi kuat serangan kau."), "InkSmall", true)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(note)
 	var row := UI.hbox(12)

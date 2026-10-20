@@ -7,25 +7,41 @@ extends Node2D
 const TILE := 16
 const SWAY := preload("res://shaders/sway.gdshader")
 const WATER := preload("res://shaders/water.gdshader")
+const KABUS := preload("res://shaders/kabus_lupa.gdshader")
 const UI = preload("res://scripts/ui/ui.gd")
 const Hud = preload("res://scripts/ui/hud.gd")
 const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 const Minimap = preload("res://scripts/ui/minimap.gd")
 const HOLD_TIME := 0.6  ## long-press Pau = calm moment
+const LEMBAH_X := 82   ## columns from here on are Lembah Kebangkitan (Bab 2)
 
-## char -> texture in assets/objects/, footprint (w, h) in cells,
-## sway = wind shader, flat = drawn under characters with no collision,
-## walk = footprint cells become walkable (jetty), open = walkable columns
+## char -> texture in assets/objects/ (an Array = variants, see
+## object_texture), footprint (w, h) in cells, sway = wind shader, flat = drawn
+## under characters with no collision, walk = footprint cells become walkable
+## (jetty, bridges), open = walkable columns
 const OBJECTS := {
 	"P": {"tex": "palm", "foot": Vector2i(1, 1), "sway": 1.2},
-	"T": {"tex": "tree", "foot": Vector2i(2, 1), "sway": 1.0},
-	"B": {"tex": "bush", "foot": Vector2i(2, 1), "sway": 0.6},
+	"T": {"tex": ["tree", "tree_pink", "tree_flame", "tree_round", "tree", "tree_rambutan", "tree_round"], "foot": Vector2i(2, 1), "sway": 1.0},
+	"B": {"tex": ["bush", "bush_bunga"], "foot": Vector2i(2, 1), "sway": 0.6},
 	"R": {"tex": "rocks", "foot": Vector2i(2, 1)},
-	"F": {"tex": "flowers", "foot": Vector2i(2, 1), "flat": true, "sway": 0.5},
-	"f": {"tex": "fence", "foot": Vector2i(2, 1)},
-	"H": {"tex": "house", "foot": Vector2i(6, 3), "talk": "house"},
+	"F": {"tex": ["bunga_kuning", "bunga_merah_jambu"], "foot": Vector2i(2, 1), "flat": true, "sway": 0.5},
+	"f": {"tex": "pagar", "foot": Vector2i(1, 1)},
+	"H": {"tex": ["rumah_biru", "rumah_merah", "rumah_hijau"], "foot": Vector2i(6, 3), "talk": "house", "order": true},
 	"U": {"tex": "muzium", "foot": Vector2i(6, 3)},
-	"M": {"tex": "stall", "foot": Vector2i(4, 2)},
+	"M": {"tex": ["gerai_buah", "gerai_rempah"], "foot": Vector2i(4, 2), "order": true},
+	"D": {"tex": "gudang", "foot": Vector2i(6, 3)},
+	"n": {"tex": "jambatan", "foot": Vector2i(5, 2), "flat": true, "walk": true},
+	"l": {"tex": "pelita", "foot": Vector2i(1, 1)},
+	"w": {"tex": "perigi", "foot": Vector2i(2, 1)},
+	"j": {"tex": "tempayan", "foot": Vector2i(1, 1)},
+	"k": {"tex": "tong", "foot": Vector2i(1, 1)},
+	"c": {"tex": "peti", "foot": Vector2i(2, 1)},
+	"g": {"tex": "kayu_balak", "foot": Vector2i(2, 1)},
+	"u": {"tex": "tunggul", "foot": Vector2i(1, 1)},
+	"e": {"tex": "bangku", "foot": Vector2i(2, 1)},
+	"x": {"tex": "kayu_api", "foot": Vector2i(2, 1)},
+	"p": {"tex": "teratai", "foot": Vector2i(1, 1), "flat": true},
+	"q": {"tex": "rumput_air", "foot": Vector2i(1, 1), "flat": true, "sway": 0.8},
 	"K": {"tex": "monument", "foot": Vector2i(4, 2)},
 	"Y": {"tex": "banyan", "foot": Vector2i(6, 2), "sway": 0.8},
 	"G": {"tex": "gate_open", "foot": Vector2i(4, 1), "open": [1, 2]},
@@ -34,6 +50,21 @@ const OBJECTS := {
 	"I": {"tex": "istana", "foot": Vector2i(10, 4)},
 	"J": {"tex": "jetty", "foot": Vector2i(2, 6), "flat": true, "walk": true},
 	"X": {"tex": "ship", "foot": Vector2i(6, 4)},
+	# Lembah Kebangkitan (Bab 2)
+	"O": {"tex": "dewan", "foot": Vector2i(8, 4)},
+	"V": {"tex": "rumah_falsafah", "foot": Vector2i(6, 3)},
+	"E": {"tex": "balai_serantau", "foot": Vector2i(6, 3)},
+	"N": {"tex": "madrasah", "foot": Vector2i(6, 3)},
+	"C": {"tex": "jelutong_press", "foot": Vector2i(6, 3)},
+	"h": {"tex": ["kedai_merah", "kedai_biru"], "foot": Vector2i(6, 3), "order": true},
+	"m": {"tex": "sitc", "foot": Vector2i(10, 4)},
+	"t": {"tex": "menara", "foot": Vector2i(6, 4)},
+	"y": {"tex": "tugu_pahlawan", "foot": Vector2i(3, 2)},
+	"a": {"tex": "papan_notis", "foot": Vector2i(2, 1)},
+	"o": {"tex": "rak_buku", "foot": Vector2i(2, 1)},
+	"d": {"tex": "meja_pengarang", "foot": Vector2i(2, 1)},
+	"v": {"tex": "pintu_kabus", "foot": Vector2i(4, 1), "open": [1, 2]},
+	"z": {"tex": "lampu_kolonial", "foot": Vector2i(1, 1)},
 	"b": {"tex": "perahu", "foot": Vector2i(3, 1)},
 	"1": {"tex": "gate_funan", "foot": Vector2i(3, 1)},
 	"2": {"tex": "gate_champa", "foot": Vector2i(3, 1)},
@@ -51,6 +82,8 @@ const LABELS := {
 	"house": "Rumah", "muzium": "Muzium", "monument": "Peta Jejak", "istana": "Istana Melaka",
 	"sign_start": "Papan tanda", "sign_sea": "Papan tanda", "t5": "Papan tanda",
 	"arena": "Arena Ulang Kaji", "gate_locked": "Gerbang berkunci", "gate_open_1": "Gerbang Bab 1",
+	"gate_open_2": "Pintu Kabus Bab 2", "portal_balik": "Pintu Kabus", "dewan": "Dewan Kedaulatan Rakyat",
+	"madrasah": "Madrasah", "sitc": "Maktab Perguruan Sultan Idris", "sign_lembah": "Papan tanda",
 }
 
 var terrain := TerrainBuilder.new()
@@ -58,6 +91,10 @@ var blocked := {}      ## Vector2i -> true
 var walk_over := {}    ## Vector2i -> true (jetty planks over water)
 var interact := {}     ## Vector2i -> {type, id}
 var npcs := {}         ## Vector2i -> Npc
+var portals := {}      ## Vector2i -> {to, facing}: step in and you cross to the other island
+var kabus := {}        ## zone id -> area still under the Kabus Lupa (Bab 2)
+var houses: Array[Sprite2D] = []   ## kampung houses (chickens and kitchen smoke)
+var critters: Array[Node2D] = []   ## chickens and ducks (looks only)
 var spots := {}        ## spot id -> {pos, size}
 var spot_sprites := {} ## spot id -> Sprite2D
 var gate_sprites := {} ## kingdom -> Sprite2D
@@ -99,6 +136,8 @@ func _ready() -> void:
 	_build_entities()
 	map_texture = MapView.build_texture(self)
 	$Ambience.setup(self, _ent["gates"])
+	_spawn_critters()
+	_build_kabus()
 
 	camera.limit_right = terrain.width * TILE
 	camera.limit_bottom = terrain.height * TILE
@@ -138,6 +177,9 @@ func _ready() -> void:
 	runner.setup(self)
 	_capture_map()
 	skip.pressed.connect(_skip_intro)
+	if GameState.flags.get("just_crossed", false):
+		GameState.flags["just_crossed"] = false
+		_arrive_lembah.call_deferred()
 	if GameState.flags.get("world_intro", false):
 		GameState.flags["world_intro"] = false
 		_play_intro()
@@ -287,18 +329,31 @@ func _show_emote(text: String) -> void:
 # --- building -----------------------------------------------------------
 func _build_objects() -> void:
 	var rows := FileAccess.get_file_as_string("res://data/world/objects.txt").split("\n", false)
+	var count := {}  ## char -> how many placed so far (for "order" variants)
 	for y in rows.size():
 		var row: String = rows[y]
 		for x in row.length():
 			var ch := row[x]
 			if OBJECTS.has(ch):
-				_spawn_object(ch, Vector2i(x, y))
+				_spawn_object(ch, Vector2i(x, y), count.get(ch, 0))
+				count[ch] = count.get(ch, 0) + 1
 
 
-func _spawn_object(ch: String, anchor: Vector2i) -> void:
+## Texture name for an object. Variants go in turn ("order": houses, stalls)
+## or by a stable hash of the cell (trees, flowers), so the island looks the
+## same every run.
+static func object_texture(def: Dictionary, anchor: Vector2i, nth: int) -> String:
+	var tex = def["tex"]
+	if tex is String:
+		return tex
+	var i: int = nth if def.get("order", false) else absi((anchor.x * 73856093) ^ (anchor.y * 19349663)) % 1009
+	return tex[i % tex.size()]
+
+
+func _spawn_object(ch: String, anchor: Vector2i, nth := 0) -> void:
 	var def: Dictionary = OBJECTS[ch]
 	var foot: Vector2i = def["foot"]
-	var tex: Texture2D = load("res://assets/objects/%s.png" % def["tex"])
+	var tex: Texture2D = load("res://assets/objects/%s.png" % object_texture(def, anchor, nth))
 	var s := Sprite2D.new()
 	s.texture = tex
 	s.offset = CharacterFrames.visible_bottom_offset(tex)
@@ -312,6 +367,10 @@ func _spawn_object(ch: String, anchor: Vector2i) -> void:
 		decor.add_child(s)
 	else:
 		objects.add_child(s)
+	if ch == "H":
+		houses.append(s)
+	if ch == "L":
+		gate_sprites["L%d_%d" % [anchor.x, anchor.y]] = s
 	if KINGDOM.has(ch):
 		gate_sprites[KINGDOM[ch]] = s
 	for id in spots:
@@ -337,9 +396,24 @@ func _build_entities() -> void:
 			for dx in size[0]:
 				interact[Vector2i(s["pos"][0] + dx, s["pos"][1] - dy)] = {"type": "talk", "id": s["id"]}
 	for g in _ent["gates"]:
-		var id := "gate_open_%d" % g["chapter"] if g["open"] else "gate_locked"
+		var ch := int(g["chapter"])
+		# a chapter gate opens once the chapter before it is finished
+		var open: bool = g["open"] or (not Game.chapter_zones(ch).is_empty() and Game.chapter_done(ch - 1))
+		g["open"] = open
+		var id := "gate_open_%d" % ch if open else "gate_locked"
 		for dx in 4:
 			interact[Vector2i(g["pos"][0] + dx, g["pos"][1])] = {"type": "talk", "id": id}
+		var s: Sprite2D = gate_sprites.get("L%d_%d" % [int(g["pos"][0]), int(g["pos"][1])])
+		if open and s:  # the misty gate becomes the portal: walk through its middle
+			s.texture = load("res://assets/objects/pintu_kabus.png")
+			s.offset = CharacterFrames.visible_bottom_offset(s.texture)
+			for dx in [1, 2]:
+				blocked.erase(Vector2i(int(g["pos"][0]) + dx, int(g["pos"][1])))
+	for pt in _ent.get("portals", []):
+		if Game.chapter_zones(int(pt["chapter"])).is_empty() or not Game.chapter_done(int(pt["chapter"]) - 1):
+			continue
+		for c in pt["cells"]:
+			portals[Vector2i(c[0], c[1])] = pt
 	for id in spots:
 		var sp: Dictionary = spots[id]
 		for dy in sp["size"][1]:
@@ -368,7 +442,7 @@ func _capture_map() -> void:
 	sub.render_target_update_mode = SubViewport.UPDATE_ONCE
 	sub.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	sub.canvas_cull_mask = 1  # characters live on layer 2 too: this camera skips them
-	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values():
+	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values() + critters + ([_kabus_fog] if _kabus_fog else []):
 		_to_layer2(n)
 	var cam := Camera2D.new()
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
@@ -385,6 +459,76 @@ func _capture_map() -> void:
 	map_texture = ImageTexture.create_from_image(img)
 
 
+## Kabus Lupa: Lembah Kebangkitan starts grey. Every finished Bab 2 mission
+## opens a clear, full-colour patch over its area (grown in on_zone_complete);
+## when the whole chapter is done the mist is gone.
+var _kabus_fog: ColorRect
+var _kabus_rects: Array = []   ## Vector4 per cleared area (world px)
+
+
+func _build_kabus() -> void:
+	if Game.chapter_done(2):
+		return
+	var ids: Array = []
+	for a in areas:
+		var zid := str(a.get("zone", ""))
+		if zid != "" and Game.chapter_of(zid) == 2:
+			ids.append(zid)
+			if Game.zone_done(zid):
+				_kabus_rects.append(_area_px(a))
+			else:
+				kabus[zid] = a
+	if ids.is_empty():
+		return
+	_kabus_fog = ColorRect.new()
+	_kabus_fog.position = Vector2(LEMBAH_X, 0) * TILE
+	_kabus_fog.size = Vector2(terrain.width - LEMBAH_X, terrain.height) * TILE
+	_kabus_fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_kabus_fog.z_index = 19   # under the "!" quest markers (20)
+	var m := ShaderMaterial.new()
+	m.shader = KABUS
+	m.set_shader_parameter("origin", _kabus_fog.position)
+	m.set_shader_parameter("size", _kabus_fog.size)
+	_kabus_fog.material = m
+	add_child(_kabus_fog)
+	_push_kabus()
+
+
+func _area_px(a: Dictionary) -> Vector4:
+	var r: Array = a["rect"]
+	return Vector4(r[0] * TILE, r[1] * TILE, (r[2] - r[0] + 1) * TILE, (r[3] - r[1] + 1) * TILE)
+
+
+func _push_kabus() -> void:
+	var arr: Array = _kabus_rects.slice(0, 8)
+	var count := arr.size()
+	while arr.size() < 8:
+		arr.append(Vector4.ZERO)
+	_kabus_fog.material.set_shader_parameter("clear_rects", arr)
+	_kabus_fog.material.set_shader_parameter("clear_count", count)
+
+
+## colour floods back from the centre of the finished area
+func _clear_kabus(zid: String) -> void:
+	if not kabus.has(zid) or _kabus_fog == null:
+		return
+	var full := _area_px(kabus[zid])
+	kabus.erase(zid)
+	var centre := Vector2(full.x + full.z / 2.0, full.y + full.w / 2.0)
+	_kabus_rects.append(Vector4(centre.x, centre.y, 0, 0))
+	var idx := _kabus_rects.size() - 1
+	Sfx.play("sparkle")
+	var t := create_tween()
+	t.tween_method(func(v: float):
+		_kabus_rects[idx] = Vector4(centre.x - full.z * v / 2.0, centre.y - full.w * v / 2.0, full.z * v, full.w * v)
+		_push_kabus(), 0.0, 1.0, 2.2).set_trans(Tween.TRANS_SINE)
+	await t.finished
+	if kabus.is_empty():  # the last mission: the whole valley clears
+		var f := create_tween()
+		f.tween_property(_kabus_fog, "modulate:a", 0.0, 1.5)
+		await f.finished
+
+
 func _to_layer2(n: Node) -> void:
 	if n is CanvasItem:
 		(n as CanvasItem).visibility_layer = 2
@@ -394,6 +538,48 @@ func _to_layer2(n: Node) -> void:
 
 func entities() -> Dictionary:
 	return _ent
+
+
+## Chickens peck around the house yards, ducks paddle where the water is deep
+## (the spring pond and the wide river). Same places every run.
+func _spawn_critters() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	for h in houses:
+		var base := Vector2i((h.position / TILE).floor())
+		for i in 2:
+			for tries in 12:
+				var c := base + Vector2i(rng.randi_range(-4, 4), rng.randi_range(0, 3))
+				if is_walkable(c) and not interact.has(c):
+					_add_critter("ayam", c)
+					break
+	var deep: Array[Vector2i] = []
+	for y in terrain.height:
+		for x in terrain.width:
+			var c := Vector2i(x, y)
+			if terrain.terrain_at(c) != TerrainBuilder.RIVER or walk_over.has(c):
+				continue
+			var all_water := true
+			for d in [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]:
+				if terrain.terrain_at(c + d) != TerrainBuilder.RIVER:
+					all_water = false
+			if all_water:
+				deep.append(c)
+	var placed: Array[Vector2i] = []
+	for i in deep.size():
+		var c: Vector2i = deep[rng.randi_range(0, deep.size() - 1)]
+		if placed.all(func(p): return (p - c).length() > 5.0):
+			placed.append(c)
+			_add_critter("itik", c)
+		if placed.size() >= 4:
+			break
+
+
+func _add_critter(kind: String, c: Vector2i) -> void:
+	var k := Critter.new()
+	k.setup(self, kind, c)
+	objects.add_child(k)
+	critters.append(k)
 
 
 # --- ZoneRunner host API -------------------------------------------------------
@@ -436,6 +622,8 @@ func apply_after(zid: String, s: Dictionary, animate: bool) -> void:
 
 
 func on_zone_complete(zid: String) -> void:
+	if kabus.has(zid):
+		await _clear_kabus(zid)
 	if zid == "1_2":  # the envoy ship sails in and docks
 		var ship: Sprite2D = spot_sprites.get("kapal")
 		if ship:
@@ -524,7 +712,7 @@ func is_walkable(c: Vector2i) -> bool:
 		return false
 	if walk_over.has(c):
 		return true
-	return terrain.terrain_at(c) != TerrainBuilder.SEA
+	return not terrain.is_water(c)
 
 
 func _free_neighbour(c: Vector2i) -> Vector2i:
@@ -617,6 +805,14 @@ func _interact(c: Vector2i) -> void:
 
 
 func _talk_or_act(id: String) -> void:
+	if id == "gate_open_2" or id == "portal_balik":
+		var g: Vector2i = player.cell
+		for c in portals:
+			if (c - g).length() <= 3.0:
+				if id == "portal_balik":
+					await Game.say("bab2_back")
+				_cross_portal(portals[c])
+				return
 	if id == "istana":
 		if not Game.zone_unlocked("1_3"):
 			await Game.say([{"s": "pau", "t": "Pintu balai masih tertutup. Habiskan Pelabuhan Melaka dulu."}])
@@ -639,6 +835,36 @@ func _talk_or_act(id: String) -> void:
 		"arena":
 			GameState.spawn_cell = player.cell
 			Game.goto("lobby")
+
+
+## Pintu Kabus: Kampung Jejak <-> Lembah Kebangkitan (the world scene reloads
+## with Alif on the other island)
+func _cross_portal(pt: Dictionary) -> void:
+	busy = true
+	var to := Vector2i(int(pt["to"][0]), int(pt["to"][1]))
+	var going_in := to.x >= LEMBAH_X
+	if going_in:
+		await Game.say("bab2_portal")
+	Sfx.play("whoosh")
+	GameState.spawn_cell = to
+	GameState.spawn_facing = str(pt.get("facing", "south"))
+	GameState.flags["just_crossed"] = going_in
+	Game.save["map_pos"] = [to.x, to.y]
+	Game.persist()
+	GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0))
+
+
+func _arrive_lembah() -> void:
+	busy = true
+	await get_tree().create_timer(0.6).timeout
+	await Game.say("bab2_arrive")
+	busy = false
+	_enter_area_at(player.cell)
+
+
+func _enter_area_at(c: Vector2i) -> void:
+	current_area = ""
+	_on_step_finished(c)
 
 
 func _leave_to(scene: String) -> void:
@@ -700,7 +926,7 @@ func _label_for(it: Dictionary) -> String:
 
 const STEP_SOUNDS := {
 	TerrainBuilder.SAND: "step_sand", TerrainBuilder.GRASS: "step_grass",
-	TerrainBuilder.PATH: "step_sand", TerrainBuilder.STONE: "step_stone",
+	TerrainBuilder.MEADOW: "step_grass", TerrainBuilder.PATH: "step_sand",
 }
 
 
@@ -711,6 +937,9 @@ func _footstep(c: Vector2i) -> void:
 
 # --- areas ---------------------------------------------------------------
 func _on_step_finished(c: Vector2i) -> void:
+	if portals.has(c) and not busy:
+		_cross_portal(portals[c])
+		return
 	for a in areas:
 		var r: Array = a["rect"]
 		if c.x >= r[0] and c.x <= r[2] and c.y >= r[1] and c.y <= r[3]:
@@ -722,7 +951,7 @@ func _on_step_finished(c: Vector2i) -> void:
 
 func _enter_area(a: Dictionary) -> void:
 	var sub := ""
-	var zid: String = AREA_ZONE.get(a["id"], "")
+	var zid: String = str(a.get("zone", AREA_ZONE.get(a["id"], "")))
 	if zid != "":
 		sub = str(Game.zone_data(zid).get("subtopik", ""))
 	hud.set_location(str(a["name"]).to_upper(), sub)
@@ -739,8 +968,9 @@ func _enter_area(a: Dictionary) -> void:
 ## then the zone's intro conversation.
 func _zone_welcome(zid: String) -> void:
 	if not Game.zone_unlocked(zid):
-		var prev: String = Game.ZONES[Game.ZONES.find(zid) - 1]
-		Main.pau_say("Tempat ni untuk Misi %s. Kita kena habiskan Misi %s dulu." % [zid.replace("_", "."), prev.replace("_", ".")], 5.0)
+		var prev := Game.prev_zone(zid)
+		var need := ("Misi " + prev.replace("_", ".")) if prev != "" else ("Bab %d" % (Game.chapter_of(zid) - 1))
+		Main.pau_say("Tempat ni untuk Misi %s. Kita kena habiskan %s dulu." % [zid.replace("_", "."), need], 5.0)
 		return
 	if Game.zone_done(zid) or not Game.zone_state(zid)["steps"].is_empty():
 		return

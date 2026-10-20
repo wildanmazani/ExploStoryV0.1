@@ -199,9 +199,13 @@ func _fill_keywords() -> void:
 	for c in _kw_box.get_children():
 		c.queue_free()
 	var nota: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/nota.json"))
+	if FileAccess.file_exists("res://data/nota_bab2.json"):
+		nota["pages"].append_array(JSON.parse_string(FileAccess.get_file_as_string("res://data/nota_bab2.json"))["pages"])
 	var q := _kw_filter.to_lower()
 	var shown := 0
 	for z in Game.ZONES:
+		if Game.chapter_of(z) > Game.current_chapter():
+			continue
 		var done: bool = Game.zone_done(z)
 		var pages: Array = nota["pages"].filter(func(pg): return str(pg["zone"]) == z)
 		var count := 0

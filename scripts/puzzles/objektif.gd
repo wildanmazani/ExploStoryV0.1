@@ -5,7 +5,8 @@ extends "res://scripts/puzzles/puzzle_base.gd"
 ## Pau's hints: 1 = nudge, 2 and 3 = remove one wrong answer.
 ##
 ## def: {"type": "objektif", "title", "instruction", "hint", "done_text",
-##       "questions": [{"q", "options": [4 strings], "answer": index, "explain", "hint"}]}
+##       "questions": [{"q", "options": [4 strings], "answer": index, "explain", "hint"}],
+##       "boss"?: name}   with a boss, every right answer knocks its HP bar down
 
 const LETTERS := ["A", "B", "C", "D"]
 
@@ -17,6 +18,7 @@ var _q_label: Label
 var _count: Label
 var _next: Button
 var _answered: bool = false
+var _boss_hp: ProgressBar
 
 
 func _build_puzzle() -> void:
@@ -25,6 +27,20 @@ func _build_puzzle() -> void:
 	var top := UI.hbox(10)
 	_count = UI.label("", "Small")
 	top.add_child(_count)
+	if def.has("boss"):
+		var gap := Control.new()
+		gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		top.add_child(gap)
+		var bn := UI.label(str(def["boss"]).to_upper(), "Heading")
+		bn.add_theme_color_override("font_color", Color("ff8a7a"))
+		top.add_child(bn)
+		_boss_hp = ProgressBar.new()
+		_boss_hp.show_percentage = false
+		_boss_hp.max_value = questions.size()
+		_boss_hp.value = questions.size()
+		_boss_hp.custom_minimum_size = Vector2(320, 22)
+		_boss_hp.modulate = Color(1.0, 0.55, 0.5)
+		top.add_child(_boss_hp)
 	body.add_child(top)
 	var qp := UI.panel("Paper")
 	var qrow := UI.hbox(10)
@@ -107,6 +123,10 @@ func _pick(i: int) -> void:
 		Sfx.play("chime", -6.0)
 		MusicDirector.stinger("st_correct")
 		pulse(_buttons[i])
+		if _boss_hp:
+			Sfx.play("punch", -4.0)
+			create_tween().tween_property(_boss_hp, "value", questions.size() - qi - 1, 0.4)
+			shake(_boss_hp)
 		say_good(tr("Betul! ") + str(_q().get("explain", "")))
 		if qi + 1 < questions.size():
 			_next.visible = true

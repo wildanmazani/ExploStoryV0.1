@@ -13,7 +13,8 @@ const COL_SEA_D := Color("3685b9")
 const COL_SAND := Color("e8d49a")
 const COL_GRASS := Color("6dbb4f")
 const COL_PATH := Color("c79a62")
-const COL_STONE := Color("a7a39c")
+const COL_RIVER := Color("4a8fe0")
+const COL_MEADOW := Color("5aa845")
 const COL_TREE := Color("2f7a35")
 const COL_ROOF := Color("8a4f33")
 const COL_WOOD := Color("9c6a3c")
@@ -51,7 +52,7 @@ static func build_texture(w: Node) -> Texture2D:
 	var img := Image.create(tw, th, false, Image.FORMAT_RGBA8)
 	var cols := {
 		TerrainBuilder.SEA: COL_SEA, TerrainBuilder.SAND: COL_SAND, TerrainBuilder.GRASS: COL_GRASS,
-		TerrainBuilder.PATH: COL_PATH, TerrainBuilder.STONE: COL_STONE,
+		TerrainBuilder.PATH: COL_PATH, TerrainBuilder.RIVER: COL_RIVER, TerrainBuilder.MEADOW: COL_MEADOW,
 	}
 	for y in th:
 		for x in tw:
@@ -62,8 +63,8 @@ static func build_texture(w: Node) -> Texture2D:
 				col = COL_SEA_D
 			if w.walk_over.has(c):
 				col = COL_WOOD
-			elif w.blocked.has(c) and t != TerrainBuilder.SEA:
-				col = COL_TREE if t == TerrainBuilder.GRASS else COL_ROOF
+			elif w.blocked.has(c) and not w.terrain.is_water(c):
+				col = COL_TREE if t == TerrainBuilder.GRASS or t == TerrainBuilder.MEADOW else COL_ROOF
 			img.set_pixelv(c, col)
 	for a in w.areas:
 		if a["id"] == "kabus":

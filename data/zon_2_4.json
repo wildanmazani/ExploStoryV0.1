@@ -1,0 +1,190 @@
+{
+  "id": "2_4",
+  "no": "2.4",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_4.png",
+  "title": "Balai Serantau",
+  "subtopik": "2.4 Perkembangan Nasionalisme di Asia Tenggara",
+  "hint_go": "Balai Serantau ada di hujung jeti, sebelah Dermaga Asia.",
+  "persoalan": "Bagaimana jiran-jiran kita memperjuangkan kemerdekaan?",
+  "pemandu": "nakhoda",
+  "ganjaran": {
+    "id": "akhbar_kalayan",
+    "nama": "Akhbar Kalayan",
+    "icon": "nota",
+    "info": "Akhbar Katipunan pimpinan Andres Bonifacio yang menyebarkan idea Revolusi Filipina 1896."
+  },
+  "intro": "z24_intro",
+  "objects": [
+    {
+      "id": "jeti_serantau",
+      "label": "Perahu Serantau"
+    },
+    {
+      "id": "balai_serantau",
+      "label": "Balai Serantau"
+    }
+  ],
+  "steps": [
+    {
+      "at": "jeti_serantau",
+      "before": "z24_a_before",
+      "puzzle": "perahu_serantau",
+      "after": "z24_a_after"
+    },
+    {
+      "at": "balai_serantau",
+      "before": "z24_b_before",
+      "puzzle": "uji_serantau",
+      "after": "z24_b_after"
+    }
+  ],
+  "puzzles": {
+    "perahu_serantau": {
+      "type": "drag_match",
+      "title": "Perahu Serantau",
+      "instruction": "Seret setiap muatan ke perahu negara yang betul.",
+      "hint": "Isu Kasut berlaku di kuil Buddha di Burma. Sumpah Pemuda di Indonesia.",
+      "targets": [
+        {
+          "id": "fil",
+          "label": "Filipina"
+        },
+        {
+          "id": "bur",
+          "label": "Burma"
+        },
+        {
+          "id": "vie",
+          "label": "Vietnam"
+        },
+        {
+          "id": "ind",
+          "label": "Indonesia"
+        },
+        {
+          "id": "sia",
+          "label": "Siam"
+        }
+      ],
+      "items": [
+        {
+          "id": "kat",
+          "label": "Katipunan dan akhbar Kalayan",
+          "target": "fil",
+          "fact": "Andres Bonifacio; Revolusi Filipina 1896."
+        },
+        {
+          "id": "kasut",
+          "label": "Isu Kasut, Persatuan Belia Buddha (1906)",
+          "target": "bur",
+          "fact": "Orang British memakai kasut di dalam kuil Buddha."
+        },
+        {
+          "id": "thakin",
+          "label": "Golongan Thakin, Parti Do Bama Asiayone",
+          "target": "bur",
+          "fact": "Thakin bermaksud 'tuan'."
+        },
+        {
+          "id": "trib",
+          "label": "Akhbar Tribune Indige dan Cloche Felee",
+          "target": "vie",
+          "fact": "Mengkritik penindasan Perancis."
+        },
+        {
+          "id": "sumpah",
+          "label": "Sumpah Pemuda (1928)",
+          "target": "ind",
+          "fact": "Satu tanah air, satu bangsa, satu bahasa."
+        },
+        {
+          "id": "mongkut",
+          "label": "80 penasihat Barat, Raja Mongkut dan Chulalongkorn",
+          "target": "sia",
+          "fact": "Diplomasi dan pemodenan birokrasi."
+        }
+      ],
+      "done_text": "Lima negara, lima jalan perjuangan."
+    },
+    "uji_serantau": {
+      "type": "objektif",
+      "title": "Ujian Balai Serantau",
+      "instruction": "Jawab soalan tentang nasionalisme di Asia Tenggara.",
+      "hint": "Kartini menulis tentang diskriminasi Belanda dan pendidikan wanita.",
+      "questions": [
+        {
+          "q": "Apabila Gerakan Propaganda dan Liga Filipina (1892) pimpinan Jose Rizal gagal, Andres Bonifacio telah menubuhkan pertubuhan revolusioner Katipunan. Apakah akhbar yang digunakan oleh Katipunan untuk menyebarkan idea revolusi?",
+          "options": [
+            "Al-Imam",
+            "Tribune Indige",
+            "Cloche Felee",
+            "Kalayan"
+          ],
+          "answer": 3,
+          "explain": "Kalayan."
+        },
+        {
+          "q": "Di Burma, golongan siswazah universiti menubuhkan Parti Do Bama Asiayone (Kami Orang Burma) untuk memperjuangkan kemerdekaan. Apakah gelaran yang digunakan oleh pemimpinnya seperti Aung San, Kyaw Nein, dan U Nu yang bermaksud 'Tuan'?",
+          "options": [
+            "Mandarin",
+            "Pongyi",
+            "Thakin",
+            "Sensei"
+          ],
+          "answer": 2,
+          "explain": "Thakin."
+        },
+        {
+          "q": "Karya Raden Adjeng Kartini yang mendedahkan dasar diskriminasi Belanda di Indonesia telah diterbitkan pada tahun 1911 dan diterjemahkan ke dalam bahasa Inggeris sebagai 'Letters of a Javanese Princess'. Apakah judul asal karya tersebut?",
+          "options": [
+            "Melor Kuala Lumpur",
+            "Putera Gunung Tahan",
+            "Hilang Gelap Terbitlah Terang",
+            "Sumpah Pemuda"
+          ],
+          "answer": 2,
+          "explain": "Hilang Gelap Terbitlah Terang.",
+          "semak": true
+        },
+        {
+          "q": "Apakah tiga asas utama yang terkandung dalam ikrar 'Sumpah Pemuda' hasil Kongres Pemuda Indonesia pada tahun 1928?",
+          "options": [
+            "Nasionalisme, Agama, dan Komunisme",
+            "Satu Raja, Satu Undang-undang, Satu Agama",
+            "Kebebasan, Keadilan, dan Kemakmuran",
+            "Satu Tanah Air, Satu Bangsa, Satu Bahasa"
+          ],
+          "answer": 3,
+          "explain": "Satu Tanah Air, Satu Bangsa, Satu Bahasa."
+        },
+        {
+          "q": "Bagaimanakah Raja Mongkut dan Raja Chulalongkorn berjaya mengekalkan kemerdekaan Thailand daripada penjajahan kuasa Barat?",
+          "options": [
+            "Menyerahkan pentadbiran dalam negeri sepenuhnya kepada Parti Rakyat pada tahun 1885",
+            "Melancarkan serangan ketenteraan ke atas pangkalan British di Burma dan Perancis di Indochina",
+            "Melaksanakan usaha diplomasi dan pemodenan birokrasi Barat dengan membawa masuk 80 orang penasihat Barat dari pelbagai bidang",
+            "Menutup semua pelabuhan Siam daripada pedagang asing selama 50 tahun"
+          ],
+          "answer": 2,
+          "explain": "Melaksanakan usaha diplomasi dan pemodenan birokrasi Barat dengan membawa masuk 80 orang penasihat Barat dari pelbagai bidang."
+        },
+        {
+          "q": "Siapakah dua tokoh yang menubuhkan Parti Rakyat dan melancarkan Revolusi Thai pada tahun 1932 bagi menamatkan pemerintahan raja berkuasa mutlak semasa era Raja Vajiravudh?",
+          "options": [
+            "Emilio Aguinaldo dan Sergio Osmena",
+            "Nai Pridi Phanomyong dan Field Marshal Phibulsongkram",
+            "Raja Mongkut dan Raja Chulalongkorn",
+            "Nguyen Thai Hoc dan Ho Chi Minh"
+          ],
+          "answer": 1,
+          "explain": "Nai Pridi Phanomyong dan Field Marshal Phibulsongkram.",
+          "semak": true
+        }
+      ],
+      "done_text": "Asia Tenggara bangkit melalui senjata, akhbar, pendidikan dan diplomasi."
+    }
+  }
+}

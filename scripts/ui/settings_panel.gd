@@ -150,7 +150,7 @@ func _akaun() -> void:
 	var who := UI.label(tr("Pemain: %s") % Game.save["profile"]["username"], "Heading")
 	_body.add_child(who)
 	var acc := UI.hbox(12)
-	var reset := UI.button("Mula semula Bab 1")
+	var reset := UI.button("Mula semula permainan")
 	reset.pressed.connect(_confirm_reset.bind(reset))
 	acc.add_child(reset)
 	var out := UI.button("Log keluar")

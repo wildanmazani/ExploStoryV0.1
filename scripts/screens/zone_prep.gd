@@ -24,7 +24,9 @@ func _ready() -> void:
 	add_child(UI.bg_image(str(_zone.get("background", "")), Color(0.55, 0.55, 0.62)))
 	var root := UI.vbox(0)
 	UI.full(root)
-	root.add_child(UI.header_bar("PERSIAPAN MISI", "TOPIK: SEJARAH TINGKATAN 4 - BAB 1 (WARISAN NEGARA BANGSA)"))
+	var ch_no := Game.chapter_of(zid)
+	var ch_title := str(Game.chapter_info(ch_no).get("title", "")).to_upper()
+	root.add_child(UI.header_bar("PERSIAPAN MISI", "TOPIK: SEJARAH TINGKATAN 4 - BAB %d (%s)" % [ch_no, ch_title]))
 	var mid := UI.hbox(30)
 	mid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var left := Control.new()
@@ -72,12 +74,12 @@ func _ready() -> void:
 	cards.alignment = BoxContainer.ALIGNMENT_CENTER
 	for id in Game.characters.keys():
 		var ch: Dictionary = Game.characters[id]
-		if not ch.get("tokoh", false):
-			continue
+		if not ch.get("tokoh", false) or Game.chapter_of(str(ch.get("zon", "1_1"))) != ch_no:
+			continue  # only this Bab's figures
 		var met: bool = Game.save["figures"].has(id)
 		var here: bool = str(ch.get("zon", "")) == zid
 		var card := UI.panel("CardSel" if here else ("Card" if met else "CardLocked"))
-		card.custom_minimum_size = Vector2(150, 0)
+		card.custom_minimum_size = Vector2(150 if ch_no == 1 else 128, 0)
 		var cc := UI.vbox(2)
 		var pic := UI.icon(Game.portrait_path(id), 76)
 		if not met and not here:

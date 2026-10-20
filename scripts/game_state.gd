@@ -15,7 +15,10 @@ const CHAPTERS := [
 	"Pemasyhuran Kemerdekaan",
 ]
 
-var unlocked_chapters := 1   # how many flags can be entered (Bab 1 only for the final)
+## how many flags can be entered: chapters finished so far + the one in play
+var unlocked_chapters: int:
+	get:
+		return Game.current_chapter()
 var flags := {}              # session flags, e.g. flags["world_intro"] = true
 var spawn_cell = null        # Vector2i to place Alif at after a warp
 var spawn_facing := "south"

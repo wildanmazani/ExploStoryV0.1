@@ -1,6 +1,7 @@
 extends Node2D
 ## Makes the overworld feel alive: butterflies, drifting leaves, cloud
-## shadows, passing birds, mist on locked gates and gold dust on open ones.
+## shadows, passing birds, mist on locked gates and gold dust on open ones,
+## kitchen smoke over the kampung houses, rings and jumping fish on the river.
 ## Everything is drawn or generated in code (no extra downloads).
 
 const TILE := 16
@@ -10,6 +11,10 @@ var _butterflies: Array[Dictionary] = []
 var _birds: Array[Dictionary] = []
 var _t := 0.0
 var _bird_timer := 4.0
+var _river: Array[Vector2i] = []      ## river cells (not under bridges)
+var _ripples: Array[Dictionary] = []  ## {pos, t}
+var _fish: Array[Dictionary] = []     ## {from, t}
+var _ripple_timer := 0.5
 
 @onready var clouds: Node2D = $Clouds
 
@@ -38,6 +43,14 @@ func setup(w: Node2D, gates: Array) -> void:
 		var at := Vector2((g["pos"][0] + 2) * TILE, g["pos"][1] * TILE + 8)
 		add_child(_mist(at) if not g["open"] else _gold_dust(at))
 	add_child(_leaves())
+	for h in w.houses:  # a thin wisp of smoke from each kampung kitchen
+		var top: float = h.texture.get_image().get_used_rect().size.y
+		add_child(_smoke(h.position + Vector2(22, -top + 18)))
+	for y in w.terrain.height:
+		for x in w.terrain.width:
+			var c := Vector2i(x, y)
+			if w.terrain.terrain_at(c) == TerrainBuilder.RIVER and not w.walk_over.has(c):
+				_river.append(c)
 
 
 func _process(delta: float) -> void:
@@ -59,10 +72,47 @@ func _process(delta: float) -> void:
 	for b in _birds:
 		b["pos"] += b["vel"] * delta
 	_birds = _birds.filter(func(b): return b["pos"].x < size.x + 60 and b["pos"].x > -60)
+	_water(delta)
 	queue_redraw()
 
 
+## Rings spread where a fish nibbles; now and then one jumps out in an arc.
+func _water(delta: float) -> void:
+	if _river.is_empty():
+		return
+	_ripple_timer -= delta
+	if _ripple_timer <= 0:
+		_ripple_timer = randf_range(0.25, 0.7)
+		var c: Vector2i = _river.pick_random()
+		var at := Vector2(c) * TILE + Vector2(randf_range(3, 13), randf_range(3, 13))
+		if randf() < 0.12:
+			_fish.append({"from": at, "t": 0.0, "dir": 1.0 if randf() < 0.5 else -1.0})
+		else:
+			_ripples.append({"pos": at, "t": 0.0})
+	for r in _ripples:
+		r["t"] += delta
+	_ripples = _ripples.filter(func(r): return r["t"] < 1.6)
+	for f in _fish:
+		f["t"] += delta
+		if f["t"] >= 0.7 and not f.has("splash"):
+			f["splash"] = true
+			_ripples.append({"pos": f["from"] + Vector2(10 * f["dir"], 0), "t": 0.0})
+	_fish = _fish.filter(func(f): return f["t"] < 0.7)
+
+
 func _draw() -> void:
+	# ripples: squashed rings that grow and fade
+	for r in _ripples:
+		var k: float = r["t"] / 1.6
+		draw_set_transform(r["pos"], 0.0, Vector2(1, 0.45))
+		draw_arc(Vector2.ZERO, 2.0 + k * 7.0, 0, TAU, 14, Color(1, 1, 1, 0.55 * (1.0 - k)), 1.0)
+	draw_set_transform(Vector2.ZERO)
+	# jumping fish: a little orange arc
+	for f in _fish:
+		var k: float = f["t"] / 0.7
+		var p: Vector2 = f["from"] + Vector2(10 * f["dir"] * k, -sin(k * PI) * 9)
+		draw_rect(Rect2(p.floor() - Vector2(2, 1), Vector2(4, 2)), Color("f08a3c"))
+		draw_rect(Rect2(p.floor() + Vector2(-3 if f["dir"] > 0 else 2, -1), Vector2(1, 2)), Color("c8642a"))
 	# butterflies: two tiny wings that flap
 	for b in _butterflies:
 		var p: Vector2 = (b["pos"] as Vector2).floor()
@@ -140,6 +190,28 @@ func _gold_dust(at: Vector2) -> CPUParticles2D:
 	g.set_color(1, Color(1, 0.8, 0.3, 0))
 	p.color_ramp = g
 	p.z_index = 2
+	return p
+
+
+func _smoke(at: Vector2) -> CPUParticles2D:
+	var p := CPUParticles2D.new()
+	p.position = at
+	p.texture = _soft_blob(10)
+	p.amount = 7
+	p.lifetime = 3.5
+	p.preprocess = 3.5
+	p.direction = Vector2(0, -1)
+	p.spread = 12.0
+	p.gravity = Vector2(5, -4)
+	p.initial_velocity_min = 5.0
+	p.initial_velocity_max = 9.0
+	p.scale_amount_min = 0.6
+	p.scale_amount_max = 1.4
+	var g := Gradient.new()
+	g.set_color(0, Color(0.95, 0.95, 0.95, 0.0))
+	g.set_color(1, Color(0.9, 0.9, 0.9, 0.0))
+	g.add_point(0.2, Color(0.92, 0.92, 0.92, 0.4))
+	p.color_ramp = g
 	return p
 
 

@@ -6,16 +6,17 @@ extends RefCounted
 ## Terrain lives on cell *corners* (vertices). Each vertex takes the highest
 ## terrain of the 4 cells around it, then every cell picks the tile whose
 ## NW/NE/SW/SE corners match. tools/gen_world.py guarantees only legal pairs
-## meet (sea-sand, sand-grass, grass-path, grass-stone).
+## meet (sea-sand, sand-grass, river-grass, grass-meadow, grass-path).
 
-enum { SEA, SAND, GRASS, PATH, STONE }
+enum { SEA, SAND, RIVER, GRASS, MEADOW, PATH }
 
-const CHARS := {"~": SEA, "s": SAND, ".": GRASS, "=": PATH, "#": STONE}
+const CHARS := {"~": SEA, "s": SAND, "r": RIVER, ".": GRASS, ",": MEADOW, "=": PATH}
 const PAIRS := {  # [lower, upper] -> tileset name in assets/tiles/
 	Vector2i(SEA, SAND): "sea_sand",
 	Vector2i(SAND, GRASS): "sand_grass",
+	Vector2i(RIVER, GRASS): "river_grass",
+	Vector2i(GRASS, MEADOW): "grass_meadow",
 	Vector2i(GRASS, PATH): "grass_path",
-	Vector2i(GRASS, STONE): "grass_stone",
 }
 const TILE := 16
 
@@ -72,6 +73,11 @@ func terrain_at(cell: Vector2i) -> int:
 	if cell.x < 0 or cell.y < 0 or cell.x >= width or cell.y >= height:
 		return SEA
 	return cells[cell.y][cell.x]
+
+
+func is_water(cell: Vector2i) -> bool:
+	var t := terrain_at(cell)
+	return t == SEA or t == RIVER
 
 
 func paint(layer: TileMapLayer) -> void:

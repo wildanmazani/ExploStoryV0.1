@@ -1,6 +1,9 @@
 extends "res://scripts/ui/modal.gd"
-## Muzium Peribadi: a shelf with 4 artifact slots (one per zone) plus the
-## Kad Tokoh collection (historical figures met in Bab 1).
+## Muzium Peribadi: one shelf per Bab (an artifact slot for each zone) plus
+## the Kad Tokoh met in that Bab. Tabs switch between the open chapters.
+
+var _body: VBoxContainer
+var _tabs: HBoxContainer
 
 
 func _init() -> void:
@@ -9,46 +12,75 @@ func _init() -> void:
 
 
 func _build() -> void:
-	var shelf := UI.hbox(16)
-	shelf.alignment = BoxContainer.ALIGNMENT_CENTER
-	for z in Game.ZONES:
+	var open: Array = []
+	for n in range(1, Game.current_chapter() + 1):
+		if not Game.chapter_zones(n).is_empty():
+			open.append(n)
+	if open.size() > 1:
+		_tabs = UI.hbox(8)
+		for n in open:
+			var b := UI.button(tr("Bab %d") % n, "", 130)
+			b.pressed.connect(_show.bind(n))
+			_tabs.add_child(b)
+		content.add_child(_tabs)
+	_body = UI.vbox(10)
+	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(_body)
+	_show(open[-1] if not open.is_empty() else 1)
+
+
+func _show(ch: int) -> void:
+	if _tabs:
+		for b in _tabs.get_children():
+			(b as Button).theme_type_variation = "Primary" if b.text == tr("Bab %d") % ch else ""
+	for c in _body.get_children():
+		c.queue_free()
+	var zones := Game.chapter_zones(ch)
+	var big := zones.size() <= 4
+	var shelf := GridContainer.new()
+	shelf.columns = 4
+	shelf.add_theme_constant_override("h_separation", 16)
+	shelf.add_theme_constant_override("v_separation", 10)
+	for z in zones:
 		var zd := Game.zone_data(z)
 		var g: Dictionary = zd.get("ganjaran", {})
 		var have: bool = Game.save["artifacts"].has(str(g.get("id", "")))
 		var slot := UI.panel("SlotGood" if have else "Slot")
-		slot.custom_minimum_size = Vector2(230, 250)
-		var c := UI.vbox(6)
-		var ic := UI.icon("res://assets/icons/%s.png" % g.get("icon", "kunci") if have else "res://assets/icons/kunci.png", 110)
+		slot.custom_minimum_size = Vector2(230, 250 if big else 150)
+		slot.tooltip_text = str(g.get("info", "")) if have and not big else ""
+		var c := UI.vbox(4 if big else 2)
+		var ic := UI.icon("res://assets/icons/%s.png" % g.get("icon", "kunci") if have else "res://assets/icons/kunci.png", 110 if big else 56)
 		if not have:
 			ic.modulate = Color(1, 1, 1, 0.5)
 		c.add_child(ic)
-		var n := UI.label(str(g.get("nama", "?")) if have else "???", "Heading" if have else "", true)
+		var n := UI.label(str(g.get("nama", "?")) if have else "???", "Heading" if have and big else "Small", true)
 		n.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		c.add_child(n)
-		var info := UI.label(str(g.get("info", "")) if have else "Selesaikan Misi %s" % str(zd.get("no", "")), "Small", true)
-		info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		c.add_child(info)
+		if big or not have:
+			var info := UI.label(str(g.get("info", "")) if have else tr("Selesaikan Misi %s") % str(zd.get("no", "")), "Small", true)
+			info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			c.add_child(info)
 		slot.add_child(c)
 		shelf.add_child(slot)
-	content.add_child(shelf)
-	content.add_child(UI.label("Kad Tokoh", "Heading"))
+	_body.add_child(UI.center(shelf))
+	_body.add_child(UI.label("Kad Tokoh", "Heading"))
 	var row := UI.hbox(10)
 	for id in Game.characters.keys():
-		var ch: Dictionary = Game.characters[id]
-		if not ch.get("tokoh", false):
+		var ch_def: Dictionary = Game.characters[id]
+		if not ch_def.get("tokoh", false) or Game.chapter_of(str(ch_def.get("zon", "1_1"))) != ch:
 			continue
 		var met: bool = Game.save["figures"].has(id)
 		var card := UI.panel("Card" if met else "CardLocked")
-		card.custom_minimum_size = Vector2(140, 0)
-		card.tooltip_text = str(ch.get("lore", "")) if met else "Temui tokoh ini di Misi %s" % str(ch.get("zon", "")).replace("_", ".")
+		card.custom_minimum_size = Vector2(118 if not big else 140, 0)
+		card.tooltip_text = str(ch_def.get("lore", "")) if met else tr("Temui tokoh ini di Misi %s") % str(ch_def.get("zon", "")).replace("_", ".")
 		var cc := UI.vbox(2)
-		var pic := UI.icon(Game.portrait_path(id), 80)
+		var pic := UI.icon(Game.portrait_path(id), 64 if not big else 80)
 		if not met:
 			pic.modulate = Color(0, 0, 0, 0.85)
 		cc.add_child(pic)
-		var nm := UI.label(str(ch["name"]) if met else "Berkunci", "InkSmall" if met else "Small", true)
+		var nm := UI.label(str(ch_def["name"]) if met else "Berkunci", "InkSmall" if met else "Small", true)
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cc.add_child(nm)
 		card.add_child(cc)
 		row.add_child(card)
-	content.add_child(row)
+	_body.add_child(row)

@@ -104,5 +104,80 @@
     "portrait": "",
     "sprite": "",
     "tokoh": false
+  },
+  "profesor": {
+    "name": "Profesor Sejarawan",
+    "portrait": "profesor",
+    "sprite": "profesor",
+    "tokoh": true,
+    "zon": "2_1",
+    "rekaan": true,
+    "gelaran": "Pemandu Misi 2.1 dan 2.2",
+    "lore": "Watak rekaan. Sejarawan yang menjaga Dewan Kedaulatan Rakyat dan suka bercerita tentang idea besar."
+  },
+  "nakhoda": {
+    "name": "Nakhoda Warkah",
+    "portrait": "nakhoda",
+    "sprite": "nakhoda",
+    "tokoh": true,
+    "zon": "2_3",
+    "rekaan": true,
+    "gelaran": "Pemandu Misi 2.3 dan 2.4",
+    "lore": "Watak rekaan. Nakhoda yang membawa warkah perjuangan dari seluruh Asia."
+  },
+  "pengarang": {
+    "name": "Ketua Pengarang",
+    "portrait": "pengarang",
+    "sprite": "pengarang",
+    "tokoh": true,
+    "zon": "2_5",
+    "rekaan": true,
+    "gelaran": "Pemandu Misi 2.5",
+    "lore": "Watak rekaan. Ketua pengarang akhbar Melayu tahun 1930-an yang percaya pena lebih tajam daripada pedang."
+  },
+  "syed_sheikh": {
+    "name": "Syed Sheikh al-Hadi",
+    "portrait": "syed_sheikh",
+    "sprite": "syed_sheikh",
+    "tokoh": true,
+    "zon": "2_6",
+    "gelaran": "Pelopor Islah",
+    "lore": "Tokoh Kaum Muda dan penggerak Al-Imam (1906) serta pendidikan madrasah."
+  },
+  "zaba": {
+    "name": "Za'ba",
+    "portrait": "zaba",
+    "sprite": "zaba",
+    "tokoh": true,
+    "zon": "2_7",
+    "gelaran": "Pendeta Pena",
+    "lore": "Ketua Penterjemah Pejabat Karang Mengarang di SITC. Kerap mengkritik dasar pendidikan British."
+  },
+  "eunos": {
+    "name": "Mohammad Eunos Abdullah",
+    "portrait": "eunos",
+    "sprite": "eunos",
+    "tokoh": true,
+    "zon": "2_7",
+    "gelaran": "Pengasas KMS",
+    "lore": "Menubuhkan Kesatuan Melayu Singapura pada 1926 untuk memperjuangkan kepentingan orang Melayu."
+  },
+  "ibrahim": {
+    "name": "Ibrahim Haji Yaakob",
+    "portrait": "ibrahim",
+    "sprite": "ibrahim",
+    "tokoh": true,
+    "zon": "2_7",
+    "gelaran": "Pengasas KMM",
+    "lore": "Menubuhkan Kesatuan Melayu Muda pada Mei 1937 dan memperjuangkan gagasan Melayu Raya melalui akhbar Majlis."
+  },
+  "ibu_zain": {
+    "name": "Ibu Zain",
+    "portrait": "ibu_zain",
+    "sprite": "ibu_zain",
+    "tokoh": true,
+    "zon": "2_8",
+    "gelaran": "Srikandi Ilmu",
+    "lore": "Hajah Zainon Munshi Sulaiman. Penggerak majalah Bulan Melayu (1930) dan Tabung Derma Pelajaran Tinggi untuk anak perempuan Melayu."
   }
 }

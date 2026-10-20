@@ -188,69 +188,11 @@ func _run() -> void:
 	await wait(0.3)
 	await shot("pau_hint_bubble")
 
-	# ---- the four zones, each puzzle at its spot in the world
-	for z in Game.ZONES:
-		if z == "1_3":
-			GameState.go_to("res://scenes/interior/balai.tscn")
-			await wait_screen("balai")
-			await wait_idle()
-		elif screen_name() != "world":
-			await wait_screen("world")
-			await wait_idle()
-		await shot("zone_" + z)
-		for s in Game.zone_data(z)["steps"]:
-			if not _walk_to(str(s["at"])):
-				_fail("no spot for %s in %s" % [s["at"], screen_name()])
-				return
-			var tt := 0.0
-			while Game.active_puzzle == null:
-				await wait(0.1)
-				tt += 0.1
-				if tt > 30:
-					_fail("puzzle %s never opened" % s["puzzle"])
-					return
-			await wait(0.4)
-			await _solve(Game.active_puzzle, "%s_%s" % [z, s["puzzle"]])
-			await wait_idle(60)
-			await wait(0.3)
-			if s == Game.zone_data(z)["steps"][0]:
-				await shot("world_after_%s" % s["puzzle"])
-		await wait_screen("zone_summary", 40)
-		await shot("summary_" + z)
-		hosted()._continue()
-		if z != "1_4":
-			await wait_screen("world")
-			await wait_idle()
-
-	# ---- penutup
-	await wait_screen("penutup", 30)
-	var t := 0.0
-	var shot_flag := false
-	while screen_name() == "penutup":
-		var nota: Node = null
-		for c in Main.overlay_root().get_children():
-			if c.has_method("_read_page"):
-				nota = c
-		if nota:
-			await wait(0.5)
-			await shot("nota_alif")
-			nota.close()
-		elif not Main.dialog_box.visible:
-			var b := find_button(hosted(), "Teruskan")
-			if b == null:
-				b = find_button(hosted(), "KEMBALI")
-				if b:
-					await shot("teaser_bab2")
-			if b:
-				b.pressed.emit()
-		elif not shot_flag:
-			shot_flag = true
-			await shot("penutup_flag")
-		await wait(0.2)
-		t += 0.2
-		if t > 120:
-			_fail("penutup stuck")
-			return
+	# ---- Bab 1: the four zones, each puzzle at its spot in the world
+	if not await _play_zones(Game.chapter_zones(1)):
+		return
+	if not await _finish_penutup("bab2"):
+		return
 	await wait_screen("world")
 	await wait_idle()
 	await shot("world_after_bab1")
@@ -307,7 +249,42 @@ func _run() -> void:
 	await _check_battle()
 	await _check_brawl()
 
+	# ---- Bab 2: through the Pintu Kabus into Lembah Kebangkitan, eight missions
+	var ent: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world/entities.json"))
+	GameState.spawn_cell = Vector2i(int(ent["arrive2"][0]), int(ent["arrive2"][1]))
+	Game.goto("world")
+	await wait_screen("world")
+	await wait_idle()
+	await shot("lembah_arrive")
+	if scene().portals.is_empty():
+		_fail("Bab 2 portal should be open after Bab 1")
+		return
+	for c in scene().portals:
+		if not scene().is_walkable(c):
+			_fail("portal cell %s should be walkable" % str(c))
+			return
+	if not await _play_zones(Game.chapter_zones(2)):
+		return
+	if not await _finish_penutup("bab3"):
+		return
+	await wait_screen("world")
+	await wait_idle()
+	await shot("world_after_bab2")
+	Main.open_muzium()
+	await wait(0.4)
+	await shot("muzium_bab2")
+	close_top_overlay()
+	Main.open_nota()
+	await wait(0.4)
+	await shot("nota_bab2")
+	close_top_overlay()
+	BattleRules.chapter = 2
+	await _check_battle()
+
 	# ---- checks
+	if not Game.chapter_done(2):
+		_fail("Bab 2 not marked done")
+		return
 	if not Game.chapter_done(1):
 		_fail("Bab 1 not marked done")
 		return
@@ -315,11 +292,82 @@ func _run() -> void:
 		if not Game.zone_done(z):
 			_fail("zone %s not done" % z)
 			return
-	if Game.save["artifacts"].size() < 4:
+	if Game.save["artifacts"].size() < 12:
 		_fail("artifacts missing: %s" % str(Game.save["artifacts"]))
 		return
 	print("AUTOTEST PASS level=%d exp=%d coins=%d figures=%s" % [Game.save["level"], Game.save["exp"], Game.save["coins"], str(Game.save["figures"])])
 	get_tree().quit(0)
+
+
+## Plays every zone in the list: walks to each step's spot, solves its puzzle,
+## then continues from the summary. False (after _fail) if something broke.
+func _play_zones(zones: Array) -> bool:
+	for z in zones:
+		if z == "1_3":
+			GameState.go_to("res://scenes/interior/balai.tscn")
+			await wait_screen("balai")
+			await wait_idle()
+		elif screen_name() != "world":
+			await wait_screen("world")
+			await wait_idle()
+		await shot("zone_" + z)
+		for s in Game.zone_data(z)["steps"]:
+			if not _walk_to(str(s["at"])):
+				_fail("no spot for %s in %s" % [s["at"], screen_name()])
+				return false
+			var tt := 0.0
+			while Game.active_puzzle == null:
+				await wait(0.1)
+				tt += 0.1
+				if tt > 30:
+					_fail("puzzle %s never opened" % s["puzzle"])
+					return false
+			await wait(0.4)
+			await _solve(Game.active_puzzle, "%s_%s" % [z, s["puzzle"]])
+			await wait_idle(60)
+			await wait(0.3)
+			if s == Game.zone_data(z)["steps"][0]:
+				await shot("world_after_%s" % s["puzzle"])
+		await wait_screen("zone_summary", 40)
+		await shot("summary_" + z)
+		hosted()._continue()
+		if not Game.is_last_zone(z):
+			await wait_screen("world")
+			await wait_idle()
+	return true
+
+
+## Clicks through the chapter ending: flag, Nota Alif, wellbeing card, teaser.
+func _finish_penutup(teaser: String) -> bool:
+	await wait_screen("penutup", 30)
+	var t := 0.0
+	var shot_flag := false
+	while screen_name() == "penutup":
+		var nota: Node = null
+		for c in Main.overlay_root().get_children():
+			if c.has_method("_read_page"):
+				nota = c
+		if nota:
+			await wait(0.5)
+			await shot("nota_alif_" + teaser)
+			nota.close()
+		elif not Main.dialog_box.visible:
+			var b := find_button(hosted(), "Teruskan")
+			if b == null:
+				b = find_button(hosted(), "KEMBALI")
+				if b:
+					await shot("teaser_" + teaser)
+			if b:
+				b.pressed.emit()
+		elif not shot_flag:
+			shot_flag = true
+			await shot("penutup_flag_" + teaser)
+		await wait(0.2)
+		t += 0.2
+		if t > 120:
+			_fail("penutup stuck")
+			return false
+	return true
 
 
 ## Bilik Pertarungan vs 2 bots, sped up: answer right, hit the weakest,

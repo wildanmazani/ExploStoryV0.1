@@ -151,4 +151,12 @@ func _enter(ch: Dictionary, open: bool) -> void:
 		return
 	Sfx.play("select")
 	MusicDirector.stinger("st_correct")
+	# each Bab has its own place in the world: Zon 2 starts in Lembah Kebangkitan
+	var ent = JSON.parse_string(FileAccess.get_file_as_string("res://data/world/entities.json"))
+	var pos: Array = Game.save.get("map_pos", [])
+	var in_lembah := pos.size() == 2 and int(pos[0]) >= 82
+	if int(ch["no"]) == 2 and not in_lembah and ent is Dictionary and ent.has("arrive2"):
+		GameState.spawn_cell = Vector2i(int(ent["arrive2"][0]), int(ent["arrive2"][1]))
+	elif int(ch["no"]) == 1 and in_lembah and ent is Dictionary:
+		GameState.spawn_cell = Vector2i(11, 27)
 	Game.goto("world" if bool(Game.save.get("prolog_done", false)) else "prolog")

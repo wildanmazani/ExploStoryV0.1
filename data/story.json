@@ -1,6 +1,5 @@
 {
-  "_nota": "Semua dialog Bab 1. 's' = penutur (lihat characters.json), 'e' = ekspresi, 't' = teks. Dialog tokoh sejarah yang direka ditanda 'rekaan': true.",
-
+  "_nota": "Semua dialog Bab 1 dan Bab 2. 's' = penutur (lihat characters.json), 'e' = ekspresi, 't' = teks. Dialog tokoh sejarah yang direka ditanda 'rekaan': true.",
   "prolog_1a": [
     {"s": "narator", "t": "Malam. Tiga hari sebelum SPM Sejarah."},
     {"s": "alif", "e": "worried", "t": "Okey. Bab 1. Warisan Negara Bangsa. Baca sekali lagi..."}
@@ -34,7 +33,6 @@
     {"s": "pau", "t": "Ketik aku bila-bila masa kalau perlukan petunjuk. Tekan lama kalau nak bertenang."},
     {"s": "pau", "e": "happy", "t": "Jom. Kita mula dari akar."}
   ],
-
   "peta_first": [
     {"s": "pau", "t": "Bendera 1 ada empat misi. Pergi ke bangunan yang ada tanda seru."},
     {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau ketik sahaja ke mana kau nak pergi."}
@@ -58,7 +56,6 @@
     {"s": "pau", "t": "Arena Ulang Kaji! Di sini nanti kau boleh berlawan kuiz dengan rakan."},
     {"s": "pau", "t": "Ia dibuka selepas Bab 1 selesai. Jom tengok lobinya."}
   ],
-
   "z11_intro": [
     {"s": "pau", "e": "scared", "t": "Gerbang-gerbang ni bersepah. Seram sikit..."},
     {"s": "penjaga", "t": "Selamat datang ke Gerbang Masa, anak muda.", "rekaan": true}
@@ -83,7 +80,6 @@
     {"s": "penjaga", "t": "Ambil serpihan Prasasti Telaga Batu ini. Simpan di muzium kau.", "rekaan": true},
     {"s": "pau", "e": "happy", "t": "Artifak pertama! Muzium kita dah ada isi."}
   ],
-
   "z12_intro": [
     {"s": "pau", "e": "happy", "t": "Wah, Melaka abad ke-15! Bau rempah. Aku lapar lagi."},
     {"s": "syahbandar", "t": "Cepat, cepat! Kapal utusan sedang datang!", "rekaan": true},
@@ -134,7 +130,6 @@
     {"s": "syahbandar", "t": "Terimalah nobat kecil ini sebagai kenangan.", "rekaan": true},
     {"s": "alif", "e": "confident", "t": "Enam ciri. Kerajaan, Rakyat, Kedaulatan, Wilayah, Undang-undang, Lambang. Aku nampak semuanya!"}
   ],
-
   "z13_intro": [
     {"s": "tunperak", "t": "Assalamualaikum. Hamba Bendahara Tun Perak. Selamat datang ke Balai Penghadapan.", "rekaan": true},
     {"s": "tunperak", "t": "Hari ini sangat sibuk. Masalah datang bertubi-tubi.", "rekaan": true}
@@ -155,7 +150,6 @@
     {"s": "tunperak", "t": "Ambil Cap Mohor ini. Ia lambang kuasa dan keabsahan titah.", "rekaan": true},
     {"s": "alif", "e": "happy", "t": "Melaka kekal aman dan makmur sebab pentadbiran dan undang-undangnya kukuh!"}
   ],
-
   "z14_intro": [
     {"s": "narator", "t": "Puncak Bukit Siguntang. Sang Sapurba dan Demang Lebar Daun sedang memeterai Waadat."},
     {"s": "pau", "t": "Waadat ialah perjanjian. Antara pemerintah dan rakyat."},
@@ -190,7 +184,6 @@
   "z14_c_after": [
     {"s": "alif", "e": "confident", "t": "Janji, setia dan adil. Masih penting sampai sekarang."}
   ],
-
   "penutup_a": [
     {"s": "pau", "e": "happy", "t": "Lihat! Bendera 1 berkibar!"},
     {"s": "pau", "t": "Dan jalan ke Bendera 2 mula bercahaya."},
@@ -199,7 +192,218 @@
   ],
   "penutup_teaser": [
     {"s": "pau", "t": "Bendera 2: Kebangkitan Nasionalisme. Angin dari tempat lain mula bertiup..."},
-    {"s": "alif", "e": "confident", "t": "Aku dah sedia. Jom!"},
-    {"s": "pau", "e": "happy", "t": "Sabar! Bab 2 akan datang. Aku nak makan dulu."}
+    {"s": "alif", "t": "Gerbang kabus di barat Kampung Jejak! Mesti dah terbuka.", "e": "confident"},
+    {"s": "pau", "t": "Jom! Ikut jalan ke barat, ke Kabus Masa.", "e": "happy"}
+  ],
+  "z21_intro": [
+    {"s": "pau", "t": "Alif... kenapa tempat ni kelabu? Macam gambar lama.", "e": "scared"},
+    {"s": "profesor", "t": "Itu Kabus Lupa. Bila orang lupa sejarah, warnanya pudar.", "rekaan": true},
+    {"s": "profesor", "t": "Saya Profesor Sejarawan. Selamat datang ke Lembah Kebangkitan!", "rekaan": true},
+    {"s": "alif", "t": "Macam mana nak hilangkan kabus ni, Prof?"},
+    {"s": "profesor", "t": "Faham dulu satu perkataan besar: nasionalisme. Mari, dekat dengan saya.", "rekaan": true}
+  ],
+  "z21_a_before": [
+    {"s": "profesor", "t": "Senang cerita, nasionalisme tu perasaan sayang yang mendalam pada bangsa dan negara.", "rekaan": true},
+    {"s": "profesor", "t": "Tapi ramai tokoh beri tafsiran sendiri. Cuba jawab dulu soalan ni.", "rekaan": true}
+  ],
+  "z21_a_after": [
+    {"s": "alif", "t": "Oh, jadi nasionalisme bukan sekadar sayang. Ada perjuangan sekali.", "e": "confident"},
+    {"s": "profesor", "t": "Betul. Sekarang tengok papan tokoh di sebelah sana.", "rekaan": true}
+  ],
+  "z21_b_before": [
+    {"s": "profesor", "t": "Papan ni ada nama tokoh dan tafsiran mereka. Tapi kabus dah campur aduk semuanya.", "rekaan": true},
+    {"s": "pau", "t": "Kita padankan balik! Aku tolong pegang pen.", "e": "happy"}
+  ],
+  "z21_b_after": [
+    {"s": "profesor", "t": "Hebat! Setiap tokoh tengok dari sudut berbeza, tapi semua bercakap tentang bangsa yang mahu berdiri sendiri.", "rekaan": true},
+    {"s": "pau", "t": "Eh, tengok! Rumput depan dewan dah hijau balik!", "e": "happy"}
+  ],
+  "z22_intro": [
+    {"s": "profesor", "t": "Idea nasionalisme ni tak muncul tiba-tiba. Percikan awalnya datang dari Barat.", "rekaan": true},
+    {"s": "profesor", "t": "Dalam Rumah Falsafah Sejagat ada kisah tiga revolusi. Jom masuk.", "rekaan": true}
+  ],
+  "z22_a_before": [
+    {"s": "profesor", "t": "Kabus dah kacau susunan masa. England, Amerika, Perancis. Mana dulu?", "rekaan": true},
+    {"s": "alif", "t": "Tahun dia ada tak, Prof?"},
+    {"s": "profesor", "t": "Ada. Baca betul-betul.", "rekaan": true}
+  ],
+  "z22_a_after": [
+    {"s": "alif", "t": "1688, 1776, 1789. Selang hampir seratus tahun antara yang pertama dan terakhir.", "e": "confident"},
+    {"s": "profesor", "t": "Dan setiap satu belajar daripada yang sebelumnya.", "rekaan": true}
+  ],
+  "z22_b_before": [
+    {"s": "profesor", "t": "Revolusi digerakkan oleh idea. Idea pula datang dari buku dan tokoh.", "rekaan": true},
+    {"s": "pau", "t": "Buku boleh mulakan revolusi? Wah. Aku nak baca lebih banyak lepas ni.", "e": "happy"}
+  ],
+  "z22_b_after": [
+    {"s": "profesor", "t": "Locke menolak raja berkuasa mutlak. Rousseau angkat suara rakyat. Itu asas demokrasi.", "rekaan": true}
+  ],
+  "z22_c_before": [
+    {"s": "profesor", "t": "Soalan terakhir dari saya. Ingat slogan orang Amerika masa tu?", "rekaan": true}
+  ],
+  "z22_c_after": [
+    {"s": "profesor", "t": "Tahniah! Kitab Bill of Rights dan The Social Contract dah bercahaya semula.", "rekaan": true},
+    {"s": "pau", "t": "Jambatan ke dermaga timur dah terbuka! Jom!", "e": "happy"}
+  ],
+  "z23_intro": [
+    {"s": "nakhoda", "t": "Cepat, cepat! Kabus nak tenggelamkan warkah-warkah dari Asia!", "rekaan": true},
+    {"s": "alif", "t": "Warkah? Surat?"},
+    {"s": "nakhoda", "t": "Surat perjuangan dari India, China, Mesir, Jepun. Tolong saya susun balik!", "rekaan": true}
+  ],
+  "z23_a_before": [
+    {"s": "nakhoda", "t": "Setiap kapal bawa kisah satu negara. Padankan negara dengan gerakannya.", "rekaan": true}
+  ],
+  "z23_a_after": [
+    {"s": "nakhoda", "t": "Fuh, selamat warkah ni. Nampak tak? Asia pun bangkit dengan cara masing-masing.", "rekaan": true},
+    {"s": "pau", "t": "India tanpa keganasan, Jepun pula jadi moden. Lain-lain betul.", "e": "happy"}
+  ],
+  "z23_b_before": [
+    {"s": "nakhoda", "t": "Peti ni penuh soalan. Kabus kunci dia. Jawab untuk buka!", "rekaan": true}
+  ],
+  "z23_b_after": [
+    {"s": "nakhoda", "t": "Terbuka! Ini warkah al-Urwah al-Wuthqa, Ikatan yang Kuat. Simpan elok-elok.", "rekaan": true}
+  ],
+  "z24_intro": [
+    {"s": "nakhoda", "t": "Ini Balai Serantau. Perahu jiran kita semua berlabuh sini: Filipina, Burma, Vietnam, Indonesia, Siam.", "rekaan": true},
+    {"s": "pau", "t": "Jiran kita pun lawan penjajah juga ke?", "e": "scared"},
+    {"s": "nakhoda", "t": "Mestilah. Tapi strategi lain-lain. Ada yang angkat senjata, ada yang guna diplomasi.", "rekaan": true}
+  ],
+  "z24_a_before": [
+    {"s": "nakhoda", "t": "Muatan perahu dah bersepah. Hantar balik setiap muatan ke perahu negaranya.", "rekaan": true}
+  ],
+  "z24_a_after": [
+    {"s": "alif", "t": "Siam tak pernah dijajah sebab rajanya pandai berdiplomasi. Menarik!", "e": "confident"}
+  ],
+  "z24_b_before": [
+    {"s": "nakhoda", "t": "Penjaga balai nak uji kau. Jangan gelabah, baca soalan elok-elok.", "rekaan": true}
+  ],
+  "z24_b_after": [
+    {"s": "nakhoda", "t": "Kau memang anak jati serantau! Akhbar Kalayan ni untuk kau.", "rekaan": true},
+    {"s": "pau", "t": "Sungai pelabuhan dah biru balik! Cantiknya!", "e": "happy"}
+  ],
+  "z25_intro": [
+    {"s": "pengarang", "t": "Assalamualaikum! Saya Ketua Pengarang akhbar pekan ni. Kamu yang hilangkan kabus tu ya?", "rekaan": true},
+    {"s": "alif", "t": "Waalaikumussalam. Kami cuba, Encik."},
+    {"s": "pengarang", "t": "Bagus. Sekarang kita balik ke tanah air sendiri. Perjuangan kita pun panjang sejarahnya.", "rekaan": true}
+  ],
+  "z25_a_before": [
+    {"s": "pengarang", "t": "Tugu ni untuk pahlawan yang angkat senjata lawan penjajah. Nama mereka dah kabur.", "rekaan": true},
+    {"s": "pengarang", "t": "Letak setiap pahlawan di negeri tempat dia berjuang.", "rekaan": true}
+  ],
+  "z25_a_after": [
+    {"s": "pau", "t": "Ramainya pahlawan kita. Dari Naning sampai Sabah!", "e": "happy"},
+    {"s": "pengarang", "t": "Tapi penjajah balas dengan keras. Jadi strategi kena tukar.", "rekaan": true}
+  ],
+  "z25_b_before": [
+    {"s": "pengarang", "t": "Jom fikir. Kenapa orang kita beralih dari senjata kepada pena?", "rekaan": true}
+  ],
+  "z25_b_after": [
+    {"s": "alif", "t": "Kalau senjata disekat, minda tak boleh disekat.", "e": "confident"},
+    {"s": "pengarang", "t": "Ayat tu saya nak letak dalam akhbar esok!", "rekaan": true}
+  ],
+  "z26_intro": [
+    {"s": "pengarang", "t": "Selamat datang ke Kompleks Intelektual! Madrasah, maktab dan kedai cetak, semua dekat-dekat sini.", "rekaan": true},
+    {"s": "pengarang", "t": "Inilah enam faktor yang buat nasionalisme kita mekar.", "rekaan": true}
+  ],
+  "z26_a_before": [
+    {"s": "syed_sheikh", "t": "Assalamualaikum, anak muda. Pelajar kita yang belajar di Mesir bawa balik idea Islah."},
+    {"s": "syed_sheikh", "t": "Lepas tu kami buka madrasah moden. Kamu tahu yang mana dibuka dulu?"}
+  ],
+  "z26_a_after": [
+    {"s": "syed_sheikh", "t": "Johor Bahru, Pulau Pinang, Kuala Kangsar. Ilmu tersebar dari satu negeri ke negeri lain."}
+  ],
+  "z26_b_before": [
+    {"s": "pengarang", "t": "Mesin cetak Jelutong Press ni dah tersekat. Kertas faktor bertaburan!", "rekaan": true},
+    {"s": "pau", "t": "Kita kutip dan susun ikut faktor dia!", "e": "happy"}
+  ],
+  "z26_b_after": [
+    {"s": "pengarang", "t": "Mesin dah jalan balik! Dengar bunyi tu? Tak tak tak tak!", "rekaan": true}
+  ],
+  "z26_c_before": [
+    {"s": "pengarang", "t": "Satu lagi. Ni soalan dari meja pengarang. Akhbar dan novel memang senjata kita.", "rekaan": true}
+  ],
+  "z26_c_after": [
+    {"s": "pengarang", "t": "Ambil naskhah Jawi Peranakan ni. Antara akhbar terawal kita.", "rekaan": true},
+    {"s": "alif", "t": "Tak sangka akhbar boleh jadi senjata.", "e": "confident"}
+  ],
+  "z27_intro": [
+    {"s": "zaba", "t": "Selamat datang ke Maktab Perguruan Sultan Idris. Orang panggil SITC."},
+    {"s": "pau", "t": "Pakcik ni... Za'ba ke? Yang tulis buku tatabahasa tu?", "e": "happy"},
+    {"s": "zaba", "t": "Ya, saya. Di sini kami bukan setakat latih guru. Kami semai semangat bangsa."}
+  ],
+  "z27_a_before": [
+    {"s": "zaba", "t": "Nasionalisme berkembang melalui tiga landasan: golongan intelektual, penulisan dan persatuan."},
+    {"s": "zaba", "t": "Kita mula dengan golongan intelektual. Cuba jawab."}
+  ],
+  "z27_a_after": [
+    {"s": "zaba", "t": "Kaum Muda dengan Al-Imam, kami di SITC dengan Pejabat Karang Mengarang. Pena kita tajam."}
+  ],
+  "z27_b_before": [
+    {"s": "eunos", "t": "Assalamualaikum. Saya Mohammad Eunos Abdullah. Pada 1926 saya tubuhkan Kesatuan Melayu Singapura."},
+    {"s": "eunos", "t": "Persatuan kita banyak. Cuba susun ikut tahun penubuhan."}
+  ],
+  "z27_b_after": [
+    {"s": "eunos", "t": "Khalsa Diwan, KMS, PASPAM, KMM. Semua kaum ada persatuan sendiri."}
+  ],
+  "z27_c_before": [
+    {"s": "ibrahim", "t": "Saya Ibrahim Haji Yaakob. Saya kumpul ramai penulis. Tapi buku-buku ni dah tertukar penulis!"}
+  ],
+  "z27_c_after": [
+    {"s": "ibrahim", "t": "Terima kasih. Karya mereka buat orang sedar, kita bukan orang dagang di tanah sendiri."}
+  ],
+  "z27_d_before": [
+    {"s": "ibrahim", "t": "Satu lagi. Masyarakat Cina dan India pun tubuhkan persatuan. Padankan."}
+  ],
+  "z27_d_after": [
+    {"s": "zaba", "t": "Bagus. Ambil naskhah Al-Imam ni. Terbit 23 Julai 1906."},
+    {"s": "alif", "t": "Banyaknya tokoh. Tapi aku dah nampak gambaran besar.", "e": "confident"}
+  ],
+  "z28_intro": [
+    {"s": "ibu_zain", "t": "Alif, Pau. Saya Zainon Munshi Sulaiman. Budak-budak panggil saya Ibu Zain."},
+    {"s": "ibu_zain", "t": "Itu Menara Pentadbiran Kolonial. Gabenor Sekatan 1941 jaga menara tu. Dialah punca Kabus Lupa."},
+    {"s": "pau", "t": "Gabenor... seram namanya.", "e": "scared"},
+    {"s": "ibu_zain", "t": "Jangan takut. Semua usaha kita dah berhasil. Mari saya tunjukkan."}
+  ],
+  "z28_a_before": [
+    {"s": "ibu_zain", "t": "Perjuangan intelektual, penulisan dan persatuan beri kesan dalam tiga aspek. Padankan."}
+  ],
+  "z28_a_after": [
+    {"s": "ibu_zain", "t": "Politik, ekonomi, sosial. Semua berubah sebab orang berani bersuara."},
+    {"s": "alif", "t": "Sekarang aku sedia nak lawan Gabenor tu.", "e": "confident"}
+  ],
+  "z28_b_before": [
+    {"s": "narator", "t": "GABENOR SEKATAN 1941 muncul di pintu menara."},
+    {"s": "ibu_zain", "t": "Dia akan cuba keliru kan kau dengan nombor. Ingat fakta betul-betul!"},
+    {"s": "pau", "t": "Kita boleh, Alif! Satu soalan, satu tumbukan!", "e": "happy"}
+  ],
+  "z28_b_after": [
+    {"s": "narator", "t": "Gabenor Sekatan 1941 lenyap bersama Kabus Lupa. Seluruh lembah kembali berwarna."},
+    {"s": "ibu_zain", "t": "Syabas, anak-anak. Ambil majalah Bulan Melayu ni. Kami guru wanita Johor Bahru terbitkan pada 1930."},
+    {"s": "ibu_zain", "t": "Ingat, ilmu tu senjata yang tak boleh dirampas sesiapa."}
+  ],
+  "bab2_portal_shut": [
+    {"s": "pau", "t": "Kabus ni tebal sangat. Kita habiskan Bab 1 dulu, baru pintu ni terbuka."}
+  ],
+  "bab2_portal": [
+    {"s": "pau", "t": "Kabus dah nipis! Pintu Bab 2 terbuka, Alif!", "e": "happy"},
+    {"s": "alif", "t": "Jom masuk. Dah tak sabar.", "e": "confident"}
+  ],
+  "bab2_arrive": [
+    {"s": "pau", "t": "Eh... baju orang sini lain. Ada basikal, ada akhbar. Kita kat zaman mana ni?", "e": "scared"},
+    {"s": "alif", "t": "Rasanya awal 1900-an. Zaman penjajah British."},
+    {"s": "pau", "t": "Dan kenapa semua kelabu? Jom cari orang tanya.", "e": "scared"}
+  ],
+  "bab2_back": [
+    {"s": "pau", "t": "Nak balik ke Kampung Jejak? Pintu kabus ni bawa kita ke sana."}
+  ],
+  "penutup_2_a": [
+    {"s": "pau", "t": "Bendera 2 berkibar! Lembah Kebangkitan dah berwarna semula!", "e": "happy"},
+    {"s": "alif", "t": "Dari Locke sampai Ibu Zain. Semua mula dengan satu idea: bangsa kita layak berdiri sendiri.", "e": "confident"},
+    {"s": "pau", "t": "Semua dah masuk Nota Alif. Buka bila nak ulang kaji, terutama sebelum exam!"}
+  ],
+  "penutup_2_teaser": [
+    {"s": "pau", "t": "Bendera 3: Konflik Dunia dan Pendudukan Jepun. Langit dah mula mendung..."},
+    {"s": "alif", "t": "Leftenan Adnan, Sybil Kathigasu... aku pernah dengar nama tu.", "e": "confident"},
+    {"s": "pau", "t": "Sabar! Bab 3 akan datang. Kita rehat dulu.", "e": "happy"}
   ]
 }

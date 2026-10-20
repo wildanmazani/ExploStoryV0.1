@@ -15,6 +15,9 @@ const AREA_TRACK := {  # world area id -> track
 	"permulaan": "permulaan", "kampung": "kampung", "gerbang": "gerbang",
 	"pelabuhan": "pelabuhan", "melaka": "melaka", "siguntang": "siguntang",
 	"kabus": "siguntang", "balai": "melaka",
+	# Lembah Kebangkitan (Bab 2) borrows the island's tracks for now
+	"lembah": "kampung", "dewan": "melaka", "falsafah": "gerbang", "dermaga": "pelabuhan",
+	"serantau": "pelabuhan", "tugu": "siguntang", "kompleks": "kampung", "sitc": "melaka", "menara": "gerbang",
 }
 const MELODY_ON := -3.0
 const MELODY_OFF := -22.0

@@ -1,0 +1,181 @@
+{
+  "id": "2_8",
+  "no": "2.8",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_8.png",
+  "title": "Menara Pentadbiran Kolonial",
+  "subtopik": "2.8 Kesan Perkembangan Nasionalisme",
+  "hint_go": "Menara Pentadbiran Kolonial ada di hujung timur Lembah Kebangkitan. Ibu Zain menunggu di sana.",
+  "persoalan": "Apakah kesan perkembangan nasionalisme?",
+  "pemandu": "ibu_zain",
+  "ganjaran": {
+    "id": "bulan_melayu",
+    "nama": "Majalah Bulan Melayu",
+    "icon": "kitab",
+    "info": "Diterbitkan pada 1930 oleh guru wanita di Johor Bahru yang digerakkan oleh Ibu Zain."
+  },
+  "intro": "z28_intro",
+  "objects": [
+    {
+      "id": "ibu_zain",
+      "label": "Ibu Zain"
+    },
+    {
+      "id": "menara",
+      "label": "Menara Pentadbiran Kolonial"
+    }
+  ],
+  "steps": [
+    {
+      "at": "ibu_zain",
+      "before": "z28_a_before",
+      "puzzle": "tiga_kesan",
+      "after": "z28_a_after"
+    },
+    {
+      "at": "menara",
+      "before": "z28_b_before",
+      "puzzle": "gabenor",
+      "after": "z28_b_after"
+    }
+  ],
+  "puzzles": {
+    "tiga_kesan": {
+      "type": "drag_match",
+      "title": "Tiga Kesan",
+      "instruction": "Seret setiap kesan ke aspek yang betul.",
+      "hint": "Bilangan pegawai Melayu dalam MCS ialah kesan politik.",
+      "targets": [
+        {
+          "id": "pol",
+          "label": "Politik"
+        },
+        {
+          "id": "eko",
+          "label": "Ekonomi"
+        },
+        {
+          "id": "sos",
+          "label": "Sosial"
+        }
+      ],
+      "items": [
+        {
+          "id": "mcs",
+          "label": "Pegawai Melayu dalam MCS: 7 (1930) kepada 20 (1937)",
+          "target": "pol",
+          "fact": "Hasil desakan intelektual berpendidikan Inggeris dan KMS."
+        },
+        {
+          "id": "negeri",
+          "label": "Persatuan peringkat negeri ditubuhkan",
+          "target": "pol",
+          "fact": "Didorong oleh dasar desentralisasi British."
+        },
+        {
+          "id": "khairiah",
+          "label": "al-Jamiah al-Khairiah di Singapura",
+          "target": "eko",
+          "fact": "Membangkitkan semangat berniaga."
+        },
+        {
+          "id": "getah",
+          "label": "Persatuan pemilik estet getah semasa kemelesetan",
+          "target": "eko",
+          "fact": "E.E.C. Thuraisingham."
+        },
+        {
+          "id": "bulan",
+          "label": "Majalah Bulan Melayu (1930)",
+          "target": "sos",
+          "fact": "Ibu Zain dan guru wanita Johor Bahru."
+        },
+        {
+          "id": "guru",
+          "label": "Guru lepasan SITC: 58 kepada 141 orang",
+          "target": "sos",
+          "fact": "Mac 1924 hingga September 1940."
+        }
+      ],
+      "done_text": "Nasionalisme membawa perubahan politik, ekonomi dan sosial."
+    },
+    "gabenor": {
+      "type": "objektif",
+      "title": "Lawan Gabenor Sekatan 1941",
+      "boss": "Gabenor Sekatan 1941",
+      "instruction": "Setiap jawapan betul melemahkan Gabenor Sekatan 1941!",
+      "hint": "Pegawai Melayu dalam MCS bertambah daripada 7 kepada 20 orang.",
+      "questions": [
+        {
+          "q": "Apakah bukti kejayaan kesan politik hasil desakan golongan intelektual berpendidikan Inggeris dan KMS terhadap pentadbiran British?",
+          "options": [
+            "Majlis Perundangan Persekutuan dibubarkan serta-merta",
+            "Bilangan orang Melayu dalam Malayan Civil Service (MCS) bertambah daripada 7 orang pada tahun 1930 kepada 20 orang pada tahun 1937",
+            "British memberikan kemerdekaan penuh kepada Negeri-negeri Selat pada tahun 1935",
+            "Semua jawatan Residen British diserahkan kepada lepasan SITC pada tahun 1937"
+          ],
+          "answer": 1,
+          "explain": "Bilangan orang Melayu dalam Malayan Civil Service (MCS) bertambah daripada 7 orang pada tahun 1930 kepada 20 orang pada tahun 1937."
+        },
+        {
+          "q": "Apakah nama persatuan kebajikan di Singapura yang tertubuh hasil gesaan Kaum Muda dan berjaya membangkitkan semangat berniaga dalam kalangan masyarakat Melayu?",
+          "options": [
+            "Muhammadiyah",
+            "Kakeo Kokokai",
+            "al-Jamiah al-Khairiah",
+            "al-Urwah al-Wuthqa"
+          ],
+          "answer": 2,
+          "explain": "al-Jamiah al-Khairiah."
+        },
+        {
+          "q": "Pada tahun 1930, guru wanita di Johor Bahru yang digerakkan oleh Ibu Zain (Hajah Zainon Munshi Sulaiman) telah menerbitkan sebuah majalah untuk memuatkan berita kemajuan dan pendidikan wanita. Apakah nama majalah tersebut?",
+          "options": [
+            "Bulan Melayu",
+            "Tunas Melayu",
+            "Majalah Guru",
+            "Pengasoh"
+          ],
+          "answer": 0,
+          "explain": "Bulan Melayu."
+        },
+        {
+          "q": "Berapakah peningkatan bilangan guru lepasan SITC antara bulan Mac 1924 hingga bulan September 1940 yang berkhidmat membantu meningkatkan taraf pendidikan masyarakat?",
+          "options": [
+            "Daripada 7 orang kepada 20 orang",
+            "Daripada 58 orang kepada 141 orang",
+            "Daripada 12 orang kepada 80 orang",
+            "Daripada 100 orang kepada 500 orang"
+          ],
+          "answer": 1,
+          "explain": "Daripada 58 orang kepada 141 orang."
+        },
+        {
+          "q": "Siapakah tokoh yang menubuhkan Kesatuan Melayu Singapura (KMS) pada tahun 1926 bagi memperjuangkan kepentingan orang Melayu dalam pentadbiran, politik, serta pelajaran teknik dan pengajian tinggi?",
+          "options": [
+            "Ibrahim Haji Yaakob",
+            "Tengku Mahmood Mahyiddeen",
+            "Abdul Kadir Adabi",
+            "Mohammad Eunos Abdullah"
+          ],
+          "answer": 3,
+          "explain": "Mohammad Eunos Abdullah."
+        },
+        {
+          "q": "Di manakah cawangan Persaudaraan Sahabat Pena (PASPAM) ditubuhkan di Sabah pada tahun 1939 yang dianggotai oleh tokoh seperti Mohammad Yaakob, Mohammad Shamsudin Osman, dan Zakaria Gunn?",
+          "options": [
+            "Ranau, Tambunan, dan Pensiangan",
+            "Kuching, Sibu, dan Miri",
+            "Jesselton (Kota Kinabalu), Tawau, dan Labuan",
+            "Sandakan, Kudat, dan Semporna"
+          ],
+          "answer": 2,
+          "explain": "Jesselton (Kota Kinabalu), Tawau, dan Labuan."
+        }
+      ],
+      "done_text": "Gabenor Sekatan 1941 tumbang! Ilmu mengalahkan sekatan."
+    }
+  }
+}

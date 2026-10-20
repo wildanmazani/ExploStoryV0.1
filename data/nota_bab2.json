@@ -1,0 +1,231 @@
+{
+  "title": "Nota Alif: Bab 2 Kebangkitan Nasionalisme",
+  "pages": [
+    {
+      "zone": "2_1",
+      "title": "Tafsiran Nasionalisme",
+      "style": "list",
+      "items": [
+        {
+          "icon": "res://assets/icons/kitab.png",
+          "text": "Maksud",
+          "sub": "Cinta mendalam pada bangsa dan negara; menentang penjajahan"
+        },
+        {
+          "icon": "res://assets/icons/orang.png",
+          "text": "Hans Kohn",
+          "sub": "Kesetiaan ulung hanya kepada negara atau bangsa"
+        },
+        {
+          "icon": "res://assets/icons/orang.png",
+          "text": "William R. Roff",
+          "sub": "Ancaman hak Melayu, ekonomi, sekularisme dan imperialisme Barat"
+        },
+        {
+          "icon": "res://assets/icons/orang.png",
+          "text": "Zainal Abidin Abdul Wahid",
+          "sub": "Wujud sejak Kesultanan Melayu Melaka"
+        },
+        {
+          "icon": "res://assets/icons/orang.png",
+          "text": "Dr. Burhanuddin al-Helmi",
+          "sub": "Persatuan dan perpaduan kuat (National Fronts)"
+        }
+      ]
+    },
+    {
+      "zone": "2_2",
+      "title": "Revolusi di Barat",
+      "style": "timeline",
+      "items": [
+        {
+          "icon": "res://assets/icons/mahkota.png",
+          "text": "England 1688",
+          "sub": "Revolusi Keagungan, Bill of Rights, John Locke"
+        },
+        {
+          "icon": "res://assets/icons/gulungan.png",
+          "text": "Amerika 1776",
+          "sub": "\"Tiada cukai tanpa perwakilan\", Thomas Jefferson"
+        },
+        {
+          "icon": "res://assets/icons/bendera.png",
+          "text": "Perancis 1789",
+          "sub": "Rousseau, The Social Contract, penjara Bastile"
+        }
+      ]
+    },
+    {
+      "zone": "2_3",
+      "title": "Nasionalisme di Asia",
+      "style": "grid",
+      "items": [
+        {
+          "icon": "res://assets/icons/orang.png",
+          "text": "India",
+          "sub": "Satyagraha (Gandhi); Tilak dan Pal"
+        },
+        {
+          "icon": "res://assets/icons/bintang.png",
+          "text": "China",
+          "sub": "San Min Chu-i, Revolusi 1911"
+        },
+        {
+          "icon": "res://assets/icons/kitab.png",
+          "text": "Mesir",
+          "sub": "Islah, al-Urwah al-Wuthqa (1883)"
+        },
+        {
+          "icon": "res://assets/icons/pedang.png",
+          "text": "Jepun",
+          "sub": "Pemulihan Meiji 1868, Bushido"
+        }
+      ]
+    },
+    {
+      "zone": "2_4",
+      "title": "Asia Tenggara",
+      "style": "list",
+      "items": [
+        {
+          "icon": "res://assets/icons/kapal.png",
+          "text": "Filipina",
+          "sub": "Jose Rizal, Katipunan, akhbar Kalayan"
+        },
+        {
+          "icon": "res://assets/icons/kapal.png",
+          "text": "Burma",
+          "sub": "Isu Kasut (1906), golongan Thakin"
+        },
+        {
+          "icon": "res://assets/icons/kapal.png",
+          "text": "Vietnam",
+          "sub": "Tribune Indige, Cloche Felee"
+        },
+        {
+          "icon": "res://assets/icons/kapal.png",
+          "text": "Indonesia",
+          "sub": "Kartini, Sumpah Pemuda 1928"
+        },
+        {
+          "icon": "res://assets/icons/kapal.png",
+          "text": "Siam",
+          "sub": "80 penasihat Barat; Revolusi 1932"
+        }
+      ]
+    },
+    {
+      "zone": "2_5",
+      "title": "Dari Senjata ke Pena",
+      "style": "list",
+      "items": [
+        {
+          "icon": "res://assets/icons/mahkota.png",
+          "text": "Sultan Abdullah Mukarram Shah",
+          "sub": "Kedah, mahu dapatkan kembali Pulau Pinang"
+        },
+        {
+          "icon": "res://assets/icons/pedang.png",
+          "text": "Pahlawan setempat",
+          "sub": "Dol Said, Maharaja Lela, Bahaman, Rentap, Mat Salleh, Tok Janggut, Abdul Rahman Limbong"
+        },
+        {
+          "icon": "res://assets/icons/nota.png",
+          "text": "Strategi baharu",
+          "sub": "Penulisan dan persatuan, lebih sederhana tetapi tersusun"
+        }
+      ]
+    },
+    {
+      "zone": "2_6",
+      "title": "Enam Faktor",
+      "style": "grid",
+      "items": [
+        {
+          "icon": "res://assets/icons/kitab.png",
+          "text": "Agama",
+          "sub": "Islah dari Mesir; madrasah 1914, 1916, 1926"
+        },
+        {
+          "icon": "res://assets/icons/nota.png",
+          "text": "Penulisan kreatif",
+          "sub": "Putera Gunung Tahan (Pak Sako)"
+        },
+        {
+          "icon": "res://assets/icons/gulungan.png",
+          "text": "Media cetak",
+          "sub": "Jawi Peranakan, Fajar Sarawak"
+        },
+        {
+          "icon": "res://assets/icons/sekolah.png",
+          "text": "Pendidikan",
+          "sub": "SITC, MCKK, Raffles Institution"
+        },
+        {
+          "icon": "res://assets/icons/orang.png",
+          "text": "Intelektual",
+          "sub": "Eunos, Ibrahim Haji Yaakob, Abdul Kadir Adabi"
+        },
+        {
+          "icon": "res://assets/icons/peta.png",
+          "text": "Pengaruh luar",
+          "sub": "Gerakan di Asia dan serantau"
+        }
+      ]
+    },
+    {
+      "zone": "2_7",
+      "title": "Tiga Landasan Perkembangan",
+      "style": "timeline",
+      "items": [
+        {
+          "icon": "res://assets/icons/kumpulan.png",
+          "text": "1902 Khalsa Diwan",
+          "sub": "Masyarakat Sikh, Taiping"
+        },
+        {
+          "icon": "res://assets/icons/kumpulan.png",
+          "text": "1906 Al-Imam",
+          "sub": "Kaum Muda, Singapura"
+        },
+        {
+          "icon": "res://assets/icons/kumpulan.png",
+          "text": "1926 KMS",
+          "sub": "Mohammad Eunos Abdullah"
+        },
+        {
+          "icon": "res://assets/icons/kumpulan.png",
+          "text": "1934 PASPAM",
+          "sub": "Pulau Pinang"
+        },
+        {
+          "icon": "res://assets/icons/kumpulan.png",
+          "text": "1937 KMM",
+          "sub": "Ibrahim Haji Yaakob, Melayu Raya"
+        }
+      ]
+    },
+    {
+      "zone": "2_8",
+      "title": "Kesan Nasionalisme",
+      "style": "grid",
+      "items": [
+        {
+          "icon": "res://assets/icons/mahkota.png",
+          "text": "Politik",
+          "sub": "Pegawai Melayu MCS: 7 (1930) ke 20 (1937)"
+        },
+        {
+          "icon": "res://assets/icons/syiling.png",
+          "text": "Ekonomi",
+          "sub": "al-Jamiah al-Khairiah, semangat berniaga"
+        },
+        {
+          "icon": "res://assets/icons/sekolah.png",
+          "text": "Sosial",
+          "sub": "Guru SITC 58 ke 141; Bulan Melayu 1930"
+        }
+      ]
+    }
+  ]
+}

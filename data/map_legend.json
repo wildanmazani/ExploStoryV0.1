@@ -1,5 +1,5 @@
 {
-  "_info": "Legenda peta mini. 'at' = petak [x, y] dalam dunia (80x60). 'zone' = misi Bab 1 di tempat itu. Kata kunci diambil dari data/nota.json.",
+  "_info": "Legenda peta mini. 'at' = petak [x, y] dalam dunia (140x60: pulau Bab 1 di kiri, Lembah Kebangkitan Bab 2 di kanan). 'zone' = misi di tempat itu. Kata kunci diambil dari data/nota.json dan data/nota_bab2.json.",
   "places": [
     {"id": "permulaan", "name": "Bukit Permulaan", "icon": "res://assets/icons/bintang.png", "at": [19, 50], "info": "Tempat Alif terjaga"},
     {"id": "kampung", "name": "Kampung Jejak", "icon": "res://assets/icons/kumpulan.png", "at": [33, 33], "info": "Peta Jejak, Muzium, Arena"},
@@ -7,7 +7,16 @@
     {"id": "pelabuhan", "zone": "1_2", "name": "Misi 1.2: Pelabuhan Melaka", "at": [61, 41]},
     {"id": "melaka", "zone": "1_3", "name": "Misi 1.3: Balai Penghadapan", "at": [55, 29], "info": "Masuk ikut pintu Istana"},
     {"id": "siguntang", "zone": "1_4", "name": "Misi 1.4: Bukit Siguntang", "at": [57, 13]},
-    {"id": "kabus", "name": "Kabus Masa", "icon": "res://assets/icons/kunci.png", "at": [6, 26], "info": "Bab 2 dan seterusnya, belum dibuka"}
+    {"id": "kabus", "name": "Pintu Kabus", "icon": "res://assets/icons/kunci.png", "at": [10, 26], "info": "Pintu ke Lembah Kebangkitan (Bab 2), terbuka selepas Bab 1"},
+    {"id": "lembah", "name": "Lembah Kebangkitan", "icon": "res://assets/icons/bendera.png", "at": [90, 31], "info": "Bab 2: Kebangkitan Nasionalisme"},
+    {"id": "dewan", "zone": "2_1", "name": "Misi 2.1: Dewan Kedaulatan Rakyat", "at": [96, 28]},
+    {"id": "falsafah", "zone": "2_2", "name": "Misi 2.2: Rumah Falsafah Sejagat", "at": [96, 41]},
+    {"id": "dermaga", "zone": "2_3", "name": "Misi 2.3: Dermaga Asia", "at": [114, 47]},
+    {"id": "serantau", "zone": "2_4", "name": "Misi 2.4: Balai Serantau", "at": [122, 47]},
+    {"id": "tugu", "zone": "2_5", "name": "Misi 2.5: Tugu Pahlawan", "at": [119, 29]},
+    {"id": "kompleks", "zone": "2_6", "name": "Misi 2.6: Kompleks Intelektual", "at": [115, 19]},
+    {"id": "sitc", "zone": "2_7", "name": "Misi 2.7: Maktab SITC", "at": [129, 14]},
+    {"id": "menara", "zone": "2_8", "name": "Misi 2.8: Menara Pentadbiran", "at": [131, 36]}
   ],
   "landmarks": {
     "monument": {"name": "Peta Jejak", "icon": "res://assets/icons/peta.png"},

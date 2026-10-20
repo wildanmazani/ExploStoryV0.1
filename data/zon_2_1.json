@@ -1,0 +1,139 @@
+{
+  "id": "2_1",
+  "no": "2.1",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_1.png",
+  "title": "Dewan Kedaulatan Rakyat",
+  "subtopik": "2.1 Maksud Nasionalisme",
+  "hint_go": "Dewan Kedaulatan Rakyat ada dekat pintu masuk Lembah Kebangkitan. Cari Profesor Sejarawan.",
+  "persoalan": "Apakah maksud nasionalisme?",
+  "pemandu": "profesor",
+  "ganjaran": {
+    "id": "kitab_tafsiran",
+    "nama": "Kitab Tafsiran Nasionalisme",
+    "icon": "kitab",
+    "info": "Himpunan tafsiran tokoh: Hans Kohn, William R. Roff, Dato' Onn Jaafar, Dr. Burhanuddin al-Helmi dan ramai lagi."
+  },
+  "intro": "z21_intro",
+  "objects": [
+    {
+      "id": "profesor",
+      "label": "Profesor Sejarawan"
+    },
+    {
+      "id": "papan_tokoh",
+      "label": "Papan Tafsiran Tokoh"
+    }
+  ],
+  "steps": [
+    {
+      "at": "profesor",
+      "before": "z21_a_before",
+      "puzzle": "maksud",
+      "after": "z21_a_after"
+    },
+    {
+      "at": "papan_tokoh",
+      "before": "z21_b_before",
+      "puzzle": "tafsiran",
+      "after": "z21_b_after"
+    }
+  ],
+  "puzzles": {
+    "maksud": {
+      "type": "objektif",
+      "title": "Apa Itu Nasionalisme?",
+      "instruction": "Jawab soalan tentang maksud nasionalisme.",
+      "hint": "Nasionalisme = cinta pada bangsa dan negara, serta berjuang menentang penjajahan.",
+      "questions": [
+        {
+          "q": "Apakah maksud asas nasionalisme dalam konteks perjuangan sesebuah bangsa?",
+          "options": [
+            "Perasaan cinta yang mendalam terhadap bangsa dan negara serta perjuangan menentang penjajahan",
+            "Usaha meluaskan tanah jajahan ke benua lain melalui kekuatan tentera",
+            "Sistem pentadbiran yang menyerahkan kuasa mutlak sepenuhnya kepada golongan bangsawan",
+            "Dasar menutup sempadan negara daripada sebarang hubungan perdagangan luar"
+          ],
+          "answer": 0,
+          "explain": "Perasaan cinta yang mendalam terhadap bangsa dan negara serta perjuangan menentang penjajahan.",
+          "hint": "Fikir tentang cinta pada tanah air."
+        },
+        {
+          "q": "Siapakah tokoh sejarawan yang menyatakan bahawa nasionalisme merupakan satu gerakan yang meletakkan kesetiaan seseorang hanya kepada negara atau bangsanya melalui karya 'The Idea of Nationalism'?",
+          "options": [
+            "Dr. R. Suntharalingam",
+            "Profesor Emeritus Tan Sri Dr. Khoo Kay Kim",
+            "Hans Kohn",
+            "Profesor William R. Roff"
+          ],
+          "answer": 2,
+          "explain": "Hans Kohn.",
+          "hint": "Karya ini bertajuk The Idea of Nationalism (1961)."
+        },
+        {
+          "q": "Menurut Profesor William R. Roff, apakah faktor yang mencetuskan kebangkitan nasionalisme Melayu pada dekad terakhir sebelum Perang Dunia Kedua?",
+          "options": [
+            "Ancaman terhadap hak kepentingan orang Melayu, faktor ekonomi, serta kebimbangan terhadap sekularisme dan imperialisme Barat",
+            "Gesaan daripada pihak British supaya orang Melayu menubuhkan parti komunis",
+            "Kejayaan kuasa Perancis menakluki seluruh kepulauan Asia Tenggara",
+            "Keinginan untuk menghapuskan sistem kesultanan tradisional"
+          ],
+          "answer": 0,
+          "explain": "Ancaman terhadap hak kepentingan orang Melayu, faktor ekonomi, serta kebimbangan terhadap sekularisme dan imperialisme Barat.",
+          "hint": "Roff menulis The Origins of Malay Nationalism (1967)."
+        },
+        {
+          "q": "Apakah pandangan Profesor Datuk Zainal Abidin Abdul Wahid berkaitan kewujudan nasionalisme Melayu?",
+          "options": [
+            "Nasionalisme Melayu hanya digerakkan oleh golongan imigran dari luar",
+            "Nasionalisme Melayu hanya bermula selepas pengenalan Malayan Union pada tahun 1946",
+            "Nasionalisme Melayu telah wujud sejak zaman Kesultanan Melayu Melaka dengan kesetiaan kepada raja sebagai ciri utama dan bersifat ke-'Tanah Melayuan'",
+            "Nasionalisme Melayu adalah tiruan sepenuhnya daripada Revolusi Perancis 1789"
+          ],
+          "answer": 2,
+          "explain": "Nasionalisme Melayu telah wujud sejak zaman Kesultanan Melayu Melaka dengan kesetiaan kepada raja sebagai ciri utama dan bersifat ke-'Tanah Melayuan'.",
+          "hint": "Beliau melihat kesetiaan kepada raja sejak zaman Melaka."
+        }
+      ],
+      "done_text": "Nasionalisme ialah perasaan cinta yang mendalam terhadap bangsa dan negara, serta perjuangan menentang penjajahan."
+    },
+    "tafsiran": {
+      "type": "suaikan",
+      "title": "Papan Tafsiran Tokoh",
+      "instruction": "Ketik nama tokoh, kemudian ketik tafsiran nasionalisme yang dia kemukakan.",
+      "hint": "Dr. Burhanuddin al-Helmi bercakap tentang persatuan dan perpaduan yang kuat (National Fronts).",
+      "left_title": "Tokoh",
+      "right_title": "Tafsiran",
+      "pairs": [
+        {
+          "left": "Hans Kohn",
+          "right": "Kesetiaan ulung individu hanya kepada negara atau bangsanya",
+          "fact": "The Idea of Nationalism (1961)."
+        },
+        {
+          "left": "Dato' Onn Jaafar",
+          "right": "Bangsa yang tegap, kuat dan berdiri di atas tapak kaki sendiri",
+          "fact": "Daripada biografi Dato' Onn: Hidup Melayu."
+        },
+        {
+          "left": "Dr. Burhanuddin al-Helmi",
+          "right": "Persatuan dan perpaduan kuat (National Fronts), berpegang pada adab Melayu dan Islam",
+          "fact": "Untuk merebut kembali hak bangsa yang ditenggelamkan."
+        },
+        {
+          "left": "Dr. R. Suntharalingam",
+          "right": "Hak setiap bangsa menubuhkan negara sendiri, kedaulatan kepada rakyat",
+          "fact": "Nasionalisme: Satu Tinjauan Sejarah (1985)."
+        },
+        {
+          "left": "Prof. Khoo Kay Kim",
+          "right": "Perjuangan Melayu mendapatkan kembali kedudukan unggul dalam negara sendiri",
+          "fact": "Dewan Sastera, 15 Ogos 1984."
+        }
+      ],
+      "done_text": "Tafsiran berbeza, tetapi semuanya tentang bangsa yang mahu bebas dan berdaulat."
+    }
+  }
+}

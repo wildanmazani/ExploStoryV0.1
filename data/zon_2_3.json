@@ -1,0 +1,173 @@
+{
+  "id": "2_3",
+  "no": "2.3",
+  "fakta_disemak": false,
+  "music": "",
+  "any_order": false,
+  "background": "res://assets/backgrounds/bg_zon2_3.png",
+  "title": "Dermaga Asia",
+  "subtopik": "2.3 Perkembangan Nasionalisme di Asia",
+  "hint_go": "Dermaga Asia ada di seberang jambatan, sebelah timur. Cari Nakhoda Warkah.",
+  "persoalan": "Bagaimana bangsa Asia bangkit menentang kuasa Barat?",
+  "pemandu": "nakhoda",
+  "ganjaran": {
+    "id": "warkah_urwah",
+    "nama": "Warkah al-Urwah al-Wuthqa",
+    "icon": "nota",
+    "info": "Akhbar 'Ikatan yang Kuat' (1883) oleh Sayyid Jamal al-Din al-Afghani menyebarkan idea Pan-Islamisme."
+  },
+  "intro": "z23_intro",
+  "objects": [
+    {
+      "id": "nakhoda",
+      "label": "Nakhoda Warkah"
+    },
+    {
+      "id": "peti_warkah",
+      "label": "Peti Warkah"
+    }
+  ],
+  "steps": [
+    {
+      "at": "nakhoda",
+      "before": "z23_a_before",
+      "puzzle": "kapal_asia",
+      "after": "z23_a_after"
+    },
+    {
+      "at": "peti_warkah",
+      "before": "z23_b_before",
+      "puzzle": "peti_asia",
+      "after": "z23_b_after"
+    }
+  ],
+  "puzzles": {
+    "kapal_asia": {
+      "type": "drag_match",
+      "title": "Kapal-kapal Asia",
+      "instruction": "Seret setiap gerakan ke negara asalnya.",
+      "hint": "San Min Chu-i dari China. Bushido dari Jepun. Satyagraha dari India.",
+      "targets": [
+        {
+          "id": "india",
+          "label": "India"
+        },
+        {
+          "id": "china",
+          "label": "China"
+        },
+        {
+          "id": "mesir",
+          "label": "Mesir & Uthmaniyah"
+        },
+        {
+          "id": "jepun",
+          "label": "Jepun"
+        }
+      ],
+      "items": [
+        {
+          "id": "satya",
+          "label": "Satyagraha, Mahatma Gandhi",
+          "target": "india",
+          "fact": "Berpegang teguh kepada kebenaran, tanpa keganasan."
+        },
+        {
+          "id": "samaj",
+          "label": "Brahmo Samaj dan Arya Samaj",
+          "target": "india",
+          "fact": "Pertubuhan sosioagama yang menyemai cinta budaya tempatan."
+        },
+        {
+          "id": "sanmin",
+          "label": "Tiga Prinsip Rakyat (San Min Chu-i)",
+          "target": "china",
+          "fact": "Dr. Sun Yat Sen: nasionalisme, demokrasi, kebajikan sosial."
+        },
+        {
+          "id": "manchu",
+          "label": "Revolusi 1911 menumbangkan Dinasti Manchu",
+          "target": "china",
+          "fact": "Republik ditubuhkan di China."
+        },
+        {
+          "id": "islah",
+          "label": "Gerakan Islah, al-Afghani dan Muhammad Abduh",
+          "target": "mesir",
+          "fact": "Kembali kepada al-Quran dan Hadis."
+        },
+        {
+          "id": "meiji",
+          "label": "Pemulihan Meiji (1868) dan semangat Bushido",
+          "target": "jepun",
+          "fact": "Jepun menjadi kuasa perindustrian dan tentera."
+        }
+      ],
+      "done_text": "Setiap bangsa Asia bangkit dengan cara sendiri."
+    },
+    "peti_asia": {
+      "type": "objektif",
+      "title": "Peti Warkah",
+      "instruction": "Jawab soalan untuk buka peti warkah.",
+      "hint": "Bal Gangadhar Tilak dan Bipin Chandra Pal ialah tokoh radikal India.",
+      "questions": [
+        {
+          "q": "Apakah konsep pegangan Mahatma Gandhi yang bermaksud 'berpegang teguh kepada kebenaran' dan menjadi asas perjuangan tanpa keganasan menentang British di India?",
+          "options": [
+            "Bushido",
+            "Hakko Ichiu",
+            "San Min Chu-i",
+            "Satyagraha"
+          ],
+          "answer": 3,
+          "explain": "Satyagraha."
+        },
+        {
+          "q": "Pada awal abad ke-20, siapakah dua tokoh nasionalis radikal di India yang menggerakkan semangat penentangan secara militan terhadap British?",
+          "options": [
+            "Subhas Chandra Bose dan Rabindranath Tagore",
+            "Muhammad Ali Jinnah dan Syed Ahmad Khan",
+            "Mahatma Gandhi dan Jawaharlal Nehru",
+            "Bal Gangadhar Tilak dan Bipin Chandra Pal"
+          ],
+          "answer": 3,
+          "explain": "Bal Gangadhar Tilak dan Bipin Chandra Pal."
+        },
+        {
+          "q": "Dr. Sun Yat Sen telah mengemukakan Tiga Prinsip Rakyat (San Min Chu-i) sebagai ideologi perjuangan Revolusi China 1911. Apakah tiga prinsip tersebut?",
+          "options": [
+            "Nasionalisme, Demokrasi, dan Kebajikan Sosial",
+            "Satu Tanah Air, Satu Bangsa, dan Satu Bahasa",
+            "Ketenteraan, Perindustrian, dan Kesetiaan Maharaja",
+            "Kebebasan, Persamaan, dan Persaudaraan"
+          ],
+          "answer": 0,
+          "explain": "Nasionalisme, Demokrasi, dan Kebajikan Sosial."
+        },
+        {
+          "q": "Apakah tujuan Sayyid Jamal al-Din al-Afghani menubuhkan kumpulan dan menerbitkan akhbar 'al-Urwah al-Wuthqa' (Ikatan yang Kuat) pada tahun 1883?",
+          "options": [
+            "Menuntut pembubaran sistem khalifah di Empayar Uthmaniyah",
+            "Memperkenalkan sistem birokrasi Barat di Mesir",
+            "Menyokong perluasan kuasa British di Timur Tengah",
+            "Memperkuat rasa persaudaraan umat Islam dan menyebarkan idea Pan-Islamisme bagi menghalang peluasan kuasa Barat"
+          ],
+          "answer": 3,
+          "explain": "Memperkuat rasa persaudaraan umat Islam dan menyebarkan idea Pan-Islamisme bagi menghalang peluasan kuasa Barat."
+        },
+        {
+          "q": "Semasa era Pemulihan Meiji (1868), apakah prinsip yang dijadikan asas membina nasionalisme Jepun yang bermaksud sikap sanggup menanggung risiko dan sedia berkorban demi ketua dan negara?",
+          "options": [
+            "Semangat Bushido",
+            "Islah",
+            "Satyagraha",
+            "San Min Chu-i"
+          ],
+          "answer": 0,
+          "explain": "Semangat Bushido."
+        }
+      ],
+      "done_text": "India, China, Mesir dan Jepun: empat gerakan besar di Asia."
+    }
+  }
+}
