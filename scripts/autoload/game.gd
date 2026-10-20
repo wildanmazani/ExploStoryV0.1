@@ -25,12 +25,20 @@ const SCREENS := {
 	"penutup": "res://scripts/screens/penutup.gd",
 	"lobby": "res://scripts/screens/lobby.gd",
 	"arka": "res://scripts/screens/arka.gd",
+	"gelanggang": "res://scripts/screens/gelanggang.gd",
 	"pertarungan": "res://scripts/screens/pertarungan.gd",
 }
 
 const ZONES := ["1_1", "1_2", "1_3", "1_4"]
 const EXP_PER_LEVEL := 200
 const SETTINGS_PATH := "user://tetapan.json"
+## for Papan Markah (leaderboard by negeri)
+const NEGERI := [
+	"Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis",
+	"Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu",
+	"WP Kuala Lumpur", "WP Labuan", "WP Putrajaya",
+]
+
 const DEFAULT_SETTINGS := {
 	"font": "lexend", "text_size": 1, "text_speed": 1, "auto_read": false,
 	"muted": false, "music": 0.8, "sfx": 0.8, "voice": 0.8, "lang": "ms",
@@ -209,7 +217,7 @@ func _ensure_fields() -> void:
 			save[k] = defaults[k].duplicate() if defaults[k] is Array or defaults[k] is Dictionary else defaults[k]
 	if str(save["player_id"]) == "":
 		save["player_id"] = _new_player_id()
-	for k in ["display_name", "motto"]:
+	for k in ["display_name", "motto", "negeri"]:
 		if not save["profile"].has(k):
 			save["profile"][k] = save["profile"]["username"] if k == "display_name" else ""
 
@@ -428,6 +436,9 @@ func _setup_input() -> void:
 		"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN],
 		"interact": [KEY_E, KEY_SPACE, KEY_ENTER, KEY_Z], "pau": [KEY_H], "menu": [KEY_ESCAPE], "map": [KEY_M],
 		"run": [KEY_SHIFT, KEY_X],
+		# Gelanggang (brawl)
+		"attack_punch": [KEY_J], "attack_kick": [KEY_K], "jump": [KEY_SPACE], "grab": [KEY_L],
+		"block": [KEY_I], "special": [KEY_U],
 	}
 	for action in map.keys():
 		if not InputMap.has_action(action):

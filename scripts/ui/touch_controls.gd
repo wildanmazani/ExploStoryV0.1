@@ -15,6 +15,8 @@ const MARGIN := 36
 const SCALES := [0.8, 1.0, 1.25]
 
 var mode := ""
+var brawl := false       ## Gelanggang: fight buttons instead of A/B
+var suspended := false   ## the screen hides the controls (e.g. while answering)
 var _built := ""
 var _zones: Array[Rect2] = []  ## screen areas the controls own (taps there don't walk)
 var _stick: Stick
@@ -34,7 +36,7 @@ func _exit_tree() -> void:
 
 func _process(_delta: float) -> void:
 	# out of the way during dialogue, puzzles and menus
-	var on := mode != "none" and not Game.is_locked() and Game.active_puzzle == null
+	var on := mode != "none" and not suspended and not Game.is_locked() and Game.active_puzzle == null
 	if visible != on:
 		visible = on
 		if not on and _stick:
@@ -82,8 +84,9 @@ func _rebuild() -> void:
 			_add_button("move_down", _arrow_tex(2), c + Vector2(-pad / 2.0, pad * 0.5), s, alpha, lefty)
 			_add_button("move_left", _arrow_tex(3 if not lefty else 1), c + Vector2(-pad * 1.5, -pad / 2.0), s, alpha, lefty, "move_right" if lefty else "")
 			_add_button("move_right", _arrow_tex(1 if not lefty else 3), c + Vector2(pad * 0.5, -pad / 2.0), s, alpha, lefty, "move_left" if lefty else "")
-			_add_button("interact", _round_tex(Color("e8b04a")), Vector2(1280 - MARGIN - btn, 720 - MARGIN - btn * 1.45), s, alpha, lefty, "", "A")
-			_add_button("run", _round_tex(Color("7aa7d9")), Vector2(1280 - MARGIN - btn * 2.1, 720 - MARGIN - btn * 0.9), s, alpha, lefty, "", "B")
+			if not brawl:
+				_add_button("interact", _round_tex(Color("e8b04a")), Vector2(1280 - MARGIN - btn, 720 - MARGIN - btn * 1.45), s, alpha, lefty, "", "A")
+				_add_button("run", _round_tex(Color("7aa7d9")), Vector2(1280 - MARGIN - btn * 2.1, 720 - MARGIN - btn * 0.9), s, alpha, lefty, "", "B")
 		"joystick":
 			_stick = Stick.new()
 			_stick.radius = 80.0 * s
@@ -94,7 +97,26 @@ func _rebuild() -> void:
 			_stick.modulate.a = alpha
 			add_child(_stick)
 			_zones.append(_stick.zone)
-			_add_button("interact", _round_tex(Color("e8b04a")), Vector2(1280 - MARGIN - btn * 1.2, 720 - MARGIN - btn * 1.2), s, alpha, lefty, "", "A")
+			if not brawl:
+				_add_button("interact", _round_tex(Color("e8b04a")), Vector2(1280 - MARGIN - btn * 1.2, 720 - MARGIN - btn * 1.2), s, alpha, lefty, "", "A")
+	if brawl and m != "none":
+		_fight_buttons(s, alpha, lefty)
+
+
+## Gelanggang: Tumbuk (big), Sepak, Lompat, Ambil/Baling, Tangkis, Jurus
+func _fight_buttons(s: float, alpha: float, lefty: bool) -> void:
+	var d := BTN * s
+	var base := Vector2(1280 - MARGIN - d, 720 - MARGIN - d)
+	var k := 0.78   # the smaller buttons
+	for b in [
+		["attack_punch", "Tumbuk", Color("e8b04a"), base, 1.0],
+		["attack_kick", "Sepak", Color("e0805a"), base + Vector2(-d * 1.1, d * 0.2), k],
+		["jump", "Lompat", Color("7aa7d9"), base + Vector2(d * 0.1, -d * 0.95), k],
+		["grab", "Ambil", Color("8ac27a"), base + Vector2(-d * 1.05, -d * 0.8), k],
+		["block", "Tangkis", Color("a8b0bc"), base + Vector2(-d * 2.05, d * 0.25), k],
+		["special", "Jurus", Color("c9a0ff"), base + Vector2(-d * 2.0, -d * 0.75), k],
+	]:
+		_add_button(b[0], _round_tex(b[2]), b[3], s * b[4], alpha, lefty, "", tr(b[1]), int(22 / b[4]))
 
 
 ## mirror a rect to the other side of the screen for left-handed players
@@ -106,7 +128,7 @@ func _flip(r: Rect2, lefty: bool) -> Rect2:
 
 ## action_override: left-handed mirrors the pad, so the button on the left side
 ## must still show and press "left" (and the right one "right")
-func _add_button(action: String, tex: Texture2D, pos: Vector2, s: float, alpha: float, lefty: bool, action_override := "", label := "") -> void:
+func _add_button(action: String, tex: Texture2D, pos: Vector2, s: float, alpha: float, lefty: bool, action_override := "", label := "", font_size := 44) -> void:
 	var b := TouchScreenButton.new()
 	b.texture_normal = tex
 	b.action = action_override if action_override != "" else action
@@ -124,7 +146,7 @@ func _add_button(action: String, tex: Texture2D, pos: Vector2, s: float, alpha: 
 		l.size = tex.get_size()
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		l.add_theme_font_size_override("font_size", 44)
+		l.add_theme_font_size_override("font_size", font_size)
 		l.add_theme_color_override("font_color", Color(0.17, 0.11, 0.06))
 		b.add_child(l)
 

@@ -1,9 +1,8 @@
 extends "res://scripts/ui/modal.gd"
 ## Profil & Kedai: the player's card (display name, Player ID for adding
-## friends, portrait, motto, stats) and the skin shop. Skins are Alif's
+## friends, negeri for Papan Markah, motto, stats) and the skin shop. The
+## profile picture is the head of the outfit being worn. Skins are Alif's
 ## outfits (data/skins.json), bought with syiling and worn in the world.
-
-const AVATARS := ["pelajar_1", "pelajar_2", "pelajar_3", "pelajar_4"]
 
 var start_tab: int = 0
 var _tab: int = 0
@@ -141,23 +140,28 @@ func _profile() -> void:
 		p["motto"] = t
 		Game.persist())
 	grid.add_child(motto)
+	grid.add_child(UI.label("Negeri"))
+	var neg := OptionButton.new()
+	neg.custom_minimum_size = Vector2(360, 52)
+	neg.add_item(tr("(Pilih negeri)"))
+	for n in Game.NEGERI:
+		neg.add_item(n)
+	neg.selected = Game.NEGERI.find(str(p.get("negeri", ""))) + 1
+	neg.item_selected.connect(func(i: int):
+		p["negeri"] = Game.NEGERI[i - 1] if i > 0 else ""
+		Game.persist()
+		Sfx.play("select"))
+	grid.add_child(neg)
 	grid.add_child(UI.label("Gambar profil"))
-	var av_row := UI.hbox(8)
-	for a in AVATARS:
-		var b := Button.new()
-		b.icon = UI.tex("res://assets/portraits/%s.png" % a)
-		b.expand_icon = true
-		b.custom_minimum_size = Vector2(76, 76)
-		b.theme_type_variation = "Primary" if str(p.get("avatar", "")) == a else ""
-		b.pressed.connect(func():
-			p["avatar"] = a
-			Game.persist()
-			Game.stats_changed.emit()
-			Sfx.play("select")
-			for c in av_row.get_children():
-				(c as Button).theme_type_variation = "Primary" if c == b else "")
-		av_row.add_child(b)
-	grid.add_child(av_row)
+	var pic_row := UI.hbox(10)
+	var pic := UI.panel("Slot")
+	pic.add_child(UI.head_icon(Game.skin_folder(), 64))
+	pic_row.add_child(pic)
+	var pn := UI.label("Ikut pakaian yang kau pakai.", "Small", true)
+	pn.custom_minimum_size.x = 280
+	pn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	pic_row.add_child(pn)
+	grid.add_child(pic_row)
 	right.add_child(grid)
 
 	var stats := UI.hbox(10)

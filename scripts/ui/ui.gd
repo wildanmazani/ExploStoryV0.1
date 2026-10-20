@@ -241,6 +241,32 @@ static func tex(path: String) -> Texture2D:
 	return load(path) as Texture2D
 
 
+static var _heads := {}
+
+## Profile picture: a square close-up of the head and shoulders of a
+## character's front-facing sprite (assets/characters32/<folder>), so the
+## picture always matches the outfit being worn.
+static func head(folder: String) -> Texture2D:
+	if _heads.has(folder):
+		return _heads[folder]
+	var src := tex("res://assets/characters32/%s/%s_south.png" % [folder, folder])
+	if src == null:
+		return null
+	var used := src.get_image().get_used_rect()
+	var side := maxf(used.size.x, used.size.y * 0.5)
+	var a := AtlasTexture.new()
+	a.atlas = src
+	a.region = Rect2(used.position.x + used.size.x / 2.0 - side / 2.0, used.position.y - 1, side, side)
+	_heads[folder] = a
+	return a
+
+
+static func head_icon(folder: String, size: float) -> TextureRect:
+	var r := icon("", size)
+	r.texture = head(folder)
+	return r
+
+
 static func icon(path: String, size: float) -> TextureRect:
 	var r := TextureRect.new()
 	r.texture = tex(path)

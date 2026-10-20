@@ -1,0 +1,25 @@
+{
+  "_info": "Sample players for Papan Markah while the game is offline (shown with a 'Contoh' banner). 'friend': true = shown on the Rakan tab offline. Real rankings come from supabase/leaderboard.sql.",
+  "players": [
+    {"name": "Aisyah", "skin": "rakan_aisyah", "negeri": "Selangor", "exp": 1710, "wins": 9, "friend": true},
+    {"name": "Ravi", "skin": "rakan_ravi", "negeri": "Perak", "exp": 1380, "wins": 14, "friend": true},
+    {"name": "Mei Ling", "skin": "rakan_meiling", "negeri": "Pulau Pinang", "exp": 1620, "wins": 6, "friend": true},
+    {"name": "Daniel", "skin": "rakan_daniel", "negeri": "Sabah", "exp": 990, "wins": 4, "friend": true},
+    {"name": "Hakim", "skin": "alif_pahlawan", "negeri": "Melaka", "exp": 2280, "wins": 21},
+    {"name": "Nurul Izzah", "skin": "rakan_aisyah", "negeri": "Kelantan", "exp": 2110, "wins": 12},
+    {"name": "Arif", "skin": "alif_bomba", "negeri": "Johor", "exp": 1960, "wins": 17},
+    {"name": "Siti Hajar", "skin": "rakan_aisyah", "negeri": "Terengganu", "exp": 1840, "wins": 8},
+    {"name": "Kavitha", "skin": "rakan_meiling", "negeri": "Selangor", "exp": 1500, "wins": 10},
+    {"name": "Wei Jie", "skin": "alif_sukan", "negeri": "WP Kuala Lumpur", "exp": 1440, "wins": 11},
+    {"name": "Farhan", "skin": "alif_pengakap", "negeri": "Kedah", "exp": 1260, "wins": 5},
+    {"name": "Jessica", "skin": "rakan_meiling", "negeri": "Sarawak", "exp": 1180, "wins": 7},
+    {"name": "Aiman", "skin": "alif_melayu", "negeri": "Pahang", "exp": 1100, "wins": 3},
+    {"name": "Balqis", "skin": "rakan_aisyah", "negeri": "Negeri Sembilan", "exp": 940, "wins": 2},
+    {"name": "Darren", "skin": "rakan_daniel", "negeri": "Sabah", "exp": 860, "wins": 6},
+    {"name": "Haziq", "skin": "alif", "negeri": "Perlis", "exp": 720, "wins": 1},
+    {"name": "Syafiqah", "skin": "rakan_aisyah", "negeri": "WP Putrajaya", "exp": 640, "wins": 2},
+    {"name": "Muthu", "skin": "rakan_ravi", "negeri": "Johor", "exp": 560, "wins": 4},
+    {"name": "Amirul", "skin": "alif_sukan", "negeri": "Melaka", "exp": 410, "wins": 0},
+    {"name": "Nadia", "skin": "rakan_meiling", "negeri": "WP Labuan", "exp": 300, "wins": 1}
+  ]
+}

@@ -207,6 +207,7 @@ func _do_push() -> void:
 	if rows.size() > 0:
 		await _request("/rest/v1/syllabus_mastery?on_conflict=user_id,topic_id", HTTPClient.METHOD_POST, rows, true,
 			PackedStringArray(["Prefer: resolution=merge-duplicates,return=minimal"]))
+	await push_stats()
 
 
 func pull_progress() -> Variant:
@@ -279,6 +280,25 @@ func join_room(code: String) -> String:
 
 func room_state(code: String) -> Dictionary:
 	var r := await db_call("battle_state", {"p_code": code})
+	return r["data"] if r["ok"] and r["data"] is Dictionary else {}
+
+
+# ------------------------------------------------------------------ Papan Markah
+## supabase/leaderboard.sql. NOTE: not tested against a live project yet.
+
+## Sends name, outfit, negeri, total EXP and wins (rides on the debounced
+## progress push, so at most every few seconds).
+func push_stats() -> void:
+	var p: Dictionary = Game.save["profile"]
+	await db_call("update_my_stats", {"p_name": str(p.get("display_name", p["username"])), "p_skin": Game.skin_folder(),
+		"p_negeri": str(p.get("negeri", "")), "p_exp": int(Game.save.get("exp", 0)),
+		"p_wins": int(Game.save.get("battle", {}).get("wins", 0))})
+
+
+## scope: "all" | "negeri" | "friends". {} when offline or on error, else
+## {rows: [{rank, name, skin, negeri, exp, wins, me}], me: {...}}
+func leaderboard(scope: String) -> Dictionary:
+	var r := await db_call("leaderboard", {"p_scope": scope})
 	return r["data"] if r["ok"] and r["data"] is Dictionary else {}
 
 

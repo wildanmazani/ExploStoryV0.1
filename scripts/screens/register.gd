@@ -2,7 +2,6 @@ extends Control
 ## Module 1: Daftar akaun (FR-AUTH-02) with role and starting avatar.
 
 const UI = preload("res://scripts/ui/ui.gd")
-const AVATARS := ["pelajar_1", "pelajar_2", "pelajar_3", "pelajar_4"]
 
 var params: Dictionary = {}
 var _name: LineEdit
@@ -13,7 +12,7 @@ var _go: Button
 var _status: Label
 var _avatar: String = "pelajar_1"
 var _role: String = "student"
-var _av_buttons: Array = []
+var _negeri: OptionButton
 
 
 func _ready() -> void:
@@ -40,19 +39,18 @@ func _ready() -> void:
 	_pass2.secret_character = "*"
 	col.add_child(grid)
 
-	col.add_child(UI.label("PILIH AVATAR PERMULAAN", "Small"))
-	var avs := UI.hbox(10)
-	avs.alignment = BoxContainer.ALIGNMENT_CENTER
-	for a in AVATARS:
-		var b := UI.icon_button("res://assets/portraits/%s.png" % a, "", Vector2(96, 96))
-		b.toggle_mode = true
-		b.button_pressed = a == _avatar
-		var key: String = a
-		b.pressed.connect(func(): _pick_avatar(key))
-		_av_buttons.append(b)
-		avs.add_child(b)
-	col.add_child(avs)
-	_pick_avatar(_avatar)
+	# the profile picture now comes from Alif's outfit; ask for the negeri
+	# instead (Papan Markah ranks by negeri too)
+	var neg_row := UI.hbox(10)
+	neg_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	neg_row.add_child(UI.label("NEGERI", "Small"))
+	_negeri = OptionButton.new()
+	_negeri.custom_minimum_size = Vector2(320, 48)
+	_negeri.add_item(tr("(Pilih negeri)"))
+	for n in Game.NEGERI:
+		_negeri.add_item(n)
+	neg_row.add_child(_negeri)
+	col.add_child(neg_row)
 
 	var roles := UI.hbox(30)
 	roles.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -99,14 +97,6 @@ func _field(grid: GridContainer, label_text: String, ph: String) -> LineEdit:
 	e.text_changed.connect(func(_t): _validate())
 	grid.add_child(e)
 	return e
-
-
-func _pick_avatar(a: String) -> void:
-	_avatar = a
-	for i in _av_buttons.size():
-		var b: Button = _av_buttons[i]
-		b.button_pressed = AVATARS[i] == a
-		b.theme_type_variation = "Primary" if AVATARS[i] == a else ""
 
 
 func _errors() -> Dictionary:
@@ -158,4 +148,7 @@ func _submit() -> void:
 		return
 	var mode := "online" if Backend.is_online() else "local"
 	Game.load_profile(str(r["username"]), mode, _role, _avatar, str(r.get("email", "")))
+	if _negeri.selected > 0:
+		Game.save["profile"]["negeri"] = Game.NEGERI[_negeri.selected - 1]
+		Game.persist()
 	Game.goto("prolog")

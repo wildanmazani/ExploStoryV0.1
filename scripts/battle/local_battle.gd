@@ -11,10 +11,10 @@ extends Node
 signal state_changed(state: Dictionary)
 
 const BOTS := [
-	{"name": "Aisyah", "avatar": "pelajar_2", "skin": "alif_melayu"},
-	{"name": "Ravi", "avatar": "pelajar_3", "skin": "alif_sukan"},
-	{"name": "Mei Ling", "avatar": "pelajar_2", "skin": "alif_pengakap"},
-	{"name": "Daniel", "avatar": "pelajar_4", "skin": "alif_bomba"},
+	{"name": "Aisyah", "skin": "rakan_aisyah"},
+	{"name": "Ravi", "skin": "rakan_ravi"},
+	{"name": "Mei Ling", "skin": "rakan_meiling"},
+	{"name": "Daniel", "skin": "rakan_daniel"},
 ]
 
 var state: Dictionary = {}
@@ -30,7 +30,7 @@ func setup(bot_count: int) -> void:
 	bot_count = clampi(bot_count, BattleRules.MIN_FRIENDS, BattleRules.MAX_FRIENDS)
 	var prof: Dictionary = Game.save["profile"]
 	var players: Array = [{
-		"id": my_id, "name": str(prof.get("display_name", prof["username"])), "avatar": str(prof.get("avatar", "pelajar_1")),
+		"id": my_id, "name": str(prof.get("display_name", prof["username"])),
 		"skin": Game.skin_folder(), "me": true, "bot": false, "acc": 1.0,
 	}]
 	var bots := BOTS.duplicate()

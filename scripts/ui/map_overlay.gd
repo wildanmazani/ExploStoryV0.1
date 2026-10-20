@@ -10,6 +10,9 @@ var _tabs: Array[Button] = []
 var _drag_from := Vector2(-1, -1)
 var _touches := {}  ## index -> position (two-finger pinch)
 var _pinch_d := 0.0
+var _kw_box: VBoxContainer
+var _kw_filter := ""
+var _open_zone := "?"   ## the Misi open in Kata Kunci ("?" = pick the latest done)
 
 
 func _init() -> void:
@@ -168,28 +171,160 @@ func _focus(tile: Vector2) -> void:
 	view.clamp_center()
 
 
+## Kata Kunci: a search box, then one folding card per Misi (only one open
+## at a time). Inside, the keywords are small cards in two columns: icon +
+## the word, with the detail under it. Tap a keyword = show on the map where
+## it was learned. Locked Misi stay folded with a padlock.
 func _show_keywords() -> void:
+	if _open_zone == "?":
+		_open_zone = ""
+		for z in Game.ZONES:
+			if Game.zone_done(z):
+				_open_zone = z  # the latest finished Misi starts open
+	var search := LineEdit.new()
+	search.placeholder_text = tr("Cari kata kunci...")
+	search.text = _kw_filter
+	search.clear_button_enabled = true
+	search.text_changed.connect(func(t: String):
+		_kw_filter = t.strip_edges()
+		_fill_keywords())
+	_list.add_child(search)
+	_kw_box = UI.vbox(8)
+	_kw_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_list.add_child(_kw_box)
+	_fill_keywords()
+
+
+func _fill_keywords() -> void:
+	for c in _kw_box.get_children():
+		c.queue_free()
 	var nota: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/nota.json"))
+	var q := _kw_filter.to_lower()
+	var shown := 0
 	for z in Game.ZONES:
-		var zd := Game.zone_data(z)
-		var st := MapView.zone_status(z)
-		var head := _row(MapView.Symbol.new("flag", MapView.status_color(st)), "Misi %s: %s" % [str(zd.get("no", z.replace("_", "."))), str(zd.get("title", ""))], MapView.status_text(st), MapView.status_color(st))
-		_list.add_child(head)
-		if st != "done":
-			var l := UI.label("???  Siapkan misi ini untuk buka kata kuncinya.", "Small", true)
-			l.add_theme_color_override("font_color", UI.GREY)
-			_list.add_child(UI.margin(l, 50, 0, 0, 6))
+		var done: bool = Game.zone_done(z)
+		var pages: Array = nota["pages"].filter(func(pg): return str(pg["zone"]) == z)
+		var count := 0
+		var matches := 0
+		for pg in pages:
+			for it in pg.get("items", []):
+				count += 1
+				if q == "" or (str(it.get("text", "")) + " " + str(it.get("sub", ""))).to_lower().contains(q):
+					matches += 1
+		if q != "" and (not done or matches == 0):
+			continue  # searching: only Misi with a hit
+		shown += 1
+		var open: bool = done and (q != "" or _open_zone == z)
+		_kw_box.add_child(_zone_header(z, done, count, open))
+		if not open:
 			continue
-		for page in nota["pages"]:
-			if str(page["zone"]) != z:
+		for pg in pages:
+			var items: Array = pg.get("items", []).filter(func(it): return q == "" or (str(it.get("text", "")) + " " + str(it.get("sub", ""))).to_lower().contains(q))
+			if items.is_empty():
 				continue
-			var pt := UI.label(str(page["title"]), "Small")
+			var pt := UI.label(str(pg["title"]).to_upper(), "Small")
 			pt.add_theme_color_override("font_color", UI.GOLD)
-			_list.add_child(UI.margin(pt, 50, 0, 0, 0))
-			for it in page.get("items", []):
-				var r := _row(UI.icon(str(it.get("icon", "")), 32), str(it.get("text", "")), str(it.get("sub", "")))
-				_list.add_child(UI.margin(r, 50, 0, 0, 0))
-		_list.add_child(HSeparator.new())
+			_kw_box.add_child(UI.margin(pt, 4, 4, 0, 0))
+			var grid := GridContainer.new()
+			grid.columns = 2
+			grid.add_theme_constant_override("h_separation", 6)
+			grid.add_theme_constant_override("v_separation", 6)
+			for it in items:
+				grid.add_child(_keyword_chip(it, z))
+			_kw_box.add_child(grid)
+	if shown == 0:
+		var l := UI.label(tr("Tiada kata kunci \"%s\" dalam misi yang sudah siap.") % _kw_filter, "Small", true)
+		l.add_theme_color_override("font_color", UI.GREY)
+		_kw_box.add_child(l)
+
+
+func _zone_header(z: String, done: bool, count: int, open: bool) -> Control:
+	var zd := Game.zone_data(z)
+	var st := MapView.zone_status(z)
+	var col := MapView.status_color(st)
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", UI.sb(Color(col, 0.18) if done else Color(1, 1, 1, 0.04), col if open else Color(col, 0.5), 2, 8, 6))
+	var h := UI.hbox(10)
+	var sym: Control = MapView.Symbol.new("flag", col) if done else MapView.Symbol.new("lock")
+	sym.custom_minimum_size = Vector2(34, 34)
+	h.add_child(sym)
+	var c := UI.vbox(0)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.add_child(UI.label("Misi %s: %s" % [str(zd.get("no", z.replace("_", "."))), str(zd.get("title", ""))], "", true))
+	var sub := UI.label(tr("%d kata kunci") % count if done else tr("Siapkan misi untuk buka"), "Small")
+	sub.add_theme_color_override("font_color", col if done else UI.GREY)
+	c.add_child(sub)
+	h.add_child(c)
+	if done:
+		h.add_child(Arrow.new(open))
+	card.add_child(h)
+	_ignore_mouse(h)
+	if done:
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		card.gui_input.connect(func(e: InputEvent):
+			if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+				Sfx.play("tick", -8.0, 1.2)
+				_open_zone = "" if _open_zone == z else z
+				_fill_keywords())
+	return card
+
+
+func _keyword_chip(it: Dictionary, z: String) -> Control:
+	var chip := PanelContainer.new()
+	var normal := UI.sb(Color(1, 1, 1, 0.06), Color(1, 1, 1, 0.14), 1, 8, 6)
+	var hover := UI.sb(Color(1, 0.85, 0.3, 0.16), UI.GOLD, 2, 8, 6)
+	chip.add_theme_stylebox_override("panel", normal)
+	chip.custom_minimum_size.x = 168
+	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var v := UI.vbox(2)
+	var top := UI.hbox(6)
+	top.add_child(UI.icon(str(it.get("icon", "")), 28))
+	var word := UI.label(str(it.get("text", "")), "", true)
+	word.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	word.add_theme_font_size_override("font_size", 19)
+	top.add_child(word)
+	v.add_child(top)
+	if str(it.get("sub", "")) != "":
+		var s := UI.label(str(it["sub"]), "Small", true)
+		s.add_theme_font_size_override("font_size", 15)
+		s.add_theme_color_override("font_color", UI.CREAM_D)
+		v.add_child(s)
+	chip.add_child(v)
+	_ignore_mouse(v)
+	chip.mouse_filter = Control.MOUSE_FILTER_STOP
+	chip.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	chip.tooltip_text = tr("Tunjuk di peta tempat kata kunci ini dipelajari")
+	chip.mouse_entered.connect(func(): chip.add_theme_stylebox_override("panel", hover))
+	chip.mouse_exited.connect(func(): chip.add_theme_stylebox_override("panel", normal))
+	chip.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+			_focus_zone(z))
+	return chip
+
+
+## centre the map on the place of a Misi (data/map_legend.json)
+func _focus_zone(z: String) -> void:
+	for p in MapView.legend()["places"]:
+		if str(p.get("zone", "")) == z:
+			_focus(Vector2(p["at"][0], p["at"][1]) + Vector2(0.5, 0.5))
+			return
+
+
+## the little open/closed triangle on a Misi card
+class Arrow extends Control:
+	var open := false
+
+	func _init(is_open: bool) -> void:
+		open = is_open
+		custom_minimum_size = Vector2(24, 24)
+		size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	func _draw() -> void:
+		var c := size / 2.0
+		var pts := PackedVector2Array([c + Vector2(-7, -4), c + Vector2(7, -4), c + Vector2(0, 5)]) if open \
+			else PackedVector2Array([c + Vector2(-4, -7), c + Vector2(5, 0), c + Vector2(-4, 7)])
+		draw_colored_polygon(pts, Color(1, 0.95, 0.8))
 
 
 func _show_symbols() -> void:

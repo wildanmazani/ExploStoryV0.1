@@ -45,3 +45,38 @@ static func visible_bottom_offset(tex: Texture2D) -> Vector2:
 	var used := img.get_used_rect()
 	var size := Vector2(img.get_size())
 	return (size / 2.0 - Vector2(used.position.x + used.size.x / 2.0, used.end.y)).round()
+
+
+## Gelanggang (side-view brawl): animations drawn facing east (flip for west).
+##   <name>_<anim>/<name>_<anim>_east_<i>.png   (tools/asset_manifest.json)
+## Missing ones fall back to the east idle / walk, so a fighter always works.
+const FIGHT_ANIMS := ["stance", "jab", "cross", "kick", "roundhouse", "flykick", "hurt", "fall", "getup", "pickup", "throw", "special"]
+
+
+static func build_fight(name: String) -> SpriteFrames:
+	var key := "%s:fight" % name
+	if _cache.has(key):
+		return _cache[key]
+	var frames := SpriteFrames.new()
+	frames.remove_animation("default")
+	var idle: Texture2D = load("%s%s/%s_east.png" % [BASE, name, name])
+	for anim in ["walk"] + FIGHT_ANIMS:
+		frames.add_animation(anim)
+		frames.set_animation_loop(anim, anim in ["walk", "stance"])
+		frames.set_animation_speed(anim, 13.0 if anim == "walk" else 10.0)
+		var i := 0
+		while true:
+			var path := "%s%s_%s/%s_%s_east_%d.png" % [BASE, name, anim, name, anim, i]
+			if not ResourceLoader.exists(path):
+				break
+			frames.add_frame(anim, load(path))
+			i += 1
+		if i == 0:
+			frames.add_frame(anim, idle)
+	_cache[key] = frames
+	return frames
+
+
+## true when PixelLab frames exist for this fight animation
+static func has_fight_anim(name: String, anim: String) -> bool:
+	return ResourceLoader.exists("%s%s_%s/%s_%s_east_0.png" % [BASE, name, anim, name, anim])

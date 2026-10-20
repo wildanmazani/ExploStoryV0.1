@@ -13,7 +13,11 @@
   "alif_pengakap": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
   "alif_sukan": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
   "alif_bomba": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
-  "alif_pahlawan": "dfb4c038-c102-4c65-932c-692adabd418e"
+  "alif_pahlawan": "dfb4c038-c102-4c65-932c-692adabd418e",
+  "rakan_aisyah": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+  "rakan_ravi": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+  "rakan_meiling": "890af757-ff90-4a21-a90a-518ffdb29db7",
+  "rakan_daniel": "fa98de23-693f-480d-9599-e7f433932c11"
  },
  "animations": {
   "alif_walk": {
@@ -117,6 +121,1154 @@
      6
     ]
    }
+  },
+  "rakan_aisyah_walk": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "south": [
+     "05c55843-0f1f-4d44-9c0e-6c6615d2a614",
+     6
+    ],
+    "east": [
+     "66175085-e656-43a3-9e9f-b149d9377903",
+     6
+    ],
+    "north": [
+     "5720d117-e099-43fd-9529-809066957b5e",
+     6
+    ]
+   }
+  },
+  "rakan_ravi_walk": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "south": [
+     "7218cc84-3835-4929-a169-82e622cfc177",
+     6
+    ],
+    "east": [
+     "ff4e258f-b862-4325-911b-b27d26770c38",
+     6
+    ],
+    "north": [
+     "5eb2263a-6571-4be6-81eb-2ac2001af644",
+     6
+    ]
+   }
+  },
+  "rakan_meiling_walk": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "south": [
+     "358a6136-89ca-4c05-954a-e95ba499c066",
+     6
+    ],
+    "east": [
+     "01f2ce71-61fa-4c28-9ca9-6fda5dafbce5",
+     6
+    ],
+    "north": [
+     "018d9555-5f48-4f2e-b179-093f3752f89b",
+     6
+    ]
+   }
+  },
+  "rakan_daniel_walk": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "south": [
+     "20e36d0f-4675-469a-990e-90db2212d047",
+     6
+    ],
+    "east": [
+     "0f695b40-fa58-4fb4-be90-effe755f4ccc",
+     6
+    ],
+    "north": [
+     "ca3722dd-1dcb-4208-9e6b-1a47e40fb29a",
+     6
+    ]
+   }
+  },
+  "alif_stance": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "d037136f-34ca-4dc6-8a04-2aa3effc3719",
+     8
+    ]
+   }
+  },
+  "alif_jab": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "e4802d24-e7d6-4aff-a0ca-21eced60bc34",
+     3
+    ]
+   }
+  },
+  "alif_cross": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "099f8c40-26e5-4d26-8a0a-7c4db071dfdf",
+     6
+    ]
+   }
+  },
+  "alif_kick": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "1827727d-4a9b-48ce-adbc-36767b18032f",
+     7
+    ]
+   }
+  },
+  "alif_roundhouse": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "4d8239cb-58af-414e-9f29-5debcd3037b4",
+     7
+    ]
+   }
+  },
+  "alif_flykick": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "d26cb24a-6072-43c7-bba6-8c10a5db02de",
+     6
+    ]
+   }
+  },
+  "alif_hurt": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "5bc70df7-b1f8-43ef-a693-68d7fd7986fb",
+     6
+    ]
+   }
+  },
+  "alif_fall": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "341e67d3-3aae-4a96-bdc2-7336dfff89e1",
+     7
+    ]
+   }
+  },
+  "alif_getup": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "a405689b-20d6-4848-a8d4-234ffcc29074",
+     5
+    ]
+   }
+  },
+  "alif_pickup": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "4551bf04-e056-41a2-a312-c9b19256a41d",
+     5
+    ]
+   }
+  },
+  "rakan_aisyah_stance": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "455d70c2-34ad-4c16-bbbb-7ed9085a2ae4",
+     8
+    ]
+   }
+  },
+  "rakan_aisyah_jab": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "dd34e39c-622c-450e-9570-4956683eb13a",
+     3
+    ]
+   }
+  },
+  "rakan_aisyah_cross": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "bd749739-24f2-4677-af66-388aa3670a2e",
+     6
+    ]
+   }
+  },
+  "rakan_aisyah_kick": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "17e0dce7-e96b-401e-86d5-58bb8cf944bb",
+     7
+    ]
+   }
+  },
+  "rakan_aisyah_roundhouse": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "ada81a27-42d1-4ed6-a4eb-253b52ca45df",
+     7
+    ]
+   }
+  },
+  "rakan_aisyah_flykick": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "c414cef4-ab9e-48a3-a741-da8e47ced0f8",
+     6
+    ]
+   }
+  },
+  "rakan_aisyah_hurt": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "2134645f-a7c8-447c-807a-c29cb5b486a3",
+     6
+    ]
+   }
+  },
+  "rakan_aisyah_fall": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "3c54389b-0fd1-4df5-a8e5-77fb197430db",
+     7
+    ]
+   }
+  },
+  "rakan_aisyah_getup": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "2c466ec8-d46e-4a51-9420-04bccd724b1a",
+     5
+    ]
+   }
+  },
+  "rakan_aisyah_pickup": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "a820d2a8-01ca-451f-b24a-db5b9cf5b0d9",
+     5
+    ]
+   }
+  },
+  "rakan_aisyah_throw": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "3bb87460-0a97-487f-b635-d7d0db90e3e3",
+     7
+    ]
+   }
+  },
+  "rakan_ravi_stance": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "20af28c7-31dd-4e30-902d-6b1a5912f410",
+     8
+    ]
+   }
+  },
+  "rakan_ravi_jab": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "28812c7c-4905-4b7e-b3ec-9a8086244078",
+     3
+    ]
+   }
+  },
+  "rakan_ravi_cross": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "9eb2aba4-0220-4f85-a1dc-9d25d5040c68",
+     6
+    ]
+   }
+  },
+  "rakan_ravi_kick": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "bfc55b9f-2bea-4762-870b-4ca4fb3b7d41",
+     7
+    ]
+   }
+  },
+  "rakan_ravi_roundhouse": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "e2f07b81-c1a6-4f19-b31a-56a57af75b5a",
+     7
+    ]
+   }
+  },
+  "rakan_ravi_flykick": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "3ba78f2a-cd47-4a03-9b42-fc35546fae61",
+     6
+    ]
+   }
+  },
+  "rakan_ravi_hurt": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "152fba17-50ec-4b21-b039-11529eea9211",
+     6
+    ]
+   }
+  },
+  "rakan_ravi_fall": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "ffe62e78-de28-4110-8caa-f692fa1f3382",
+     7
+    ]
+   }
+  },
+  "rakan_ravi_getup": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "bf1d3801-c371-4433-a8cb-c65e3fab448e",
+     5
+    ]
+   }
+  },
+  "rakan_ravi_pickup": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "98b5a22b-4a63-4970-b1bb-b795d2d3c393",
+     5
+    ]
+   }
+  },
+  "rakan_ravi_throw": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "b033a50f-b2c9-4f54-b1a9-648e598565c9",
+     7
+    ]
+   }
+  },
+  "rakan_ravi_special": {
+   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "dirs": {
+    "east": [
+     "9b145d11-ef6f-457f-8805-459a21dd6f69",
+     4
+    ]
+   }
+  },
+  "rakan_meiling_stance": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "b0445827-d70b-4c75-b25e-2755bb3b54de",
+     8
+    ]
+   }
+  },
+  "rakan_meiling_jab": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "a429ec9f-71d4-4a97-acf7-000f65164960",
+     3
+    ]
+   }
+  },
+  "rakan_meiling_cross": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "e708da9f-a3a7-4d46-8220-53efa4614741",
+     6
+    ]
+   }
+  },
+  "rakan_meiling_kick": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "f773e1c8-a524-4e6b-b97e-824bc04c9818",
+     7
+    ]
+   }
+  },
+  "rakan_meiling_roundhouse": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "2b016fdc-b80e-4bfc-9ce1-844f3929842d",
+     7
+    ]
+   }
+  },
+  "rakan_meiling_flykick": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "bbb33743-eccb-4241-9d0e-afd9a373fb72",
+     6
+    ]
+   }
+  },
+  "rakan_meiling_hurt": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "68f10d5f-65f8-471c-a487-751b2b0d193a",
+     6
+    ]
+   }
+  },
+  "rakan_meiling_fall": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "b743911b-4fa7-475f-9af4-934ae44df1ee",
+     7
+    ]
+   }
+  },
+  "rakan_meiling_getup": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "ecf59d50-da53-4aa4-a49f-5816bda560f8",
+     5
+    ]
+   }
+  },
+  "rakan_meiling_pickup": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "c4b7ef0a-89b1-4c82-8fae-3fcf5c7a1e54",
+     5
+    ]
+   }
+  },
+  "rakan_meiling_throw": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "75d6557c-c5cd-48f6-af97-e49373b51a95",
+     7
+    ]
+   }
+  },
+  "rakan_meiling_special": {
+   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "dirs": {
+    "east": [
+     "4354ebbb-9e75-4adf-9f97-f3953cfb8ef5",
+     4
+    ]
+   }
+  },
+  "alif_throw": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "736dd41c-ef0e-4729-9ee8-a76e458845dc",
+     7
+    ]
+   }
+  },
+  "alif_special": {
+   "character": "c94f966a-677f-4df7-a53a-786b2b84d92d",
+   "dirs": {
+    "east": [
+     "076d8df9-b2e5-4060-ac08-bf959628e8bb",
+     4
+    ]
+   }
+  },
+  "rakan_aisyah_special": {
+   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "dirs": {
+    "east": [
+     "7a7331c0-9df4-4ae8-a695-06f1d431542b",
+     4
+    ]
+   }
+  },
+  "rakan_daniel_stance": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "a84381da-6c52-40db-967f-ad2905a631ae",
+     8
+    ]
+   }
+  },
+  "rakan_daniel_jab": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "6176f417-4f37-48e7-92d1-26b06b268072",
+     3
+    ]
+   }
+  },
+  "rakan_daniel_cross": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "441a3c9d-0644-4f70-be1e-c9f60cfc6bf4",
+     6
+    ]
+   }
+  },
+  "rakan_daniel_roundhouse": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "a980125b-916c-457f-aa13-5fd9104dd199",
+     7
+    ]
+   }
+  },
+  "rakan_daniel_flykick": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "e46a507a-0fcb-47db-a5f1-89bb369cd3c1",
+     6
+    ]
+   }
+  },
+  "rakan_daniel_hurt": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "98402f44-e301-4050-8e18-f7e53081b859",
+     6
+    ]
+   }
+  },
+  "rakan_daniel_fall": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "52b59e5d-ffb5-470e-b726-8c1956dd1639",
+     7
+    ]
+   }
+  },
+  "rakan_daniel_getup": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "7e0c949a-8f37-4467-8025-8ba185368f64",
+     5
+    ]
+   }
+  },
+  "rakan_daniel_pickup": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "0b3a8876-b7ed-4840-b824-e426dcc19827",
+     5
+    ]
+   }
+  },
+  "rakan_daniel_throw": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "f2ae00a6-bfd2-4e92-bc60-09e7a16e02b4",
+     7
+    ]
+   }
+  },
+  "rakan_daniel_special": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "d3c1b266-829d-4f19-b3f6-8163f8fa776c",
+     4
+    ]
+   }
+  },
+  "alif_melayu_stance": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "42e1ce31-cba9-47cb-bfcb-6e16a96b0144",
+     8
+    ]
+   }
+  },
+  "alif_melayu_jab": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "7ddf4ae0-565e-4095-9906-161dfa138f60",
+     3
+    ]
+   }
+  },
+  "alif_melayu_cross": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "e7831650-3c7c-4288-bef9-d74994415837",
+     6
+    ]
+   }
+  },
+  "alif_melayu_kick": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "78ccc11a-f54b-457c-a05b-3f46ee9ce192",
+     7
+    ]
+   }
+  },
+  "alif_melayu_roundhouse": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "31b384c1-5523-4e2e-8f44-f08d98f74b3c",
+     7
+    ]
+   }
+  },
+  "alif_melayu_flykick": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "642e6c95-3d19-4c39-9870-cb06b5184b35",
+     6
+    ]
+   }
+  },
+  "alif_melayu_hurt": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "b055e9f2-4b4d-4d5e-b6c3-5915daa1b1f3",
+     6
+    ]
+   }
+  },
+  "alif_melayu_fall": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "d71561bb-a411-469b-84e9-56cacc6fcc6b",
+     7
+    ]
+   }
+  },
+  "alif_melayu_getup": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "4002acdc-0d1f-40b8-ae6c-45795366809c",
+     5
+    ]
+   }
+  },
+  "alif_melayu_pickup": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "2f1aefa4-d3ee-460a-a14c-792997c06dee",
+     5
+    ]
+   }
+  },
+  "alif_melayu_throw": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "bbedeee2-5276-4be3-9fe3-d65c425432df",
+     7
+    ]
+   }
+  },
+  "alif_melayu_special": {
+   "character": "ad60b66e-3687-4c90-b64e-bcdb6583ebe7",
+   "dirs": {
+    "east": [
+     "a05218a5-4fba-4e79-9d55-a6c5272ad710",
+     4
+    ]
+   }
+  },
+  "rakan_daniel_kick": {
+   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "dirs": {
+    "east": [
+     "793471d3-f23b-4e7c-acc7-72c20e35b965",
+     7
+    ]
+   }
+  },
+  "alif_pengakap_stance": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "1a7b5815-f2db-47b8-81db-4f6edb444a54",
+     8
+    ]
+   }
+  },
+  "alif_pengakap_jab": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "a7f4e63a-98b4-4183-825b-baa1f2d2bce3",
+     3
+    ]
+   }
+  },
+  "alif_pengakap_cross": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "550ee218-c89e-406a-9537-02dc6dc94f17",
+     6
+    ]
+   }
+  },
+  "alif_pengakap_kick": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "4fc721ae-2da7-43cd-a73f-90111fe4715c",
+     7
+    ]
+   }
+  },
+  "alif_pengakap_roundhouse": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "37c373ea-cd66-4c92-94c3-00f839d3030b",
+     7
+    ]
+   }
+  },
+  "alif_pengakap_flykick": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "764c6482-ff21-45bb-8f65-d1147fbba023",
+     6
+    ]
+   }
+  },
+  "alif_pengakap_hurt": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "b08f4d57-d014-42cf-901b-ea35d50aa2f4",
+     6
+    ]
+   }
+  },
+  "alif_pengakap_fall": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "21d8e01f-82c0-4254-aa27-64916d5155ab",
+     7
+    ]
+   }
+  },
+  "alif_pengakap_getup": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "677be86f-ea9d-4014-86aa-a7e78680b6ed",
+     5
+    ]
+   }
+  },
+  "alif_pengakap_pickup": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "00db7a0c-0132-462c-9604-5059a81bb988",
+     5
+    ]
+   }
+  },
+  "alif_pengakap_throw": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "8536083a-830b-4789-a348-171720b392b1",
+     7
+    ]
+   }
+  },
+  "alif_pengakap_special": {
+   "character": "fc3edb87-ebda-4a20-8e49-843001b4e3a9",
+   "dirs": {
+    "east": [
+     "71a939bb-5a55-458a-937e-6901bdff39ee",
+     4
+    ]
+   }
+  },
+  "alif_sukan_stance": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "ae32c12c-c41f-426e-9290-ff30e56d9918",
+     8
+    ]
+   }
+  },
+  "alif_sukan_jab": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "d31670df-3371-486f-aef7-975025f6be91",
+     3
+    ]
+   }
+  },
+  "alif_sukan_cross": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "e5e0cf4d-b91b-461a-a60f-6d9041a1f55c",
+     6
+    ]
+   }
+  },
+  "alif_sukan_kick": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "abab4d0a-f11b-4061-9287-286f3770194e",
+     7
+    ]
+   }
+  },
+  "alif_sukan_roundhouse": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "278578bd-d4d5-41e0-9694-644c5fa7a234",
+     7
+    ]
+   }
+  },
+  "alif_sukan_flykick": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "f9298ded-bc5c-4846-b0fb-dab59eaa6e25",
+     6
+    ]
+   }
+  },
+  "alif_sukan_hurt": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "25e44a3d-ab04-4618-91f0-9b1a169cf16f",
+     6
+    ]
+   }
+  },
+  "alif_sukan_fall": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "feaec54d-2158-42da-9ecf-f7195ec80e98",
+     7
+    ]
+   }
+  },
+  "alif_sukan_getup": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "1938ecff-e56a-41d8-9d4c-7748575ed3d0",
+     5
+    ]
+   }
+  },
+  "alif_sukan_pickup": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "927a12a5-cd1d-46cd-a38c-a80e020bca83",
+     5
+    ]
+   }
+  },
+  "alif_sukan_throw": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "f7d7baef-a152-4ca6-b58c-8d6fa1823237",
+     7
+    ]
+   }
+  },
+  "alif_sukan_special": {
+   "character": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
+   "dirs": {
+    "east": [
+     "d1444112-5025-47f6-8061-68f1e7115d75",
+     4
+    ]
+   }
+  },
+  "alif_bomba_stance": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "c0b1070d-513c-4988-9b5c-54f0434b47c5",
+     8
+    ]
+   }
+  },
+  "alif_bomba_jab": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "49974561-3465-4e3d-bfb2-b7aaca48edfb",
+     3
+    ]
+   }
+  },
+  "alif_bomba_cross": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "a899db2d-706b-45a1-8cad-0f3a1fedb83a",
+     6
+    ]
+   }
+  },
+  "alif_bomba_kick": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "0b2443da-6855-41e0-93a9-c735e4bd0929",
+     7
+    ]
+   }
+  },
+  "alif_bomba_roundhouse": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "db8ff1c4-7f55-4750-a8be-4361e8d71b90",
+     7
+    ]
+   }
+  },
+  "alif_bomba_flykick": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "85de8f7e-d30b-489f-8ca2-b197c96c00d8",
+     6
+    ]
+   }
+  },
+  "alif_bomba_hurt": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "90d234eb-5f29-42be-99a0-df5215bcbc06",
+     6
+    ]
+   }
+  },
+  "alif_bomba_fall": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "d78be29e-1a72-440f-b96a-c170533d06ea",
+     7
+    ]
+   }
+  },
+  "alif_bomba_getup": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "0614a8e6-e2dd-4388-aafa-1534d772a471",
+     5
+    ]
+   }
+  },
+  "alif_bomba_pickup": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "1ee666cf-6222-4239-b2f8-84f3737be3cc",
+     5
+    ]
+   }
+  },
+  "alif_bomba_throw": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "bf757147-1019-47d0-95eb-a9c17c28eb45",
+     7
+    ]
+   }
+  },
+  "alif_bomba_special": {
+   "character": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
+   "dirs": {
+    "east": [
+     "15ac1b84-2911-4da1-ba92-ff227e6c7d20",
+     4
+    ]
+   }
+  },
+  "alif_pahlawan_stance": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "45992eab-e970-41ff-8769-6701426fa027",
+     8
+    ]
+   }
+  },
+  "alif_pahlawan_jab": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "b24888e2-db9d-4e1b-9e34-9091ac67e881",
+     3
+    ]
+   }
+  },
+  "alif_pahlawan_cross": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "b42e6c3a-15b1-478a-adb1-f7f2f0565c8b",
+     6
+    ]
+   }
+  },
+  "alif_pahlawan_kick": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "4e046fbc-f0af-4d89-a007-929b3627a70d",
+     7
+    ]
+   }
+  },
+  "alif_pahlawan_roundhouse": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "92288543-f98f-48bf-9f50-9dee27f192ea",
+     7
+    ]
+   }
+  },
+  "alif_pahlawan_flykick": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "e4d75120-b0ea-4da1-a06c-a9bcda1cfaad",
+     6
+    ]
+   }
+  },
+  "alif_pahlawan_hurt": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "729c832e-3cb8-46a5-84bc-f9db16dd8ff1",
+     6
+    ]
+   }
+  },
+  "alif_pahlawan_fall": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "9f1f78f8-1230-4fb3-9423-2068257f9fb6",
+     7
+    ]
+   }
+  },
+  "alif_pahlawan_getup": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "148b9cd7-c34a-42bc-9187-048f7e96abfb",
+     5
+    ]
+   }
+  },
+  "alif_pahlawan_pickup": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "9a4e26fa-920d-4278-b76f-bf370c0741e0",
+     5
+    ]
+   }
+  },
+  "alif_pahlawan_throw": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "574e264b-1e85-49cf-b19b-2144bf23eb0a",
+     7
+    ]
+   }
+  },
+  "alif_pahlawan_special": {
+   "character": "dfb4c038-c102-4c65-932c-692adabd418e",
+   "dirs": {
+    "east": [
+     "1f9abe8d-7514-4872-91d9-33e67286e953",
+     4
+    ]
+   }
   }
  },
  "tilesets": {
@@ -163,6 +1315,10 @@
   "alif_pengakap",
   "alif_sukan",
   "alif_bomba",
-  "alif_pahlawan"
+  "alif_pahlawan",
+  "rakan_aisyah",
+  "rakan_ravi",
+  "rakan_meiling",
+  "rakan_daniel"
  ]
 }

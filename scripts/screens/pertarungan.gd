@@ -1,6 +1,6 @@
 extends Control
-## Bilik Pertarungan: the battle. Player cards on top (tap one to make it
-## your target), the shared question below. Answer right to hit your target;
+## Bilik Pertarungan: the battle. The players stand on a stage at the top,
+## big, with their HP under them (tap one to make it your target), the shared question below. Answer right to hit your target;
 ## the last player standing wins. params: {"mode": "bot", "bots": 2..4} or
 ## {"mode": "online", "code": "ABC123"} (online needs Supabase, see Backend).
 
@@ -9,7 +9,7 @@ const LETTERS := ["A", "B", "C", "D"]
 
 var params: Dictionary = {}
 var battle: Node
-var _cards := {}        ## player id -> {panel, hp, hp_label, status, target}
+var _cards := {}        ## player id -> Fighter
 var _cards_row: HBoxContainer
 var _round: Label
 var _timer: ProgressBar
@@ -43,7 +43,7 @@ func _ready() -> void:
 	out.pressed.connect(_leave)
 	top.add_child(out)
 	root.add_child(UI.margin(top, 24, 14, 24, 0))
-	_cards_row = UI.hbox(12)
+	_cards_row = UI.hbox(24)
 	_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	root.add_child(_cards_row)
 
@@ -65,7 +65,7 @@ func _ready() -> void:
 	grid.add_theme_constant_override("v_separation", 10)
 	for i in 4:
 		var b := UI.button("")
-		b.custom_minimum_size = Vector2(610, 70)
+		b.custom_minimum_size = Vector2(610, 60)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.pressed.connect(_answer.bind(i))
@@ -96,51 +96,23 @@ func _process(_d: float) -> void:
 		_timer.value = float(battle.state["time_left"])
 
 
-# ------------------------------------------------------------------ cards
+# ------------------------------------------------------------------ fighters
 func _build_cards(players: Array) -> void:
 	for c in _cards_row.get_children():
 		c.queue_free()
 	_cards.clear()
 	for p in players:
-		var panel := PanelContainer.new()
-		panel.custom_minimum_size = Vector2(240, 0)
-		panel.mouse_filter = Control.MOUSE_FILTER_STOP
-		var col := UI.vbox(2)
-		var row := UI.hbox(6)
-		row.add_child(UI.icon("res://assets/portraits/%s.png" % str(p["avatar"]), 52))
-		var folder := str(p.get("skin", "alif"))
-		var sk := UI.icon("res://assets/characters32/%s/%s_south.png" % [folder, folder], 56)
-		row.add_child(sk)
-		var nc := UI.vbox(0)
-		var nm := UI.label(str(p["name"]) + (tr(" (kau)") if p.get("me", false) else ""), "Small")
-		nm.clip_text = true
-		nm.custom_minimum_size.x = 110
-		nc.add_child(nm)
-		var target := UI.label("", "Small")
-		target.add_theme_color_override("font_color", Color("ff8a7a"))
-		nc.add_child(target)
-		row.add_child(nc)
-		col.add_child(row)
-		var hp := ProgressBar.new()
-		hp.theme_type_variation = "Good"
-		hp.max_value = BattleRules.HP
-		hp.show_percentage = false
-		hp.custom_minimum_size = Vector2(0, 16)
-		col.add_child(hp)
-		var hl := UI.label("", "Small")
-		col.add_child(hl)
-		panel.add_child(col)
-		for n in [row, nc, nm, hp, hl, col, target, sk]:
-			(n as Control).mouse_filter = Control.MOUSE_FILTER_PASS
+		var f := Fighter.new()
+		f.setup(p)
 		var pid := str(p["id"])
-		panel.gui_input.connect(func(e: InputEvent):
+		f.gui_input.connect(func(e: InputEvent):
 			if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
 				_pick_target(pid))
 		if not p.get("me", false):
-			panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			panel.tooltip_text = tr("Ketik untuk jadikan sasaran")
-		_cards_row.add_child(panel)
-		_cards[pid] = {"panel": panel, "hp": hp, "hp_label": hl, "target": target}
+			f.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			f.tooltip_text = tr("Ketik untuk jadikan sasaran")
+		_cards_row.add_child(f)
+		_cards[pid] = f
 
 
 func _pick_target(id: String) -> void:
@@ -153,22 +125,150 @@ func _pick_target(id: String) -> void:
 func _refresh_cards(s: Dictionary) -> void:
 	var me: Dictionary = battle.me()
 	for p in s["players"]:
-		var c: Dictionary = _cards.get(str(p["id"]), {})
-		if c.is_empty():
+		var f: Fighter = _cards.get(str(p["id"]))
+		if f == null:
 			continue
-		var hpbar: ProgressBar = c["hp"]
-		create_tween().tween_property(hpbar, "value", float(p["hp"]), 0.4)
-		hpbar.theme_type_variation = "Good" if int(p["hp"]) > 50 else ("Warn" if int(p["hp"]) > 25 else "")
-		var status := tr("TERSINGKIR") if not p["alive"] else ("HP %d" % int(p["hp"]))
-		if p["alive"] and s["status"] == "question" and p.get("answered", false):
-			status += "  ·  " + tr("sudah jawab")
-		c["hp_label"].text = status
 		var is_target: bool = me.get("alive", false) and str(me.get("target", "")) == str(p["id"])
-		c["target"].text = tr("SASARAN") if is_target else ""
-		var panel: PanelContainer = c["panel"]
-		var style := "CardLocked" if not p["alive"] else ("SlotBad" if is_target else ("SlotGood" if p.get("me", false) else "Slot"))
-		panel.theme_type_variation = style
-		panel.modulate = Color(1, 1, 1, 0.55) if not p["alive"] else Color.WHITE
+		var status := ""
+		if not p["alive"]:
+			status = tr("TERSINGKIR")
+		elif s["status"] == "question" and p.get("answered", false):
+			status = tr("sudah jawab")
+		f.show_state(int(p["hp"]), p["alive"], is_target, status)
+
+
+## One player on the battle stage: a name tag, Alif or a classmate drawn big
+## and standing on a ring (gold = you, red = your target), the HP bar under
+## the feet and a status line. Hits flash red and knock back; knocked-out
+## players fall over.
+class Fighter extends VBoxContainer:
+	const UI = preload("res://scripts/ui/ui.gd")
+	const SPRITE := 150.0
+
+	var me := false
+	var alive := true
+	var target := false
+	var _name: Label
+	var _tag: Label
+	var _stage: Control
+	var _sprite: TextureRect
+	var _hp: ProgressBar
+	var _hp_label: Label
+	var _status: Label
+	var _t := randf() * TAU
+	var _hp_value := -1
+
+	func setup(p: Dictionary) -> void:
+		me = p.get("me", false)
+		custom_minimum_size = Vector2(210, 0)
+		alignment = BoxContainer.ALIGNMENT_CENTER
+		add_theme_constant_override("separation", 2)
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		_tag = UI.label("", "Small")
+		_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_tag.add_theme_color_override("font_color", Color("ff8a7a"))
+		_tag.add_theme_color_override("font_outline_color", Color(0.1, 0.06, 0.03))
+		_tag.add_theme_constant_override("outline_size", 5)
+		add_child(_tag)
+		_name = UI.label(str(p["name"]) + (tr(" (kau)") if me else ""), "Heading")
+		_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_name.clip_text = true
+		_name.custom_minimum_size.x = 200
+		_name.add_theme_font_size_override("font_size", 24)
+		_name.add_theme_color_override("font_color", UI.GOLD if me else Color.WHITE)
+		_name.add_theme_color_override("font_outline_color", Color(0.1, 0.06, 0.03))
+		_name.add_theme_constant_override("outline_size", 6)
+		add_child(_name)
+		_stage = Control.new()
+		_stage.custom_minimum_size = Vector2(200, SPRITE + 4)
+		_stage.draw.connect(_draw_ring)
+		add_child(_stage)
+		var folder := str(p.get("skin", "alif"))
+		_sprite = UI.icon("res://assets/characters32/%s/%s_south.png" % [folder, folder], SPRITE)
+		_sprite.size = Vector2(SPRITE, SPRITE)
+		_sprite.pivot_offset = Vector2(SPRITE / 2.0, SPRITE * 0.9)
+		_stage.add_child(_sprite)
+		_hp = ProgressBar.new()
+		_hp.theme_type_variation = "Good"
+		_hp.max_value = BattleRules.HP
+		_hp.value = BattleRules.HP
+		_hp.show_percentage = false
+		_hp.custom_minimum_size = Vector2(180, 20)
+		_hp.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		add_child(_hp)
+		_hp_label = UI.label("", "Small")
+		_hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		add_child(_hp_label)
+		_status = UI.label(" ", "Small")
+		_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		add_child(_status)
+		for c in [_tag, _name, _stage, _sprite, _hp, _hp_label, _status]:
+			(c as Control).mouse_filter = Control.MOUSE_FILTER_PASS
+
+	func show_state(hp: int, is_alive: bool, is_target: bool, status: String) -> void:
+		if hp != _hp_value:
+			_hp_value = hp
+			create_tween().tween_property(_hp, "value", float(hp), 0.4)
+			_hp.theme_type_variation = "Good" if hp > 50 else ("Warn" if hp > 25 else "")
+			_hp_label.text = "HP %d" % hp
+		target = is_target and is_alive
+		_tag.text = tr("SASARAN") if target else " "
+		_status.text = status if status != "" else " "
+		_status.add_theme_color_override("font_color", Color("ff8a7a") if not is_alive else Color("9fe8a0"))
+		if alive and not is_alive:
+			_fall()
+		alive = is_alive
+		_stage.queue_redraw()
+
+	## where the damage number pops up (screen space)
+	func head_position() -> Vector2:
+		return _sprite.global_position + Vector2(SPRITE / 2.0, 10)
+
+	func hit() -> void:
+		_sprite.modulate = Color(1, 0.3, 0.3)
+		create_tween().tween_property(_sprite, "modulate", Color.WHITE if alive else Color(0.5, 0.5, 0.5, 0.6), 0.35)
+		var k := create_tween()
+		for i in 4:
+			k.tween_property(_sprite, "position:x", _base_x() + (10.0 if i % 2 == 0 else -10.0), 0.04)
+		k.tween_property(_sprite, "position:x", _base_x(), 0.05)
+
+	func _fall() -> void:
+		var t := create_tween().set_parallel()
+		t.tween_property(_sprite, "rotation_degrees", 90.0, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+		t.tween_property(_sprite, "modulate", Color(0.5, 0.5, 0.5, 0.6), 0.45)
+		t.tween_property(_name, "modulate:a", 0.5, 0.45)
+
+	func _base_x() -> float:
+		return (_stage.size.x - SPRITE) / 2.0
+
+	func _process(delta: float) -> void:
+		_t += delta
+		if alive:  # breathing
+			_sprite.position.y = 2.0 - absf(sin(_t * 2.2)) * 3.0
+		else:
+			_sprite.position.y = 16.0
+		if _sprite.rotation_degrees == 0.0 and not _shaking():
+			_sprite.position.x = _base_x()
+		if target:
+			_stage.queue_redraw()
+
+	func _shaking() -> bool:
+		return absf(_sprite.position.x - _base_x()) > 0.5 and _sprite.modulate.g < 0.99
+
+	func _draw_ring() -> void:
+		var c := Vector2(_stage.size.x / 2.0, SPRITE * 0.9)
+		_stage.draw_set_transform(c, 0, Vector2(1, 0.32))
+		_stage.draw_circle(Vector2.ZERO, 58, Color(0, 0, 0, 0.35))
+		var col := Color(0, 0, 0, 0)
+		if not alive:
+			col = Color(0.5, 0.5, 0.5, 0.5)
+		elif target:
+			col = Color(1, 0.35, 0.3, 0.6 + 0.4 * absf(sin(_t * 5.0)))
+		elif me:
+			col = UI.GOLD
+		if col.a > 0:
+			_stage.draw_arc(Vector2.ZERO, 64, 0, TAU, 48, col, 5.0, true)
+		_stage.draw_set_transform(Vector2.ZERO)
 
 
 # ------------------------------------------------------------------ state
@@ -242,23 +342,20 @@ func _show_reveal(s: Dictionary) -> void:
 
 
 func _hit(id: String, dmg: int, by_me: bool) -> void:
-	var c: Dictionary = _cards.get(id, {})
-	if c.is_empty():
+	var f: Fighter = _cards.get(id)
+	if f == null:
 		return
-	var panel: Control = c["panel"]
 	var l := UI.label("-%d" % dmg, "Title")
 	l.add_theme_color_override("font_color", Color("ff6a5a") if not by_me else UI.GOLD)
+	l.add_theme_color_override("font_outline_color", Color(0.1, 0.06, 0.03))
+	l.add_theme_constant_override("outline_size", 8)
 	add_child(l)
-	l.position = panel.global_position + Vector2(panel.size.x / 2.0 - 30, 10)
+	l.position = f.head_position() - Vector2(30, 20)
 	var t := create_tween().set_parallel()
-	t.tween_property(l, "position:y", l.position.y - 50, 1.0)
+	t.tween_property(l, "position:y", l.position.y - 60, 1.0)
 	t.tween_property(l, "modulate:a", 0.0, 1.0).set_delay(0.5)
 	t.chain().tween_callback(l.queue_free)
-	var orig := panel.position
-	var sh := create_tween()
-	for i in 4:
-		sh.tween_property(panel, "position:x", orig.x + (8 if i % 2 == 0 else -8), 0.04)
-	sh.tween_property(panel, "position:x", orig.x, 0.04)
+	f.hit()
 	Sfx.play_varied("bump", -2.0)
 	if id == battle.my_id:
 		Main.shake(6.0, 0.3)

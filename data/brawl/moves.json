@@ -1,0 +1,23 @@
+{
+  "_info": "Gelanggang Pesta Silat frame data. time = whole move (s); active = [start, end] as a fraction of time when it can hit; reach = [min, max] px in front (screen px, fighters are drawn 4x); kb = knockback px/s; down = knocks down; lunge = forward push px/s; radius = hits all around. Damage is multiplied by Semangat (1.0) or Lemah (0.3).",
+  "moves": {
+    "jab":        {"anim": "jab",        "time": 0.26, "active": [0.3, 0.65], "dmg": 4,  "reach": [-6, 78],  "kb": 60,  "stun": 0.25, "sfx": "punch", "word": "PAK"},
+    "jab2":       {"anim": "jab",        "time": 0.26, "active": [0.3, 0.65], "dmg": 4,  "reach": [-6, 78],  "kb": 60,  "stun": 0.25, "sfx": "punch", "word": "PAK"},
+    "straight":   {"anim": "cross",      "time": 0.36, "active": [0.35, 0.65], "dmg": 7, "reach": [-6, 86],  "kb": 260, "stun": 0.35, "sfx": "punch", "word": "DUSH"},
+    "kick":       {"anim": "kick",       "time": 0.44, "active": [0.4, 0.7],  "dmg": 7,  "reach": [0, 104],  "kb": 220, "stun": 0.35, "sfx": "kick",  "word": "BAM"},
+    "roundhouse": {"anim": "roundhouse", "time": 0.55, "active": [0.4, 0.75], "dmg": 12, "reach": [-10, 110], "kb": 420, "down": true, "sfx": "kick", "word": "POW!", "big": true},
+    "flykick":    {"anim": "flykick",    "time": 0.5,  "active": [0.15, 0.85], "dmg": 10, "reach": [-6, 100], "kb": 380, "down": true, "lunge": 360, "air": true, "sfx": "kick", "word": "WHAM"},
+    "dash":       {"anim": "cross",      "time": 0.4,  "active": [0.2, 0.6],  "dmg": 8,  "reach": [-6, 90],  "kb": 320, "stun": 0.4, "lunge": 420, "sfx": "punch", "word": "DUSH"},
+    "special":    {"anim": "special",    "time": 0.85, "active": [0.15, 0.85], "dmg": 18, "radius": 140, "kb": 460, "down": true, "sfx": "kick", "word": "JURUS KILAT!", "big": true},
+    "swing":      {"anim": "throw",      "time": 0.42, "active": [0.35, 0.7], "dmg": 0,  "reach": [-6, 0],   "kb": 280, "stun": 0.4, "sfx": "thwack", "word": "PAP!"},
+    "throw":      {"anim": "throw",      "time": 0.4,  "release": 0.45}
+  },
+  "weapons": {
+    "pembaris": {"name": "Pembaris Panjang", "dmg": 8,  "reach": 120, "uses": 4, "throw_dmg": 7, "color": "e8c25a"},
+    "buku":     {"name": "Buku Teks Tebal",  "dmg": 10, "reach": 92,  "uses": 3, "throw_dmg": 9, "stun": 0.6, "color": "c0503c"},
+    "penyapu":  {"name": "Penyapu",          "dmg": 7,  "reach": 130, "uses": 5, "throw_dmg": 6, "sweep": true, "color": "b88a4a"},
+    "beg":      {"name": "Beg Sekolah",      "dmg": 9,  "reach": 98,  "uses": 3, "throw_dmg": 9, "kb": 360, "color": "3c5a9c"},
+    "bola":     {"name": "Bola Keranjang",   "dmg": 6,  "reach": 84,  "uses": 6, "throw_dmg": 9, "bounce": true, "color": "e07a2a"},
+    "bantal":   {"name": "Bantal",           "dmg": 5,  "reach": 96,  "uses": 6, "throw_dmg": 5, "down": true, "color": "f2efe6"}
+  }
+}

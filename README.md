@@ -36,6 +36,21 @@ Bahasa menu BM/English), soalan **objektif** dan **suaikan** selain seret-padan 
 Lawan Bot berfungsi tanpa internet; main dengan rakan (tambah rakan guna ID) memerlukan Supabase:
 jalankan `supabase/schema.sql` kemudian `supabase/multiplayer.sql` (belum diuji pada projek sebenar).
 
+Maklum balas pusingan 1: pertarungan kini menunjukkan watak besar dengan HP di bawah (lawan bot ialah
+4 rakan sekelas: Aisyah, Ravi, Mei Ling, Daniel), **Papan Markah** (Seluruh / Negeri / Rakan, ikut jumlah EXP;
+dalam talian perlukan `supabase/leaderboard.sql`, luar talian tunjuk pemain contoh), gambar profil ikut
+pakaian yang dipakai, butang **Menu** yang terbuka ke bawah, dan tab Kata Kunci di peta yang boleh dilipat
+dan dicari (ketik kata kunci untuk tunjuk tempatnya di peta).
+
+**Gelanggang Pesta Silat** (Bilik Pertarungan > Lawan Bot): pertarungan aksi sisi (macam Hobo / Streets of Rage)
+dalam dewan sekolah, 1 lwn 1, 2 lwn 2, 1 lwn 2 atau 1 lwn 3, tahap Mudah / Biasa / Sukar. Setiap pusingan:
+SOALAN (15 s, semua jawab) -> KEPUTUSAN (betul = Semangat, serangan penuh + senjata sekolah jatuh; paling cepat =
+Jurus Kilat; salah = Lemah, 30%) -> AKSI (10 s bertarung bebas: tumbuk, sepak, kombo J-J-K, tendang terbang,
+tangkis, ambil/baling pembaris, buku, penyapu, beg, bola, bantal). Kesan kartun sahaja (bintang, "PAK!", plaster,
+lebam, "PENGSAN"), tiada darah. Kod: `scripts/brawl/`, data gerakan: `data/brawl/moves.json`.
+Kekunci: WASD gerak, J tumbuk, K sepak, Space lompat, L ambil/baling, I tangkis, U jurus, Shift lari; telefon guna
+joystick/D-pad + butang aksi. "Kuiz sahaja" masih ada untuk yang mahu soalan tanpa aksi.
+
 Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
 Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.

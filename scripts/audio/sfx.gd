@@ -32,6 +32,13 @@ func _ready() -> void:
 		"step_sand": _make(0.09, func(t, _i): return _noise() * exp(-t * 40.0) * 0.14),
 		"step_stone": _make(0.05, func(t, _i): return (_noise() * 0.5 + sin(TAU * 180 * t)) * exp(-t * 90.0) * 0.2),
 		"step_wood": _make(0.08, func(t, _i): return (sin(TAU * 140 * t) + _noise() * 0.3) * exp(-t * 50.0) * 0.25),
+		# Gelanggang (brawl): cartoon hits, never gory
+		"punch": _make(0.12, func(t, _i): return (sin(TAU * (180.0 - 600.0 * t) * t) * 0.8 + _noise() * 0.5) * exp(-t * 38.0) * 0.6),
+		"kick": _make(0.16, func(t, _i): return (sin(TAU * (120.0 - 300.0 * t) * t) + _noise() * 0.6) * exp(-t * 26.0) * 0.6),
+		"swish": _make(0.14, func(t, _i): return _noise() * sin(PI * t / 0.14) * 0.22),
+		"thwack": _make(0.14, func(t, _i): return (signf(sin(TAU * 330 * t)) * 0.4 + _noise() * 0.6) * exp(-t * 34.0) * 0.45),
+		"fall": _make(0.3, func(t, _i): return _thump(t, 0.0) * 0.9 + _noise() * exp(-t * 18.0) * 0.25),
+		"bell": _make(1.4, func(t, _i): return (sin(TAU * 660 * t) + sin(TAU * 1650 * t) * 0.5 + sin(TAU * 2310 * t) * 0.25) * exp(-t * 3.0) * 0.28),
 	}
 
 

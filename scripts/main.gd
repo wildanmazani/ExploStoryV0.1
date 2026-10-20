@@ -13,6 +13,7 @@ const MuziumPanel = preload("res://scripts/ui/muzium_panel.gd")
 const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
 const MapOverlay = preload("res://scripts/ui/map_overlay.gd")
 const ProfilePanel = preload("res://scripts/ui/profile_panel.gd")
+const PapanPanel = preload("res://scripts/ui/papan_panel.gd")
 
 var dialog_layer: CanvasLayer
 var pau_layer: CanvasLayer
@@ -194,6 +195,14 @@ func open_muzium() -> Control:
 ## Profil & Kedai (tab 0 = profile, 1 = skin shop)
 func open_profile(tab: int = 0) -> Control:
 	var p := ProfilePanel.new()
+	p.start_tab = tab
+	overlay_root().add_child(p)
+	return p
+
+
+## Papan Markah (leaderboard): Seluruh / Negeri / Rakan.
+func open_papan(tab: int = 0) -> Control:
+	var p := PapanPanel.new()
 	p.start_tab = tab
 	overlay_root().add_child(p)
 	return p

@@ -8,8 +8,9 @@ extends Control
 const UI = preload("res://scripts/ui/ui.gd")
 
 var params: Dictionary = {}
-var _bots: int = BattleRules.MIN_FRIENDS
-var _bots_label: Label
+var _format := "1v1"
+var _level := "biasa"
+var _faces: HBoxContainer
 var _right: VBoxContainer
 var _room_code := ""
 var _room_box: VBoxContainer
@@ -44,6 +45,9 @@ func _ready() -> void:
 	var prof := UI.button("Profil & Kedai", "Blue", 240)
 	prof.pressed.connect(func(): Game.main.open_profile())
 	btns.add_child(prof)
+	var papan := UI.button("Papan Markah", "", 220)
+	papan.pressed.connect(func(): Game.main.open_papan())
+	btns.add_child(papan)
 	var st := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(200, 60), " TETAPAN")
 	st.pressed.connect(func(): Game.main.open_settings())
 	btns.add_child(st)
@@ -52,46 +56,72 @@ func _ready() -> void:
 	_build_friends()
 
 
+## Gelanggang Pesta Silat vs classmate bots: pick the teams and how tough
 func _bot_card() -> Control:
 	var card := UI.panel("Glass")
 	card.custom_minimum_size = Vector2(500, 470)
-	var c := UI.vbox(12)
-	c.add_child(UI.label("LAWAN BOT", "InkHeading"))
-	var d := UI.label("Latihan dengan rakan sekelas maya. Tiada internet diperlukan.", "Ink", true)
+	var c := UI.vbox(10)
+	c.add_child(UI.label("GELANGGANG PESTA SILAT", "InkHeading"))
+	var d := UI.label("Jawab betul untuk dapat semangat dan senjata sekolah, kemudian bertarung! Tiada internet diperlukan.", "Ink", true)
 	d.custom_minimum_size.x = 440
 	c.add_child(d)
-	var faces := UI.hbox(6)
-	for b in LocalBattle.BOTS:
-		faces.add_child(UI.icon("res://assets/characters32/%s/%s_south.png" % [b["skin"], b["skin"]], 80))
-	c.add_child(faces)
-	c.add_child(UI.label("Bilangan lawan", "InkSmall"))
-	var pick := UI.hbox(10)
-	var minus := UI.button("-", "", 60)
-	minus.pressed.connect(func(): _set_bots(_bots - 1))
-	pick.add_child(minus)
-	_bots_label = UI.label("", "InkHeading")
-	_bots_label.custom_minimum_size.x = 60
-	_bots_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	pick.add_child(_bots_label)
-	var plus := UI.button("+", "", 60)
-	plus.pressed.connect(func(): _set_bots(_bots + 1))
-	pick.add_child(plus)
-	c.add_child(pick)
+	_faces = UI.hbox(4)
+	c.add_child(_faces)
+	c.add_child(UI.label("Pasukan", "InkSmall"))
+	var fmt := UI.hbox(6)
+	for f in BrawlRules.FORMATS:
+		var b := UI.button(f.replace("v", " lwn "), "", 100)
+		b.pressed.connect(func():
+			_format = f
+			_pick(fmt, b)
+			_show_faces())
+		b.theme_type_variation = "Primary" if f == _format else ""
+		fmt.add_child(b)
+	c.add_child(fmt)
+	c.add_child(UI.label("Tahap lawan", "InkSmall"))
+	var lv := UI.hbox(6)
+	for l in BrawlRules.LEVELS:
+		var b := UI.button(BrawlRules.LEVELS[l]["name"], "", 130)
+		b.pressed.connect(func():
+			_level = l
+			_pick(lv, b))
+		b.theme_type_variation = "Primary" if l == _level else ""
+		lv.add_child(b)
+	c.add_child(lv)
 	c.add_child(UI.spacer(false))
-	var go := UI.button("MULA PERTARUNGAN", "Primary", 360)
+	var go := UI.button("MASUK GELANGGANG", "Primary", 360)
 	go.pressed.connect(func():
 		Sfx.play("select")
-		Game.goto("pertarungan", {"mode": "bot", "bots": _bots}))
+		Game.goto("gelanggang", {"format": _format, "level": _level}))
 	c.add_child(go)
+	# the plain quiz battle (no fighting) is still there for anyone who prefers it
+	var quiz := UI.button("Kuiz sahaja (tanpa aksi)", "", 360)
+	quiz.pressed.connect(func(): Game.goto("pertarungan", {"mode": "bot", "bots": maxi(BattleRules.MIN_FRIENDS, BrawlRules.FORMATS[_format][1])}))
+	c.add_child(quiz)
 	card.add_child(c)
-	_set_bots(_bots)
+	_show_faces()
 	go.call_deferred("grab_focus")
 	return card
 
 
-func _set_bots(n: int) -> void:
-	_bots = clampi(n, BattleRules.MIN_FRIENDS, BattleRules.MAX_FRIENDS)
-	_bots_label.text = str(_bots)
+func _pick(row: HBoxContainer, chosen: Button) -> void:
+	Sfx.play("tick", -8.0)
+	for b in row.get_children():
+		(b as Button).theme_type_variation = "Primary" if b == chosen else ""
+
+
+## your team (you + allies) vs the other team, as heads
+func _show_faces() -> void:
+	for ch in _faces.get_children():
+		ch.queue_free()
+	var sizes: Array = BrawlRules.FORMATS[_format]
+	_faces.add_child(UI.head_icon(Game.skin_folder(), 60))
+	for i in int(sizes[0]) - 1:
+		_faces.add_child(UI.head_icon(str(LocalBattle.BOTS[i]["skin"]), 60))
+	var vs := UI.label(" LWN ", "InkHeading")
+	_faces.add_child(vs)
+	for i in int(sizes[1]):
+		_faces.add_child(UI.head_icon(str(LocalBattle.BOTS[(i + int(sizes[0]) - 1) % LocalBattle.BOTS.size()]["skin"]), 60))
 
 
 # ------------------------------------------------------------------ friends (online)

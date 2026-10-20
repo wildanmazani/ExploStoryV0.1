@@ -5,7 +5,8 @@ extends Node
 ## its place in the world (one wrong try + Pau hints each) -> summaries ->
 ## penutup -> Muzium -> lobby, then prints AUTOTEST PASS (exit 0, 1 on fail).
 
-const TIMEOUT := 600.0
+const UI = preload("res://scripts/ui/ui.gd")
+const TIMEOUT := 1200.0
 
 var shots_dir: String = ""
 var _t: float = 0.0
@@ -133,6 +134,17 @@ func close_top_overlay() -> void:
 
 # ------------------------------------------------------------------ the run
 func _run() -> void:
+	if "--only=brawl" in OS.get_cmdline_user_args():
+		# quick loop while working on the Gelanggang
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.goto("lobby")
+		await wait_screen("lobby")
+		await shot("lobby")
+		await _check_brawl()
+		print("AUTOTEST PASS (brawl only)")
+		get_tree().quit(0)
+		return
 	await wait_screen("title")
 	await shot("title")
 	Game.goto("login")
@@ -242,12 +254,34 @@ func _run() -> void:
 	await wait_screen("world")
 	await wait_idle()
 	await shot("world_after_bab1")
+	scene().hud.set_menu_open(true)
+	await wait(0.3)
+	await shot("hud_menu")
+	if not scene().hud.is_menu_open():
+		_fail("HUD menu did not open")
+		return
+	scene().hud.set_menu_open(false)
 	scene().open_map()
 	await wait(0.5)
 	var mo: Node = Main.overlay_root().get_child(Main.overlay_root().get_child_count() - 1)
 	mo._select_tab(1, "_show_keywords")
 	await wait(0.3)
 	await shot("map_keywords_bab1")
+	var before_center: Vector2 = mo.view.center
+	mo._focus_zone("1_1")
+	if mo.view.center == before_center:
+		_fail("tapping a keyword should move the map")
+		return
+	mo._kw_filter = "melaka"
+	mo._fill_keywords()
+	await wait(0.3)
+	await shot("map_keywords_search")
+	mo._kw_filter = "zzz"
+	mo._fill_keywords()
+	await wait(0.1)
+	if mo._kw_box.get_child_count() != 1:
+		_fail("keyword search with no hit should show one 'tiada' line")
+		return
 	mo.close()
 	await wait(0.2)
 	Main.open_muzium()
@@ -269,7 +303,9 @@ func _run() -> void:
 	Game.goto("lobby")
 	await wait_screen("lobby")
 	await shot("lobby")
+	await _check_papan()
 	await _check_battle()
+	await _check_brawl()
 
 	# ---- checks
 	if not Game.chapter_done(1):
@@ -297,6 +333,7 @@ func _check_battle() -> void:
 	Engine.time_scale = 6.0
 	var shot_q := false
 	var shot_hit := false
+	var shot_ko := false
 	var t := 0.0
 	while str(b.state.get("status", "")) != "over":
 		var st := str(b.state.get("status", ""))
@@ -314,6 +351,12 @@ func _check_battle() -> void:
 			Engine.time_scale = 1.0
 			await wait(0.3)
 			await shot("battle_hits")
+			Engine.time_scale = 6.0
+		if not shot_ko and st == "question" and BattleRules.alive(b.state["players"]).size() < b.state["players"].size():
+			shot_ko = true
+			Engine.time_scale = 1.0
+			await wait(0.6)
+			await shot("battle_knocked_out")
 			Engine.time_scale = 6.0
 		await wait(0.1)
 		t += 0.1
@@ -334,9 +377,104 @@ func _check_battle() -> void:
 	print("battle: rounds=%d winner=%s won=%s" % [int(b.state["round"]), str(b.state["winner"]), str(won)])
 
 
+## Gelanggang Pesta Silat in every format, a bot playing for you (autopilot).
+## Damage only lands in AKSI, Lemah hits weaker than Semangat, someone
+## faints, the match ends and the winners get their syiling.
+func _check_brawl() -> void:
+	for fmt in ["1v1", "2v2", "1v2", "1v3"]:
+		var coins := int(Game.save["coins"])
+		Game.goto("gelanggang", {"format": fmt, "level": "mudah", "autopilot": true})
+		await wait_screen("gelanggang")
+		var s := hosted()
+		var m: BrawlMatch = s.match_node
+		var sizes: Array = BrawlRules.FORMATS[fmt]
+		if m.team_alive(0).size() != sizes[0] or m.team_alive(1).size() != sizes[1]:
+			_fail("brawl %s: wrong team sizes" % fmt)
+			return
+		Engine.time_scale = 1.0 if fmt == "1v1" and shots_dir != "" else 4.0
+		var shots_done := {}
+		var hp_at_question := -1
+		var t := 0.0
+		var hits := {"weak": 0, "full": 0}   # lambdas capture by value: count in a dictionary
+		m.hit_landed.connect(func(by, _target, dmg):
+			if m.phase != "aksi":
+				_fail("brawl: damage outside AKSI")
+			if by.mult < 1.0:
+				hits["weak"] += 1
+				if dmg > 4:
+					_fail("brawl: Lemah hit did %d" % dmg)
+			else:
+				hits["full"] += 1)
+		while m.phase != "tamat":
+			if fmt == "1v1":
+				if m.phase == "soalan" and not shots_done.has("q") and m.phase_t > 0.5:
+					shots_done["q"] = true
+					await shot("brawl_soalan")
+				elif m.phase == "keputusan" and not shots_done.has("k") and m.phase_t > 0.4:
+					shots_done["k"] = true
+					await shot("brawl_keputusan")
+				elif m.phase == "aksi" and not shots_done.has("a") and m.phase_t > 2.5:
+					shots_done["a"] = true
+					await shot("brawl_aksi")
+				elif m.phase == "aksi" and not shots_done.has("a2") and m.phase_t > 6.0:
+					shots_done["a2"] = true
+					await shot("brawl_aksi_2")
+					Engine.time_scale = 4.0
+			elif m.phase == "aksi" and not shots_done.has("a") and m.phase_t > 3.0:
+				shots_done["a"] = true
+				Engine.time_scale = 1.0
+				await shot("brawl_%s" % fmt)
+				Engine.time_scale = 4.0
+			if m.phase == "soalan" and hp_at_question < 0:
+				hp_at_question = 0
+				for f in m.fighters:
+					hp_at_question += f.hp
+			await wait(0.1)
+			t += 0.1
+			if t > 200.0:
+				Engine.time_scale = 1.0
+				_fail("brawl %s never finished (round %d, phase %s)" % [fmt, m.round_no, m.phase])
+				return
+		Engine.time_scale = 1.0
+		await wait(0.6)
+		await shot("brawl_result_%s" % fmt)
+		if hits["full"] == 0:
+			_fail("brawl %s: no full-power hits landed" % fmt)
+			return
+		var won := m.winner_team == 0
+		if won and int(Game.save["coins"]) != coins + BrawlRules.REWARD_COINS:
+			_fail("brawl %s: winners should get %d syiling" % [fmt, BrawlRules.REWARD_COINS])
+			return
+		print("brawl %s: rounds=%d won=%s hits full=%d weak=%d" % [fmt, m.round_no, str(won), hits["full"], hits["weak"]])
+	Game.goto("lobby")
+	await wait_screen("lobby")
+
+
+## Papan Markah offline: sample classmates + you, ranked by EXP then wins.
+func _check_papan() -> void:
+	var rows: Array = load("res://scripts/ui/papan_panel.gd").sample_rows("all")
+	var mine: Dictionary = rows.filter(func(r): return r["me"])[0]
+	var above := rows.filter(func(r): return not r["me"] and (r["exp"] > mine["exp"] or (r["exp"] == mine["exp"] and r["wins"] > mine["wins"]))).size()
+	if int(mine["rank"]) != above + 1:
+		_fail("papan: my rank %d, expected %d" % [int(mine["rank"]), above + 1])
+		return
+	var pp: Node = Main.open_papan()
+	await wait(0.4)
+	await shot("papan_seluruh")
+	pp._show(1)
+	await wait(0.3)
+	await shot("papan_negeri")
+	pp._show(2)
+	await wait(0.3)
+	await shot("papan_rakan")
+	pp.close()
+	await wait(0.2)
+
+
 ## Profil & Kedai: buy and wear a skin with the syiling earned in Bab 1.
 func _check_shop() -> void:
 	var before := int(Game.save["coins"])
+	Game.save["profile"]["negeri"] = "Melaka"
 	var pp: Node = Main.open_profile()
 	await wait(0.5)
 	await shot("profile")
@@ -353,6 +491,9 @@ func _check_shop() -> void:
 	pp.close()
 	await wait(0.3)
 	await shot("world_new_skin")
+	if scene().hud._avatar.texture != UI.head("alif_pengakap"):
+		_fail("HUD picture should follow the outfit")
+		return
 
 
 ## Mini map in the corner (Pau button hidden), zoom levels, full map + legend.
