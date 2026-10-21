@@ -23,6 +23,7 @@ const SCREENS := {
 	"register": "res://scripts/screens/register.gd",
 	"zone_summary": "res://scripts/screens/zone_summary.gd",
 	"penutup": "res://scripts/screens/penutup.gd",
+	"ujian": "res://scripts/screens/ujian_bab.gd",
 	"lobby": "res://scripts/screens/lobby.gd",
 	"arka": "res://scripts/screens/arka.gd",
 	"gelanggang": "res://scripts/screens/gelanggang.gd",
@@ -133,6 +134,10 @@ func portrait_path(id: String, expr: String = "") -> String:
 		return ""
 	if base.ends_with("_"):
 		var e := expr if expr != "" else str(c.get("default_expr", "neutral"))
+		if id == "alif" and not save.is_empty():  # Alif talks in the outfit he wears
+			var sk := "res://assets/portraits/alif_%s_%s.png" % [str(save.get("skin", "sekolah")), e]
+			if ResourceLoader.exists(sk):
+				return sk
 		var p := "res://assets/portraits/%s%s.png" % [base, e]
 		if ResourceLoader.exists(p):
 			return p
@@ -213,7 +218,7 @@ func new_save(username: String, mode: String, role: String = "student", avatar: 
 func _ensure_fields() -> void:
 	var defaults := {
 		"player_id": "", "skins_owned": ["sekolah", "melayu"], "skin": "sekolah",
-		"battle": {"played": 0, "wins": 0},
+		"battle": {"played": 0, "wins": 0}, "ujian": [],
 	}
 	for k in defaults:
 		if not save.has(k):
@@ -367,6 +372,45 @@ func next_zone() -> String:
 
 func chapter_done(no: int) -> bool:
 	return save["chapters_done"].has(no) or save["chapters_done"].has(float(no))
+
+
+## every mission of the chapter is finished (its Ujian Bab may still be ahead)
+func chapter_zones_done(no: int) -> bool:
+	var list := chapter_zones(no)
+	if list.is_empty():
+		return false
+	for z in list:
+		if not zone_done(z):
+			return false
+	return true
+
+
+## the Ujian Bab is waiting: missions done, chapter not closed yet
+func ujian_pending(no: int) -> bool:
+	return chapter_zones_done(no) and not chapter_done(no) and not ujian_def(no).is_empty()
+
+
+var _ujian := {}
+
+
+func ujian_def(no: int) -> Dictionary:
+	if _ujian.is_empty():
+		_ujian = load_json("res://data/ujian.json")
+	return _ujian.get(str(no), {})
+
+
+## n random questions from the chapter's bank, answers shuffled
+func ujian_questions(no: int, n: int) -> Array:
+	var bank: Array = BattleRules.bank_of(no).duplicate(true)
+	bank.shuffle()
+	var out: Array = []
+	for q in bank.slice(0, n):
+		var opts: Array = q["options"]
+		var right: String = opts[int(q["answer"])]
+		var mixed := opts.duplicate()
+		mixed.shuffle()
+		out.append({"q": q["q"], "options": mixed, "answer": mixed.find(right), "explain": q.get("explain", "")})
+	return out
 
 
 ## Tingkatan 4 chapters from data/chapters.json (dictionaries with no, title, zones)

@@ -102,6 +102,20 @@
         {
           "who": "alif",
           "e": "worried",
+          "text": "Pau... aku jumpa satu bayang dalam gua. Nama dia Nirbana. Dia pecahkan batu bersurat tu."
+        },
+        {
+          "who": "pau",
+          "e": "scared",
+          "text": "Aku nampak. Empat serpihan cahaya terbang ke empat tempat dalam Bab 1."
+        },
+        {
+          "who": "pau",
+          "text": "Satu serpihan, satu misi. Kumpul semua, baru pintu keluar terbuka."
+        },
+        {
+          "who": "alif",
+          "e": "worried",
           "text": "Tapi aku... aku lembab bab baca ni. Kau tahu kan."
         },
         {
@@ -125,6 +139,92 @@
         {
           "who": "pau",
           "text": "Jom. Kampung Jejak kat atas sana. Kita mula dari akar."
+        }
+      ]
+    ]
+  },
+  "pro_huru": {
+    "variants": [
+      [
+        {
+          "who": "alif",
+          "text": "Eh?! Aku kat mana ni?",
+          "e": "confused"
+        },
+        {
+          "who": "alif",
+          "text": "Kenapa semua orang pakai baju zaman dulu? Kenapa diorang bergaduh?!",
+          "e": "worried"
+        },
+        {
+          "who": "narator",
+          "text": "Bayang-bayang hitam bersenjatakan tombak meluru ke arah Alif."
+        },
+        {
+          "who": "alif",
+          "text": "Lari! LARI!",
+          "e": "worried"
+        }
+      ]
+    ]
+  },
+  "pro_gua_1": {
+    "variants": [
+      [
+        {
+          "who": "narator",
+          "text": "Alif menyorok dalam sebuah gua batu kapur. Obor biru menyala. Di tengah gua, ada batu bersurat yang besar."
+        },
+        {
+          "who": "alif",
+          "text": "Inskripsi Telaga Batu... Macam dalam buku teks.",
+          "e": "confused"
+        },
+        {
+          "who": "narator",
+          "text": "Kabus hitam berkumpul, lalu menjelma menjadi satu bayang tinggi."
+        }
+      ]
+    ]
+  },
+  "pro_gua_2": {
+    "variants": [
+      [
+        {
+          "who": "nirbana",
+          "text": "Selamat datang ke lipatan sejarah yang sedang lenyap, Alif."
+        },
+        {
+          "who": "nirbana",
+          "text": "Aku Nirbana. Aku suka benda yang dilupakan. Dan bangsa kau... makin lama makin lupa."
+        },
+        {
+          "who": "nirbana",
+          "text": "Kat luar tu, bila orang lupa Undang-undang dan Waadat, rakyat mula berpecah dan bergaduh sesama sendiri."
+        }
+      ]
+    ]
+  },
+  "pro_gua_3": {
+    "variants": [
+      [
+        {
+          "who": "nirbana",
+          "text": "Nak bangun daripada mimpi ni? Cari keempat-empat serpihan tu. Lepas tu kalahkan penjaga pintu aku."
+        },
+        {
+          "who": "nirbana",
+          "text": "Tapi aku tak risau. Kau sendiri cakap tadi... satu pun tak melekat."
+        },
+        {
+          "who": "alif",
+          "text": "...",
+          "e": "worried"
+        },
+        {
+          "who": "alif",
+          "text": "Mungkin tak melekat lagi. Tapi aku belum habis cuba.",
+          "e": "confident"
         }
       ]
     ]

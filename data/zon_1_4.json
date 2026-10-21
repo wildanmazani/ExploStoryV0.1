@@ -7,10 +7,10 @@
   "persoalan": "Apa yang berlaku jika pemerintah atau rakyat mungkir janji?",
   "pemandu": "demang",
   "ganjaran": {
-    "id": "bendera1",
-    "nama": "Bendera 1",
-    "icon": "bendera",
-    "info": "Bendera 1 berkibar: Warisan Negara Bangsa difahami."
+    "id": "serpihan4",
+    "nama": "Serpihan 4: Warkah Waadat",
+    "icon": "gulungan",
+    "info": "Waadat: janji Sang Sapurba dengan Demang Lebar Daun. Raja berlaku adil, rakyat kekal setia."
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_4_bukit_siguntang.png",

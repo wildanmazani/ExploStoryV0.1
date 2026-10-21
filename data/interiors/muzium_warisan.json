@@ -1,0 +1,255 @@
+{
+ "_info": "Muzium Warisan (Kampung Jejak). Pedestal gelap = artifak belum dijumpai. cells = petak [x, y] dalam bilik 20x11.",
+ "intro": [
+  {
+   "s": "kurator",
+   "t": "Eh, ada pelawat! Selamat datang ke Muzium Warisan."
+  },
+  {
+   "s": "kurator",
+   "t": "Setiap serpihan dan artifak yang kau jumpa, makcik susun kat sini. Tiap satu ada cerita dia."
+  },
+  {
+   "s": "pau",
+   "t": "Pedestal yang gelap tu maksudnya kita belum jumpa lagi."
+  },
+  {
+   "s": "alif",
+   "e": "confident",
+   "t": "Okey. Jom tengok satu-satu."
+  }
+ ],
+ "npc_talk": [
+  {
+   "s": "kurator",
+   "t": "Sejarah ni macam barang dalam muzium, nak. Kalau tak ada orang jaga, lama-lama berhabuk, dilupakan."
+  },
+  {
+   "s": "kurator",
+   "t": "Rak kat belakang tu simpan Kad Tokoh. Pergilah tengok."
+  }
+ ],
+ "exhibits": [
+  {
+   "id": "rak_tokoh",
+   "label": "Rak Kad Tokoh",
+   "cells": [
+    [
+     4,
+     5
+    ],
+    [
+     5,
+     5
+    ]
+   ],
+   "open": "muzium",
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Ini Kad Tokoh semua orang yang kau dah jumpa. Makcik simpan elok-elok."
+    }
+   ]
+  },
+  {
+   "id": "ex_serpihan1",
+   "label": "Serpihan 1: Batu Asas Telaga Batu",
+   "icon": "prasasti",
+   "artifact": "serpihan1",
+   "cells": [
+    [
+     3,
+     7
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Serpihan pertama. Inskripsi Telaga Batu dari Srivijaya."
+    },
+    {
+     "s": "kurator",
+     "t": "Rakyat minum air sumpah yang dituang ke atas batu ni. Tanda mereka setia, tak akan derhaka pada raja."
+    },
+    {
+     "s": "alif",
+     "e": "confident",
+     "t": "Jadi dari dulu lagi, rakyat dah jadi tonggak negara bangsa."
+    }
+   ]
+  },
+  {
+   "id": "ex_serpihan2",
+   "label": "Serpihan 2: Cap Mohor",
+   "icon": "capmohor",
+   "artifact": "serpihan2",
+   "cells": [
+    [
+     5,
+     7
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Cap Mohor. Cop rasmi raja Melaka."
+    },
+    {
+     "s": "kurator",
+     "t": "Surat dan titah yang ada cap ni, barulah sah. Ia satu lambang kebesaran, sama macam nobat, regalia dan warna kuning."
+    }
+   ]
+  },
+  {
+   "id": "ex_serpihan3",
+   "label": "Serpihan 3: Naskhah Hukum Kanun",
+   "icon": "kitab",
+   "artifact": "serpihan3",
+   "cells": [
+    [
+     3,
+     9
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Naskhah Hukum Kanun Melaka. Ada 44 fasal."
+    },
+    {
+     "s": "kurator",
+     "t": "Undang-Undang Laut Melaka pula 25 fasal. Kat laut, nakhoda diibaratkan macam raja dalam kapal."
+    },
+    {
+     "s": "pau",
+     "e": "happy",
+     "t": "Patutlah pedagang suka datang Melaka. Ada peraturan, rasa selamat."
+    }
+   ]
+  },
+  {
+   "id": "ex_serpihan4",
+   "label": "Serpihan 4: Warkah Waadat",
+   "icon": "gulungan",
+   "artifact": "serpihan4",
+   "cells": [
+    [
+     5,
+     9
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Warkah Waadat. Janji Sang Sapurba dengan Demang Lebar Daun."
+    },
+    {
+     "s": "kurator",
+     "t": "Raja tak boleh zalim, rakyat tak boleh derhaka. Kalau dua-dua pegang janji, negeri aman."
+    },
+    {
+     "s": "alif",
+     "e": "confident",
+     "t": "Janji, setia, adil. Itulah teras Bab 1."
+    }
+   ]
+  },
+  {
+   "id": "ex_tafsiran",
+   "label": "Kitab Tafsiran Nasionalisme",
+   "icon": "kitab",
+   "artifact": "kitab_tafsiran",
+   "cells": [
+    [
+     14,
+     7
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Kitab Tafsiran Nasionalisme dari Lembah Kebangkitan."
+    },
+    {
+     "s": "kurator",
+     "t": "Hans Kohn kata, nasionalisme ialah fahaman yang meletakkan kesetiaan tertinggi individu kepada negara bangsa."
+    },
+    {
+     "s": "kurator",
+     "t": "Kat Tanah Melayu, semangat ni mula subur awal abad ke-20."
+    }
+   ]
+  },
+  {
+   "id": "ex_bill",
+   "label": "Bill of Rights & The Social Contract",
+   "icon": "gulungan",
+   "artifact": "bill_of_rights",
+   "cells": [
+    [
+     16,
+     7
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Bill of Rights, hasil Revolusi Keagungan 1688 di England. Kuasa raja mula dihadkan."
+    },
+    {
+     "s": "kurator",
+     "t": "Sebelah dia, The Social Contract tulisan Rousseau. Idea ni yang bakar semangat Revolusi Perancis 1789."
+    }
+   ]
+  },
+  {
+   "id": "ex_alimam",
+   "label": "Naskhah Al-Imam (1906)",
+   "icon": "kitab",
+   "artifact": "al_imam",
+   "cells": [
+    [
+     14,
+     9
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Al-Imam. Terbit 23 Julai 1906 di Singapura."
+    },
+    {
+     "s": "kurator",
+     "t": "Majalah Kaum Muda ni ajak orang Melayu maju melalui pendidikan, dan kembali kepada al-Quran dan Hadis."
+    }
+   ]
+  },
+  {
+   "id": "ex_bulan",
+   "label": "Majalah Bulan Melayu",
+   "icon": "kitab",
+   "artifact": "bulan_melayu",
+   "cells": [
+    [
+     16,
+     9
+    ]
+   ],
+   "lines": [
+    {
+     "s": "kurator",
+     "t": "Majalah Bulan Melayu, 1930."
+    },
+    {
+     "s": "kurator",
+     "t": "Diterbitkan oleh guru-guru perempuan Melayu Johor, digerakkan oleh Ibu Zain. Perempuan pun bangkit, nak!"
+    },
+    {
+     "s": "pau",
+     "e": "happy",
+     "t": "Ibu Zain memang power."
+    }
+   ]
+  }
+ ]
+}

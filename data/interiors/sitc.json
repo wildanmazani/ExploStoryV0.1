@@ -1,0 +1,108 @@
+{
+ "_info": "Maktab Perguruan Sultan Idris (SITC), Tanjung Malim. Bilik darjah: cerita Pejabat Karang Mengarang, guru Melayu dan KMM.",
+ "intro": [
+  {
+   "s": "pelatih",
+   "t": "Eh, pelawat? Selamat datang ke SITC. Maktab Perguruan Sultan Idris."
+  },
+  {
+   "s": "pau",
+   "e": "happy",
+   "t": "Wah, macam kelas sekolah kita! Cuma semua meja kayu."
+  },
+  {
+   "s": "pelatih",
+   "t": "Tengoklah sekeliling. Banyak cerita dalam bilik ni."
+  }
+ ],
+ "npc_talk": [
+  {
+   "s": "pelatih",
+   "t": "Cikgu kami selalu pesan: bangsa yang tak membaca, senang diperbodohkan."
+  },
+  {
+   "s": "pelatih",
+   "t": "Sebab tu kami belajar rajin-rajin. Nanti kami pula yang ajar anak-anak kampung."
+  }
+ ],
+ "exhibits": [
+  {
+   "id": "meja_guru",
+   "label": "Meja guru dan papan hitam",
+   "cells": [
+    [
+     9,
+     3
+    ],
+    [
+     10,
+     3
+    ]
+   ],
+   "lines": [
+    {
+     "s": "narator",
+     "t": "Papan hitam tertulis: Maktab Perguruan Sultan Idris, Tanjung Malim, 1922."
+    },
+    {
+     "s": "pelatih",
+     "t": "Kat sini kami belajar jadi guru. Lepas tamat, kami balik mengajar di sekolah Melayu."
+    },
+    {
+     "s": "pelatih",
+     "t": "Bila orang kampung pandai membaca, mereka mula sedar nasib bangsa sendiri."
+    }
+   ]
+  },
+  {
+   "id": "rak_karang",
+   "label": "Rak Pejabat Karang Mengarang",
+   "cells": [
+    [
+     13,
+     3
+    ]
+   ],
+   "lines": [
+    {
+     "s": "pelatih",
+     "t": "Ni buku-buku Pejabat Karang Mengarang. Ditubuhkan di SITC pada 1924."
+    },
+    {
+     "s": "pelatih",
+     "t": "Za'ba antara yang menterjemah dan menulis buku. Murid Melayu dapat baca buku dalam bahasa sendiri."
+    },
+    {
+     "s": "alif",
+     "e": "confident",
+     "t": "Buku dalam bahasa sendiri... Tu pun satu cara bangkitkan semangat."
+    }
+   ]
+  },
+  {
+   "id": "meja_pelatih",
+   "label": "Meja pelatih",
+   "cells": [
+    [
+     7,
+     6
+    ]
+   ],
+   "lines": [
+    {
+     "s": "narator",
+     "t": "Ada nota terselit bawah meja: 'Ikatan Pemuda Pelajar. Jumpa malam ni.'"
+    },
+    {
+     "s": "pelatih",
+     "t": "Ibrahim Haji Yaakob pun belajar kat sini. Tahun 1938, dia tubuhkan Kesatuan Melayu Muda, KMM."
+    },
+    {
+     "s": "alif",
+     "e": "confident",
+     "t": "Jadi SITC bukan sekadar maktab. Tempat lahirnya pejuang."
+    }
+   ]
+  }
+ ]
+}

@@ -179,5 +179,48 @@
     "zon": "2_8",
     "gelaran": "Srikandi Ilmu",
     "lore": "Hajah Zainon Munshi Sulaiman. Penggerak majalah Bulan Melayu (1930) dan Tabung Derma Pelajaran Tinggi untuk anak perempuan Melayu."
+  },
+  "nirbana": {
+    "name": "Nirbana",
+    "portrait": "nirbana",
+    "sprite": "nirbana",
+    "tokoh": false,
+    "rekaan": true,
+    "lore": "Watak rekaan. Penghulu Kabus Lupa. Dia mahu semua orang lupa sejarah dan putus asa."
+  },
+  "panglima": {
+    "name": "Panglima Derhaka",
+    "portrait": "panglima",
+    "sprite": "panglima",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "gabenor": {
+    "name": "Gabenor Sekatan",
+    "portrait": "gabenor",
+    "sprite": "gabenor",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "kurator": {
+    "name": "Mak Teh",
+    "portrait": "kurator",
+    "sprite": "kurator",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "pencetak": {
+    "name": "Pak Hamid",
+    "portrait": "pencetak",
+    "sprite": "pencetak",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "pelatih": {
+    "name": "Pelatih SITC",
+    "portrait": "pelatih",
+    "sprite": "pelatih",
+    "tokoh": false,
+    "rekaan": true
   }
 }

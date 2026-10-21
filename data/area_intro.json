@@ -1,0 +1,49 @@
+{
+  "_info": "Kad tajuk dan sebab datang, sekali sahaja pada lawatan pertama ke setiap kawasan peta. era = baris kecil di bawah nama. lines = dialog pendek (kosong = kad sahaja).",
+  "permulaan": {"era": "Dunia Explo-Story", "lines": []},
+  "kampung": {"era": "Dunia Explo-Story", "lines": [
+    {"s": "pau", "t": "Ni Kampung Jejak. Rumah kita kat dunia ni."},
+    {"s": "pau", "t": "Muzium tu simpan serpihan yang kita jumpa. Batu bercahaya tu pula Peta Jejak."},
+    {"s": "alif", "e": "confident", "t": "Serpihan pertama kat Gerbang Masa, sebelah utara. Jom."}
+  ]},
+  "gerbang": {"era": "Kerajaan awal Alam Melayu", "lines": [
+    {"s": "alif", "t": "Serpihan pertama ada kat sini. Kita mula dari akar: kerajaan awal Alam Melayu."}
+  ]},
+  "pelabuhan": {"era": "Melaka, abad ke-15", "lines": [
+    {"s": "alif", "t": "Serpihan kedua kat pelabuhan ni. Melaka kena buktikan dia negara bangsa yang lengkap."}
+  ]},
+  "melaka": {"era": "Kota Melaka, abad ke-15", "lines": [
+    {"s": "alif", "t": "Kota Melaka. Serpihan ketiga ada dalam istana, kat Balai Penghadapan."}
+  ]},
+  "siguntang": {"era": "Kisah dalam Sulalatus Salatin", "lines": [
+    {"s": "alif", "t": "Bukit Siguntang. Tempat bermulanya janji raja dan rakyat. Serpihan terakhir ada kat atas."}
+  ]},
+  "kabus": {"era": "Sempadan Bab 1", "lines": [
+    {"s": "pau", "e": "scared", "t": "Pintu Kabus. Kat seberang sana ada bab lain..."},
+    {"s": "alif", "t": "Kita habiskan Bab 1 dulu. Satu-satu."}
+  ]},
+  "dewan": {"era": "Tanah Melayu, awal abad ke-20", "lines": [
+    {"s": "alif", "t": "Dewan Kedaulatan Rakyat. Mula-mula, kita kena faham apa maksud nasionalisme."}
+  ]},
+  "falsafah": {"era": "Eropah dan Amerika, 1688 hingga 1789", "lines": [
+    {"s": "alif", "t": "Idea pasal hak rakyat ni datang dari jauh. Dari revolusi kat Barat."}
+  ]},
+  "dermaga": {"era": "Asia, akhir abad ke-19", "lines": [
+    {"s": "alif", "t": "Dermaga Asia. Kapal-kapal ni bawa berita kebangkitan dari India, China dan Jepun."}
+  ]},
+  "serantau": {"era": "Asia Tenggara, 1890-an hingga 1930-an", "lines": [
+    {"s": "alif", "t": "Jiran-jiran kita kat Asia Tenggara pun bangkit. Jom tengok macam mana."}
+  ]},
+  "tugu": {"era": "Tanah Melayu, abad ke-19", "lines": [
+    {"s": "alif", "t": "Tugu Pahlawan. Macam mana semangat ni mula sampai ke negara kita?"}
+  ]},
+  "kompleks": {"era": "Tanah Melayu, 1900-an hingga 1930-an", "lines": [
+    {"s": "alif", "t": "Sekolah, akhbar, buku. Inilah benda yang buat orang kita mula sedar."}
+  ]},
+  "sitc": {"era": "Tanjung Malim, dibuka 1922", "lines": [
+    {"s": "alif", "t": "Maktab SITC. Ramai guru dan penulis hebat lahir kat sini."}
+  ]},
+  "menara": {"era": "Tanah Melayu, hingga 1941", "lines": [
+    {"s": "alif", "t": "Menara Pentadbiran. Apa kesan semua kebangkitan ni pada negara kita?"}
+  ]}
+}

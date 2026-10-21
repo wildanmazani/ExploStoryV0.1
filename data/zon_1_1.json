@@ -7,10 +7,10 @@
   "persoalan": "Dari mana asal negara bangsa kita?",
   "pemandu": "penjaga",
   "ganjaran": {
-    "id": "prasasti",
-    "nama": "Serpihan Prasasti Telaga Batu",
+    "id": "serpihan1",
+    "nama": "Serpihan 1: Batu Asas Telaga Batu",
     "icon": "prasasti",
-    "info": "Rakyat Srivijaya meminum air sumpah yang dituang ke atas prasasti ini sebagai tanda setia."
+    "info": "Serpihan pertama Inskripsi Telaga Batu. Rakyat Srivijaya meminum air sumpah di sini sebagai tanda setia kepada raja."
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_1_gerbang_masa.png",

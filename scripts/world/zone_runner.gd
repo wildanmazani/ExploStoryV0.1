@@ -185,6 +185,9 @@ func refresh() -> void:
 		markers[id].visible = on
 		if on and hint == "":
 			hint = "Pergi ke tanda seru (!) di %s." % Game.zone_data(f["zid"])["title"]
+	for n in range(1, 11):
+		if hint == "" and Game.ujian_pending(n):
+			hint = "Ujian Bab %d menanti di %s. Lawan %s untuk buka jalan seterusnya!" % [n, Game.ujian_def(n)["where"], Game.ujian_def(n)["boss"]]
 	if hint == "":
 		var next := Game.next_zone()
 		if next == "":

@@ -7,10 +7,10 @@
   "persoalan": "Bagaimana Melaka kekal aman dan makmur?",
   "pemandu": "tunperak",
   "ganjaran": {
-    "id": "capmohor",
-    "nama": "Cap Mohor",
-    "icon": "capmohor",
-    "info": "Cap mohor ialah cop rasmi yang mengesahkan surat dan titah raja."
+    "id": "serpihan3",
+    "nama": "Serpihan 3: Naskhah Hukum Kanun",
+    "icon": "kitab",
+    "info": "Hukum Kanun Melaka (44 fasal) dan Undang-Undang Laut Melaka (25 fasal) menjaga ketenteraman di darat dan di laut."
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_3_balai_penghadapan.png",

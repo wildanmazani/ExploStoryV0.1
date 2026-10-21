@@ -3,6 +3,13 @@ extends Control
 ## button on every line. Cream background, short lines, no time limit.
 
 const UI = preload("res://scripts/ui/ui.gd")
+## name plate colour per speaker (others: wood brown)
+const PLATE := {
+	"alif": Color("3b6fb6"), "pau": Color("d98a2b"), "nirbana": Color("5b3a7a"),
+	"panglima": Color("9c2f2f"), "gabenor": Color("6b6b6b"),
+}
+## speakers drawn on the left (the player's side)
+const LEFT_SIDE := ["alif", "pau"]
 
 signal finished
 
@@ -19,12 +26,17 @@ var _shown: float = 0.0
 var _panel: PanelContainer
 var _portrait: TextureRect
 var _portrait_frame: PanelContainer
+var _portrait_r: TextureRect
+var _portrait_r_frame: PanelContainer
+var _plate: PanelContainer
+var _more: Control
 var _name: Label
 var _text: Label
 var _next: Button
 var _speak: Button
 var _tag: Label
 var _who := ""
+var _last_who := ""
 var _blip_at := 0
 
 
@@ -48,29 +60,35 @@ func _ready() -> void:
 	var row := UI.hbox(18)
 	_panel.add_child(row)
 
-	_portrait_frame = UI.panel("Slot")
-	_portrait_frame.custom_minimum_size = Vector2(160, 160)
-	_portrait = TextureRect.new()
-	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_portrait.custom_minimum_size = Vector2(144, 144)
-	_portrait_frame.add_child(_portrait)
+	# portrait on the left for Alif and Pau, on the right for everyone else,
+	# so it is always clear who is talking
+	_portrait_frame = _make_frame()
+	_portrait = _portrait_frame.get_child(0)
 	row.add_child(_portrait_frame)
+	_portrait_r_frame = _make_frame()
+	_portrait_r = _portrait_r_frame.get_child(0)
 
 	var col := UI.vbox(6)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var name_row := UI.hbox(12)
-	_name = UI.label("", "InkHeading")
-	name_row.add_child(_name)
+	_plate = PanelContainer.new()
+	_name = UI.label("", "Heading")
+	_name.add_theme_color_override("font_color", Color.WHITE)
+	_plate.add_child(_name)
+	name_row.add_child(_plate)
 	_tag = UI.label("", "InkSmall")
 	name_row.add_child(_tag)
 	col.add_child(name_row)
 	_text = UI.label("", "Ink", true)
 	_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_text.custom_minimum_size = Vector2(600, 110)
+	_text.custom_minimum_size = Vector2(560, 110)
 	col.add_child(_text)
+	_more = MoreArrow.new()
+	_more.custom_minimum_size = Vector2(20, 14)
+	_more.size_flags_horizontal = Control.SIZE_SHRINK_END
+	col.add_child(_more)
 	row.add_child(col)
+	row.add_child(_portrait_r_frame)
 
 	var btns := UI.vbox(10)
 	_speak = UI.icon_button("res://assets/icons/suara.png", "Blue")
@@ -83,6 +101,16 @@ func _ready() -> void:
 	_next.pressed.connect(_advance)
 	btns.add_child(_next)
 	row.add_child(btns)
+
+
+func _enter_tree() -> void:
+	if not Game.skin_changed.is_connected(_on_skin):
+		Game.skin_changed.connect(_on_skin)
+
+
+func _on_skin() -> void:
+	if visible and _who == "alif":
+		_portrait.texture = UI.tex(Game.portrait_path("alif", str(_lines[_i].get("e", ""))))
 
 
 func play(lines_arr: Array) -> void:
@@ -99,15 +127,27 @@ func _show_line() -> void:
 	_who = who
 	_blip_at = 0
 	_name.text = Game.char_name(who)
+	_plate.visible = _name.text != ""
+	_plate.add_theme_stylebox_override("panel", UI.sb(PLATE.get(who, UI.WOOD), PLATE.get(who, UI.WOOD).darkened(0.35), 3, 6, 4))
 	_tag.text = "(dialog rekaan)" if line.get("rekaan", false) else ""
 	var p := Game.portrait_path(who, str(line.get("e", "")))
-	_portrait.texture = UI.tex(p)
-	_portrait_frame.visible = p != ""
+	var left := who in LEFT_SIDE
+	var frame := _portrait_frame if left else _portrait_r_frame
+	(_portrait if left else _portrait_r).texture = UI.tex(p)
+	_portrait_frame.visible = p != "" and left
+	_portrait_r_frame.visible = p != "" and not left
+	if p != "" and (who != _last_who or _i == 0):
+		frame.pivot_offset = frame.size / 2.0
+		frame.scale = Vector2(0.9, 0.9)
+		create_tween().tween_property(frame, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_last_who = who
 	_text.text = str(line.get("t", ""))
 	if who == "narator":
 		_text.theme_type_variation = "InkSmall"
+		_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	else:
 		_text.theme_type_variation = "Ink"
+		_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	var spd := Game.type_speed()
 	if spd <= 0.0:
 		_text.visible_characters = -1
@@ -122,6 +162,7 @@ func _show_line() -> void:
 
 
 func _process(delta: float) -> void:
+	_more.visible = visible and not _typing
 	if not _typing:
 		return
 	_shown += delta * Game.type_speed()
@@ -176,3 +217,30 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		_advance()
 		get_viewport().set_input_as_handled()
+
+
+func _make_frame() -> PanelContainer:
+	var f := UI.panel("Slot")
+	f.custom_minimum_size = Vector2(160, 160)
+	var t := TextureRect.new()
+	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	t.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	t.custom_minimum_size = Vector2(144, 144)
+	f.add_child(t)
+	return f
+
+
+## Blinking down arrow: the line is fully shown, tap to go on.
+class MoreArrow extends Control:
+	var _t := 0.0
+
+	func _process(delta: float) -> void:
+		_t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		if fmod(_t, 0.9) > 0.6:
+			return
+		var y := sin(_t * 6.0) * 2.0
+		draw_colored_polygon(PackedVector2Array([Vector2(2, y + 2), Vector2(18, y + 2), Vector2(10, y + 12)]), Color(0.45, 0.27, 0.12))

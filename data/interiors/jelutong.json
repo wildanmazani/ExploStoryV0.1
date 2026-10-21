@@ -1,0 +1,115 @@
+{
+ "_info": "Jelutong Press, Pulau Pinang (1927), milik Syed Sheikh al-Hadi. Cerita akhbar dan novel sebagai faktor kebangkitan.",
+ "intro": [
+  {
+   "s": "pencetak",
+   "t": "Hati-hati, lantai licin dengan dakwat!"
+  },
+  {
+   "s": "pencetak",
+   "t": "Selamat datang ke Jelutong Press. Kat sini, kertas jadi senjata."
+  },
+  {
+   "s": "pau",
+   "e": "scared",
+   "t": "Senjata? Kertas?"
+  },
+  {
+   "s": "pencetak",
+   "t": "Senjata fikiran. Tengoklah sendiri."
+  }
+ ],
+ "npc_talk": [
+  {
+   "s": "pencetak",
+   "t": "Satu akhbar boleh dibaca sepuluh orang kat kedai kopi. Itulah kuasa perkataan."
+  },
+  {
+   "s": "pencetak",
+   "t": "British boleh tutup mulut orang. Tapi susah nak tutup mata orang yang dah pandai membaca."
+  }
+ ],
+ "exhibits": [
+  {
+   "id": "mesin_cetak",
+   "label": "Mesin cetak",
+   "cells": [
+    [
+     9,
+     5
+    ],
+    [
+     10,
+     5
+    ]
+   ],
+   "lines": [
+    {
+     "s": "narator",
+     "t": "Mesin cetak berdentum. Kertas keluar satu demi satu."
+    },
+    {
+     "s": "pencetak",
+     "t": "Ni Jelutong Press, milik Syed Sheikh al-Hadi. Dibuka kat Pulau Pinang tahun 1927."
+    },
+    {
+     "s": "pencetak",
+     "t": "Akhbar Saudara pun kami cetak kat sini."
+    }
+   ]
+  },
+  {
+   "id": "rak_akhbar",
+   "label": "Rak akhbar lama",
+   "cells": [
+    [
+     3,
+     5
+    ],
+    [
+     4,
+     5
+    ]
+   ],
+   "lines": [
+    {
+     "s": "pencetak",
+     "t": "Akhbar Jawi Peranakan, 1876. Antara akhbar Melayu yang terawal, terbit kat Singapura."
+    },
+    {
+     "s": "pencetak",
+     "t": "Akhbar dan majalah sebarkan idea. Orang yang tak pernah jumpa pun boleh berkongsi semangat yang sama."
+    },
+    {
+     "s": "alif",
+     "e": "happy",
+     "t": "Macam media sosial zaman dulu."
+    }
+   ]
+  },
+  {
+   "id": "rak_novel",
+   "label": "Rak novel",
+   "cells": [
+    [
+     15,
+     5
+    ],
+    [
+     16,
+     5
+    ]
+   ],
+   "lines": [
+    {
+     "s": "pencetak",
+     "t": "Ni novel tulisan Syed Sheikh al-Hadi, Hikayat Faridah Hanum."
+    },
+    {
+     "s": "pencetak",
+     "t": "Cerita dia pasal pendidikan dan hak wanita. Orang baca novel, tapi dalam diam, fikiran pun berubah."
+    }
+   ]
+  }
+ ]
+}

@@ -2,9 +2,12 @@ extends Control
 ## Prologue, Babak 1 (GDS section 2): Alif's room at night, 3 days before SPM.
 ## The paragraph's letters scramble so the player feels what reading is like
 ## for Alif, the clock and heartbeat speed up, he squeezes Pau and dozes off,
-## then golden pages carry us into Dunia Explo-Story (world intro continues
-## in world.gd). Skippable at any time.
+## then golden pages carry us into a dream: a port in chaos, then Gua Warisan
+## where Nirbana breaks the Telaga Batu inscription into four Serpihan (the
+## goal of Bab 1). Then Dunia Explo-Story (world intro continues in world.gd).
+## Skippable at any time.
 
+const UI = preload("res://scripts/ui/ui.gd")
 const WORLD := "res://scenes/world/world.tscn"
 const PARAGRAPH := "Kesultanan Melayu Melaka diasaskan oleh Parameswara pada awal abad ke-15. Melaka mempunyai ciri-ciri negara bangsa iaitu kerajaan, rakyat, kedaulatan, wilayah pengaruh, undang-undang dan lambang kebesaran."
 const MIRROR := {"b": "d", "d": "b", "p": "q", "q": "p", "m": "w", "w": "m", "n": "u", "u": "n"}
@@ -99,7 +102,118 @@ func _run() -> void:
 	await _wait(1.6)
 	Sfx.play("sparkle")
 	await _fade(flash, 1.0, 0.8)
+	await _dream()
+	if _skipping: return
+	await _fade(flash, 1.0, 0.8)
 	_go_to_world()
+
+
+## The dream: chaos at an old port, the cave, Nirbana and the four Serpihan.
+func _dream() -> void:
+	if _skipping: return
+	var bg := _scene_image("res://assets/backgrounds/bg_pelabuhan_huru.png")
+	bg.modulate = Color(1.0, 0.75, 0.7)
+	var alif := _sprite("res://assets/characters32/%s/%s_south.png" % [Game.skin_folder(), Game.skin_folder()], Vector2(640, 610), 6)
+	MusicDirector.play("siguntang", 1.0)
+	flash.color = Color(1, 1, 1)
+	await _fade(flash, 0.0, 0.8)
+	room.position = Vector2.ZERO
+	_shake_node(bg, 1.6)
+	Sfx.play("bump", -2.0)
+	await _say("pro_huru")
+	if _skipping: return
+	# run into the cave
+	var run := create_tween()
+	run.tween_property(alif, "position:x", 1300.0, 0.7).set_ease(Tween.EASE_IN)
+	Sfx.play("whoosh")
+	flash.color = Color.BLACK
+	await _fade(flash, 1.0, 0.6)
+	if run.is_running():
+		await run.finished
+	bg.texture = UI.tex("res://assets/backgrounds/bg_gua_warisan.png")
+	bg.modulate = Color.WHITE
+	alif.position = Vector2(300 - alif.size.x / 2.0, 640 - alif.size.y)
+	alif.texture = UI.tex("res://assets/characters32/%s/%s_east.png" % [Game.skin_folder(), Game.skin_folder()])
+	await _fade(flash, 0.0, 0.8)
+	await _say("pro_gua_1")
+	if _skipping: return
+	# Nirbana gathers out of the mist
+	var nir := _sprite("res://assets/characters32/nirbana/nirbana_south.png", Vector2(900, 640), 7)
+	nir.modulate = Color(0.6, 0.4, 0.9, 0.0)
+	Sfx.play("whoosh", -4.0, 0.6)
+	var t := create_tween()
+	t.tween_property(nir, "modulate", Color.WHITE, 1.2)
+	await t.finished
+	var bob := create_tween().set_loops()
+	bob.tween_property(nir, "position:y", nir.position.y - 8, 1.0).set_trans(Tween.TRANS_SINE)
+	bob.tween_property(nir, "position:y", nir.position.y, 1.0).set_trans(Tween.TRANS_SINE)
+	await _say("pro_gua_2")
+	if _skipping: return
+	# the inscription cracks into four shards that fly out of the cave
+	Sfx.play("bump", 0.0, 0.6)
+	_shake_node(bg, 0.6)
+	flash.color = Color(1, 1, 1)
+	flash.modulate.a = 0.0
+	var f := create_tween()
+	f.tween_property(flash, "modulate:a", 0.8, 0.08)
+	f.tween_property(flash, "modulate:a", 0.0, 0.4)
+	await _shards()
+	await _say("pro_gua_3")
+	bob.kill()
+
+
+func _scene_image(path: String) -> TextureRect:
+	var r := TextureRect.new()
+	r.texture = UI.tex(path)
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.size = Vector2(1280, 720)
+	add_child(r)
+	move_child(r, flash.get_index())
+	return r
+
+
+## a character sprite standing with its feet at `feet`, `sc` times bigger
+func _sprite(path: String, feet: Vector2, sc: float) -> TextureRect:
+	var r := TextureRect.new()
+	r.texture = UI.tex(path)
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.size = r.texture.get_size() * sc
+	r.position = feet - Vector2(r.size.x / 2.0, r.size.y)
+	add_child(r)
+	move_child(r, flash.get_index())
+	return r
+
+
+func _shards() -> void:
+	var centre := Vector2(640, 330)
+	var targets := [Vector2(-100, 100), Vector2(1380, 120), Vector2(-100, 640), Vector2(1380, 660)]
+	var last: Tween
+	for i in 4:
+		var s := ColorRect.new()
+		s.color = Color(1, 0.86, 0.4)
+		s.size = Vector2(22, 30)
+		s.position = centre
+		s.rotation = randf_range(-0.6, 0.6)
+		add_child(s)
+		move_child(s, flash.get_index())
+		last = create_tween()
+		last.tween_property(s, "position", centre + Vector2(randf_range(-60, 60), randf_range(-60, 20)), 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		last.tween_property(s, "position", targets[i], 0.8).set_ease(Tween.EASE_IN)
+		Sfx.play("sparkle", -6.0, 1.0 + i * 0.15)
+		await _wait(0.15)
+	if last:
+		await last.finished
+
+
+func _shake_node(n: Control, seconds: float) -> void:
+	var t := 0.0
+	while t < seconds and not _skipping and is_inside_tree():
+		n.position = Vector2(randf_range(-5, 5), randf_range(-5, 5))
+		await get_tree().create_timer(0.04).timeout
+		t += 0.04
+	n.position = Vector2.ZERO
 
 
 # --- helpers ----------------------------------------------------------------

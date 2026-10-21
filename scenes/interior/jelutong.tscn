@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/interior.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/bg_int_jelutong.png" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/pau.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="6"]
+
+[node name="Jelutong" type="Node2D"]
+script = ExtResource("1")
+background = ExtResource("2")
+title = "Jelutong Press"
+music = "kampung"
+floor_rows = PackedStringArray("6:3-16", "7:3-16", "8:3-16", "9:3-16", "10:9-10")
+exit_cells = Array[Vector2i]([Vector2i(9, 10), Vector2i(10, 10)])
+enter_cell = Vector2i(9, 9)
+return_cell_world = Vector2i(121, 18)
+npc_id = "pencetak"
+npc_cell = Vector2i(12, 6)
+exhibit_file = "jelutong"
+
+[node name="Background" type="Sprite2D" parent="."]
+centered = false
+
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Objects" instance=ExtResource("3")]
+
+[node name="Pau" parent="Objects" instance=ExtResource("4")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(160, 90)
+zoom = Vector2(4, 4)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Prompt" type="Button" parent="HUD"]
+visible = false
+offset_right = 220.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_type_variation = &"Primary"
+text = "E / Ketik"
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+script = ExtResource("6")

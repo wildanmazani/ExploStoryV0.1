@@ -147,6 +147,7 @@ func _continue() -> void:
 	var zid: String = params.get("zone", "1_1")
 	var ch := Game.chapter_of(zid)
 	if Game.is_last_zone(zid) and params.get("first_time", true) and not Game.chapter_done(ch):
-		Game.goto("penutup", {"chapter": ch})
+		# the chapter's final test stands between Alif and the next map
+		Game.goto("ujian" if not Game.ujian_def(ch).is_empty() else "penutup", {"chapter": ch})
 	else:
 		Game.goto("peta")

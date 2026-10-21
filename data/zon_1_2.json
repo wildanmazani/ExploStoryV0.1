@@ -7,10 +7,10 @@
   "persoalan": "Apa yang menjadikan Melaka sebuah negara bangsa yang lengkap?",
   "pemandu": "syahbandar",
   "ganjaran": {
-    "id": "nobat",
-    "nama": "Nobat Kecil",
-    "icon": "nobat",
-    "info": "Nobat ialah salah satu lambang kebesaran Kesultanan Melayu Melaka."
+    "id": "serpihan2",
+    "nama": "Serpihan 2: Cap Mohor",
+    "icon": "capmohor",
+    "info": "Cap mohor ialah cop rasmi raja, satu lambang kebesaran Kesultanan Melayu Melaka yang mengesahkan titah."
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_2_pelabuhan_melaka.png",

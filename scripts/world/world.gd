@@ -21,7 +21,7 @@ const LEMBAH_X := 82   ## columns from here on are Lembah Kebangkitan (Bab 2)
 ## (jetty, bridges), open = walkable columns
 const OBJECTS := {
 	"P": {"tex": "palm", "foot": Vector2i(1, 1), "sway": 1.2},
-	"T": {"tex": ["tree", "tree_pink", "tree_flame", "tree_round", "tree", "tree_rambutan", "tree_round"], "foot": Vector2i(2, 1), "sway": 1.0},
+	"T": {"tex": ["tree", "tree_mempelam", "tree_ketapang", "tree_round", "tree", "tree_rambutan", "tree_round"], "foot": Vector2i(2, 1), "sway": 1.0},
 	"B": {"tex": ["bush", "bush_bunga"], "foot": Vector2i(2, 1), "sway": 0.6},
 	"R": {"tex": "rocks", "foot": Vector2i(2, 1)},
 	"F": {"tex": ["bunga_kuning", "bunga_merah_jambu"], "foot": Vector2i(2, 1), "flat": true, "sway": 0.5},
@@ -77,6 +77,13 @@ const OBJECTS := {
 	"Z": {"tex": "batu_renungan", "foot": Vector2i(2, 1)},
 }
 const KINGDOM := {"1": "funan", "2": "champa", "3": "srivijaya", "4": "melaka", "5": "johor"}
+## buildings you can walk into as story / museum rooms:
+## id -> [scene, card title, card subtitle, Pau's line at the door]
+const ROOMS := {
+	"muzium": ["res://scenes/interior/muzium.tscn", "MUZIUM WARISAN", "Kampung Jejak", "Jom masuk muzium. Tengok serpihan yang kita dah kumpul!"],
+	"sitc": ["res://scenes/interior/sitc.tscn", "MAKTAB SITC", "Tanjung Malim, 1922", "Ni Maktab Perguruan Sultan Idris. Jom jenguk kelas dia."],
+	"jelutong_press": ["res://scenes/interior/jelutong.tscn", "JELUTONG PRESS", "Pulau Pinang, 1927", "Bunyi mesin cetak! Jom tengok dalam."],
+}
 const AREA_ZONE := {"gerbang": "1_1", "pelabuhan": "1_2", "siguntang": "1_4"}
 const LABELS := {
 	"house": "Rumah", "muzium": "Muzium", "monument": "Peta Jejak", "istana": "Istana Melaka",
@@ -428,6 +435,34 @@ func _build_entities() -> void:
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
 	areas = _ent["areas"]
+	_spawn_ujian()
+
+
+## Ujian Bab: once a chapter's missions are done, its boss waits on the map
+## (data/ujian.json) until the final test is passed.
+func _spawn_ujian() -> void:
+	for n in range(1, 11):
+		if not Game.ujian_pending(n):
+			continue
+		var cfg := Game.ujian_def(n)
+		var at := Vector2i(int(cfg["pos"][0]), int(cfg["pos"][1]))
+		if not is_walkable(at):
+			for r in range(1, 4):
+				for d in [Vector2i(r, 0), Vector2i(-r, 0), Vector2i(0, r), Vector2i(0, -r)]:
+					if is_walkable(at + d):
+						at += d
+						break
+				if is_walkable(at):
+					break
+		var npc := Npc.new()
+		npc.setup(str(cfg["npc"]), at, "south")
+		objects.add_child(npc)
+		npcs[at] = npc
+		blocked[at] = true
+		interact[at] = {"type": "ujian", "id": str(n)}
+		var m := ZoneRunner.Marker.new()
+		m.position = Player.cell_to_pos(at) + Vector2(0, -38)
+		objects.add_child(m)
 
 
 ## Photographs the whole island once (every tile, tree, house and boat) for the
@@ -442,7 +477,7 @@ func _capture_map() -> void:
 	sub.render_target_update_mode = SubViewport.UPDATE_ONCE
 	sub.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	sub.canvas_cull_mask = 1  # characters live on layer 2 too: this camera skips them
-	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values() + critters + ([_kabus_fog] if _kabus_fog else []):
+	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values() + critters + ([_kabus_fog] if _kabus_fog else []) + ([_fog1] if _fog1 else []):
 		_to_layer2(n)
 	var cam := Camera2D.new()
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
@@ -466,7 +501,62 @@ var _kabus_fog: ColorRect
 var _kabus_rects: Array = []   ## Vector4 per cleared area (world px)
 
 
+## Bab 1: the four mission places start grey too and get their colour back
+## one by one (the city comes back to life as the Serpihan are found).
+const KABUS1_AREAS := {"gerbang": "1_1", "pelabuhan": "1_2", "melaka": "1_3", "siguntang": "1_4"}
+var _fog1: ColorRect
+var _fog1_rects := {}   ## zid -> Vector4 (world px) still under the fog
+
+
+func _build_kabus1() -> void:
+	for a in areas:
+		var zid: String = KABUS1_AREAS.get(str(a["id"]), "")
+		if zid != "" and not Game.zone_done(zid):
+			_fog1_rects[zid] = _area_px(a)
+	if _fog1_rects.is_empty():
+		return
+	_fog1 = ColorRect.new()
+	_fog1.size = Vector2(LEMBAH_X - 2, terrain.height) * TILE
+	_fog1.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fog1.z_index = 19
+	var m := ShaderMaterial.new()
+	m.shader = KABUS
+	m.set_shader_parameter("origin", Vector2.ZERO)
+	m.set_shader_parameter("size", _fog1.size)
+	m.set_shader_parameter("mode", 1)
+	m.set_shader_parameter("softness", 56.0)
+	_fog1.material = m
+	add_child(_fog1)
+	_push_fog1()
+
+
+func _push_fog1() -> void:
+	var arr: Array = _fog1_rects.values().slice(0, 8)
+	var count := arr.size()
+	while arr.size() < 8:
+		arr.append(Vector4.ZERO)
+	_fog1.material.set_shader_parameter("clear_rects", arr)
+	_fog1.material.set_shader_parameter("clear_count", count)
+
+
+## the fog over a finished Bab 1 place shrinks into its centre
+func _clear_fog1(zid: String) -> void:
+	if _fog1 == null or not _fog1_rects.has(zid):
+		return
+	var full: Vector4 = _fog1_rects[zid]
+	var centre := Vector2(full.x + full.z / 2.0, full.y + full.w / 2.0)
+	Sfx.play("sparkle")
+	var t := create_tween()
+	t.tween_method(func(v: float):
+		_fog1_rects[zid] = Vector4(centre.x - full.z * v / 2.0, centre.y - full.w * v / 2.0, full.z * v, full.w * v)
+		_push_fog1(), 1.0, 0.0, 2.2).set_trans(Tween.TRANS_SINE)
+	await t.finished
+	_fog1_rects.erase(zid)
+	_push_fog1()
+
+
 func _build_kabus() -> void:
+	_build_kabus1()
 	if Game.chapter_done(2):
 		return
 	var ids: Array = []
@@ -510,6 +600,9 @@ func _push_kabus() -> void:
 
 ## colour floods back from the centre of the finished area
 func _clear_kabus(zid: String) -> void:
+	if Game.chapter_of(zid) == 1:
+		await _clear_fog1(zid)
+		return
 	if not kabus.has(zid) or _kabus_fog == null:
 		return
 	var full := _area_px(kabus[zid])
@@ -622,7 +715,7 @@ func apply_after(zid: String, s: Dictionary, animate: bool) -> void:
 
 
 func on_zone_complete(zid: String) -> void:
-	if kabus.has(zid):
+	if kabus.has(zid) or _fog1_rects.has(zid):
 		await _clear_kabus(zid)
 	if zid == "1_2":  # the envoy ship sails in and docks
 		var ship: Sprite2D = spot_sprites.get("kapal")
@@ -793,6 +886,14 @@ func _interact(c: Vector2i) -> void:
 		return
 	var it: Dictionary = interact[c]
 	var id: String = it["id"]
+	if it["type"] == "ujian":
+		busy = true
+		npcs[c].face_towards(player.cell)
+		var cfg := Game.ujian_def(int(id))
+		await Game.say(str(cfg.get("npc_talk", "")))
+		_save_pos()
+		Game.goto("ujian", {"chapter": int(id)})
+		return
 	if it["type"] == "npc":
 		npcs[c].face_towards(player.cell)
 	busy = true
@@ -813,12 +914,22 @@ func _talk_or_act(id: String) -> void:
 					await Game.say("bab2_back")
 				_cross_portal(portals[c])
 				return
+	if ROOMS.has(id) and (id != "jelutong_press" or Game.zone_done("2_6")):
+		var room: Array = ROOMS[id]
+		await Game.say([{"s": "pau", "t": room[3]}])
+		busy = true
+		_save_pos()
+		Sfx.play("step_wood", -2.0)
+		GameState.go_to(room[0], Color.BLACK, tr(room[1]), tr(room[2]))
+		return
 	if id == "istana":
 		if not Game.zone_unlocked("1_3"):
 			await Game.say([{"s": "pau", "t": "Pintu balai masih tertutup. Habiskan Pelabuhan Melaka dulu."}])
 			return
 		await Game.say(Dialogue.lines("istana"))
-		_leave_to("res://scenes/interior/balai.tscn")
+		busy = true
+		_save_pos()
+		GameState.go_to("res://scenes/interior/balai.tscn", Color.BLACK, tr("BALAI PENGHADAPAN"), tr("Istana Melaka, abad ke-15"))
 		return
 	var key := id
 	if id.begins_with("p_"):
@@ -831,7 +942,6 @@ func _talk_or_act(id: String) -> void:
 		"monument":  # Peta Jejak: the Arka & Zon screen (Tingkatan / Bab)
 			_leave_to("")
 			Game.goto("arka")
-		"muzium": await Main.open_muzium().closed
 		"arena":
 			GameState.spawn_cell = player.cell
 			Game.goto("lobby")
@@ -851,7 +961,10 @@ func _cross_portal(pt: Dictionary) -> void:
 	GameState.flags["just_crossed"] = going_in
 	Game.save["map_pos"] = [to.x, to.y]
 	Game.persist()
-	GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0))
+	if going_in:
+		GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0), tr("LEMBAH KEBANGKITAN"), tr("Tanah Melayu, awal 1900-an hingga 1941"))
+	else:
+		GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0), tr("KAMPUNG JEJAK"), tr("Kembali ke Bab 1: Warisan Negara Bangsa"))
 
 
 func _arrive_lembah() -> void:
@@ -960,8 +1073,48 @@ func _enter_area(a: Dictionary) -> void:
 	t.tween_property(hud, "modulate", Color.WHITE, 0.5)
 	MusicDirector.play(a["id"])
 	_save_pos()
+	if busy:
+		return
+	if not Game.save["seen"].has("area_" + str(a["id"])):
+		await _area_intro(a)
 	if zid != "" and not busy:
 		_zone_welcome(zid)
+
+
+var _area_intros := {}
+
+
+## First visit to a place: a big title card (name + era), then a line or two
+## on why Alif and Pau are here, so arriving never feels random.
+func _area_intro(a: Dictionary) -> void:
+	if _area_intros.is_empty():
+		_area_intros = Game.load_json("res://data/area_intro.json")
+	var info: Dictionary = _area_intros.get(str(a["id"]), {})
+	Game.save["seen"].append("area_" + str(a["id"]))
+	Game.persist()
+	if info.is_empty():
+		return
+	busy = true
+	var title: Label = title_card.get_node("Title")
+	var sub: Label = title_card.get_node("Subtitle")
+	var old := [title.text, sub.text]
+	var nm := str(a["name"])
+	title.text = nm.substr(nm.find(": ") + 2) if nm.begins_with("Misi ") else nm
+	title.add_theme_font_size_override("font_size", 84 if title.text.length() <= 22 else 64)
+	sub.text = (nm.substr(0, nm.find(":")) + "  ·  " if nm.begins_with("Misi ") else "") + str(info.get("era", ""))
+	Sfx.play("chime", -8.0, 0.8)
+	var t := create_tween()
+	t.tween_property(title_card, "modulate:a", 1.0, 0.5)
+	t.tween_interval(1.6)
+	t.tween_property(title_card, "modulate:a", 0.0, 0.6)
+	await t.finished
+	title.text = old[0]
+	sub.text = old[1]
+	title.add_theme_font_size_override("font_size", 84)
+	var lines: Array = info.get("lines", [])
+	if not lines.is_empty():
+		await Game.say(lines)
+	busy = false
 
 
 ## First visit to an open zone: the prototype's "Persiapan Misi" briefing,

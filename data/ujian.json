@@ -1,0 +1,21 @@
+{
+  "_info": "Ujian Bab: ujian akhir setiap bab. Mesti lulus (tumbangkan bos) sebelum bab seterusnya dibuka. Soalan diambil secara rawak daripada data/soalan/bab<n>.json. Tiada had masa. hearts = nyawa Alif, need = jawapan betul untuk menang.",
+  "1": {
+    "boss": "Panglima Derhaka",
+    "npc": "panglima",
+    "pos": [10, 28],
+    "where": "Pintu Kabus di barat Kampung Jejak",
+    "background": "res://assets/backgrounds/bg_zon1_4_bukit_siguntang.png",
+    "questions": 12, "hearts": 3, "need": 7,
+    "before": "ujian_1_before", "win": "ujian_1_win", "fail": "ujian_fail", "npc_talk": "ujian_1_npc"
+  },
+  "2": {
+    "boss": "Bayang Nirbana",
+    "npc": "nirbana",
+    "pos": [131, 37],
+    "where": "depan Menara Pentadbiran",
+    "background": "res://assets/backgrounds/bg_zon2_8.png",
+    "questions": 12, "hearts": 3, "need": 7,
+    "before": "ujian_2_before", "win": "ujian_2_win", "fail": "ujian_fail", "npc_talk": "ujian_2_npc"
+  }
+}

@@ -21,6 +21,10 @@ const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 @export var npc_cell := Vector2i(10, 9)
 ## extra objects: "id:texture:x:y:w" (anchor = bottom-left cell, w = width in cells)
 @export var props: PackedStringArray
+## story / museum rooms: data/interiors/<file>.json with an intro, the
+## curator's talk and exhibits (hotspots or icons on pedestals) that each tell
+## a short story. Exhibits tied to an artifact stay dark until it is found.
+@export var exhibit_file := ""
 
 var _floor := {}
 var busy := false
@@ -28,6 +32,8 @@ var npc: Npc
 var runner := ZoneRunner.new()
 var hud: Control
 var _props := {}  ## id -> {sprite, cells}
+var _room := {}   ## exhibit_file contents
+var _exhibits := {}  ## id -> exhibit dict (with "cells" as Vector2i)
 
 @onready var player: Player = $Objects/Player
 @onready var pau: Pau = $Objects/Pau
@@ -58,6 +64,8 @@ func _ready() -> void:
 			cells.append(at + Vector2i(dx, 0))
 			_floor.erase(at + Vector2i(dx, 0))
 		_props[f[0]] = {"sprite": s, "cells": cells}
+	if exhibit_file != "":
+		_build_exhibits()
 	if npc_id != "":
 		npc = Npc.new()
 		npc.setup(npc_id, npc_cell, "south")
@@ -85,6 +93,16 @@ func _ready() -> void:
 
 
 func _welcome() -> void:
+	if zone_id == "" and not _room.is_empty():
+		var key := "room_" + exhibit_file
+		if not Game.save["seen"].has(key):
+			Game.save["seen"].append(key)
+			Game.persist()
+			busy = true
+			await get_tree().create_timer(0.5).timeout
+			await Game.say(_room.get("intro", []))
+			busy = false
+		return
 	if zone_id == "" or Game.zone_done(zone_id) or not Game.zone_state(zone_id)["steps"].is_empty():
 		return
 	if not Game.zone_unlocked(zone_id) or GameState.flags.get("welcomed_" + zone_id, false):
@@ -156,12 +174,74 @@ func _process(_d: float) -> void:
 			for id in _props:
 				if c in _props[id]["cells"]:
 					label = _prop_label(id)
+			var ex := _exhibit_at(c)
+			if ex != "":
+				var e: Dictionary = _exhibits[ex]
+				var have: bool = not e.has("artifact") or Game.save["artifacts"].has(str(e["artifact"]))
+				label = str(e.get("label", "Lihat")) if have else "???"
 	prompt.visible = label != ""
 	if prompt.visible:
 		prompt.text = "E / Ketik: " + label
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
 		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(screen.y + 8, 120, 640))
+
+
+func _build_exhibits() -> void:
+	_room = Game.load_json("res://data/interiors/%s.json" % exhibit_file)
+	for e in _room.get("exhibits", []):
+		var cells: Array = []
+		for c in e["cells"]:
+			cells.append(Vector2i(int(c[0]), int(c[1])))
+			_floor.erase(Vector2i(int(c[0]), int(c[1])))
+		var ex: Dictionary = e.duplicate()
+		ex["cells"] = cells
+		_exhibits[str(e["id"])] = ex
+		if e.has("icon"):  # an artifact on a little pedestal
+			var at: Vector2i = cells[0]
+			var base := ColorRect.new()
+			base.color = Color("6b4a2e")
+			base.size = Vector2(14, 7)
+			base.position = Vector2(at.x * TILE + 1, at.y * TILE + 8)
+			$Objects.add_child(base)
+			var top := ColorRect.new()
+			top.color = Color("a8794a")
+			top.size = Vector2(14, 2)
+			top.position = base.position
+			$Objects.add_child(top)
+			var icon := Sprite2D.new()
+			icon.texture = load("res://assets/icons/%s.png" % e["icon"])
+			icon.scale = Vector2.ONE * (14.0 / icon.texture.get_width())
+			icon.position = Vector2(at.x * TILE + 8, at.y * TILE + 2)
+			var have: bool = not e.has("artifact") or Game.save["artifacts"].has(str(e["artifact"]))
+			if not have:
+				icon.modulate = Color(0, 0, 0, 0.6)
+			else:
+				var t := create_tween().set_loops()
+				t.tween_property(icon, "position:y", icon.position.y - 1.5, 0.9).set_trans(Tween.TRANS_SINE)
+				t.tween_property(icon, "position:y", icon.position.y, 0.9).set_trans(Tween.TRANS_SINE)
+			$Objects.add_child(icon)
+
+
+func _exhibit_at(c: Vector2i) -> String:
+	for id in _exhibits:
+		if c in _exhibits[id]["cells"]:
+			return id
+	return ""
+
+
+func _show_exhibit(id: String) -> void:
+	var e: Dictionary = _exhibits[id]
+	if e.has("artifact") and not Game.save["artifacts"].has(str(e["artifact"])):
+		await Game.say([{"s": "pau", "t": str(e.get("locked", "Kosong lagi. Kita belum jumpa benda ni. Nanti kita isi!"))}])
+		return
+	Sfx.play("chime", -8.0)
+	if e.has("icon"):
+		Game.toast(str(e.get("label", "")))
+	await Game.say(e.get("lines", []))
+	match str(e.get("open", "")):
+		"muzium": await Main.open_muzium().closed
+		"nota": await Main.open_nota().closed
 
 
 func _prop_label(id: String) -> String:
@@ -193,6 +273,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		for id in _props:
 			if cell in _props[id]["cells"]:
 				target_id = id
+		if _exhibit_at(cell) != "":
+			target_id = _exhibit_at(cell)
 		if target_id != "":
 			var path := Pathfind.to_neighbour(self, player.cell, cell)
 			var go := func():
@@ -223,10 +305,17 @@ func _interact(c: Vector2i) -> void:
 		for pid in _props:
 			if c in _props[pid]["cells"]:
 				id = pid
+		if _exhibit_at(c) != "":
+			busy = true
+			await _show_exhibit(_exhibit_at(c))
+			busy = false
+			return
 	if id == "":
 		return
 	busy = true
 	var handled: bool = await runner.handle(id)
-	if not handled and Dialogue.has(id):
+	if not handled and id == npc_id and _room.has("npc_talk"):
+		await Game.say(_room["npc_talk"])
+	elif not handled and Dialogue.has(id):
 		await Game.say(Dialogue.lines(id))
 	busy = false

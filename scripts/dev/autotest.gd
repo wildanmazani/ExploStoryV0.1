@@ -161,12 +161,39 @@ func _run() -> void:
 	await wait_screen("prologue")
 	await wait(3.0)
 	await shot("prologue_room")
+	# the dream: the port in chaos, then Nirbana in Gua Warisan
+	var dream_shots := {"bg_pelabuhan_huru": false, "nirbana_south": false}
+	var tw := 0.0
+	while screen_name() == "prologue" and tw < 120.0:
+		for c in scene().get_children():
+			if c is TextureRect and c.texture:
+				for k in dream_shots:
+					if not dream_shots[k] and c.texture.resource_path.get_file().get_basename() == k and c.modulate.a > 0.9:
+						dream_shots[k] = true
+						await shot("prologue_" + k)
+		await wait(0.1)
+		tw += 0.1
+	if dream_shots.values().has(false):
+		_fail("prologue dream scenes not shown: %s" % str(dream_shots))
+		return
 	await wait_screen("world", 120)
 	await wait(2.0)
 	await shot("world_intro_sweep")
 	await wait_idle(120)
 	await wait(0.5)
 	await shot("world_start")
+	# first visit to Kampung Jejak: title card + why we are here (once only)
+	scene().player.place_at(Vector2i(31, 31))
+	scene()._enter_area_at(Vector2i(31, 31))
+	await wait(0.9)
+	await shot("area_card_kampung")
+	await wait_idle()
+	var seen_n: int = Game.save["seen"].size()
+	scene()._enter_area_at(Vector2i(31, 31))
+	await wait_idle()
+	if Game.save["seen"].size() != seen_n:
+		_fail("area intro should only play once")
+		return
 
 	var sp: Node = Main.open_settings()
 	await wait(0.4)
@@ -190,6 +217,8 @@ func _run() -> void:
 
 	# ---- Bab 1: the four zones, each puzzle at its spot in the world
 	if not await _play_zones(Game.chapter_zones(1)):
+		return
+	if not await _play_ujian(1, true):
 		return
 	if not await _finish_penutup("bab2"):
 		return
@@ -265,6 +294,8 @@ func _run() -> void:
 			return
 	if not await _play_zones(Game.chapter_zones(2)):
 		return
+	if not await _play_ujian(2, false):
+		return
 	if not await _finish_penutup("bab3"):
 		return
 	await wait_screen("world")
@@ -280,6 +311,8 @@ func _run() -> void:
 	close_top_overlay()
 	BattleRules.chapter = 2
 	await _check_battle()
+	if not await _check_rooms():
+		return
 
 	# ---- checks
 	if not Game.chapter_done(2):
@@ -292,6 +325,15 @@ func _run() -> void:
 		if not Game.zone_done(z):
 			_fail("zone %s not done" % z)
 			return
+	var old_skin: String = Game.save["skin"]
+	Game.save["skin"] = "melayu"
+	if not Game.portrait_path("alif", "happy").ends_with("alif_melayu_happy.png"):
+		_fail("Alif's dialogue portrait should follow the skin")
+		return
+	Game.save["skin"] = old_skin
+	if not Game.save["seen"].has("area_kampung"):
+		_fail("area intro for Kampung Jejak never shown")
+		return
 	if Game.save["artifacts"].size() < 12:
 		_fail("artifacts missing: %s" % str(Game.save["artifacts"]))
 		return
@@ -334,6 +376,104 @@ func _play_zones(zones: Array) -> bool:
 		if not Game.is_last_zone(z):
 			await wait_screen("world")
 			await wait_idle()
+	return true
+
+
+## Ujian Bab after a chapter's last summary. With fail_first: lose all hearts,
+## go back to revise, check the boss blocks the way on the map, talk to him and
+## pass. Passing = 7 right answers.
+func _play_ujian(ch: int, fail_first: bool) -> bool:
+	await wait_screen("ujian", 30)
+	if fail_first:
+		var p = await _ujian_puzzle()
+		if p == null:
+			return false
+		await shot("ujian_%d" % ch)
+		for i in 3:
+			p._pick((int(p._q()["answer"]) + 1) % 4)
+			await wait(0.2)
+			if i < 2:
+				p._advance()
+		await wait(3.0)
+		await wait_idle()
+		var back := find_button(hosted(), "Ulang kaji")
+		if back == null:
+			_fail("Ujian fail card missing")
+			return false
+		await shot("ujian_%d_fail" % ch)
+		back.pressed.emit()
+		await wait_screen("world")
+		await wait_idle()
+		if Game.chapter_done(ch) or not scene().portals.is_empty() and ch == 1:
+			_fail("chapter %d should stay closed until the Ujian is passed" % ch)
+			return false
+		if not _walk_to(str(Game.ujian_def(ch)["npc"])):
+			_fail("Ujian boss %d not on the map" % ch)
+			return false
+		await shot("ujian_%d_boss_on_map" % ch)
+		await wait_screen("ujian", 30)
+	var q = await _ujian_puzzle()
+	if q == null:
+		return false
+	for i in int(Game.ujian_def(ch)["need"]):
+		q._pick(int(q._q()["answer"]))
+		await wait(0.2)
+		if i == 2:
+			await shot("ujian_%d_hp" % ch)
+		if q.get("_next").visible:
+			q._advance()
+	await wait(2.0)
+	var go := find_button(q, "Teruskan")
+	if go == null:
+		_fail("Ujian %d not won" % ch)
+		return false
+	go.pressed.emit()
+	if not Game.save["ujian"].has(ch):
+		_fail("Ujian %d not saved" % ch)
+		return false
+	return true
+
+
+func _ujian_puzzle():
+	var t := 0.0
+	while Game.active_puzzle == null:
+		await wait(0.1)
+		t += 0.1
+		if t > 60:
+			_fail("Ujian puzzle never opened")
+			return null
+	await wait(0.4)
+	return Game.active_puzzle
+
+
+## The story / museum rooms: enter from the map door, read every exhibit,
+## walk out again.
+func _check_rooms() -> bool:
+	for id in ["muzium", "sitc", "jelutong_press"]:
+		Game.goto("world")
+		await wait_screen("world")
+		await wait_idle()
+		scene()._talk_or_act(id)
+		var room: String = scene().ROOMS[id][0].get_file().get_basename()
+		await wait_screen(room, 30)
+		await wait_idle()
+		await shot("room_" + room)
+		var s := scene()
+		if s._exhibits.is_empty():
+			_fail("room %s has no exhibits" % room)
+			return false
+		for ex in s._exhibits:
+			s._interact(s._exhibits[ex]["cells"][0])
+			await wait(0.2)
+			for c in Main.overlay_root().get_children():
+				if c.has_method("close"):
+					c.close()
+			await wait_idle()
+		s._interact(s.npc.cell)
+		await wait_idle()
+		s._on_step(s.exit_cells[0])
+		await wait_screen("world", 30)
+		await wait_idle()
 	return true
 
 

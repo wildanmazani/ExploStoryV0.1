@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/interior.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/backgrounds/bg_int_sitc.png" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/pau.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="6"]
+
+[node name="Sitc" type="Node2D"]
+script = ExtResource("1")
+background = ExtResource("2")
+title = "Maktab SITC"
+music = "melaka"
+floor_rows = PackedStringArray("3:11-12", "4:8-12", "5:8-12", "6:8-12", "7:8-12", "8:8-12", "9:8-12", "10:9-10")
+exit_cells = Array[Vector2i]([Vector2i(9, 10), Vector2i(10, 10)])
+enter_cell = Vector2i(9, 9)
+return_cell_world = Vector2i(129, 13)
+npc_id = "pelatih"
+npc_cell = Vector2i(12, 4)
+exhibit_file = "sitc"
+
+[node name="Background" type="Sprite2D" parent="."]
+centered = false
+
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Objects" instance=ExtResource("3")]
+
+[node name="Pau" parent="Objects" instance=ExtResource("4")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(160, 90)
+zoom = Vector2(4, 4)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Prompt" type="Button" parent="HUD"]
+visible = false
+offset_right = 220.0
+offset_bottom = 48.0
+focus_mode = 0
+theme_type_variation = &"Primary"
+text = "E / Ketik"
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+script = ExtResource("6")

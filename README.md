@@ -67,6 +67,15 @@ Ibu Zain, Ibrahim Haji Yaakob, Mohammad Eunos Abdullah, serta pemandu rekaan (Pr
 Ketua Pengarang). Data: `data/zon_2_*.json`, `data/nota_bab2.json`, `data/soalan/bab2.json` (bank soalan
 pertarungan; pilih Bab 1 / Bab 2 / Campur di Bilik Pertarungan). Soalan bertanda `"semak": true` perlu disemak guru.
 
+**Penceritaan (pek 3)**: prolog kini masuk ke mimpi (pelabuhan huru-hara, Gua Warisan) di mana **Nirbana**, Penghulu
+Kabus Lupa, memecahkan Inskripsi Telaga Batu kepada 4 Serpihan: satu serpihan bagi setiap misi Bab 1. Kawasan misi Bab 1
+bermula kelabu dan berwarna semula apabila misinya selesai. Setiap kawasan ada kad tajuk dan sebab datang pada lawatan
+pertama (`data/area_intro.json`), dan pertukaran peta menunjukkan kad tajuk. **Ujian Bab** (`data/ujian.json`) di hujung
+setiap bab: 3 nyawa, tumbangkan bos (Panglima Derhaka / Bayang Nirbana) dengan 7 jawapan betul, tiada had masa; mesti
+lulus sebelum bab seterusnya dibuka (gagal = cuba lagi atau ulang kaji, bos menunggu di peta). Bilik cerita / muzium:
+Muzium Warisan, Jelutong Press dan Maktab SITC (`data/interiors/*.json`). Potret Alif dalam dialog ikut pakaian yang
+dipakai. Semua aset peta pandangan atas, menghadap ke bawah; pokok hijau sahaja.
+
 Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
 Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.

@@ -34,8 +34,9 @@
     {"s": "pau", "e": "happy", "t": "Jom. Kita mula dari akar."}
   ],
   "peta_first": [
-    {"s": "pau", "t": "Bendera 1 ada empat misi. Pergi ke bangunan yang ada tanda seru."},
-    {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau ketik sahaja ke mana kau nak pergi."}
+    {"s": "pau", "t": "Nirbana pecahkan Inskripsi Telaga Batu jadi empat serpihan. Satu serpihan, satu misi."},
+    {"s": "pau", "t": "Pergi ke bangunan yang ada tanda seru. Bila cukup empat, kita boleh lawan penjaga pintu."},
+    {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau ketik je ke mana kau nak pergi."}
   ],
   "flag_locked": [
     {"s": "pau", "t": "Belum lagi, kita habiskan yang ini dulu."}
@@ -77,8 +78,8 @@
   ],
   "z11_b_after": [
     {"s": "penjaga", "t": "Keempat-empat tiang sudah berdiri. Gerbang ke Melaka kini terbuka.", "rekaan": true},
-    {"s": "penjaga", "t": "Ambil serpihan Prasasti Telaga Batu ini. Simpan di muzium kau.", "rekaan": true},
-    {"s": "pau", "e": "happy", "t": "Artifak pertama! Muzium kita dah ada isi."}
+    {"s": "penjaga", "t": "Ini serpihan pertama Inskripsi Telaga Batu. Simpan baik-baik, anak muda.", "rekaan": true},
+    {"s": "pau", "e": "happy", "t": "Satu serpihan dah dapat! Tinggal tiga lagi."}
   ],
   "z12_intro": [
     {"s": "pau", "e": "happy", "t": "Wah, Melaka abad ke-15! Bau rempah. Aku lapar lagi."},
@@ -127,7 +128,7 @@
   ],
   "z12_outro": [
     {"s": "syahbandar", "t": "Keenam-enam panji berkibar! Kapal utusan berlabuh. Melaka diiktiraf!", "rekaan": true},
-    {"s": "syahbandar", "t": "Terimalah nobat kecil ini sebagai kenangan.", "rekaan": true},
+    {"s": "syahbandar", "t": "Terimalah Cap Mohor ini. Serpihan kedua kau, cop rasmi yang mengesahkan titah raja.", "rekaan": true},
     {"s": "alif", "e": "confident", "t": "Enam ciri. Kerajaan, Rakyat, Kedaulatan, Wilayah, Undang-undang, Lambang. Aku nampak semuanya!"}
   ],
   "z13_intro": [
@@ -147,7 +148,7 @@
   ],
   "z13_b_after": [
     {"s": "tunperak", "t": "Undang-undang yang adil membuat pedagang yakin dan rakyat aman.", "rekaan": true},
-    {"s": "tunperak", "t": "Ambil Cap Mohor ini. Ia lambang kuasa dan keabsahan titah.", "rekaan": true},
+    {"s": "tunperak", "t": "Ambil naskhah Hukum Kanun ini. Inilah serpihan ketiga yang kau cari.", "rekaan": true},
     {"s": "alif", "e": "happy", "t": "Melaka kekal aman dan makmur sebab pentadbiran dan undang-undangnya kukuh!"}
   ],
   "z14_intro": [
@@ -182,7 +183,9 @@
     {"s": "pau", "t": "Pilih satu situasi. Tiada jawapan salah."}
   ],
   "z14_c_after": [
-    {"s": "alif", "e": "confident", "t": "Janji, setia dan adil. Masih penting sampai sekarang."}
+    {"s": "alif", "e": "confident", "t": "Janji, setia dan adil. Masih penting sampai sekarang."},
+    {"s": "demang", "t": "Bawalah Warkah Waadat ini, cucu. Serpihan yang terakhir.", "rekaan": true},
+    {"s": "pau", "e": "scared", "t": "Empat serpihan dah cukup! Tapi... kenapa langit kat barat jadi gelap?"}
   ],
   "penutup_a": [
     {"s": "pau", "e": "happy", "t": "Lihat! Bendera 1 berkibar!"},
@@ -385,13 +388,15 @@
     {"s": "pau", "t": "Kabus ni tebal sangat. Kita habiskan Bab 1 dulu, baru pintu ni terbuka."}
   ],
   "bab2_portal": [
-    {"s": "pau", "t": "Kabus dah nipis! Pintu Bab 2 terbuka, Alif!", "e": "happy"},
-    {"s": "alif", "t": "Jom masuk. Dah tak sabar.", "e": "confident"}
+    {"s": "pau", "e": "scared", "t": "Pintu Kabus dah terbuka! Tapi tengok tu... kabus kat seberang lagi tebal."},
+    {"s": "alif", "t": "Nirbana cakap ada satu lembah yang dah lupa kenapa bangsanya bangkit."},
+    {"s": "alif", "e": "confident", "t": "Kalau orang kat situ dah lupa, kita tolong diorang ingat balik. Jom."}
   ],
   "bab2_arrive": [
-    {"s": "pau", "t": "Eh... baju orang sini lain. Ada basikal, ada akhbar. Kita kat zaman mana ni?", "e": "scared"},
-    {"s": "alif", "t": "Rasanya awal 1900-an. Zaman penjajah British."},
-    {"s": "pau", "t": "Dan kenapa semua kelabu? Jom cari orang tanya.", "e": "scared"}
+    {"s": "pau", "e": "scared", "t": "Eh... baju orang sini lain. Ada basikal, ada akhbar. Kita kat zaman mana ni?"},
+    {"s": "alif", "t": "Rasanya awal 1900-an. Zaman British jajah Tanah Melayu."},
+    {"s": "pau", "t": "Semua kelabu. Kabus Lupa dah tutup seluruh lembah ni."},
+    {"s": "alif", "e": "confident", "t": "Mesti ada orang yang masih ingat. Jom ke dewan tu dulu, ada tanda seru."}
   ],
   "bab2_back": [
     {"s": "pau", "t": "Nak balik ke Kampung Jejak? Pintu kabus ni bawa kita ke sana."}
@@ -405,5 +410,48 @@
     {"s": "pau", "t": "Bendera 3: Konflik Dunia dan Pendudukan Jepun. Langit dah mula mendung..."},
     {"s": "alif", "t": "Leftenan Adnan, Sybil Kathigasu... aku pernah dengar nama tu.", "e": "confident"},
     {"s": "pau", "t": "Sabar! Bab 3 akan datang. Kita rehat dulu.", "e": "happy"}
+  ],
+  "ujian_1_before": [
+    {"s": "narator", "t": "Pintu Kabus bergegar. Kabus hitam berkumpul, lalu menjelma jadi satu bayang tinggi."},
+    {"s": "pau", "e": "scared", "t": "Alif... tu Nirbana. Yang pecahkan Inskripsi Telaga Batu tu!"},
+    {"s": "nirbana", "t": "Tahniah, Alif. Empat serpihan dah ada dalam tangan kau."},
+    {"s": "nirbana", "t": "Tapi minggu depan, semua tu hilang jugak. Raja, Waadat, Hukum Kanun... buat apa susah-susah nak ingat?"},
+    {"s": "alif", "e": "confident", "t": "Sebab tu sejarah bangsa aku. Bukan untuk exam je."},
+    {"s": "nirbana", "t": "Kita tengok. Panglima Derhaka, uji budak ni!"},
+    {"s": "panglima", "t": "Jawab soalan aku. Salah tiga kali, kau patah balik ke kampung!"},
+    {"s": "pau", "t": "Tak ada had masa, Alif. Baca elok-elok. Aku ada kat sebelah kau."}
+  ],
+  "ujian_1_npc": [
+    {"s": "panglima", "t": "Kau lagi. Dah sedia nak cuba sekali lagi?"},
+    {"s": "pau", "e": "happy", "t": "Jom, Alif. Kali ni kita lebih bersedia."}
+  ],
+  "ujian_1_win": [
+    {"s": "narator", "t": "Panglima Derhaka hancur jadi cahaya keemasan. Empat serpihan bercantum semula menjadi Inskripsi Telaga Batu."},
+    {"s": "nirbana", "t": "Hmph. Kali ni kau menang. Tapi Kabus Lupa tak hilang semudah tu."},
+    {"s": "nirbana", "t": "Di sebalik pintu ni ada satu lembah yang dah kelabu. Orang kat situ dah lupa kenapa bangsa mereka bangkit."},
+    {"s": "narator", "t": "Nirbana lenyap. Pintu Kabus mula bercahaya."},
+    {"s": "pau", "e": "happy", "t": "Dia lari! Alif, kau buat!"},
+    {"s": "alif", "e": "happy", "t": "Kita buat. Jom, Pau."}
+  ],
+  "ujian_fail": [
+    {"s": "pau", "t": "Tak apa, Alif. Salah tu sebahagian daripada belajar."},
+    {"s": "pau", "t": "Kau dah nampak jawapan betul tadi. Yang tu dah melekat sikit. Kita cuba lagi."}
+  ],
+  "ujian_2_before": [
+    {"s": "narator", "t": "Di depan Menara Pentadbiran, bayang Nirbana muncul semula. Kali ni lebih besar."},
+    {"s": "nirbana", "t": "Lembah ni dah berwarna balik. Tapi dalam kepala kau, berapa lama boleh tahan?"},
+    {"s": "nirbana", "t": "Hans Kohn, Al-Imam, KMM, SITC... nama-nama tu macam pasir. Lama-lama hilang dibawa angin."},
+    {"s": "alif", "e": "confident", "t": "Kalau aku faham kenapa diorang bangkit, aku takkan lupa."},
+    {"s": "pau", "e": "happy", "t": "Lapan misi dah kita lalu. Satu ujian lagi je, Alif!"}
+  ],
+  "ujian_2_npc": [
+    {"s": "nirbana", "t": "Datang balik? Bagus. Aku suka tengok orang yang hampir putus asa."},
+    {"s": "alif", "e": "confident", "t": "Aku tak putus asa. Aku pergi ulang kaji."}
+  ],
+  "ujian_2_win": [
+    {"s": "narator", "t": "Bayang Nirbana pecah berderai. Kabus terakhir di Lembah Kebangkitan hilang."},
+    {"s": "nirbana", "t": "Kau... ingat semuanya? Tak apa. Perang dah dekat. Masa tu, kita tengok siapa yang lupa..."},
+    {"s": "pau", "e": "scared", "t": "Dia sebut perang... Bab 3 ke tu?"},
+    {"s": "alif", "e": "confident", "t": "Apa-apa pun, kita dah lebih bersedia sekarang."}
   ]
 }

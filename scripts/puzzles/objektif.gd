@@ -7,6 +7,9 @@ extends "res://scripts/puzzles/puzzle_base.gd"
 ## def: {"type": "objektif", "title", "instruction", "hint", "done_text",
 ##       "questions": [{"q", "options": [4 strings], "answer": index, "explain", "hint"}],
 ##       "boss"?: name}   with a boss, every right answer knocks its HP bar down
+## Ujian Bab mode ("hearts": 3, "need": 7): a wrong answer costs a heart and
+## shows the right one with its explanation, then the test moves on. Boss HP 0
+## = passed; no hearts left = stats.passed false (the host offers a retry).
 
 const LETTERS := ["A", "B", "C", "D"]
 
@@ -19,14 +22,24 @@ var _count: Label
 var _next: Button
 var _answered: bool = false
 var _boss_hp: ProgressBar
+var _hearts: Hearts
+var _need := 0
+var _hits := 0
 
 
 func _build_puzzle() -> void:
 	questions = def.get("questions", [])
 	stats["total"] = questions.size()
+	stats["passed"] = true
+	_need = mini(int(def.get("need", questions.size())), questions.size())
 	var top := UI.hbox(10)
 	_count = UI.label("", "Small")
 	top.add_child(_count)
+	if def.has("hearts"):
+		_hearts = Hearts.new()
+		_hearts.count = int(def["hearts"])
+		_hearts.custom_minimum_size = Vector2(26 * _hearts.count + 8, 26)
+		top.add_child(_hearts)
 	if def.has("boss"):
 		var gap := Control.new()
 		gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -36,8 +49,8 @@ func _build_puzzle() -> void:
 		top.add_child(bn)
 		_boss_hp = ProgressBar.new()
 		_boss_hp.show_percentage = false
-		_boss_hp.max_value = questions.size()
-		_boss_hp.value = questions.size()
+		_boss_hp.max_value = _need
+		_boss_hp.value = _need
 		_boss_hp.custom_minimum_size = Vector2(320, 22)
 		_boss_hp.modulate = Color(1.0, 0.55, 0.5)
 		top.add_child(_boss_hp)
@@ -93,7 +106,10 @@ func _show_question() -> void:
 	_wrong_here = false
 	hint_presses = 0
 	_next.visible = false
-	_count.text = tr("Soalan %d / %d") % [qi + 1, questions.size()]
+	if _hearts:
+		_count.text = tr("Soalan %d") % (qi + 1)
+	else:
+		_count.text = tr("Soalan %d / %d") % [qi + 1, questions.size()]
 	_q_label.text = str(_q()["q"])
 	var opts: Array = _q()["options"]
 	for i in _buttons.size():
@@ -123,17 +139,23 @@ func _pick(i: int) -> void:
 		Sfx.play("chime", -6.0)
 		MusicDirector.stinger("st_correct")
 		pulse(_buttons[i])
+		_hits += 1
 		if _boss_hp:
 			Sfx.play("punch", -4.0)
-			create_tween().tween_property(_boss_hp, "value", questions.size() - qi - 1, 0.4)
+			create_tween().tween_property(_boss_hp, "value", _need - _hits, 0.4)
 			shake(_boss_hp)
 		say_good(tr("Betul! ") + str(_q().get("explain", "")))
-		if qi + 1 < questions.size():
+		if _hearts and _hits >= _need:
+			await get_tree().create_timer(1.6).timeout
+			finish(str(def.get("done_text", "")))
+		elif qi + 1 < questions.size():
 			_next.visible = true
 			_next.grab_focus()
 		else:
 			await get_tree().create_timer(1.6).timeout
 			finish(str(def.get("done_text", "")))
+	elif _hearts:
+		_lose_heart(i)
 	else:
 		_wrong_here = true
 		stats["retries"] = int(stats["retries"]) + 1
@@ -142,6 +164,36 @@ func _pick(i: int) -> void:
 		shake(_buttons[i])
 		Sfx.play("bump", -4.0)
 		say_try(["Hampir! Cuba jawapan lain.", "Belum tepat. Baca soalan sekali lagi.", "Tak apa, cuba lagi."].pick_random())
+
+
+## Ujian mode: one wrong pick costs a heart; the right answer is shown with its
+## reason so the mistake still teaches something.
+func _lose_heart(i: int) -> void:
+	_answered = true
+	stats["retries"] = int(stats["retries"]) + 1
+	_hearts.count -= 1
+	_hearts.queue_redraw()
+	shake(_hearts)
+	Sfx.play("bump", -2.0)
+	var right := int(_q()["answer"])
+	for j in _buttons.size():
+		_buttons[j].disabled = true
+		if j == i:
+			_buttons[j].modulate = Color(1, 0.6, 0.6)
+	_buttons[right].theme_type_variation = "Primary"
+	_buttons[right].modulate = Color.WHITE
+	say_try(tr("Jawapan betul: %s. ") % LETTERS[right] + str(_q().get("explain", "")))
+	if _hearts.count <= 0:
+		stats["passed"] = false
+		await get_tree().create_timer(2.4).timeout
+		completed.emit(stats)
+	elif qi + 1 < questions.size() and questions.size() - qi - 1 >= _need - _hits:
+		_next.visible = true
+		_next.grab_focus()
+	else:  # not enough questions left to win
+		stats["passed"] = false
+		await get_tree().create_timer(2.4).timeout
+		completed.emit(stats)
 
 
 func _advance() -> void:
@@ -165,3 +217,18 @@ func _hint(tier: int) -> void:
 			Game.main.pau_say(tr("Aku buang satu jawapan yang salah: %s.") % LETTERS[i])
 			return
 	Game.main.pau_say("Tinggal satu je lagi. Kau boleh!")
+
+
+## Row of pixel hearts for the Ujian Bab.
+class Hearts extends Control:
+	var count := 3
+	var total := -1
+
+	func _draw() -> void:
+		if total < 0:
+			total = count
+		for h in total:
+			var o := Vector2(4 + h * 26, 3)
+			var c := Color(0.92, 0.25, 0.3) if h < count else Color(0.35, 0.3, 0.32)
+			for r in [[2, 0, 6, 2], [12, 0, 6, 2], [0, 2, 20, 8], [2, 10, 16, 3], [5, 13, 10, 3], [8, 16, 4, 3]]:
+				draw_rect(Rect2(o + Vector2(r[0], r[1]), Vector2(r[2], r[3])), c)
