@@ -65,6 +65,19 @@ const OBJECTS := {
 	"d": {"tex": "meja_pengarang", "foot": Vector2i(2, 1)},
 	"v": {"tex": "pintu_kabus", "foot": Vector2i(4, 1), "open": [1, 2]},
 	"z": {"tex": "lampu_kolonial", "foot": Vector2i(1, 1)},
+	# Lembah Kebangkitan, a 1920s town (data/world/lembah_layout.json)
+	"6": {"tex": "kedai_deret_a", "foot": Vector2i(8, 3)},
+	"7": {"tex": "kedai_deret_b", "foot": Vector2i(8, 3)},
+	"8": {"tex": "menara_jam", "foot": Vector2i(3, 2)},
+	"9": {"tex": "wakaf_padang", "foot": Vector2i(5, 3)},
+	"@": {"tex": "kapal_wap", "foot": Vector2i(8, 3)},
+	"$": {"tex": "gerai_akhbar", "foot": Vector2i(2, 1)},
+	"!": {"tex": "papan_misi", "foot": Vector2i(2, 1)},
+	"%": {"tex": "pokok_angsana", "foot": Vector2i(2, 1), "sway": 0.8},
+	"&": {"tex": "pokok_getah", "foot": Vector2i(2, 1), "sway": 1.0},
+	"+": {"tex": "tiang_telegraf", "foot": Vector2i(1, 1)},
+	"0": {"tex": "basikal", "foot": Vector2i(2, 1)},
+	"#": {"tex": "pagar_besi", "foot": Vector2i(2, 1)},
 	"b": {"tex": "perahu", "foot": Vector2i(3, 1)},
 	"1": {"tex": "gate_funan", "foot": Vector2i(3, 1)},
 	"2": {"tex": "gate_champa", "foot": Vector2i(3, 1)},
@@ -99,7 +112,6 @@ var walk_over := {}    ## Vector2i -> true (jetty planks over water)
 var interact := {}     ## Vector2i -> {type, id}
 var npcs := {}         ## Vector2i -> Npc
 var portals := {}      ## Vector2i -> {to, facing}: step in and you cross to the other island
-var kabus := {}        ## zone id -> area still under the Kabus Lupa (Bab 2)
 var houses: Array[Sprite2D] = []   ## kampung houses (chickens and kitchen smoke)
 var critters: Array[Node2D] = []   ## chickens and ducks (looks only)
 var spots := {}        ## spot id -> {pos, size}
@@ -435,7 +447,47 @@ func _build_entities() -> void:
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
 	areas = _ent["areas"]
+	_build_misi_signs()
 	_spawn_ujian()
+	_spawn_gabenor()
+
+
+## Misi 2.8: Gabenor Sekatan 1941 guards the Menara until he is beaten.
+const GABENOR_CELL := Vector2i(129, 30)
+var _gabenor: Npc
+
+
+func _spawn_gabenor() -> void:
+	if not Game.zone_unlocked("2_8") or Game.zone_state("2_8")["steps"].has("gabenor"):
+		return
+	if not is_walkable(GABENOR_CELL):
+		return
+	_gabenor = Npc.new()
+	_gabenor.setup("gabenor", GABENOR_CELL, "south")
+	objects.add_child(_gabenor)
+	npcs[GABENOR_CELL] = _gabenor
+	blocked[GABENOR_CELL] = true
+	interact[GABENOR_CELL] = {"type": "npc", "id": "gabenor"}
+
+
+## Numbered mission signposts in Lembah ("2.1" ... "2.8"): the number is
+## written on the board; talking to one says where that mission stands.
+func _build_misi_signs() -> void:
+	for m in _ent.get("misi_signs", []):
+		var at := Vector2i(int(m["pos"][0]), int(m["pos"][1]))
+		var lbl := Label.new()
+		lbl.text = str(m["no"])
+		lbl.theme = Game.theme
+		lbl.add_theme_font_size_override("font_size", 40)
+		lbl.add_theme_color_override("font_color", Color("4a2c14"))
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.size = Vector2(120, 52)
+		lbl.scale = Vector2(0.2, 0.2)   # drawn big, shown small: stays sharp under the zoomed camera
+		lbl.position = Vector2((at.x + 1) * TILE - 12, (at.y + 1) * TILE - 27)
+		lbl.z_index = 5
+		objects.add_child(lbl)
+		for dx in 2:
+			interact[at + Vector2i(dx, 0)] = {"type": "talk", "id": "misi_" + str(m["no"])}
 
 
 ## Ujian Bab: once a chapter's missions are done, its boss waits on the map
@@ -477,7 +529,7 @@ func _capture_map() -> void:
 	sub.render_target_update_mode = SubViewport.UPDATE_ONCE
 	sub.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	sub.canvas_cull_mask = 1  # characters live on layer 2 too: this camera skips them
-	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values() + critters + ([_kabus_fog] if _kabus_fog else []) + ([_fog1] if _fog1 else []):
+	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values() + critters + ([_fog] if _fog else []):
 		_to_layer2(n)
 	var cam := Camera2D.new()
 	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
@@ -494,94 +546,38 @@ func _capture_map() -> void:
 	map_texture = ImageTexture.create_from_image(img)
 
 
-## Kabus Lupa: Lembah Kebangkitan starts grey. Every finished Bab 2 mission
-## opens a clear, full-colour patch over its area (grown in on_zone_complete);
-## when the whole chapter is done the mist is gone.
-var _kabus_fog: ColorRect
-var _kabus_rects: Array = []   ## Vector4 per cleared area (world px)
-
-
-## Bab 1: the four mission places start grey too and get their colour back
-## one by one (the city comes back to life as the Serpihan are found).
-const KABUS1_AREAS := {"gerbang": "1_1", "pelabuhan": "1_2", "melaka": "1_3", "siguntang": "1_4"}
-var _fog1: ColorRect
-var _fog1_rects := {}   ## zid -> Vector4 (world px) still under the fog
-
-
-func _build_kabus1() -> void:
-	for a in areas:
-		var zid: String = KABUS1_AREAS.get(str(a["id"]), "")
-		if zid != "" and not Game.zone_done(zid):
-			_fog1_rects[zid] = _area_px(a)
-	if _fog1_rects.is_empty():
-		return
-	_fog1 = ColorRect.new()
-	_fog1.size = Vector2(LEMBAH_X - 2, terrain.height) * TILE
-	_fog1.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fog1.z_index = 19
-	var m := ShaderMaterial.new()
-	m.shader = KABUS
-	m.set_shader_parameter("origin", Vector2.ZERO)
-	m.set_shader_parameter("size", _fog1.size)
-	m.set_shader_parameter("mode", 1)
-	m.set_shader_parameter("softness", 56.0)
-	_fog1.material = m
-	add_child(_fog1)
-	_push_fog1()
-
-
-func _push_fog1() -> void:
-	var arr: Array = _fog1_rects.values().slice(0, 8)
-	var count := arr.size()
-	while arr.size() < 8:
-		arr.append(Vector4.ZERO)
-	_fog1.material.set_shader_parameter("clear_rects", arr)
-	_fog1.material.set_shader_parameter("clear_count", count)
-
-
-## the fog over a finished Bab 1 place shrinks into its centre
-func _clear_fog1(zid: String) -> void:
-	if _fog1 == null or not _fog1_rects.has(zid):
-		return
-	var full: Vector4 = _fog1_rects[zid]
-	var centre := Vector2(full.x + full.z / 2.0, full.y + full.w / 2.0)
-	Sfx.play("sparkle")
-	var t := create_tween()
-	t.tween_method(func(v: float):
-		_fog1_rects[zid] = Vector4(centre.x - full.z * v / 2.0, centre.y - full.w * v / 2.0, full.z * v, full.w * v)
-		_push_fog1(), 1.0, 0.0, 2.2).set_trans(Tween.TRANS_SINE)
-	await t.finished
-	_fog1_rects.erase(zid)
-	_push_fog1()
+## Kabus Lupa: every mission place starts grey and misty, on both islands, and
+## gets its colour back when its mission is done (the town comes back to
+## life). One fog over the whole world; the mini map and full map draw the
+## same rects (fog_rects()).
+const KABUS_AREAS := {"gerbang": "1_1", "pelabuhan": "1_2", "melaka": "1_3", "siguntang": "1_4"}
+var _fog: ColorRect
+var _fog_rects := {}   ## zid -> Vector4 (world px) still under the fog
 
 
 func _build_kabus() -> void:
-	_build_kabus1()
-	if Game.chapter_done(2):
-		return
-	var ids: Array = []
 	for a in areas:
-		var zid := str(a.get("zone", ""))
-		if zid != "" and Game.chapter_of(zid) == 2:
-			ids.append(zid)
-			if Game.zone_done(zid):
-				_kabus_rects.append(_area_px(a))
-			else:
-				kabus[zid] = a
-	if ids.is_empty():
+		var zid: String = str(a.get("zone", KABUS_AREAS.get(str(a["id"]), "")))
+		if zid != "" and not Game.zone_done(zid) and not _fog_rects.has(zid):
+			_fog_rects[zid] = _area_px(a)
+	if _fog_rects.is_empty():
 		return
-	_kabus_fog = ColorRect.new()
-	_kabus_fog.position = Vector2(LEMBAH_X, 0) * TILE
-	_kabus_fog.size = Vector2(terrain.width - LEMBAH_X, terrain.height) * TILE
-	_kabus_fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_kabus_fog.z_index = 19   # under the "!" quest markers (20)
+	_fog = ColorRect.new()
+	_fog.size = Vector2(terrain.width, terrain.height) * TILE
+	_fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fog.z_index = 19   # under the "!" quest markers (20)
 	var m := ShaderMaterial.new()
 	m.shader = KABUS
-	m.set_shader_parameter("origin", _kabus_fog.position)
-	m.set_shader_parameter("size", _kabus_fog.size)
-	_kabus_fog.material = m
-	add_child(_kabus_fog)
-	_push_kabus()
+	m.set_shader_parameter("origin", Vector2.ZERO)
+	m.set_shader_parameter("size", _fog.size)
+	_fog.material = m
+	add_child(_fog)
+	_push_fog()
+
+
+## the fogged places, in world pixels (for the maps)
+func fog_rects() -> Array:
+	return _fog_rects.values()
 
 
 func _area_px(a: Dictionary) -> Vector4:
@@ -589,37 +585,29 @@ func _area_px(a: Dictionary) -> Vector4:
 	return Vector4(r[0] * TILE, r[1] * TILE, (r[2] - r[0] + 1) * TILE, (r[3] - r[1] + 1) * TILE)
 
 
-func _push_kabus() -> void:
-	var arr: Array = _kabus_rects.slice(0, 8)
+func _push_fog() -> void:
+	var arr: Array = _fog_rects.values().slice(0, 16)
 	var count := arr.size()
-	while arr.size() < 8:
+	while arr.size() < 16:
 		arr.append(Vector4.ZERO)
-	_kabus_fog.material.set_shader_parameter("clear_rects", arr)
-	_kabus_fog.material.set_shader_parameter("clear_count", count)
+	_fog.material.set_shader_parameter("clear_rects", arr)
+	_fog.material.set_shader_parameter("clear_count", count)
 
 
-## colour floods back from the centre of the finished area
+## the fog over a finished place shrinks into its centre and the colour floods back
 func _clear_kabus(zid: String) -> void:
-	if Game.chapter_of(zid) == 1:
-		await _clear_fog1(zid)
+	if _fog == null or not _fog_rects.has(zid):
 		return
-	if not kabus.has(zid) or _kabus_fog == null:
-		return
-	var full := _area_px(kabus[zid])
-	kabus.erase(zid)
+	var full: Vector4 = _fog_rects[zid]
 	var centre := Vector2(full.x + full.z / 2.0, full.y + full.w / 2.0)
-	_kabus_rects.append(Vector4(centre.x, centre.y, 0, 0))
-	var idx := _kabus_rects.size() - 1
 	Sfx.play("sparkle")
 	var t := create_tween()
 	t.tween_method(func(v: float):
-		_kabus_rects[idx] = Vector4(centre.x - full.z * v / 2.0, centre.y - full.w * v / 2.0, full.z * v, full.w * v)
-		_push_kabus(), 0.0, 1.0, 2.2).set_trans(Tween.TRANS_SINE)
+		_fog_rects[zid] = Vector4(centre.x - full.z * v / 2.0, centre.y - full.w * v / 2.0, full.z * v, full.w * v)
+		_push_fog(), 1.0, 0.0, 2.2).set_trans(Tween.TRANS_SINE)
 	await t.finished
-	if kabus.is_empty():  # the last mission: the whole valley clears
-		var f := create_tween()
-		f.tween_property(_kabus_fog, "modulate:a", 0.0, 1.5)
-		await f.finished
+	_fog_rects.erase(zid)
+	_push_fog()
 
 
 func _to_layer2(n: Node) -> void:
@@ -712,10 +700,21 @@ func apply_after(zid: String, s: Dictionary, animate: bool) -> void:
 		_swap(spot_sprites.get(at), "panji_naik", animate)
 	if zid == "1_4":
 		_update_tree(animate)
+	if pid == "gabenor" and _gabenor:  # beaten: he fades into the mist
+		var g := _gabenor
+		_gabenor = null
+		npcs.erase(GABENOR_CELL)
+		blocked.erase(GABENOR_CELL)
+		interact.erase(GABENOR_CELL)
+		if animate:
+			var t := create_tween()
+			t.tween_property(g, "modulate:a", 0.0, 1.2)
+			await t.finished
+		g.queue_free()
 
 
 func on_zone_complete(zid: String) -> void:
-	if kabus.has(zid) or _fog1_rects.has(zid):
+	if _fog_rects.has(zid):
 		await _clear_kabus(zid)
 	if zid == "1_2":  # the envoy ship sails in and docks
 		var ship: Sprite2D = spot_sprites.get("kapal")
@@ -906,6 +905,12 @@ func _interact(c: Vector2i) -> void:
 
 
 func _talk_or_act(id: String) -> void:
+	if id.begins_with("misi_"):
+		var zid := id.substr(5).replace(".", "_")
+		var z := Game.zone_data(zid)
+		var state := "Dah selesai. Syabas!" if Game.zone_done(zid) else ("Tanda seru (!) tunggu kat sini." if Game.zone_unlocked(zid) else "Belum dibuka. Habiskan Misi %s dulu." % Game.prev_zone(zid).replace("_", "."))
+		await Game.say([{"s": "papan", "t": "Misi %s: %s. %s" % [zid.replace("_", "."), z.get("title", ""), state]}])
+		return
 	if id == "gate_open_2" or id == "portal_balik":
 		var g: Vector2i = player.cell
 		for c in portals:
@@ -1030,6 +1035,8 @@ func _label_for(it: Dictionary) -> String:
 		return Game.char_name(id)
 	if LABELS.has(id):
 		return LABELS[id]
+	if id.begins_with("misi_"):
+		return "Papan Misi " + id.substr(5)
 	for zid in Game.ZONES:
 		for o in Game.zone_data(zid).get("objects", []):
 			if str(o["id"]) == id and o.has("label"):
@@ -1039,7 +1046,7 @@ func _label_for(it: Dictionary) -> String:
 
 const STEP_SOUNDS := {
 	TerrainBuilder.SAND: "step_sand", TerrainBuilder.GRASS: "step_grass",
-	TerrainBuilder.MEADOW: "step_grass", TerrainBuilder.PATH: "step_sand",
+	TerrainBuilder.MEADOW: "step_grass", TerrainBuilder.PATH: "step_sand", TerrainBuilder.JALAN: "step_sand",
 }
 
 

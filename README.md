@@ -76,6 +76,13 @@ lulus sebelum bab seterusnya dibuka (gagal = cuba lagi atau ulang kaji, bos menu
 Muzium Warisan, Jelutong Press dan Maktab SITC (`data/interiors/*.json`). Potret Alif dalam dialog ikut pakaian yang
 dipakai. Semua aset peta pandangan atas, menghadap ke bawah; pokok hijau sahaja.
 
+**Lembah Kebangkitan dilukis semula (pek 4)**: pekan kolonial 1920-an yang tersusun: Jalan Besar, jalan batu kelikir
+kelabu (tileset PixelLab `grass_jalan`), padang dengan wakaf dan menara jam, deretan rumah kedai, kapal wap di Dermaga.
+Misi 2.1 hingga 2.8 mengikut satu laluan, dengan papan bernombor di depan setiap tempat. Susun atur dalam
+`data/world/lembah_layout.json` (dikarang di PixelLab Map Workshop, dibaca oleh `tools/gen_world.py`). Kabus Lupa kini
+kelabu dengan kabus putih nipis, dan peta mini serta peta penuh menunjukkan kabus yang sama. Nirbana mengejek setiap
+2 misi; Gabenor Sekatan menjaga Menara semasa Misi 2.8. `python tools/asset_sheet.py` = helaian semua objek peta.
+
 Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
 Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.

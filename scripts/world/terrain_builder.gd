@@ -6,17 +6,18 @@ extends RefCounted
 ## Terrain lives on cell *corners* (vertices). Each vertex takes the highest
 ## terrain of the 4 cells around it, then every cell picks the tile whose
 ## NW/NE/SW/SE corners match. tools/gen_world.py guarantees only legal pairs
-## meet (sea-sand, sand-grass, river-grass, grass-meadow, grass-path).
+## meet (sea-sand, sand-grass, river-grass, grass-meadow, grass-path, grass-jalan).
 
-enum { SEA, SAND, RIVER, GRASS, MEADOW, PATH }
+enum { SEA, SAND, RIVER, GRASS, MEADOW, PATH, JALAN }
 
-const CHARS := {"~": SEA, "s": SAND, "r": RIVER, ".": GRASS, ",": MEADOW, "=": PATH}
+const CHARS := {"~": SEA, "s": SAND, "r": RIVER, ".": GRASS, ",": MEADOW, "=": PATH, "j": JALAN}
 const PAIRS := {  # [lower, upper] -> tileset name in assets/tiles/
 	Vector2i(SEA, SAND): "sea_sand",
 	Vector2i(SAND, GRASS): "sand_grass",
 	Vector2i(RIVER, GRASS): "river_grass",
 	Vector2i(GRASS, MEADOW): "grass_meadow",
 	Vector2i(GRASS, PATH): "grass_path",
+	Vector2i(GRASS, JALAN): "grass_jalan",   # Lembah Kebangkitan's gravel town roads
 }
 const TILE := 16
 

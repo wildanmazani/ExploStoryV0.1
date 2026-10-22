@@ -52,7 +52,7 @@ static func build_texture(w: Node) -> Texture2D:
 	var img := Image.create(tw, th, false, Image.FORMAT_RGBA8)
 	var cols := {
 		TerrainBuilder.SEA: COL_SEA, TerrainBuilder.SAND: COL_SAND, TerrainBuilder.GRASS: COL_GRASS,
-		TerrainBuilder.PATH: COL_PATH, TerrainBuilder.RIVER: COL_RIVER, TerrainBuilder.MEADOW: COL_MEADOW,
+		TerrainBuilder.PATH: COL_PATH, TerrainBuilder.JALAN: Color("b8b0a2"), TerrainBuilder.RIVER: COL_RIVER, TerrainBuilder.MEADOW: COL_MEADOW,
 	}
 	for y in th:
 		for x in tw:
@@ -182,6 +182,21 @@ func _draw() -> void:
 	var s := icon_scale
 	var ent: Dictionary = world.entities()
 	var close := show_names and px_per_tile >= 10.0  # zoomed in: name every place and person
+
+	# Kabus Lupa: the same grey, misty places as in the world (cleared when a
+	# mission is done), soft-edged with a light drifting haze on top
+	if world.has_method("fog_rects"):
+		for r in world.fog_rects():
+			var tl := to_screen(Vector2(r.x, r.y) / 16.0)
+			var wh := Vector2(r.z, r.w) / 16.0 * px_per_tile
+			if wh.x <= 0.0:
+				continue
+			draw_rect(Rect2(tl, wh), Color(0.78, 0.80, 0.85, 0.55))
+			draw_rect(Rect2(tl - Vector2(2, 2), wh + Vector2(4, 4)), Color(0.85, 0.87, 0.9, 0.18))
+			var step := maxf(wh.x, wh.y) / 4.0
+			for i in 4:
+				var c := tl + wh * Vector2(0.2 + 0.2 * i, 0.5 + 0.3 * sin(_t * 0.4 + i * 1.7))
+				draw_circle(c, step * 0.45, Color(0.96, 0.97, 1.0, 0.16))
 
 	for a in world.areas:  # the Mist of Time stays purple and mysterious
 		if a["id"] == "kabus":

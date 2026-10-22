@@ -63,64 +63,64 @@
   {
    "id": "profesor",
    "pos": [
-    95,
-    29
+    98,
+    30
    ],
    "facing": "south"
   },
   {
    "id": "nakhoda",
    "pos": [
-    115,
-    46
+    113,
+    49
    ],
    "facing": "south"
   },
   {
    "id": "pengarang",
    "pos": [
-    121,
+    120,
     30
    ],
-   "facing": "west"
+   "facing": "south"
   },
   {
    "id": "syed_sheikh",
    "pos": [
-    111,
-    19
+    103,
+    12
    ],
    "facing": "south"
   },
   {
    "id": "zaba",
    "pos": [
-    128,
-    14
+    126,
+    12
    ],
    "facing": "south"
   },
   {
    "id": "eunos",
    "pos": [
-    125,
-    15
+    124,
+    12
    ],
    "facing": "south"
   },
   {
    "id": "ibrahim",
    "pos": [
-    132,
-    15
+    133,
+    12
    ],
    "facing": "south"
   },
   {
    "id": "ibu_zain",
    "pos": [
-    129,
-    36
+    127,
+    30
    ],
    "facing": "south"
   }
@@ -211,8 +211,8 @@
   },
   {
    "pos": [
-    92,
-    27
+    96,
+    29
    ],
    "id": "dewan",
    "size": [
@@ -222,8 +222,8 @@
   },
   {
    "pos": [
-    108,
-    17
+    97,
+    11
    ],
    "id": "madrasah",
    "size": [
@@ -233,8 +233,8 @@
   },
   {
    "pos": [
-    124,
-    12
+    125,
+    11
    ],
    "id": "sitc",
    "size": [
@@ -344,10 +344,10 @@
    "id": "dewan",
    "name": "Misi 2.1: Dewan Kedaulatan Rakyat",
    "rect": [
-    91,
-    21,
-    101,
-    33
+    92,
+    15,
+    105,
+    32
    ],
    "zone": "2_1"
   },
@@ -355,10 +355,10 @@
    "id": "falsafah",
    "name": "Misi 2.2: Rumah Falsafah Sejagat",
    "rect": [
-    86,
-    34,
-    101,
-    52
+    88,
+    33,
+    105,
+    46
    ],
    "zone": "2_2"
   },
@@ -366,9 +366,9 @@
    "id": "dermaga",
    "name": "Misi 2.3: Dermaga Asia",
    "rect": [
-    102,
-    40,
-    116,
+    100,
+    47,
+    124,
     58
    ],
    "zone": "2_3"
@@ -377,10 +377,10 @@
    "id": "serantau",
    "name": "Misi 2.4: Balai Serantau",
    "rect": [
-    117,
-    40,
-    132,
-    58
+    116,
+    33,
+    137,
+    47
    ],
    "zone": "2_4"
   },
@@ -388,10 +388,10 @@
    "id": "tugu",
    "name": "Misi 2.5: Tugu Pahlawan",
    "rect": [
-    114,
-    24,
-    122,
-    33
+    109,
+    15,
+    126,
+    32
    ],
    "zone": "2_5"
   },
@@ -399,10 +399,10 @@
    "id": "kompleks",
    "name": "Misi 2.6: Kompleks Intelektual",
    "rect": [
-    102,
-    6,
+    95,
+    3,
     123,
-    22
+    14
    ],
    "zone": "2_6"
   },
@@ -413,7 +413,7 @@
     124,
     3,
     139,
-    22
+    14
    ],
    "zone": "2_7"
   },
@@ -421,10 +421,10 @@
    "id": "menara",
    "name": "Misi 2.8: Menara Pentadbiran",
    "rect": [
-    123,
-    29,
+    127,
+    15,
     139,
-    40
+    32
    ],
    "zone": "2_8"
   },
@@ -433,9 +433,9 @@
    "name": "Lembah Kebangkitan",
    "rect": [
     82,
-    3,
+    0,
     139,
-    58
+    59
    ]
   }
  ],
@@ -552,8 +552,8 @@
   },
   "papan_tokoh": {
    "pos": [
-    100,
-    29
+    103,
+    30
    ],
    "size": [
     2,
@@ -562,8 +562,8 @@
   },
   "rumah_falsafah": {
    "pos": [
-    93,
-    40
+    97,
+    43
    ],
    "size": [
     6,
@@ -572,8 +572,8 @@
   },
   "rak_buku": {
    "pos": [
-    99,
-    42
+    103,
+    43
    ],
    "size": [
     2,
@@ -582,28 +582,68 @@
   },
   "papan_slogan": {
    "pos": [
-    91,
-    43
+    97,
+    37
    ],
    "size": [
     2,
     1
    ]
   },
+  "peti_warkah": {
+   "pos": [
+    108,
+    49
+   ],
+   "size": [
+    2,
+    1
+   ]
+  },
+  "jeti_serantau": {
+   "pos": [
+    113,
+    55
+   ],
+   "size": [
+    3,
+    1
+   ]
+  },
+  "balai_serantau": {
+   "pos": [
+    126,
+    43
+   ],
+   "size": [
+    6,
+    3
+   ]
+  },
   "tugu_pahlawan": {
    "pos": [
-    118,
-    26
+    121,
+    29
    ],
    "size": [
     3,
     2
    ]
   },
+  "menara": {
+   "pos": [
+    128,
+    29
+   ],
+   "size": [
+    6,
+    4
+   ]
+  },
   "jelutong_press": {
    "pos": [
-    118,
-    17
+    109,
+    11
    ],
    "size": [
     6,
@@ -612,8 +652,8 @@
   },
   "meja_pengarang": {
    "pos": [
-    124,
-    19
+    116,
+    12
    ],
    "size": [
     2,
@@ -622,48 +662,8 @@
   },
   "papan_persatuan": {
    "pos": [
-    135,
-    15
-   ],
-   "size": [
-    2,
-    1
-   ]
-  },
-  "menara": {
-   "pos": [
-    128,
-    34
-   ],
-   "size": [
-    6,
-    4
-   ]
-  },
-  "balai_serantau": {
-   "pos": [
-    119,
-    46
-   ],
-   "size": [
-    6,
-    3
-   ]
-  },
-  "jeti_serantau": {
-   "pos": [
-    113,
-    49
-   ],
-   "size": [
-    3,
-    1
-   ]
-  },
-  "peti_warkah": {
-   "pos": [
-    112,
-    46
+    131,
+    12
    ],
    "size": [
     2,
@@ -735,6 +735,64 @@
    ],
    "facing": "south",
    "chapter": 2
+  }
+ ],
+ "misi_signs": [
+  {
+   "no": "2.1",
+   "pos": [
+    101,
+    30
+   ]
+  },
+  {
+   "no": "2.2",
+   "pos": [
+    97,
+    44
+   ]
+  },
+  {
+   "no": "2.3",
+   "pos": [
+    109,
+    47
+   ]
+  },
+  {
+   "no": "2.4",
+   "pos": [
+    126,
+    44
+   ]
+  },
+  {
+   "no": "2.5",
+   "pos": [
+    117,
+    29
+   ]
+  },
+  {
+   "no": "2.6",
+   "pos": [
+    113,
+    12
+   ]
+  },
+  {
+   "no": "2.7",
+   "pos": [
+    127,
+    12
+   ]
+  },
+  {
+   "no": "2.8",
+   "pos": [
+    132,
+    30
+   ]
   }
  ]
 }

@@ -376,6 +376,8 @@
   ],
   "z28_b_before": [
     {"s": "narator", "t": "GABENOR SEKATAN 1941 muncul di pintu menara."},
+    {"s": "gabenor", "t": "Berhenti! Menara ni kawasan larangan. Orang tempatan tak perlu tahu urusan pentadbiran.", "rekaan": true},
+    {"s": "gabenor", "t": "Nak masuk? Jawab soalan saya dulu. Salah sikit, balik rumah!", "rekaan": true},
     {"s": "ibu_zain", "t": "Dia akan cuba keliru kan kau dengan nombor. Ingat fakta betul-betul!"},
     {"s": "pau", "t": "Kita boleh, Alif! Satu soalan, satu tumbukan!", "e": "happy"}
   ],
@@ -453,5 +455,29 @@
     {"s": "nirbana", "t": "Kau... ingat semuanya? Tak apa. Perang dah dekat. Masa tu, kita tengok siapa yang lupa..."},
     {"s": "pau", "e": "scared", "t": "Dia sebut perang... Bab 3 ke tu?"},
     {"s": "alif", "e": "confident", "t": "Apa-apa pun, kita dah lebih bersedia sekarang."}
+  ],
+  "nirbana_1_2": [
+    {"s": "narator", "t": "Langit gelap sekejap. Satu suara bergema dari dalam kabus."},
+    {"s": "nirbana", "t": "Dua serpihan. Hebat... untuk hari ni. Esok lusa, kau ingat lagi ke?"},
+    {"s": "alif", "e": "confident", "t": "Aku bukan hafal je. Aku faham. Tu lain."},
+    {"s": "pau", "e": "happy", "t": "Jangan layan dia, Alif. Jom sambung!"}
+  ],
+  "nirbana_2_2": [
+    {"s": "nirbana", "t": "Revolusi, falsafah, hak rakyat... Berat, kan? Lagi senang kalau kau lupakan je."},
+    {"s": "alif", "e": "confident", "t": "Senang memang senang. Tapi tak ada makna."},
+    {"s": "pau", "e": "happy", "t": "Fuh, jawapan power!"}
+  ],
+  "nirbana_2_4": [
+    {"s": "nirbana", "t": "Separuh lembah dah berwarna. Tapi separuh lagi masih kelabu. Penat, kan?"},
+    {"s": "pau", "t": "Penat sikit je. Rehat kejap, lepas tu jalan lagi."},
+    {"s": "alif", "e": "confident", "t": "Satu misi, satu masa."}
+  ],
+  "nirbana_2_6": [
+    {"s": "nirbana", "t": "Akhbar, sekolah, buku... Kau ingat kertas boleh lawan aku?"},
+    {"s": "alif", "e": "confident", "t": "Kertas tu lah yang buat orang kita sedar. Kau patut takut dengan kertas."},
+    {"s": "nirbana", "t": "...Kita tengok nanti."}
+  ],
+  "gabenor": [
+    {"s": "gabenor", "t": "Hmph. Ada urusan apa dengan menara saya?"}
   ]
 }

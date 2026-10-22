@@ -7,7 +7,8 @@
   "background": "res://assets/backgrounds/bg_zon2_2.png",
   "title": "Rumah Falsafah Sejagat",
   "subtopik": "2.2 Perkembangan Idea Nasionalisme di Barat",
-  "hint_go": "Rumah Falsafah Sejagat ada di sebelah Dewan Kedaulatan Rakyat.",
+  "hint_go": "Rumah Falsafah Sejagat di selatan Dewan. Ikut jalan barat ke bawah, cari papan Misi 2.2.",
+  "taunt": "nirbana_2_2",
   "persoalan": "Dari mana datangnya idea kedaulatan rakyat?",
   "pemandu": "profesor",
   "ganjaran": {

@@ -285,6 +285,16 @@ func _run() -> void:
 	await wait_screen("world")
 	await wait_idle()
 	await shot("lembah_arrive")
+	if scene().entities().get("misi_signs", []).size() != 8:
+		_fail("Lembah should have 8 numbered mission signposts")
+		return
+	if scene().fog_rects().size() != 8:
+		_fail("all 8 Bab 2 places should start under the Kabus, got %d" % scene().fog_rects().size())
+		return
+	scene().open_map()
+	await wait(0.5)
+	await shot("map_lembah_fog")
+	close_top_overlay()
 	if scene().portals.is_empty():
 		_fail("Bab 2 portal should be open after Bab 1")
 		return
@@ -301,6 +311,12 @@ func _run() -> void:
 	await wait_screen("world")
 	await wait_idle()
 	await shot("world_after_bab2")
+	if not scene().fog_rects().is_empty():
+		_fail("the Kabus should be gone after Bab 2, left: %d" % scene().fog_rects().size())
+		return
+	if scene()._gabenor != null:
+		_fail("Gabenor Sekatan should be gone after Misi 2.8")
+		return
 	Main.open_muzium()
 	await wait(0.4)
 	await shot("muzium_bab2")
@@ -353,6 +369,9 @@ func _play_zones(zones: Array) -> bool:
 			await wait_screen("world")
 			await wait_idle()
 		await shot("zone_" + z)
+		if z == "2_8" and screen_name() == "world" and scene()._gabenor == null:
+			_fail("Gabenor Sekatan should guard the Menara during Misi 2.8")
+			return false
 		for s in Game.zone_data(z)["steps"]:
 			if not _walk_to(str(s["at"])):
 				_fail("no spot for %s in %s" % [s["at"], screen_name()])

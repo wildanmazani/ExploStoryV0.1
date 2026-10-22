@@ -7,7 +7,8 @@
   "background": "res://assets/backgrounds/bg_zon2_4.png",
   "title": "Balai Serantau",
   "subtopik": "2.4 Perkembangan Nasionalisme di Asia Tenggara",
-  "hint_go": "Balai Serantau ada di hujung jeti, sebelah Dermaga Asia.",
+  "hint_go": "Balai Serantau di hujung timur jalan selatan. Cari papan Misi 2.4.",
+  "taunt": "nirbana_2_4",
   "persoalan": "Bagaimana jiran-jiran kita memperjuangkan kemerdekaan?",
   "pemandu": "nakhoda",
   "ganjaran": {

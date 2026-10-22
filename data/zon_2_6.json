@@ -7,7 +7,8 @@
   "background": "res://assets/backgrounds/bg_zon2_6.png",
   "title": "Kompleks Intelektual & Jelutong Press",
   "subtopik": "2.6 Faktor Kemunculan Gerakan Nasionalisme",
-  "hint_go": "Kompleks Intelektual ada di utara dataran. Cari Syed Sheikh al-Hadi di madrasah.",
+  "hint_go": "Kompleks Intelektual di utara: madrasah dan Jelutong Press di jalan utara. Cari papan Misi 2.6.",
+  "taunt": "nirbana_2_6",
   "persoalan": "Apakah faktor yang mencetuskan gerakan nasionalisme?",
   "pemandu": "syed_sheikh",
   "ganjaran": {

@@ -1290,7 +1290,8 @@
   "sand_grass": "e53a4ba3-c18f-4e82-ab04-cac03bcd6969",
   "river_grass": "faf0ce0d-12f1-42f3-a6a6-6021c088bcb3",
   "grass_meadow": "8bc1f4d3-2024-4c0c-9e11-44a810456bd0",
-  "grass_path": "2bf36553-25bf-4637-b322-bd1cf56f509d"
+  "grass_path": "2bf36553-25bf-4637-b322-bd1cf56f509d",
+  "grass_jalan": "ec83346b-e829-462b-850c-6b281cdfa57e"
  },
  "objects": {
   "palm": "86941192-060b-4a26-88ed-ace88c9c071d",
@@ -1358,7 +1359,19 @@
   "lampu_kolonial": "7842eff6-a0cc-4d80-b65f-97a85721cefe",
   "rumah_falsafah": "c5e0d7ac-d11b-40ba-97bf-629357c19a23",
   "tree_mempelam": "ded84a6a-24be-4b59-bd4d-5562dd33137e",
-  "tree_ketapang": "ae5fb500-a2db-4669-a45b-eb32f52c3085"
+  "tree_ketapang": "ae5fb500-a2db-4669-a45b-eb32f52c3085",
+  "kedai_deret_a": "a3b6ea43-7971-4b81-a2c9-aaeaaaba9243",
+  "kedai_deret_b": "93209050-0244-4db7-99cf-5b76d710ad9b",
+  "menara_jam": "ad4c5710-51fc-4eb9-80cb-113ed27f20f2",
+  "wakaf_padang": "157121da-4aa3-4afc-868a-e5b098dcbec8",
+  "basikal": "e1375a40-dafb-40b9-a3a0-db037d2e99e3",
+  "tiang_telegraf": "1bcf5771-5d9a-418d-afe0-f249fe613058",
+  "pokok_angsana": "254f208a-9b65-40f6-9032-76bd0ae25544",
+  "pokok_getah": "7adc86dc-f7ef-4ffa-ac3c-470b780ddec1",
+  "pagar_besi": "67eb2468-b9be-4575-a705-e3ded87abdaf",
+  "kapal_wap": "417ab3ee-b180-4aa7-acf4-536c3a93347a",
+  "gerai_akhbar": "c79a65c3-ff7a-4171-ba24-9216c0ae7caf",
+  "papan_misi": "33f5c80e-b606-44eb-bf42-bb712a5561da"
  },
  "mirror_west": [
   "alif",

@@ -165,6 +165,8 @@ func complete(zid: String) -> void:
 		await Game.say(str(zone["outro"]))
 	var st := Game.zone_state(zid)
 	var first_time := not bool(st.get("done", false))
+	if first_time and zone.has("taunt"):  # every two missions Nirbana mocks from the mist
+		await Game.say(str(zone["taunt"]))
 	var level_up := false
 	if first_time:
 		st["done"] = true

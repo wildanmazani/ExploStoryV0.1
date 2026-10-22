@@ -142,38 +142,19 @@ for s in STUBS:
     stroke(s, "=", 1, only=".=,")
 
 
-# --- Lembah Kebangkitan (Bab 2): a second island, reached only by the portal
-blob(111, 30, 23, 22, seed=0.7)     # the valley
-blob(92, 31, 6, 6, seed=2.0)        # western tip (portal)
-blob(129, 14, 9, 8, seed=1.3)       # north-east lobe (SITC)
-ellipse(104, 10, 2.4, 2.0, "r", only=".")          # spring
-RIVER2 = [(104, 11), (104, 16), (103, 22), (104, 27), (104, 33), (103, 39), (104, 44)]
-stroke(RIVER2, "r", 3, only=".")
-ellipse(104.5, 45, 2.6, 1.5, "r", only=".")
-BRIDGES2 = [(104, 30), (104, 18)]
-for bx, by in BRIDGES2:
-    for y in range(by - 2, by + 4):
-        for x in range(bx - 4, bx + 5):
-            if terrain[y][x] == "r":
-                terrain[y][x] = "."
-        for x in range(bx - 1, bx + 2):
-            terrain[y][x] = "r"
-ROADS2 = [
-    [(90, 31), (95, 30), (100, 30), (104, 30), (110, 30), (117, 30), (124, 31), (130, 36)],  # main street
-    [(96, 30), (96, 28)],                                   # dewan
-    [(95, 31), (95, 36), (96, 41)],                         # rumah falsafah
-    [(111, 31), (113, 37), (115, 44), (116, 47)],           # dermaga
-    [(117, 29), (116, 24), (112, 20), (104, 18), (99, 19)], # kompleks (bridge north) and the spring
-    [(117, 22), (122, 20), (128, 16)],                      # SITC
-]
-for i, r in enumerate(ROADS2):
-    stroke(r, "=", 2 if i == 0 else 1, only=".=,")
-for cx, cy, rx, ry in [(90.5, 31.5, 2.5, 1.6), (96, 29.5, 4, 1.4), (96, 42, 3.5, 1.4), (116, 47.5, 4.5, 1.6),
-                       (118.5, 29.5, 3.5, 2.0), (116, 19.5, 6.5, 1.6), (129, 14.5, 5.5, 1.5), (131, 36.5, 3.5, 1.6)]:
-    ellipse(cx, cy, rx, ry, "=")
+# --- Lembah Kebangkitan (Bab 2): a planned 1920s colonial town, reached only by
+# the portal. The layout (roads, padang, river, landmarks) lives in
+# data/world/lembah_layout.json, composed in PixelLab Map Workshop.
+LAYOUT = json.load(open(os.path.join(ROOT, "data", "world", "lembah_layout.json"), encoding="utf-8"))
+for kind, ch, x0, y0, w, h, *_ in LAYOUT["terrain"]:
+    for yy in range(y0, y0 + h):
+        for xx in range(x0, x0 + w):
+            if inside(xx, yy):
+                terrain[yy][xx] = ch
+BRIDGES2 = [tuple(b) for b in LAYOUT["bridges"]]   # bridge anchors (bottom-left)
 
 
-# --- legality pass (Wang pairs: sea-sand, sand-grass, river-grass, grass-meadow, grass-path)
+# --- legality pass (Wang pairs: sea-sand, sand-grass, river-grass, grass-meadow, grass-path, grass-jalan)
 def near(x, y, chars, r):
     for yy in range(y - r, y + r + 1):
         for xx in range(x - r, x + r + 1):
@@ -186,7 +167,7 @@ def near(x, y, chars, r):
 snapshot = [row[:] for row in terrain]
 for y in range(H):
     for x in range(W):
-        if snapshot[y][x] in ".=," and any(
+        if snapshot[y][x] in ".=,j" and any(
                 inside(xx, yy) and snapshot[yy][xx] == "~"
                 for yy in range(y - 2, y + 3) for xx in range(x - 2, x + 3)):
             terrain[y][x] = "s"
@@ -198,7 +179,7 @@ for y in range(H):
 # roads keep a grass verge next to sand and river
 for y in range(H):
     for x in range(W):
-        if terrain[y][x] == "=" and near(x, y, "s~r", 1):
+        if terrain[y][x] in "=j" and near(x, y, "s~r", 1):
             terrain[y][x] = "."
 
 # meadow patches: soft darker grass, at least 2 cells from roads/water/sand
@@ -213,8 +194,6 @@ def meadow(cx, cy, rx, ry, rnd):
                 terrain[y][x] = ","
 
 
-for i in range(18):
-    meadow(r2.randint(X2 + 4, W - 5), r2.randint(4, H - 5), r2.uniform(2.5, 5.0), r2.uniform(2, 3.5), r2)
 for i in range(26):
     cx, cy = random.randint(4, W1 - 5), random.randint(4, H - 5)
     rx, ry = random.uniform(2.5, 5.5), random.uniform(2, 4)
@@ -238,6 +217,10 @@ FOOT = {  # footprint (w, h) in cells; anchored at bottom-left
     "g": (2, 1), "u": (1, 1), "e": (2, 1), "x": (2, 1), "p": (1, 1), "q": (1, 1),
     "O": (8, 4), "V": (6, 3), "E": (6, 3), "N": (6, 3), "C": (6, 3), "h": (6, 3), "m": (10, 4),
     "t": (6, 4), "y": (3, 2), "a": (2, 1), "o": (2, 1), "d": (2, 1), "v": (4, 1), "z": (1, 1),
+    # 1920s town (Lembah): 6/7 shophouse rows, 8 clock tower, 9 bandstand, @ steamship, $ newspaper stand,
+    # ! mission signpost, % angsana, & rubber tree, + telegraph pole, 0 bicycle, # iron railing
+    "6": (8, 3), "7": (8, 3), "8": (3, 2), "9": (5, 3), "@": (8, 3), "$": (2, 1), "!": (2, 1),
+    "%": (2, 1), "&": (2, 1), "+": (1, 1), "0": (2, 1), "#": (2, 1),
 }
 FLAT = set("FpqnJ")      # drawn under characters, no collision
 WALK_OVER = set("nJ")      # walkable even over water
@@ -390,7 +373,7 @@ entities["portals"] = [                 # stepping into the open columns warps
     {"cells": [[89, 30], [90, 30]], "to": [11, 27], "facing": "south", "chapter": 2},
 ]
 for bx, by in BRIDGES2:
-    place("n", bx - 2, by + 1, force=True)
+    place("n", bx, by, force=True)
 place("v", 88, 30, force=True)
 entities["signs"].append({"pos": [88, 30], "id": "portal_balik", "size": [1, 1]})
 entities["signs"].append({"pos": [91, 30], "id": "portal_balik", "size": [1, 1]})
@@ -410,57 +393,39 @@ def landmark(name, ch, x, y, spot_name=None, sign=None):
 
 
 print("Lembah Kebangkitan:")
-landmark("dewan", "O", 92, 27, sign="dewan")
-landmark("papan_tokoh", "a", 100, 29, spot_name="papan_tokoh")
-landmark("rumah_falsafah", "V", 93, 40, spot_name="rumah_falsafah")
-landmark("rak_buku", "o", 99, 42, spot_name="rak_buku")
-landmark("papan_slogan", "a", 91, 43, spot_name="papan_slogan")
-for kx in (106, 112):
-    landmark("kedai", "h", kx, 28)
-landmark("kedai", "h", 122, 28)
-landmark("tugu_pahlawan", "y", 117, 27, spot_name="tugu_pahlawan")
-landmark("madrasah", "N", 108, 17, sign="madrasah")
-landmark("jelutong_press", "C", 118, 17, spot_name="jelutong_press")
-landmark("meja_pengarang", "d", 124, 19, spot_name="meja_pengarang")
-landmark("sitc", "m", 124, 12, sign="sitc")
-landmark("papan_persatuan", "a", 135, 15, spot_name="papan_persatuan")
-landmark("menara", "t", 128, 34, spot_name="menara")
-landmark("balai_serantau", "E", 119, 46, spot_name="balai_serantau")
-place("J", 116, 53, force=True)
-spot("jeti_serantau", place_near("b", 113, 49, "~", radius=3), "b")
-landmark("peti_warkah", "c", 112, 46, spot_name="peti_warkah")
-NPC2 = [
-    {"id": "profesor", "pos": [95, 29], "facing": "south"},
-    {"id": "nakhoda", "pos": [115, 46], "facing": "south"},
-    {"id": "pengarang", "pos": [121, 30], "facing": "west"},
-    {"id": "syed_sheikh", "pos": [111, 19], "facing": "south"},
-    {"id": "zaba", "pos": [128, 14], "facing": "south"},
-    {"id": "eunos", "pos": [125, 15], "facing": "south"},
-    {"id": "ibrahim", "pos": [132, 15], "facing": "south"},
-    {"id": "ibu_zain", "pos": [129, 36], "facing": "south"},
-]
-for n in NPC2:
+for name, ch, x, y, opt in LAYOUT["landmarks"]:
+    if not place(ch, x, y, ground=opt.get("ground", ".,=sj")):
+        raise SystemExit("no room for %s (%s) at %d,%d" % (name, ch, x, y))
+    if "spot" in opt:
+        spot(opt["spot"], [x, y], ch)
+    if "sign" in opt:
+        entities["signs"].append({"pos": [x, y], "id": opt["sign"], "size": list(FOOT[ch])})
+    reserve(x, y, FOOT[ch][0], FOOT[ch][1], r=1)
+    print("  %-16s %s at %s" % (name, ch, [x, y]))
+entities["misi_signs"] = []
+for no, x, y in LAYOUT["misi_signs"]:
+    if not place("!", x, y, ground=".,=sj"):
+        raise SystemExit("no room for signpost %s at %d,%d" % (no, x, y))
+    entities["misi_signs"].append({"no": no, "pos": [x, y]})
+    reserve(x, y, 2, 1, r=1)
+for n in LAYOUT["npcs"]:
     x, y = n["pos"]
     if blocked[y][x] or terrain[y][x] in "~r":
         raise SystemExit("NPC %s on a blocked cell %d,%d" % (n["id"], x, y))
     entities["npcs"].append(n)
     blocked[y][x] = True
     reserve(x, y, 1, 1)
-for name in ["papan_tokoh", "rumah_falsafah", "rak_buku", "papan_slogan", "tugu_pahlawan", "jelutong_press",
-             "meja_pengarang", "papan_persatuan", "menara", "balai_serantau", "peti_warkah"]:
-    sp = entities["spots"][name]
-    reserve(sp["pos"][0], sp["pos"][1], sp["size"][0], sp["size"][1])
 reserve(88, 30, 4, 1, r=1)
 reserve(ARRIVE[0], ARRIVE[1], 1, 1)
-# lamps along the main street of the pekan
-for i, (fx, fy) in enumerate(catmull(ROADS2[0], samples=2)):
-    if i % 8 != 3:
-        continue
-    x, y = int(round(fx)), int(round(fy))
-    for d in (3, -2, 2, -3):
-        if (x, y + d) not in reserved and can_place("z", x, y + d, ".,"):
-            place("z", x, y + d, ".,")
-            break
+DECOR = LAYOUT["decor"]
+for y in DECOR["lamps_y"]:
+    for x in DECOR["lamps_x"]:
+        if (x, y) not in reserved and can_place("z", x, y, ".,"):
+            place("z", x, y, ".,")
+for key, ch in (("angsana", "%"), ("getah", "&"), ("telegraf", "+"), ("basikal", "0"), ("pagar", "#")):
+    for x, y in DECOR[key]:
+        if not place(ch, x, y, ground=".,s"):
+            print("  (skipped %s at %d,%d)" % (key, x, y))
 
 
 # --- village dressing -----------------------------------------------------
@@ -562,9 +527,11 @@ def scatter(cells, rnd, groves, village):
 
 scatter([(x, y) for y in range(2, H - 1) for x in range(1, W1 - 2)], random, GROVES, (17, 24, 46, 41))
 water_plants(X2, W, r2)
-GROVES2 = [(98, 12, 4), (93, 20, 4), (88, 38, 3), (100, 48, 4), (110, 40, 4), (124, 40, 4), (133, 26, 4),
-           (113, 9, 3), (120, 8, 3), (136, 9, 2)]
-scatter([(x, y) for y in range(2, H - 1) for x in range(X2, W - 2)], r2, GROVES2, (102, 23, 126, 33))
+for y in range(2, H - 1):
+    for x in range(X2, W - 1):
+        if terrain[y][x] == "s" and (x * 7 + y * 3) % DECOR["palms_every"] == 0 and dist_to(x, y, "~", 3) >= 1:
+            if (x, y) not in reserved:
+                place("P", x, y, ground="s")
 
 
 entities["areas"] = [  # name, rect x0,y0,x1,y1 (used for music + area titles)
@@ -575,22 +542,13 @@ entities["areas"] = [  # name, rect x0,y0,x1,y1 (used for music + area titles)
     {"id": "melaka", "name": "Misi 1.3: Kota Melaka", "rect": [47, 21, 66, 35]},
     {"id": "pelabuhan", "name": "Misi 1.2: Pelabuhan Melaka", "rect": [50, 36, 79, 56]},
     {"id": "kabus", "name": "Kabus Masa", "rect": [0, 15, 13, 35]},
-    # Lembah Kebangkitan (Bab 2); "zone" links an area to its mission
-    {"id": "dewan", "name": "Misi 2.1: Dewan Kedaulatan Rakyat", "rect": [91, 21, 101, 33], "zone": "2_1"},
-    {"id": "falsafah", "name": "Misi 2.2: Rumah Falsafah Sejagat", "rect": [86, 34, 101, 52], "zone": "2_2"},
-    {"id": "dermaga", "name": "Misi 2.3: Dermaga Asia", "rect": [102, 40, 116, 58], "zone": "2_3"},
-    {"id": "serantau", "name": "Misi 2.4: Balai Serantau", "rect": [117, 40, 132, 58], "zone": "2_4"},
-    {"id": "tugu", "name": "Misi 2.5: Tugu Pahlawan", "rect": [114, 24, 122, 33], "zone": "2_5"},
-    {"id": "kompleks", "name": "Misi 2.6: Kompleks Intelektual", "rect": [102, 6, 123, 22], "zone": "2_6"},
-    {"id": "sitc", "name": "Misi 2.7: Maktab SITC", "rect": [124, 3, 139, 22], "zone": "2_7"},
-    {"id": "menara", "name": "Misi 2.8: Menara Pentadbiran", "rect": [123, 29, 139, 40], "zone": "2_8"},
-    {"id": "lembah", "name": "Lembah Kebangkitan", "rect": [82, 3, 139, 58]},
-]
+    # Lembah Kebangkitan (Bab 2): from the layout ("zone" links an area to its mission)
+] + LAYOUT["areas"]
 
 
 # --- checks -----------------------------------------------------------------
-LEGAL = {frozenset("~s"), frozenset("s."), frozenset("r."), frozenset(".,"), frozenset(".=")}
-ORDER = "~sr.,="
+LEGAL = {frozenset("~s"), frozenset("s."), frozenset("r."), frozenset(".,"), frozenset(".="), frozenset(".j")}
+ORDER = "~sr.,=j"
 vert = [[max((terrain[min(max(y + dy, 0), H - 1)][min(max(x + dx, 0), W - 1)]
              for dx, dy in [(-1, -1), (0, -1), (-1, 0), (0, 0)]), key=ORDER.index)
          for x in range(W + 1)] for y in range(H + 1)]   # same rule as TerrainBuilder.paint

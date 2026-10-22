@@ -12,7 +12,7 @@
   "2": {
     "boss": "Bayang Nirbana",
     "npc": "nirbana",
-    "pos": [131, 37],
+    "pos": [129, 31],
     "where": "depan Menara Pentadbiran",
     "background": "res://assets/backgrounds/bg_zon2_8.png",
     "questions": 12, "hearts": 3, "need": 7,

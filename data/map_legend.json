@@ -9,14 +9,14 @@
     {"id": "siguntang", "zone": "1_4", "name": "Misi 1.4: Bukit Siguntang", "at": [57, 13]},
     {"id": "kabus", "name": "Pintu Kabus", "icon": "res://assets/icons/kunci.png", "at": [10, 26], "info": "Pintu ke Lembah Kebangkitan (Bab 2), terbuka selepas Bab 1"},
     {"id": "lembah", "name": "Lembah Kebangkitan", "icon": "res://assets/icons/bendera.png", "at": [90, 31], "info": "Bab 2: Kebangkitan Nasionalisme"},
-    {"id": "dewan", "zone": "2_1", "name": "Misi 2.1: Dewan Kedaulatan Rakyat", "at": [96, 28]},
-    {"id": "falsafah", "zone": "2_2", "name": "Misi 2.2: Rumah Falsafah Sejagat", "at": [96, 41]},
-    {"id": "dermaga", "zone": "2_3", "name": "Misi 2.3: Dermaga Asia", "at": [114, 47]},
-    {"id": "serantau", "zone": "2_4", "name": "Misi 2.4: Balai Serantau", "at": [122, 47]},
-    {"id": "tugu", "zone": "2_5", "name": "Misi 2.5: Tugu Pahlawan", "at": [119, 29]},
-    {"id": "kompleks", "zone": "2_6", "name": "Misi 2.6: Kompleks Intelektual", "at": [115, 19]},
-    {"id": "sitc", "zone": "2_7", "name": "Misi 2.7: Maktab SITC", "at": [129, 14]},
-    {"id": "menara", "zone": "2_8", "name": "Misi 2.8: Menara Pentadbiran", "at": [131, 36]}
+    {"id": "dewan", "zone": "2_1", "name": "Misi 2.1: Dewan Kedaulatan Rakyat", "at": [99, 22]},
+    {"id": "falsafah", "zone": "2_2", "name": "Misi 2.2: Rumah Falsafah Sejagat", "at": [99, 38]},
+    {"id": "dermaga", "zone": "2_3", "name": "Misi 2.3: Dermaga Asia", "at": [112, 54]},
+    {"id": "serantau", "zone": "2_4", "name": "Misi 2.4: Balai Serantau", "at": [128, 38]},
+    {"id": "tugu", "zone": "2_5", "name": "Misi 2.5: Tugu Pahlawan", "at": [122, 17]},
+    {"id": "kompleks", "zone": "2_6", "name": "Misi 2.6: Kompleks Intelektual", "at": [104, 6]},
+    {"id": "sitc", "zone": "2_7", "name": "Misi 2.7: Maktab SITC", "at": [130, 5]},
+    {"id": "menara", "zone": "2_8", "name": "Misi 2.8: Menara Pentadbiran", "at": [131, 24]}
   ],
   "landmarks": {
     "monument": {"name": "Peta Jejak", "icon": "res://assets/icons/peta.png"},
