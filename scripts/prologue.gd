@@ -1,21 +1,37 @@
 extends Control
-## Prologue, Babak 1 (GDS section 2): Alif's room at night, 3 days before SPM.
-## The paragraph's letters scramble so the player feels what reading is like
-## for Alif, the clock and heartbeat speed up, he squeezes Pau and dozes off,
-## then golden pages carry us into a dream: a port in chaos, then Gua Warisan
-## where Nirbana breaks the Telaga Batu inscription into four Serpihan (the
-## goal of Bab 1). Then Dunia Explo-Story (world intro continues in world.gd).
-## Skippable at any time.
+## Prologue (GDS section 2): a cutscene, nothing to press (lines move on by
+## themselves, Langkau skips it all), told so players see their own nights:
+##  1. cold open: the class group chat at 11:47 PM (scripts/ui/phone_chat.gd)
+##  2. Alif's room: he looks at the calendar, his trial paper, Mak's message,
+##     the window (Tok's stories) and Pau, each glowing in turn
+##  3. reading: key words fly into "Ingatan Alif", but it only holds two and
+##     the letters keep scrambling: "satu pun tak melekat" (dyslexia, and
+##     anyone drowning in facts)
+##  4. he dozes off; golden pages carry us into a dream: his classmates at an
+##     old port forget each other in the Kabus Lupa, then Gua Warisan where
+##     Nirbana breaks the Telaga Batu inscription into four Serpihan (the goal
+##     of Bab 1). Then Dunia Explo-Story (world intro continues in world.gd).
+## Text: data/prologue_room.json and data/dialogue/prologue.json.
 
 const UI = preload("res://scripts/ui/ui.gd")
+const PhoneChat = preload("res://scripts/ui/phone_chat.gd")
 const WORLD := "res://scenes/world/world.tscn"
-const PARAGRAPH := "Kesultanan Melayu Melaka diasaskan oleh Parameswara pada awal abad ke-15. Melaka mempunyai ciri-ciri negara bangsa iaitu kerajaan, rakyat, kedaulatan, wilayah pengaruh, undang-undang dan lambang kebesaran."
+const DATA := "res://data/prologue_room.json"
 const MIRROR := {"b": "d", "d": "b", "p": "q", "q": "p", "m": "w", "w": "m", "n": "u", "u": "n"}
+const FRIENDS := ["aisyah", "ravi", "meiling", "daniel"]
 
+var phase := ""  ## what is on screen: phone, room, reading, doze, port, gua
+
+var _data: Dictionary
 var _skipping := false
 var _tick_gap := 1.0
 var _ticking := false
 var _heart_gap := 0.0  ## 0 = no heartbeat
+var _tokens: Array = []  ## paragraph pieces {text, kw}
+var _memory: Array = []  ## key words Alif still remembers (token index), oldest first
+var _words_read := 0
+var _amount := 0.0       ## how scrambled the page is, 0..1
+var _jar: HBoxContainer
 
 @onready var room: TextureRect = $Room
 @onready var lamp: ColorRect = $LampGlow
@@ -36,6 +52,8 @@ func _ready() -> void:
 	MusicDirector.play("bilik", 2.5)
 	skip.pressed.connect(_skip)
 	pages.texture = _page_texture()
+	_data = Game.load_json(DATA)
+	Main.dialog_box.auto_advance = true
 	book.modulate.a = 0.0
 	caption.modulate.a = 0.0
 	_run()
@@ -43,39 +61,246 @@ func _ready() -> void:
 
 # --- the sequence ---------------------------------------------------------
 func _run() -> void:
+	_lamp_loop()
+	_desk_phone()
+	await _phone_open()
+	if _skipping: return
 	_clock_loop()
 	_heart_loop()
-	_lamp_loop()
+	caption.text = str(_data.get("caption", ""))
 	await _fade(caption, 1.0, 1.0)
-	await _wait(2.0)
+	await _wait(1.6)
 	await _fade(caption, 0.0, 0.8)
+	await _room_tour()
+	await _reading()
+	await _doze()
+	await _dream()
+	if _skipping: return
+	await _fade(flash, 1.0, 0.8)
+	_go_to_world()
 
-	book_text.text = PARAGRAPH
+
+## 11:47 PM, the class group chat: everyone is as lost as Alif
+func _phone_open() -> void:
+	phase = "phone"
+	var chat := PhoneChat.new()
+	add_child(chat)
+	move_child(chat, flash.get_index())
+	chat.setup(_data.get("chat", {}))
+	await chat.done
+	if _skipping: return
+	var t := create_tween()
+	t.tween_property(chat, "modulate:a", 0.0, 0.6)
+	await t.finished
+	chat.queue_free()
+
+
+## the room picture has no phone: one lies on the desk, screen still glowing
+func _desk_phone() -> void:
+	var p := Panel.new()
+	p.add_theme_stylebox_override("panel", UI.sb(Color("1b1d24"), Color("3a3d48"), 2, 4, 0))
+	p.position = Vector2(318, 444)
+	p.size = Vector2(54, 22)
+	p.rotation = -0.08
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var screen := ColorRect.new()
+	screen.color = Color("8fd8ff")
+	screen.position = Vector2(5, 4)
+	screen.size = Vector2(44, 14)
+	p.add_child(screen)
+	add_child(p)
+	move_child(p, vignette.get_index())
+	var t := screen.create_tween().set_loops()
+	t.tween_property(screen, "modulate:a", 0.45, 1.2).set_trans(Tween.TRANS_SINE)
+	t.tween_property(screen, "modulate:a", 1.0, 1.2).set_trans(Tween.TRANS_SINE)
+
+
+## Alif looks around his room: each thing glows while he talks about it
+func _room_tour() -> void:
+	if _skipping: return
+	phase = "room"
+	await _say("pro_room")
+	for s in _data.get("room", []):
+		if _skipping: return
+		var glow := _glow(s)
+		await _wait(0.6)
+		_spot_fx(str(s["id"]))
+		await _say(str(s.get("say", "")))
+		if _skipping: return
+		var t := create_tween()
+		t.tween_property(glow, "modulate:a", 0.0, 0.3)
+		t.tween_callback(glow.queue_free)
+		await _wait(0.4)
+
+
+## a soft gold outline (and its name) around the thing Alif is looking at
+func _glow(s: Dictionary) -> Control:
+	var r: Array = s["rect"]
+	var p := Panel.new()
+	p.add_theme_stylebox_override("panel", UI.sb(Color(UI.GOLD, 0.12), UI.GOLD, 4, 14, 0))
+	p.position = Vector2(r[0], r[1])
+	p.size = Vector2(r[2], r[3])
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tag := UI.label(str(s.get("label", "")))
+	tag.add_theme_color_override("font_outline_color", Color(0.1, 0.06, 0.15))
+	tag.add_theme_constant_override("outline_size", 8)
+	tag.position = Vector2(4, -36)
+	p.add_child(tag)
+	add_child(p)
+	move_child(p, flash.get_index())
+	p.modulate.a = 0.0
+	create_tween().tween_property(p, "modulate:a", 1.0, 0.3)
+	var pulse := p.create_tween().set_loops()
+	pulse.tween_property(p, "self_modulate:a", 0.5, 0.6).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(p, "self_modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_SINE)
+	return p
+
+
+func _spot_fx(id: String) -> void:
+	match id:
+		"pau":
+			_squish_pau()
+		"kalendar":
+			_heart_gap = 1.4  # and it stays with him
+			Sfx.play("heartbeat", -2.0)
+		"telefon":
+			Sfx.play("pop", -4.0)
+		_:
+			Sfx.play("select", -6.0)
+
+
+## Reading: key words fly into Alif's memory, but it only holds two and the
+## page keeps scrambling, so they fall out again as fast as they go in
+func _reading() -> void:
+	if _skipping: return
+	phase = "reading"
+	_tokens = _parse(str(_data.get("paragraph", "")))
+	_render_book()
+	var jar := _build_jar()
 	await _fade(book, 1.0, 0.8)
-	await _wait(1.2)
 	await _say("pro_read")
-
-	# the letters start to drift and swap
 	_tick_gap = 0.7
 	_heart_gap = 1.1
-	for i in 26:
+	var keys: Array = []
+	for i in _tokens.size():
+		if _tokens[i]["kw"]:
+			keys.append(i)
+	var words := mini(int(_data.get("read_words", 6)), keys.size())
+	var every := float(_data.get("word_every", 1.3))
+	var thoughts: Dictionary = _data.get("thoughts", {})
+	for n in words:
 		if _skipping: return
-		var amount := i / 25.0
-		book_text.text = "[shake rate=%d level=%d]%s[/shake]" % [10 + i, int(amount * 9), _scramble(PARAGRAPH, amount * 0.55)]
-		await _wait(0.16)
+		_remember(keys[n])
+		for k in 4:  # the letters keep moving while he reads
+			_amount = minf(1.0, 0.1 + n * 0.12 + k * 0.03)
+			_render_book()
+			await _wait(every / 4.0)
+		if thoughts.has(str(n + 1)):
+			await _say(str(thoughts[str(n + 1)]))
+	if _skipping: return
+
+	# everything slides off the page
+	while not _memory.is_empty():
+		_forget(_memory.pop_front())
+	_amount = 1.0
+	_render_book()
 	_tick_gap = 0.45
 	_heart_gap = 0.7
 	_shake_room(true)
 	await _say("pro_scramble")
-
-	# Alif gives up, squeezes Pau
 	_shake_room(false)
+	_fade(jar, 0.0, 0.6)
 	await _fade(book, 0.0, 0.6)
+	jar.queue_free()
+
+
+func _parse(p: String) -> Array:
+	var out := []
+	var re := RegEx.new()
+	re.compile("\\{([^}]*)\\}")
+	var at := 0
+	for m in re.search_all(p):
+		if m.get_start() > at:
+			out.append({"text": p.substr(at, m.get_start() - at), "kw": false})
+		out.append({"text": m.get_string(1), "kw": true})
+		at = m.get_end()
+	if at < p.length():
+		out.append({"text": p.substr(at), "kw": false})
+	return out
+
+
+func _render_book() -> void:
+	var out := ""
+	for i in _tokens.size():
+		var tk: Dictionary = _tokens[i]
+		if not tk["kw"]:
+			out += _scramble(tk["text"], _amount * 0.6)
+		elif _memory.has(i):
+			out += "[color=#c9a040]%s[/color]" % tk["text"]
+		else:
+			out += "[u][color=#a0521d]%s[/color][/u]" % _scramble(tk["text"], _amount * 0.4)
+	book_text.text = "[shake rate=%d level=%d]%s[/shake]" % [10 + int(_amount * 16), int(_amount * 8), out]
+
+
+func _build_jar() -> PanelContainer:
+	var p := UI.panel("Paper")
+	p.position = Vector2(200, 430)
+	p.size = Vector2(880, 0)
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_jar = UI.hbox(10)
+	_jar.add_child(UI.label("Ingatan Alif:", "InkHeading"))
+	p.add_child(_jar)
+	add_child(p)
+	move_child(p, flash.get_index())
+	p.modulate.a = 0.0
+	_fade(p, 1.0, 0.8)
+	return p
+
+
+## the word flies from the page into Alif's memory
+func _remember(i: int) -> void:
+	_words_read += 1
+	_memory.append(i)
+	Sfx.play("chime", -8.0, 1.0 + _memory.size() * 0.1)
+	var word := str(_tokens[i]["text"])
+	var chip := UI.panel()
+	chip.add_theme_stylebox_override("panel", UI.sb(Color("fff1c4"), UI.GOLD, 2, 8, 6))
+	chip.set_meta("word", i)
+	chip.add_child(UI.label(word, "Ink"))
+	chip.modulate.a = 0.0
+	_jar.add_child(chip)
+	var ghost := UI.label(word, "Title")
+	ghost.position = book.global_position + Vector2(randf_range(60, book.size.x - 220), randf_range(40, book.size.y - 80))
+	add_child(ghost)
+	var t := create_tween()
+	t.tween_property(ghost, "position", _jar.global_position + Vector2(180 + _jar.get_child_count() * 60, 0), 0.4).set_ease(Tween.EASE_IN)
+	t.parallel().tween_property(ghost, "modulate:a", 0.0, 0.4)
+	t.tween_callback(ghost.queue_free)
+	t.tween_property(chip, "modulate:a", 1.0, 0.2)
+	if _memory.size() > int(_data.get("memory_size", 2)):
+		_forget(_memory.pop_front())
+
+
+## ...and the oldest one falls out again
+func _forget(i: int) -> void:
+	for chip in _jar.get_children():
+		if chip.has_meta("word") and int(chip.get_meta("word")) == i:
+			chip.reparent(self)
+			var t := create_tween().set_parallel()
+			t.tween_property(chip, "position:y", chip.position.y + 90, 0.7).set_ease(Tween.EASE_IN)
+			t.tween_property(chip, "rotation", randf_range(-0.6, 0.6), 0.7)
+			t.tween_property(chip, "modulate:a", 0.0, 0.7)
+			t.chain().tween_callback(chip.queue_free)
+			Sfx.play("swish", -6.0)
+			return
+
+
+## Alif gives up, squeezes Pau and dozes off; golden pages carry him away
+func _doze() -> void:
+	if _skipping: return
+	phase = "doze"
 	for i in 2:
-		Sfx.play("squish", -4.0, 1.0 + i * 0.1)
-		var t := create_tween()
-		t.tween_property(pau, "scale", Vector2(1.25, 0.75), 0.12)
-		t.tween_property(pau, "scale", Vector2(1, 1), 0.25).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+		_squish_pau(1.0 + i * 0.1)
 		await _wait(0.5)
 	_tick_gap = 0.9
 	_heart_gap = 1.4
@@ -90,7 +315,6 @@ func _run() -> void:
 	await _lids(1.0, 1.4)
 	await _wait(1.2)
 
-	# golden pages carry him away
 	if _skipping: return
 	MusicDirector.stop(2.0)
 	Sfx.play("whoosh")
@@ -102,26 +326,63 @@ func _run() -> void:
 	await _wait(1.6)
 	Sfx.play("sparkle")
 	await _fade(flash, 1.0, 0.8)
-	await _dream()
-	if _skipping: return
-	await _fade(flash, 1.0, 0.8)
-	_go_to_world()
 
 
-## The dream: chaos at an old port, the cave, Nirbana and the four Serpihan.
+func _squish_pau(pitch := 1.0) -> void:
+	Sfx.play("squish", -4.0, pitch)
+	var t := create_tween()
+	t.tween_property(pau, "scale", Vector2(1.25, 0.75), 0.12)
+	t.tween_property(pau, "scale", Vector2(1, 1), 0.25).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+
+
+## The dream: his classmates at an old port forget each other in the Kabus
+## Lupa, then the cave, Nirbana and the four Serpihan.
 func _dream() -> void:
 	if _skipping: return
+	phase = "port"
 	var bg := _scene_image("res://assets/backgrounds/bg_pelabuhan_huru.png")
 	bg.modulate = Color(1.0, 0.75, 0.7)
 	var alif := _sprite("res://assets/characters32/%s/%s_south.png" % [Game.skin_folder(), Game.skin_folder()], Vector2(640, 610), 6)
+	var feet := [Vector2(250, 560), Vector2(430, 650), Vector2(850, 650), Vector2(1030, 560)]
+	var pals: Array[TextureRect] = []
+	for i in FRIENDS.size():
+		pals.append(_sprite(_rakan(FRIENDS[i], "south"), feet[i], 5))
 	MusicDirector.play("siguntang", 1.0)
 	flash.color = Color(1, 1, 1)
 	await _fade(flash, 0.0, 0.8)
 	room.position = Vector2.ZERO
+	await _say("pro_friends_1")
+	if _skipping: return
+
+	# the Kabus Lupa rolls in: they turn away from him...
+	var fog := ColorRect.new()
+	fog.color = Color(0.35, 0.15, 0.5, 0.0)
+	fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fog.size = Vector2(1280, 720)
+	add_child(fog)
+	move_child(fog, bg.get_index() + 1)
+	Sfx.play("whoosh", -4.0, 0.7)
+	var k := create_tween().set_parallel()
+	k.tween_property(fog, "color:a", 0.4, 1.4)
+	for i in pals.size():
+		k.tween_property(pals[i], "modulate", Color(0.8, 0.65, 1.0), 1.4)
+		pals[i].texture = UI.tex(_rakan(FRIENDS[i], "north"))
+	await k.finished
+	await _say("pro_friends_2")
+	if _skipping: return
+	# ...then on each other
+	var faces := ["east", "west", "east", "west"]
+	for i in pals.size():
+		pals[i].texture = UI.tex(_rakan(FRIENDS[i], faces[i]))
+		_hop(pals[i])
+	Sfx.play("bump", -4.0)
+	await _say("pro_friends_3")
+	if _skipping: return
 	_shake_node(bg, 1.6)
 	Sfx.play("bump", -2.0)
 	await _say("pro_huru")
 	if _skipping: return
+
 	# run into the cave
 	var run := create_tween()
 	run.tween_property(alif, "position:x", 1300.0, 0.7).set_ease(Tween.EASE_IN)
@@ -130,6 +391,10 @@ func _dream() -> void:
 	await _fade(flash, 1.0, 0.6)
 	if run.is_running():
 		await run.finished
+	phase = "gua"
+	for p in pals:
+		p.queue_free()
+	fog.queue_free()
 	bg.texture = UI.tex("res://assets/backgrounds/bg_gua_warisan.png")
 	bg.modulate = Color.WHITE
 	alif.position = Vector2(300 - alif.size.x / 2.0, 640 - alif.size.y)
@@ -160,6 +425,16 @@ func _dream() -> void:
 	await _shards()
 	await _say("pro_gua_3")
 	bob.kill()
+
+
+func _rakan(who: String, facing: String) -> String:
+	return "res://assets/characters32/rakan_%s/rakan_%s_%s.png" % [who, who, facing]
+
+
+func _hop(n: Control) -> void:
+	var t := create_tween()
+	t.tween_property(n, "position:y", n.position.y - 12, 0.1)
+	t.tween_property(n, "position:y", n.position.y, 0.15)
 
 
 func _scene_image(path: String) -> TextureRect:
@@ -232,6 +507,12 @@ func _fade(node: CanvasItem, alpha: float, seconds: float) -> void:
 	var t := create_tween()
 	t.tween_property(node, "modulate:a", alpha, seconds)
 	await t.finished
+
+
+func _show_caption(text: String) -> void:
+	caption.text = text
+	caption.modulate.a = 0.0
+	_fade(caption, 1.0, 0.5)
 
 
 func _clock_loop() -> void:
@@ -332,6 +613,7 @@ func _go_to_world() -> void:
 	if _leaving:
 		return
 	_leaving = true
+	Main.dialog_box.auto_advance = false  # world.gd turns it on again for the wake-up
 	Game.save["prolog_done"] = true
 	Game.persist()
 	GameState.flags["world_intro"] = true

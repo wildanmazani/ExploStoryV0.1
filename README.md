@@ -24,7 +24,10 @@ Tanda seru **(!)** menunjukkan tugasan seterusnya. Teka-teki: **Seret dan Padank
 
 ## Aliran permainan
 
-Tajuk -> Log masuk / Daftar / Tetamu -> Prolog (bilik Alif, huruf berselerak) ->
+Tajuk -> Log masuk / Daftar / Tetamu -> Prolog, ditonton sahaja dan boleh dilangkau (sembang
+kumpulan kelas 11:47 malam, Alif melihat barang dalam biliknya, kata kunci masuk dan keluar dari
+"Ingatan Alif" sambil huruf berselerak, mimpi: rakan sekelas saling lupa dalam Kabus Lupa, Nirbana
+di Gua Warisan; teks dalam `data/prologue_room.json` dan `data/dialogue/prologue.json`) ->
 bangun di Dunia Explo-Story -> Kampung Jejak -> Zon 1.1 Gerbang Masa -> Zon 1.2 Pelabuhan
 Melaka -> Zon 1.3 Balai Penghadapan (dalam Istana) -> Zon 1.4 Bukit Siguntang -> Ringkasan
 setiap zon -> Penutup (Bendera 1 berkibar, Nota Alif, teaser Bab 2).
@@ -111,6 +114,7 @@ Kandungan sejarah hanya di `data/*.json`; guru boleh ubah teks dan jawapan tanpa
 
 1. Pasang Godot **4.7.2** (standard), buka `project.godot`, tekan **F5**.
 2. Ujian automatik: `godot --path . -- --autotest --shots=C:/tmp/shots`
+   (prolog sahaja, lebih cepat: tambah `--only=prologue`)
 
 ## Versi web
 

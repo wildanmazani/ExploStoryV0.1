@@ -1,0 +1,30 @@
+{
+  "_info": "Prolog (scripts/prologue.gd), ditonton sahaja. chat = mesej kumpulan kelas di awal; room = barang yang Alif lihat satu demi satu, ikut susunan (rect = x, y, lebar, tinggi pada skrin 1280x720; say = kunci dialog dalam data/dialogue/prologue.json); paragraph = perenggan buku teks, {kata kunci} terbang ke Ingatan Alif; memory_size = berapa kata Alif boleh ingat; read_words = berapa kata dibaca; word_every = saat antara kata; thoughts = dialog selepas kata ke-n.",
+  "chat": {
+    "title": "5 Bestari",
+    "time": "11:47 PM",
+    "messages": [
+      {"from": "daniel", "text": "korang dah habis Bab 1??"},
+      {"from": "meiling", "text": "cikgu cakap ciri negara bangsa confirm keluar"},
+      {"from": "ravi", "text": "aku dah baca 3 kali. satu pun tak masuk T_T"},
+      {"from": "aisyah", "text": "tidur la weh. esok sekolah"},
+      {"from": "daniel", "text": "Alif? hidup lagi ke"},
+      {"from": "alif", "text": "tengah baca la ni..."},
+      {"from": "ravi", "text": "kalau kau faham, esok ajar aku ok"}
+    ]
+  },
+  "caption": "11:52 malam. 3 hari sebelum SPM Sejarah.",
+  "room": [
+    {"id": "kalendar", "label": "Kalendar", "rect": [950, 66, 112, 172], "say": "pro_obj_kalendar"},
+    {"id": "kertas", "label": "Kertas Percubaan", "rect": [24, 304, 104, 158], "say": "pro_obj_kertas"},
+    {"id": "telefon", "label": "Telefon", "rect": [300, 418, 96, 60], "say": "pro_obj_telefon"},
+    {"id": "tingkap", "label": "Tingkap", "rect": [430, 84, 480, 280], "say": "pro_obj_tingkap"},
+    {"id": "pau", "label": "Pau", "rect": [1040, 340, 172, 176], "say": "pro_obj_pau"},
+    {"id": "buku", "label": "Buku Teks Sejarah", "rect": [706, 552, 308, 104], "say": "pro_obj_buku"}
+  ],
+  "paragraph": "Kesultanan Melayu Melaka diasaskan oleh {Parameswara} pada awal {abad ke-15}. Melaka mempunyai ciri-ciri negara bangsa iaitu {kerajaan}, {rakyat}, {kedaulatan}, {wilayah pengaruh}, {undang-undang} dan {lambang kebesaran}.",
+  "memory_size": 2,
+  "read_words": 6,
+  "word_every": 1.3,
+  "thoughts": {"2": "pro_read_fikir_1", "4": "pro_read_fikir_2"}
+}

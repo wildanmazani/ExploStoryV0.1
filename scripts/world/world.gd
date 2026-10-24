@@ -255,6 +255,7 @@ var _intro_tween: Tween
 
 func _play_intro() -> void:
 	busy = true
+	Main.dialog_box.auto_advance = true  # a cutscene: lines move on by themselves
 	Main.set_pau_visible(false)
 	hud.visible = false
 	skip.visible = true
@@ -322,6 +323,7 @@ func _skip_intro() -> void:
 
 
 func _end_intro() -> void:
+	Main.dialog_box.auto_advance = false
 	skip.visible = false
 	emote.visible = false
 	hud.visible = true

@@ -85,7 +85,7 @@ theme_override_colors/font_color = Color(1, 0.94, 0.8, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.06, 0.15, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 32
-text = "Malam. 3 hari sebelum SPM Sejarah."
+text = "11:52 malam. 3 hari sebelum SPM Sejarah."
 
 [node name="Book" type="PanelContainer" parent="."]
 layout_mode = 0

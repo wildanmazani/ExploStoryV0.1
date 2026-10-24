@@ -17,7 +17,13 @@ signal finished
 const VOICE := {
 	"alif": 1.0, "pau": 1.7, "penjaga": 0.62, "tunperak": 0.66, "syahbandar": 1.18,
 	"sapurba": 0.78, "demang": 0.74, "makcik": 1.3, "nelayan": 0.88, "chengho": 0.84,
+	"mak": 1.22, "aisyah": 1.4, "ravi": 0.94, "meiling": 1.5, "daniel": 1.08,
 }
+
+## cutscenes (the intro): each line moves on by itself once there has been
+## time to read it; a tap still goes faster
+var auto_advance := false
+var _hold := 0.0
 
 var _lines: Array = []
 var _i: int = 0
@@ -158,12 +164,17 @@ func _show_line() -> void:
 		_typing = true
 	if bool(Game.settings.get("auto_read", false)):
 		Tts.speak(_text.text)
+	_hold = 1.2 + _text.text.length() * 0.045  # time to read it after it has typed out
 	_next.grab_focus()
 
 
 func _process(delta: float) -> void:
 	_more.visible = visible and not _typing
 	if not _typing:
+		if auto_advance and visible:
+			_hold -= delta
+			if _hold <= 0.0:
+				_advance()
 		return
 	_shown += delta * Game.type_speed()
 	_text.visible_characters = int(_shown)

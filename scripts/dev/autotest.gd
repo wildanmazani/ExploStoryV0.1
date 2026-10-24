@@ -33,7 +33,8 @@ func _process(delta: float) -> void:
 	if _t > TIMEOUT:
 		_fail("timeout after %d s" % int(TIMEOUT))
 	_adv_t += delta
-	if Main.dialog_box.visible and _adv_t > 0.08:  # tap through every dialogue
+	# tap through every dialogue (--watch: hands off, cutscenes must play by themselves)
+	if Main.dialog_box.visible and _adv_t > 0.08 and not "--watch" in OS.get_cmdline_user_args():
 		_adv_t = 0.0
 		Main.dialog_box._advance()
 
@@ -133,6 +134,42 @@ func close_top_overlay() -> void:
 
 
 # ------------------------------------------------------------------ the run
+## group chat, room, reading, then the dream: classmates at the port, Nirbana
+## in Gua Warisan. It is a cutscene: the dialogue taps above just hurry it.
+func _check_prologue() -> bool:
+	await wait_screen("prologue")
+	var phases := {}
+	var dream_shots := {"bg_pelabuhan_huru": false, "rakan_aisyah_north": false, "nirbana_south": false}
+	var tw := 0.0
+	while screen_name() == "prologue" and tw < 480.0:
+		var ph := str(scene().phase)
+		if ph != "" and not phases.has(ph):
+			phases[ph] = true
+			await wait(1.2)
+			await shot("prologue_" + ph)
+			if screen_name() != "prologue":
+				break
+		if ph == "reading" and not phases.has("ingatan") and int(scene()._words_read) >= 3:
+			phases["ingatan"] = true  # key words in the jar, the oldest falling out
+			await shot("prologue_ingatan")
+		for c in scene().get_children():
+			if c is TextureRect and c.texture:
+				for k in dream_shots:
+					if not dream_shots[k] and c.texture.resource_path.get_file().get_basename() == k and c.modulate.a > 0.9:
+						dream_shots[k] = true
+						await shot("prologue_" + k)
+		await wait(0.1)
+		tw += 0.1
+	for ph in ["phone", "room", "reading", "doze", "port", "gua"]:
+		if not phases.has(ph):
+			_fail("prologue never reached '%s' (got %s)" % [ph, str(phases.keys())])
+			return false
+	if dream_shots.values().has(false):
+		_fail("prologue dream scenes not shown: %s" % str(dream_shots))
+		return false
+	return true
+
+
 func _run() -> void:
 	if "--only=brawl" in OS.get_cmdline_user_args():
 		# quick loop while working on the Gelanggang
@@ -161,23 +198,15 @@ func _run() -> void:
 	hosted()._guest()
 
 	# ---- prologue + world intro, played in full
-	await wait_screen("prologue")
-	await wait(3.0)
-	await shot("prologue_room")
-	# the dream: the port in chaos, then Nirbana in Gua Warisan
-	var dream_shots := {"bg_pelabuhan_huru": false, "nirbana_south": false}
-	var tw := 0.0
-	while screen_name() == "prologue" and tw < 120.0:
-		for c in scene().get_children():
-			if c is TextureRect and c.texture:
-				for k in dream_shots:
-					if not dream_shots[k] and c.texture.resource_path.get_file().get_basename() == k and c.modulate.a > 0.9:
-						dream_shots[k] = true
-						await shot("prologue_" + k)
-		await wait(0.1)
-		tw += 0.1
-	if dream_shots.values().has(false):
-		_fail("prologue dream scenes not shown: %s" % str(dream_shots))
+	if not await _check_prologue():
+		return
+	if "--only=prologue" in OS.get_cmdline_user_args():
+		# quick loop while working on the introduction
+		await wait_screen("world", 120)
+		await wait_idle(240)
+		await shot("world_start")
+		print("AUTOTEST PASS (prologue only) in %d s" % int(_t))
+		get_tree().quit(0)
 		return
 	await wait_screen("world", 120)
 	await wait(2.0)

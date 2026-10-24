@@ -87,6 +87,36 @@
     "sprite": "",
     "tokoh": false
   },
+  "mak": {
+    "name": "Mak",
+    "portrait": "",
+    "sprite": "",
+    "tokoh": false
+  },
+  "aisyah": {
+    "name": "Aisyah",
+    "portrait": "pelajar_2",
+    "sprite": "rakan_aisyah",
+    "tokoh": false
+  },
+  "ravi": {
+    "name": "Ravi",
+    "portrait": "pelajar_4",
+    "sprite": "rakan_ravi",
+    "tokoh": false
+  },
+  "meiling": {
+    "name": "Mei Ling",
+    "portrait": "pelajar_3",
+    "sprite": "rakan_meiling",
+    "tokoh": false
+  },
+  "daniel": {
+    "name": "Daniel",
+    "portrait": "pelajar_1",
+    "sprite": "rakan_daniel",
+    "tokoh": false
+  },
   "makcik": {
     "name": "Mak Som",
     "portrait": "makcik",

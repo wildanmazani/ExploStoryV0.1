@@ -1,38 +1,5 @@
 {
   "_nota": "Semua dialog Bab 1 dan Bab 2. 's' = penutur (lihat characters.json), 'e' = ekspresi, 't' = teks. Dialog tokoh sejarah yang direka ditanda 'rekaan': true.",
-  "prolog_1a": [
-    {"s": "narator", "t": "Malam. Tiga hari sebelum SPM Sejarah."},
-    {"s": "alif", "e": "worried", "t": "Okey. Bab 1. Warisan Negara Bangsa. Baca sekali lagi..."}
-  ],
-  "prolog_1b": [
-    {"s": "alif", "e": "worried", "t": "Huruf-huruf ni... bergerak lagi."},
-    {"s": "alif", "e": "worried", "t": "Aku dah baca lima kali. Kenapa satu pun tak melekat?"}
-  ],
-  "prolog_1c": [
-    {"s": "alif", "e": "worried", "t": "Pau... kalau kau boleh cakap, mesti kau gelakkan aku."},
-    {"s": "narator", "t": "Jantung Alif berdegup laju. Bunyi jam makin kuat."}
-  ],
-  "prolog_2a": [
-    {"s": "alif", "e": "confused", "t": "Eh? Aku kat mana ni?"},
-    {"s": "pau", "e": "happy", "t": "Akhirnya! Lama aku tunggu kau tidur nyenyak."},
-    {"s": "alif", "e": "confused", "t": "Pau?! Kau... boleh cakap?"},
-    {"s": "pau", "e": "happy", "t": "Boleh! Di Dunia Explo-Story, aku hidup. Dan aku lapar. Tapi itu cerita lain."}
-  ],
-  "prolog_2b": [
-    {"s": "alif", "e": "confused", "t": "Papan tanda tu... tak ada perenggan panjang."},
-    {"s": "alif", "e": "happy", "t": "Gambar, objek, suara... Eh. Aku faham!"},
-    {"s": "pau", "t": "Kau tak bodoh, Alif. Kau cuma belajar dengan cara yang berbeza."}
-  ],
-  "prolog_2c": [
-    {"s": "pau", "t": "Ini Peta Jejak Pembelajaran. Setiap bendera ialah satu bab Sejarah Tingkatan 4."},
-    {"s": "pau", "t": "Bendera akan berkibar bila kau FAHAM bab itu. Bukan bila kau hafal."},
-    {"s": "alif", "e": "confident", "t": "Faham, bukan hafal. Okey. Aku boleh cuba."}
-  ],
-  "prolog_3": [
-    {"s": "pau", "t": "Tengok! Hanya Bendera 1 yang bercahaya. Warisan Negara Bangsa."},
-    {"s": "pau", "t": "Ketik aku bila-bila masa kalau perlukan petunjuk. Tekan lama kalau nak bertenang."},
-    {"s": "pau", "e": "happy", "t": "Jom. Kita mula dari akar."}
-  ],
   "peta_first": [
     {"s": "pau", "t": "Nirbana pecahkan Inskripsi Telaga Batu jadi empat serpihan. Satu serpihan, satu misi."},
     {"s": "pau", "t": "Pergi ke bangunan yang ada tanda seru. Bila cukup empat, kita boleh lawan penjaga pintu."},

@@ -1,231 +1,174 @@
 {
+  "pro_room": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Okey. Fokus, Alif. Bab 1.", "e": "worried"}
+      ]
+    ]
+  },
+  "pro_obj_kalendar": {
+    "variants": [
+      [
+        {"who": "alif", "text": "SPM Sejarah. Tiga hari lagi.", "e": "worried"},
+        {"who": "alif", "text": "Tiga hari untuk sepuluh bab. Tak panik. ...Panik sikit.", "e": "worried"}
+      ]
+    ]
+  },
+  "pro_obj_kertas": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Kertas Percubaan: 38 markah. Cikgu tulis, \"Fakta ada, tapi tak nampak kaitan.\"", "e": "confused"},
+        {"who": "alif", "text": "Kaitan apa? Aku hafal semua. Lepas tu semua hilang.", "e": "worried"}
+      ]
+    ]
+  },
+  "pro_obj_telefon": {
+    "variants": [
+      [
+        {"who": "mak", "text": "Lif, jangan tidur lewat sangat. Nasi ada dalam tudung saji. Mak sayang."},
+        {"who": "alif", "text": "...Okey, Mak. Lepas satu bab.", "e": "happy"}
+      ]
+    ]
+  },
+  "pro_obj_tingkap": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Dulu Tok selalu cerita pasal Hang Tuah, pasal kapal dagang di Melaka. Best je dengar.", "e": "happy"},
+        {"who": "alif", "text": "Kenapa bila masuk buku teks, jadi macam senarai barang dapur?", "e": "confused"}
+      ]
+    ]
+  },
+  "pro_obj_pau": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Kau senang la, Pau. Squishy je. Tak payah ambil SPM.", "e": "worried"}
+      ]
+    ]
+  },
+  "pro_obj_buku": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Okey. Buka buku. Kali ni mesti masuk.", "e": "confident"}
+      ]
+    ]
+  },
   "pro_read": {
     "variants": [
       [
-        {
-          "who": "alif",
-          "text": "\"Kesultanan Melayu Melaka diasaskan oleh... Para... Parameswara.\"",
-          "e": "worried"
-        },
-        {
-          "who": "alif",
-          "text": "Okey. Okey. Sekali lagi.",
-          "e": "worried"
-        }
+        {"who": "alif", "text": "\"Kesultanan Melayu Melaka diasaskan oleh... Para... Parameswara.\"", "e": "worried"}
+      ]
+    ]
+  },
+  "pro_read_fikir_1": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Okey, masuk... Eh. Yang tadi tu apa?", "e": "confused"}
+      ]
+    ]
+  },
+  "pro_read_fikir_2": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Banyak sangat fakta. Masuk satu, keluar satu.", "e": "worried"}
       ]
     ]
   },
   "pro_scramble": {
     "variants": [
       [
-        {
-          "who": "alif",
-          "text": "...Kejap. Tadi ayat ni lain.",
-          "e": "confused"
-        },
-        {
-          "who": "alif",
-          "text": "Aku dah baca lima kali.",
-          "e": "worried"
-        },
-        {
-          "who": "alif",
-          "text": "Kenapa satu pun tak melekat?",
-          "e": "worried"
-        }
+        {"who": "alif", "text": "...Kejap. Tadi ayat ni lain. Kenapa satu pun tak melekat?", "e": "worried"},
+        {"who": "alif", "text": "Dan apa kena-mengena semua ni dengan aku pun?", "e": "worried"}
       ]
     ]
   },
   "pro_pau": {
     "variants": [
       [
-        {
-          "who": "alif",
-          "text": "Kau senang la, Pau. Squishy je. Tak payah ambil SPM.",
-          "e": "worried"
-        },
-        {
-          "who": "alif",
-          "text": "...Rehat lima minit. Lima minit je.",
-          "e": "worried"
-        }
+        {"who": "alif", "text": "...Rehat lima minit. Lima minit je.", "e": "worried"}
       ]
     ]
   },
-  "pro_wake_1": {
+  "pro_friends_1": {
     "variants": [
       [
-        {
-          "who": "pau",
-          "text": "Weh. Weh! Bangun!",
-          "e": "happy"
-        },
-        {
-          "who": "alif",
-          "text": "Mm... lima minit lagi, mak...",
-          "e": "confused"
-        },
-        {
-          "who": "pau",
-          "text": "Aku bukan mak kau la!",
-          "e": "scared"
-        }
+        {"who": "alif", "text": "Eh? Aisyah? Ravi? Mei Ling? Daniel? Korang buat apa kat zaman dulu ni?", "e": "confused"}
       ]
     ]
   },
-  "pro_wake_2": {
+  "pro_friends_2": {
     "variants": [
       [
-        {
-          "who": "alif",
-          "e": "confused",
-          "text": "Pau?! Kau... kau CAKAP?"
-        },
-        {
-          "who": "pau",
-          "e": "happy",
-          "text": "Akhirnya! Lama aku tunggu kau tidur nyenyak."
-        },
-        {
-          "who": "alif",
-          "e": "confused",
-          "text": "Kejap, kejap. Mana bilik aku? Mana nota aku?"
-        },
-        {
-          "who": "pau",
-          "text": "Ni Dunia Explo-Story. Kat sini sejarah tak duduk diam dalam buku."
-        },
-        {
-          "who": "pau",
-          "text": "Dia hidup. Kau boleh jalan dalam dia, sentuh dia, tanya dia."
-        },
-        {
-          "who": "alif",
-          "e": "worried",
-          "text": "Pau... aku jumpa satu bayang dalam gua. Nama dia Nirbana. Dia pecahkan batu bersurat tu."
-        },
-        {
-          "who": "pau",
-          "e": "scared",
-          "text": "Aku nampak. Empat serpihan cahaya terbang ke empat tempat dalam Bab 1."
-        },
-        {
-          "who": "pau",
-          "text": "Satu serpihan, satu misi. Kumpul semua, baru pintu keluar terbuka."
-        },
-        {
-          "who": "alif",
-          "e": "worried",
-          "text": "Tapi aku... aku lembab bab baca ni. Kau tahu kan."
-        },
-        {
-          "who": "pau",
-          "text": "Kau tak bodoh, Alif. Kau cuma belajar dengan cara yang berbeza."
-        },
-        {
-          "who": "pau",
-          "text": "Kat sini, kau faham dulu. Hafal tu datang sendiri nanti."
-        },
-        {
-          "who": "alif",
-          "e": "confident",
-          "text": "Faham, bukan hafal. Okey... aku boleh cuba."
-        },
-        {
-          "who": "pau",
-          "e": "happy",
-          "text": "Ketik aku bila-bila masa kalau perlukan petunjuk. Tekan lama kalau nak bertenang."
-        },
-        {
-          "who": "pau",
-          "text": "Jom. Kampung Jejak kat atas sana. Kita mula dari akar."
-        }
+        {"who": "narator", "text": "Kabus ungu turun ke pelabuhan. Semakin tebal kabus itu, semakin kabur ingatan semua orang."},
+        {"who": "aisyah", "text": "Siapa kau? Aku tak kenal kau."},
+        {"who": "ravi", "text": "Ni pelabuhan aku. Orang luar, pergi!"}
+      ]
+    ]
+  },
+  "pro_friends_3": {
+    "variants": [
+      [
+        {"who": "meiling", "text": "Kau pun bukan orang sini!"},
+        {"who": "daniel", "text": "Kau yang patut keluar!"},
+        {"who": "alif", "text": "Weh! Kita satu kelas! Lima tahun sama-sama!", "e": "worried"}
       ]
     ]
   },
   "pro_huru": {
     "variants": [
       [
-        {
-          "who": "alif",
-          "text": "Eh?! Aku kat mana ni?",
-          "e": "confused"
-        },
-        {
-          "who": "alif",
-          "text": "Kenapa semua orang pakai baju zaman dulu? Kenapa diorang bergaduh?!",
-          "e": "worried"
-        },
-        {
-          "who": "narator",
-          "text": "Bayang-bayang hitam bersenjatakan tombak meluru ke arah Alif."
-        },
-        {
-          "who": "alif",
-          "text": "Lari! LARI!",
-          "e": "worried"
-        }
+        {"who": "narator", "text": "Bayang-bayang hitam bersenjatakan tombak meluru ke arah Alif."},
+        {"who": "alif", "text": "Lari! LARI!", "e": "worried"}
       ]
     ]
   },
   "pro_gua_1": {
     "variants": [
       [
-        {
-          "who": "narator",
-          "text": "Alif menyorok dalam sebuah gua batu kapur. Obor biru menyala. Di tengah gua, ada batu bersurat yang besar."
-        },
-        {
-          "who": "alif",
-          "text": "Inskripsi Telaga Batu... Macam dalam buku teks.",
-          "e": "confused"
-        },
-        {
-          "who": "narator",
-          "text": "Kabus hitam berkumpul, lalu menjelma menjadi satu bayang tinggi."
-        }
+        {"who": "narator", "text": "Alif menyorok dalam sebuah gua batu kapur. Di tengahnya ada batu bersurat yang besar."},
+        {"who": "alif", "text": "Inskripsi Telaga Batu... Macam dalam buku teks.", "e": "confused"}
       ]
     ]
   },
   "pro_gua_2": {
     "variants": [
       [
-        {
-          "who": "nirbana",
-          "text": "Selamat datang ke lipatan sejarah yang sedang lenyap, Alif."
-        },
-        {
-          "who": "nirbana",
-          "text": "Aku Nirbana. Aku suka benda yang dilupakan. Dan bangsa kau... makin lama makin lupa."
-        },
-        {
-          "who": "nirbana",
-          "text": "Kat luar tu, bila orang lupa Undang-undang dan Waadat, rakyat mula berpecah dan bergaduh sesama sendiri."
-        }
+        {"who": "nirbana", "text": "Aku Nirbana. Aku suka benda yang dilupakan."},
+        {"who": "nirbana", "text": "Kawan-kawan kau tadi? Mereka lupa apa yang menyatukan mereka: asal-usul, janji, undang-undang."},
+        {"who": "nirbana", "text": "Bila orang lupa sejarah, mereka cuma nampak beza. Lepas tu bergaduh. Senang kerja aku."}
       ]
     ]
   },
   "pro_gua_3": {
     "variants": [
       [
-        {
-          "who": "nirbana",
-          "text": "Nak bangun daripada mimpi ni? Cari keempat-empat serpihan tu. Lepas tu kalahkan penjaga pintu aku."
-        },
-        {
-          "who": "nirbana",
-          "text": "Tapi aku tak risau. Kau sendiri cakap tadi... satu pun tak melekat."
-        },
-        {
-          "who": "alif",
-          "text": "...",
-          "e": "worried"
-        },
-        {
-          "who": "alif",
-          "text": "Mungkin tak melekat lagi. Tapi aku belum habis cuba.",
-          "e": "confident"
-        }
+        {"who": "nirbana", "text": "Nak kawan-kawan kau ingat semula? Cari keempat-empat serpihan tu. Lepas tu kalahkan penjaga pintu aku."},
+        {"who": "nirbana", "text": "Tapi aku tak risau. Kau sendiri cakap tadi... satu pun tak melekat."},
+        {"who": "alif", "text": "Sejarah ni... bukan pasal orang dulu-dulu je. Pasal kita.", "e": "confused"},
+        {"who": "alif", "text": "Mungkin tak melekat lagi. Tapi aku belum habis cuba.", "e": "confident"}
+      ]
+    ]
+  },
+  "pro_wake_1": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Weh. Weh! Bangun!", "e": "happy"},
+        {"who": "alif", "text": "Mm... lima minit lagi, Mak...", "e": "confused"},
+        {"who": "pau", "text": "Aku bukan Mak kau la!", "e": "scared"}
+      ]
+    ]
+  },
+  "pro_wake_2": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Pau?! Kau... CAKAP? Ni kat mana?", "e": "confused"},
+        {"who": "pau", "text": "Dunia Explo-Story! Kat sini sejarah tak duduk diam dalam buku. Dia hidup.", "e": "happy"},
+        {"who": "alif", "text": "Pau, kawan-kawan aku dalam mimpi tadi... diorang dah tak kenal satu sama lain.", "e": "worried"},
+        {"who": "pau", "text": "Kabus Lupa Nirbana. Empat serpihan Telaga Batu dah terbang ke empat tempat dalam Bab 1.", "e": "scared"},
+        {"who": "pau", "text": "Kumpul semua serpihan, kabus hilang, baru pintu keluar terbuka."},
+        {"who": "alif", "text": "Tapi aku lembab bab baca ni. Kau tahu kan.", "e": "worried"},
+        {"who": "pau", "text": "Kau tak bodoh, Alif. Kau cuma belajar dengan cara berbeza. Kat sini, faham dulu. Hafal datang sendiri."},
+        {"who": "alif", "text": "Faham, bukan hafal. Dan kalau aku faham, esok aku boleh ajar Ravi dengan yang lain jugak.", "e": "confident"},
+        {"who": "pau", "text": "Ketik aku kalau perlukan petunjuk, tekan lama kalau nak bertenang. Jom, Kampung Jejak kat atas sana!", "e": "happy"}
       ]
     ]
   }
