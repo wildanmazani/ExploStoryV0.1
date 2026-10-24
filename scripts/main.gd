@@ -180,10 +180,51 @@ func open_settings() -> Control:
 	return p
 
 
-func open_nota() -> Control:
+## zone: open on that mission's first page (e.g. "1_3"), else the newest Bab
+func open_nota(zone: String = "") -> Control:
 	var p := NotaPanel.new()
+	p.start_zone = zone
 	overlay_root().add_child(p)
 	return p
+
+
+## A yes/no card over everything. Returns true for yes.
+func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak") -> bool:
+	Game.lock_input()
+	var root := Control.new()
+	UI.full(root)
+	root.theme = Game.theme
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(UI.dim(0.5))
+	var card := UI.panel("Paper")
+	card.custom_minimum_size = Vector2(620, 0)
+	var col := UI.vbox(16)
+	var l := UI.label(tr(text), "Ink", true)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(l)
+	var row := UI.hbox(16)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	var no := UI.button(tr(no_text), "", 200)
+	var yes := UI.button(tr(yes_text), "Primary", 200)
+	row.add_child(no)
+	row.add_child(yes)
+	col.add_child(row)
+	card.add_child(col)
+	root.add_child(UI.center(card))
+	overlay_root().add_child(root)
+	yes.grab_focus()
+	var pick := [false]
+	var done := func(v: bool):
+		pick[0] = v
+		root.set_meta("done", true)
+	yes.pressed.connect(done.bind(true))
+	no.pressed.connect(done.bind(false))
+	while is_instance_valid(root) and not root.has_meta("done"):
+		await get_tree().process_frame
+	Sfx.play("select", -6.0)
+	root.queue_free()
+	Game.unlock_input()
+	return pick[0]
 
 
 func open_muzium() -> Control:

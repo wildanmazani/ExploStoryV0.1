@@ -409,7 +409,7 @@ func ujian_questions(no: int, n: int) -> Array:
 		var right: String = opts[int(q["answer"])]
 		var mixed := opts.duplicate()
 		mixed.shuffle()
-		out.append({"q": q["q"], "options": mixed, "answer": mixed.find(right), "explain": q.get("explain", "")})
+		out.append({"q": q["q"], "options": mixed, "answer": mixed.find(right), "explain": q.get("explain", ""), "zon": q.get("zon", "")})
 	return out
 
 
@@ -524,20 +524,63 @@ func say(key_or_lines: Variant) -> void:
 
 
 # ------------------------------------------------------------------ input
-func _setup_input() -> void:
-	var map := {
-		"move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
-		"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN],
-		"interact": [KEY_E, KEY_SPACE, KEY_ENTER, KEY_Z], "pau": [KEY_H], "menu": [KEY_ESCAPE], "map": [KEY_M],
-		"run": [KEY_SHIFT, KEY_X],
-		# Gelanggang (brawl)
+const DEFAULT_KEYS := {
+	"move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
+	"move_up": [KEY_W, KEY_UP], "move_down": [KEY_S, KEY_DOWN],
+	"interact": [KEY_E, KEY_SPACE, KEY_ENTER, KEY_Z], "pau": [KEY_H], "menu": [KEY_ESCAPE], "map": [KEY_M],
+	"run": [KEY_SHIFT, KEY_X],
+	# Gelanggang (brawl)
+	"attack_punch": [KEY_J], "attack_kick": [KEY_K], "jump": [KEY_SPACE], "grab": [KEY_L],
+	"block": [KEY_I], "special": [KEY_U],
+}
+## Gelanggang keyboard layouts (Jeda > Kekunci). "wasd": left hand walks,
+## right hand fights. "panah": right hand on the arrows, every fight key in
+## one block under the left hand (Z X C / A S D).
+const BRAWL_KEYS := {
+	"wasd": {
+		"move_left": [KEY_A], "move_right": [KEY_D], "move_up": [KEY_W], "move_down": [KEY_S],
 		"attack_punch": [KEY_J], "attack_kick": [KEY_K], "jump": [KEY_SPACE], "grab": [KEY_L],
-		"block": [KEY_I], "special": [KEY_U],
-	}
-	for action in map.keys():
+		"block": [KEY_I], "special": [KEY_U], "run": [KEY_SHIFT],
+	},
+	"panah": {
+		"move_left": [KEY_LEFT], "move_right": [KEY_RIGHT], "move_up": [KEY_UP], "move_down": [KEY_DOWN],
+		"attack_punch": [KEY_Z], "attack_kick": [KEY_X], "jump": [KEY_C, KEY_SPACE], "grab": [KEY_A],
+		"block": [KEY_S], "special": [KEY_D], "run": [KEY_SHIFT],
+	},
+}
+
+
+func _setup_input() -> void:
+	for action in DEFAULT_KEYS.keys():
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
-		for k in map[action]:
-			var ev := InputEventKey.new()
-			ev.physical_keycode = k
-			InputMap.action_add_event(action, ev)
+		_bind(action, DEFAULT_KEYS[action])
+
+
+func _bind(action: String, keys: Array) -> void:
+	InputMap.action_erase_events(action)
+	for k in keys:
+		var ev := InputEventKey.new()
+		ev.physical_keycode = k
+		InputMap.action_add_event(action, ev)
+
+
+## the Gelanggang layout picked in its pause menu ("wasd" or "panah")
+func brawl_scheme() -> String:
+	var s := str(settings.get("brawl_keys", "wasd"))
+	return s if BRAWL_KEYS.has(s) else "wasd"
+
+
+## on = use the Gelanggang layout; off = back to the normal keys
+func use_brawl_keys(on: bool) -> void:
+	var scheme: Dictionary = BRAWL_KEYS[brawl_scheme()]
+	for action in scheme:
+		_bind(action, scheme[action] if on else DEFAULT_KEYS[action])
+
+
+## readable key names for an action in the current Gelanggang layout
+func brawl_key_names(action: String) -> String:
+	var names: Array = []
+	for k in BRAWL_KEYS[brawl_scheme()].get(action, []):
+		names.append({KEY_SPACE: "Space", KEY_SHIFT: "Shift", KEY_LEFT: tr("Kiri"), KEY_RIGHT: tr("Kanan"), KEY_UP: tr("Atas"), KEY_DOWN: tr("Bawah")}.get(k, OS.get_keycode_string(k)))
+	return " / ".join(names)

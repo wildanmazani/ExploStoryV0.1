@@ -8,14 +8,27 @@
        {"icon": "res://assets/objects/gate_srivijaya.png", "text": "Srivijaya", "sub": "abad ke-7, Palembang"},
        {"icon": "res://assets/objects/gate_melaka.png", "text": "Kesultanan Melayu Melaka", "sub": "abad ke-15"},
        {"icon": "res://assets/objects/gate_johor.png", "text": "Kesultanan Johor-Riau", "sub": "abad ke-16"}
-     ]},
+     ],
+     "huraian": [
+       {"h": "Ringkasnya", "t": ["Asas negara bangsa di Alam Melayu sudah wujud sebelum kedatangan Barat. Prosesnya ambil masa yang lama dan melalui beberapa kerajaan.", "Kerajaan awal yang hebat: Funan, Champa, Kedah Tua, Gangga Nagara, Srivijaya, Angkor dan Majapahit.", "Ciri-ciri negara bangsa Alam Melayu berbeza daripada Barat. Ciri-ciri ini berkembang mengikut peredaran masa dan keperluan."]},
+       {"h": "Rantaian warisan", "t": ["Srivijaya (berpusat di Palembang) meneruskan ciri negara bangsa yang diasaskan oleh Funan dan Champa, lalu muncul sebagai empayar yang terkenal.", "Kesultanan Melayu Melaka mewarisi ciri-ciri ini daripada Srivijaya dan menambah ciri-ciri lain untuk memperkukuh kerajaannya.", "Kesultanan Johor-Riau meneruskan ciri-ciri ini dengan menekankan kepentingan Islam.", "Warisan inilah yang menjadikan kerajaan-kerajaan ini terkenal dan berkuasa di Alam Melayu."]},
+       {"h": "Info", "t": ["Srivijaya dalam bahasa Sanskrit: \"sri\" bermaksud bercahaya, \"vijaya\" bermaksud kemenangan."]}
+     ],
+     "ingat": "Urutan kerajaan: Funan (abad pertama), Champa (abad kedua), Srivijaya (abad ke-7), Melaka (abad ke-15), Johor-Riau (abad ke-16)."},
     {"zone": "1_1", "title": "Empat Tiang Negara Bangsa", "style": "grid",
      "items": [
        {"icon": "res://assets/icons/mahkota.png", "text": "Raja", "sub": "Raja Champa dikaitkan dengan Dewa Siva"},
        {"icon": "res://assets/icons/timbangan.png", "text": "Undang-undang", "sub": "Kutara Manawa (Majapahit)"},
        {"icon": "res://assets/icons/peta.png", "text": "Wilayah Pengaruh", "sub": "Funan: Sungai Mekong hingga Segenting Kra"},
        {"icon": "res://assets/icons/kumpulan.png", "text": "Rakyat", "sub": "Sumpah setia Prasasti Telaga Batu"}
-     ]},
+     ],
+     "huraian": [
+       {"h": "1. Raja", "t": ["Raja ialah tonggak utama kerajaan. Kedudukannya diperkukuh oleh sistem pentadbiran yang dibantu oleh para pembesar.", "Raja sentiasa ditaati dan dianggap suci. Contoh: Raja Champa dianggap suci dan dikaitkan dengan Dewa Siva."]},
+       {"h": "2. Undang-undang", "t": ["Undang-undang dilaksanakan untuk memastikan kesejahteraan kerajaan. Ia terpakai di seluruh wilayah pengaruh dan menjadi panduan pentadbiran.", "Contoh: kerajaan Majapahit mengamalkan undang-undang Kutara Manawa."]},
+       {"h": "3. Wilayah pengaruh", "t": ["Kawasan yang rakyatnya menerima dan memperakui pemerintahan seseorang raja.", "Contoh: wilayah Funan sangat luas, dari Sungai Mekong, Teluk Cam Ranh, selatan Myanmar hingga Segenting Kra."]},
+       {"h": "4. Rakyat", "t": ["Penduduk di dalam sesebuah wilayah yang setia kepada raja dan tidak menderhaka.", "Contoh: rakyat Srivijaya menunjukkan kesetiaan melalui upacara persetiaan dan meminum air sumpah.", "Caranya: air dituang ke atas Inskripsi Telaga Batu, mengalir ke corong di bawahnya, lalu ditadah dan diminum oleh rakyat."]}
+     ],
+     "ingat": "4 ciri negara bangsa Alam Melayu: Raja, Undang-undang, Wilayah pengaruh, Rakyat."},
     {"zone": "1_2", "title": "Enam Panji Melaka", "style": "grid",
      "items": [
        {"icon": "res://assets/icons/mahkota.png", "text": "Kerajaan", "sub": "Sultan + Sistem Pembesar Empat Lipatan"},
@@ -24,7 +37,16 @@
        {"icon": "res://assets/icons/peta.png", "text": "Wilayah Pengaruh", "sub": "Taklukan, naungan, perkahwinan"},
        {"icon": "res://assets/icons/gulungan.png", "text": "Undang-undang", "sub": "Hukum Kanun Melaka, Undang-Undang Laut Melaka"},
        {"icon": "res://assets/icons/nobat.png", "text": "Lambang Kebesaran", "sub": "Adat istiadat, warna, nobat, regalia, cap mohor"}
-     ]},
+     ],
+     "huraian": [
+       {"h": "Kerajaan", "t": ["Kerajaan wujud kerana adanya raja. Raja ialah pemerintah tertinggi dan dibantu oleh pembesar.", "Sistem Pembesar Empat Lipatan menjadi tonggak pentadbiran Melaka.", "Selepas kedatangan Islam, pemerintah Melaka mula menggunakan gelaran sultan."]},
+       {"h": "Rakyat", "t": ["Rakyat taat setia kepada sultan dan mematuhi undang-undang. Secara umum, rakyat terdiri daripada orang Melayu dan Orang Laut.", "Golongan diperintah terdiri daripada golongan merdeka dan hamba.", "Sultan menjamin kesejahteraan rakyat; rakyat mengakui kekuasaan sultan. Inilah hubungan timbal balik."]},
+       {"h": "Kedaulatan", "t": ["Lambang kekuasaan tertinggi sultan: hak mutlak untuk mengawal rakyat dan wilayah.", "Kedaulatan Melaka diakui oleh kerajaan lain dan bebas daripada campur tangan kuasa asing.", "Diiktiraf oleh Dinasti Ming, yang menghantar utusan termasuk Laksamana Cheng Ho."]},
+       {"h": "Wilayah pengaruh", "t": ["Meliputi seluruh Semenanjung Tanah Melayu dan pantai timur Sumatera.", "Taklukan (melalui perang): Pahang, Kuala Linggi, Kelantan, Rokan, Inderagiri, Kampar.", "Naungan (perkahwinan atau persahabatan): Lingga, Patani, Kedah.", "Perkahwinan: Majapahit menghadiahkan Siantan kerana Sultan Mansur Shah berkahwin dengan Puteri Majapahit."]},
+       {"h": "Undang-undang", "t": ["Dua undang-undang bertulis: Hukum Kanun Melaka dan Undang-Undang Laut Melaka. Tujuannya mengukuhkan kerajaan dan melindungi rakyat."]},
+       {"h": "Lambang kebesaran", "t": ["Identiti kerajaan, keistimewaan sultan dan simbol kedaulatan.", "Contoh: adat istiadat, penggunaan warna, nobat, regalia dan cap mohor. Cap mohor digunakan untuk mengesahkan arahan sultan."]}
+     ],
+     "ingat": "6 ciri negara bangsa Melaka: Kerajaan, Rakyat, Kedaulatan, Wilayah pengaruh, Undang-undang, Lambang kebesaran."},
     {"zone": "1_3", "title": "Pembesar Melaka", "style": "grid",
      "items": [
        {"icon": "res://assets/portraits/tunperak.png", "text": "Bendahara", "sub": "Memangku sultan"},
@@ -32,20 +54,38 @@
        {"icon": "res://assets/portraits/syahbandar.png", "text": "Syahbandar", "sub": "Pelabuhan dan cukai kapal"},
        {"icon": "res://assets/icons/kunci.png", "text": "Temenggung", "sub": "Keamanan dalam kota"},
        {"icon": "res://assets/icons/kapal.png", "text": "Laksamana", "sub": "Keselamatan perairan"}
-     ]},
+     ],
+     "huraian": [
+       {"h": "Sistem Pembesar Empat Lipatan", "t": ["Keunggulan bermaksud kesempurnaan dan keistimewaan sesebuah kerajaan. Melaka unggul kerana pentadbiran dan undang-undangnya tersusun.", "Sistem ini tersusun dan berhierarki. Sultan mengetuai pemerintahan dan berkuasa dalam pemerintahan, peperangan, hubungan diplomatik dan agama.", "Pembesar Berempat: Bendahara, Penghulu Bendahari, Temenggung, Laksamana.", "Pembesar lain yang membantu: Syahbandar, Bentara, Orang Kaya, hulubalang dan penghulu."]},
+       {"h": "Dua peringkat pentadbiran", "t": ["Pusat: dijalankan oleh Pembesar Berempat. Permuafakatan sultan dengan pembesar mengelakkan tindakan sewenang-wenangnya oleh pemerintah.", "Jajahan: pembesar yang dilantik oleh sultan dan Pembesar Berempat mengurus daerah dan kampung, menjaga keamanan dan boleh mengutip cukai.", "Kawasan pegangan: wilayah, sungai atau pulau yang dikurniakan oleh sultan kepada Pembesar Berempat untuk ditadbir."]},
+       {"h": "Tugas setiap pembesar", "t": ["Bendahara: ketua pentadbir, ketua turus angkatan tentera, penasihat sultan dan pemangku sultan.", "Penghulu Bendahari: mengurus perbendaharaan. Pendapatan Melaka datang daripada perdagangan, pelbagai cukai dan ufti daripada wilayah taklukan serta naungan.", "Syahbandar: mengutip cukai di pelabuhan. Pembesar lain mengutip cukai di kawasan pegangan. Hasilnya digunakan untuk membeli senjata dan membina istana.", "Temenggung: menjaga keselamatan kota Melaka.", "Laksamana: panglima angkatan laut Melaka."]},
+       {"h": "Info", "t": ["Bendahara Tun Perak ialah bendahara paling lama berkhidmat. Beliau berkhidmat untuk empat sultan: Sultan Muzaffar Shah, Sultan Mansur Shah, Sultan Alauddin Riayat Shah dan Sultan Mahmud Shah."]}
+     ],
+     "ingat": "Pembesar Berempat: Bendahara, Penghulu Bendahari, Temenggung, Laksamana. Syahbandar BUKAN Pembesar Berempat."},
     {"zone": "1_3", "title": "Undang-undang Melaka", "style": "list",
      "items": [
        {"icon": "res://assets/icons/gulungan.png", "text": "UULM Fasal 9", "sub": "Malim lalai » pelayaran selamat, pedagang yakin"},
        {"icon": "res://assets/icons/gulungan.png", "text": "HKM Fasal 30", "sub": "Riba diharamkan » perdagangan adil"},
        {"icon": "res://assets/icons/gulungan.png", "text": "UULM Fasal 13", "sub": "Nakhoda bermesyuarat » kurang pertikaian"},
        {"icon": "res://assets/icons/gulungan.png", "text": "HKM: bahasa istana", "sub": "Titah hanya untuk raja » kedaulatan terpelihara"}
-     ]},
+     ],
+     "huraian": [
+       {"h": "Hukum Kanun Melaka (44 Fasal)", "t": ["Berasaskan syariah dan hukum adat. Kandungannya: jenayah, bidang kuasa sultan dan pembesar, kekeluargaan, dan ekonomi.", "Jenayah: Fasal 5.1, membunuh tanpa pengetahuan raja atau pembesar dihukum bunuh. Fasal 4, ingkar arahan dan memalsukan titah sultan juga dihukum bunuh.", "Sultan dan pembesar: Fasal 1 menjelaskan tugas sultan, Bendahara, Temenggung dan Penghulu Bendahari. Sultan melantik pembesar.", "Kekeluargaan: Fasal 26, pernikahan memerlukan empat orang saksi; jika tidak cukup, dua orang pun memadai.", "Ekonomi: Fasal 30, riba diharamkan. Peniaga mesti akil baligh, siuman dan melafazkan niat jual beli.", "Bahasa istana: perkataan titah, murka, kurnia dan anugerah hanya boleh digunakan oleh raja."]},
+       {"h": "Undang-Undang Laut Melaka", "t": ["Diusahakan oleh Nakhoda Jenal, Nakhoda Diri dan Nakhoda Sahak, dan diperkenan oleh Sultan Mahmud Shah.", "Peranan nakhoda: berkuasa penuh, diibaratkan raja dalam pelayaran. Fasal 13.1, nakhoda diberi keutamaan berniaga selama empat hari. Fasal 13.3, nakhoda mesti bermesyuarat jika mahu singgah di tempat yang tiada dalam senarai.", "Pelayaran: pegawai kapal termasuk jurumudi, malim dan jurubatu. Fasal 9, malim mesti arif tentang ombak, arus, bulan dan bintang; malim yang lalai sehingga kapal rosak dihukum bunuh.", "Jenayah: Fasal 5, sesiapa yang membunuh orang di atas kapal dikenakan hukuman mati.", "Percukaian: Fasal 6.3, nakhoda menentukan cukai penumpang, iaitu satu persepuluh daripada hasil penumpang yang turun sebelum sampai janjinya."]}
+     ],
+     "ingat": "Pentadbiran tersusun menjamin pemerintahan lancar; undang-undang yang sistematik menjamin keselamatan. Hasilnya: Melaka aman dan makmur."},
     {"zone": "1_4", "title": "Pohon dan Akar (Waadat)", "style": "list",
      "items": [
        {"icon": "res://assets/portraits/sapurba.png", "text": "Sang Sapurba (pemerintah)", "sub": "Adil, tidak zalim, jaga kebajikan"},
        {"icon": "res://assets/portraits/demang.png", "text": "Demang Lebar Daun (rakyat)", "sub": "Taat setia, tidak derhaka, patuh"},
        {"icon": "res://assets/proto/objects/pokok_2.png", "text": "Rantaian kukuh", "sub": "Raja adil » rakyat setia » serah & kerah » kerajaan stabil"},
        {"icon": "res://assets/proto/objects/pokok_0.png", "text": "Rantaian runtuh", "sub": "Mungkir janji » kepercayaan hilang » kerajaan goyah"}
-     ]}
+     ],
+     "huraian": [
+       {"h": "Waadat", "t": ["Waadat bermaksud perjanjian. Ia dibuat antara Sang Sapurba (mewakili golongan pemerintah) dengan Demang Lebar Daun (mewakili golongan diperintah).", "Rakyat berjanji tidak akan menderhaka kepada raja. Raja pula berjanji tidak akan mengubah perjanjian dengan rakyatnya.", "Sesiapa yang mungkir janji akan ditimpa bencana. Inilah asas hubungan timbal balik pemerintah dengan rakyat.", "Sejarah Melayu: rakyat itu umpama akar, raja itu umpama pohon. Tanpa akar, pohon tidak dapat berdiri."]},
+       {"h": "Golongan pemerintah", "t": ["Terdiri daripada sultan, pembesar, kerabat raja dan ulama.", "Peranan sultan: menaungi dan menjaga keselamatan rakyat, mewujudkan perpaduan, bertanggungjawab terhadap kemakmuran dan kestabilan kerajaan, serta memperkenalkan undang-undang.", "Peranan pembesar: menjaga keamanan dan kebajikan rakyat di kawasan pegangan, menjadi perantara sultan dengan rakyat, mengutip hasil melalui sistem serah dan membekalkan tentera melalui sistem kerah."]},
+       {"h": "Golongan diperintah", "t": ["Rakyat: peniaga, petani, tukang dan nelayan. Hamba: hamba raja, hamba berhutang dan hamba biasa.", "Peranan rakyat: taat setia, mematuhi arahan dan tidak menderhaka kerana takut ditimpa tulah, menjadi tentera, hadir gotong-royong, menjadi pengayuh atau pendayung kapal perang, dan menyumbang tenaga melalui sistem kerah (contohnya membina istana atau jalan).", "Tulah: kecelakaan yang menimpa seseorang kerana melanggar larangan atau titah raja dan menderhaka kepada raja."]}
+     ],
+     "ingat": "Hubungan baik pemerintah dengan rakyat memelihara kedaulatan raja dan kesejahteraan rakyat."}
   ]
 }

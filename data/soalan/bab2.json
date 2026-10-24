@@ -1,9 +1,10 @@
 {
- "_info": "Bank soalan objektif Bab 2 (Kebangkitan Nasionalisme) untuk Bilik Pertarungan dan Gelanggang. Sumber: STORYTELLING/bab2_kebangkitan_nasionalisme.json (soalan mcq). 'answer' = indeks jawapan betul (0-3). 'semak' = fakta perlu disemak guru.",
+ "_info": "Bank soalan objektif Bab 2 (Kebangkitan Nasionalisme) untuk Bilik Pertarungan dan Gelanggang. Sumber: STORYTELLING/bab2_kebangkitan_nasionalisme.json (soalan mcq). 'answer' = indeks jawapan betul (0-3). 'semak' = fakta perlu disemak guru. 'zon' = misi/subtopik soalan ini (untuk maklum balas Ujian Bab).",
  "bab": 2,
  "questions": [
   {
    "id": 0,
+   "zon": "2_1",
    "src": "B2_Q001",
    "sub": "2.1",
    "q": "Apakah maksud asas nasionalisme dalam konteks perjuangan sesebuah bangsa?",
@@ -18,6 +19,7 @@
   },
   {
    "id": 1,
+   "zon": "2_1",
    "src": "B2_Q002",
    "sub": "2.1",
    "q": "Siapakah tokoh sejarawan yang menyatakan bahawa nasionalisme merupakan satu gerakan yang meletakkan kesetiaan seseorang hanya kepada negara atau bangsanya melalui karya 'The Idea of Nationalism'?",
@@ -32,6 +34,7 @@
   },
   {
    "id": 2,
+   "zon": "2_1",
    "src": "B2_Q003",
    "sub": "2.1",
    "q": "Menurut Profesor William R. Roff, apakah faktor yang mencetuskan kebangkitan nasionalisme Melayu pada dekad terakhir sebelum Perang Dunia Kedua?",
@@ -46,6 +49,7 @@
   },
   {
    "id": 3,
+   "zon": "2_1",
    "src": "B2_Q004",
    "sub": "2.1",
    "q": "Tokoh manakah yang menegaskan bahawa perjuangan menentang penjajahan hendaklah mempunyai persatuan dan perpaduan yang kuat (National Fronts) dengan tetap berpegang pada tatatertib bangsa Melayu dan agama Islam?",
@@ -60,6 +64,7 @@
   },
   {
    "id": 4,
+   "zon": "2_1",
    "src": "B2_Q005",
    "sub": "2.1",
    "q": "Apakah pandangan Profesor Datuk Zainal Abidin Abdul Wahid berkaitan kewujudan nasionalisme Melayu?",
@@ -74,6 +79,7 @@
   },
   {
    "id": 5,
+   "zon": "2_2",
    "src": "B2_Q007",
    "sub": "2.2",
    "q": "Mengapakah peristiwa peralihan kuasa di England pada tahun 1688 dikenali sebagai Revolusi Keagungan (Glorious Revolution)?",
@@ -88,6 +94,7 @@
   },
   {
    "id": 6,
+   "zon": "2_2",
    "src": "B2_Q008",
    "sub": "2.2",
    "q": "Apakah karya ahli falsafah Inggeris, John Locke, yang menolak konsep pemerintahan raja berkuasa mutlak dan mempopularkan prinsip raja berperlembagaan?",
@@ -102,6 +109,7 @@
   },
   {
    "id": 7,
+   "zon": "2_2",
    "src": "B2_Q009",
    "sub": "2.2",
    "q": "Penduduk di 13 buah tanah jajahan British di Amerika telah melaungkan slogan berikut semasa menentang Akta Pelayaran, Akta Gula, Akta Setem, dan Akta Teh. Apakah slogan tersebut?",
@@ -116,6 +124,7 @@
   },
   {
    "id": 8,
+   "zon": "2_2",
    "src": "B2_Q010",
    "sub": "2.2",
    "q": "Siapakah tokoh ahli falsafah Perancis yang menulis karya 'The Social Contract' dan mengemukakan keunggulan suara rakyat yang digelar sebagai 'hasrat umum'?",
@@ -130,6 +139,7 @@
   },
   {
    "id": 9,
+   "zon": "2_3",
    "src": "B2_Q012",
    "sub": "2.3",
    "q": "Apakah konsep pegangan Mahatma Gandhi yang bermaksud 'berpegang teguh kepada kebenaran' dan menjadi asas perjuangan tanpa keganasan menentang British di India?",
@@ -144,6 +154,7 @@
   },
   {
    "id": 10,
+   "zon": "2_3",
    "src": "B2_Q013",
    "sub": "2.3",
    "q": "Pada awal abad ke-20, siapakah dua tokoh nasionalis radikal di India yang menggerakkan semangat penentangan secara militan terhadap British?",
@@ -158,6 +169,7 @@
   },
   {
    "id": 11,
+   "zon": "2_3",
    "src": "B2_Q014",
    "sub": "2.3",
    "q": "Dr. Sun Yat Sen telah mengemukakan Tiga Prinsip Rakyat (San Min Chu-i) sebagai ideologi perjuangan Revolusi China 1911. Apakah tiga prinsip tersebut?",
@@ -172,6 +184,7 @@
   },
   {
    "id": 12,
+   "zon": "2_3",
    "src": "B2_Q015",
    "sub": "2.3",
    "q": "Apakah tujuan Sayyid Jamal al-Din al-Afghani menubuhkan kumpulan dan menerbitkan akhbar 'al-Urwah al-Wuthqa' (Ikatan yang Kuat) pada tahun 1883?",
@@ -186,6 +199,7 @@
   },
   {
    "id": 13,
+   "zon": "2_3",
    "src": "B2_Q016",
    "sub": "2.3",
    "q": "Semasa era Pemulihan Meiji (1868), apakah prinsip yang dijadikan asas membina nasionalisme Jepun yang bermaksud sikap sanggup menanggung risiko dan sedia berkorban demi ketua dan negara?",
@@ -200,6 +214,7 @@
   },
   {
    "id": 14,
+   "zon": "2_4",
    "src": "B2_Q018",
    "sub": "2.4",
    "q": "Apabila Gerakan Propaganda dan Liga Filipina (1892) pimpinan Jose Rizal gagal, Andres Bonifacio telah menubuhkan pertubuhan revolusioner Katipunan. Apakah akhbar yang digunakan oleh Katipunan untuk menyebarkan idea revolusi?",
@@ -214,6 +229,7 @@
   },
   {
    "id": 15,
+   "zon": "2_4",
    "src": "B2_Q019",
    "sub": "2.4",
    "q": "Persatuan Belia Buddha yang ditubuhkan pada tahun 1906 di Burma (Myanmar) telah menggunakan satu isu sensitif untuk membangkitkan nasionalisme menentang British. Apakah isu tersebut?",
@@ -228,6 +244,7 @@
   },
   {
    "id": 16,
+   "zon": "2_4",
    "src": "B2_Q020",
    "sub": "2.4",
    "q": "Di Burma, golongan siswazah universiti menubuhkan Parti Do Bama Asiayone (Kami Orang Burma) untuk memperjuangkan kemerdekaan. Apakah gelaran yang digunakan oleh pemimpinnya seperti Aung San, Kyaw Nein, dan U Nu yang bermaksud 'Tuan'?",
@@ -242,6 +259,7 @@
   },
   {
    "id": 17,
+   "zon": "2_4",
    "src": "B2_Q021",
    "sub": "2.4",
    "q": "Apakah dua akhbar utama di Vietnam yang digunakan untuk mengkritik penindasan Perancis dan menuntut hak rakyat Vietnam?",
@@ -256,6 +274,7 @@
   },
   {
    "id": 18,
+   "zon": "2_4",
    "src": "B2_Q022",
    "sub": "2.4",
    "q": "Karya Raden Adjeng Kartini yang mendedahkan dasar diskriminasi Belanda di Indonesia telah diterbitkan pada tahun 1911 dan diterjemahkan ke dalam bahasa Inggeris sebagai 'Letters of a Javanese Princess'. Apakah judul asal karya tersebut?",
@@ -271,6 +290,7 @@
   },
   {
    "id": 19,
+   "zon": "2_4",
    "src": "B2_Q023",
    "sub": "2.4",
    "q": "Apakah tiga asas utama yang terkandung dalam ikrar 'Sumpah Pemuda' hasil Kongres Pemuda Indonesia pada tahun 1928?",
@@ -285,6 +305,7 @@
   },
   {
    "id": 20,
+   "zon": "2_4",
    "src": "B2_Q024",
    "sub": "2.4",
    "q": "Bagaimanakah Raja Mongkut dan Raja Chulalongkorn berjaya mengekalkan kemerdekaan Thailand daripada penjajahan kuasa Barat?",
@@ -299,6 +320,7 @@
   },
   {
    "id": 21,
+   "zon": "2_4",
    "src": "B2_Q025",
    "sub": "2.4",
    "q": "Siapakah dua tokoh yang menubuhkan Parti Rakyat dan melancarkan Revolusi Thai pada tahun 1932 bagi menamatkan pemerintahan raja berkuasa mutlak semasa era Raja Vajiravudh?",
@@ -314,6 +336,7 @@
   },
   {
    "id": 22,
+   "zon": "2_5",
    "src": "B2_Q027",
    "sub": "2.5",
    "q": "Siapakah pemerintah Kesultanan Kedah yang merupakan tokoh terawal menentang Syarikat Hindia Timur Inggeris (SHTI) bagi mendapatkan kembali Pulau Pinang?",
@@ -328,6 +351,7 @@
   },
   {
    "id": 23,
+   "zon": "2_5",
    "src": "B2_Q028",
    "sub": "2.5",
    "q": "Mengapakah masyarakat tempatan di negara kita terpaksa mengubah strategi penentangan daripada gerakan bersenjata secara terbuka kepada gerakan penulisan dan berpersatuan yang lebih sederhana?",
@@ -342,6 +366,7 @@
   },
   {
    "id": 24,
+   "zon": "2_6",
    "src": "B2_Q029",
    "sub": "2.6",
    "q": "Siapakah pengarang bagi novel 'Putera Gunung Tahan' dan 'Anak Mat Lela Gila' yang menyindir penjajah serta mengingatkan anak bangsa akan kepentingan menikmati kebebasan?",
@@ -356,6 +381,7 @@
   },
   {
    "id": 25,
+   "zon": "2_6",
    "src": "B2_Q030",
    "sub": "2.6",
    "q": "Apakah peranan akhbar 'Jawi Peranakan' sebagai antara media cetak terawal di negara kita?",
@@ -370,6 +396,7 @@
   },
   {
    "id": 26,
+   "zon": "2_6",
    "src": "B2_Q031",
    "sub": "2.6",
    "q": "Akhbar manakah yang diterajui oleh angkatan intelektual Melayu di Sarawak seperti Muhammad Rakawi Yusuf sebagai wadah mengkritik dasar pemerintahan Brooke yang mengabaikan hak bumiputera?",
@@ -384,6 +411,7 @@
   },
   {
    "id": 27,
+   "zon": "2_7",
    "src": "B2_Q033",
    "sub": "2.7",
    "q": "Manakah antara berikut merupakan kumpulan tokoh intelektual berpendidikan agama yang digelar sebagai Kaum Muda?",
@@ -398,6 +426,7 @@
   },
   {
    "id": 28,
+   "zon": "2_7",
    "src": "B2_Q034",
    "sub": "2.7",
    "q": "Bilakah akhbar 'Al-Imam' mula diterbitkan di Singapura bagi menyeru umat Islam kembali kepada ajaran Islam yang sebenar berpandukan al-Quran dan Hadis?",
@@ -412,6 +441,7 @@
   },
   {
    "id": 29,
+   "zon": "2_7",
    "src": "B2_Q035",
    "sub": "2.7",
    "q": "Apakah peranan Pejabat Karang Mengarang di Maktab Perguruan Sultan Idris (SITC) yang diketuai oleh Ketua Penterjemahnya, Za'ba?",
@@ -426,6 +456,7 @@
   },
   {
    "id": 30,
+   "zon": "2_7",
    "src": "B2_Q036",
    "sub": "2.7",
    "q": "Pada tahun 1929, apakah dua pertubuhan yang lahir di SITC yang akhirnya melahirkan persatuan radikal Kesatuan Melayu Muda (KMM)?",
@@ -440,6 +471,7 @@
   },
   {
    "id": 31,
+   "zon": "2_7",
    "src": "B2_Q037",
    "sub": "2.7",
    "q": "Di Sabah, bagaimanakah isu berkaitan pendidikan, tanah bumiputera, dan kewangan petani disuarakan pada peringkat awal sebelum kemunculan cawangan PASPAM pada tahun 1939?",
@@ -454,6 +486,7 @@
   },
   {
    "id": 32,
+   "zon": "2_6",
    "src": "B2_Q038",
    "sub": "2.7",
    "q": "Sekitar tahun 1930-an, akhbar berbahasa Cina manakah di Pulau Pinang yang mula memperjuangkan soal kesatuan sekerja dan keadilan sosioekonomi bagi masyarakat kelas bawahan?",
@@ -469,6 +502,7 @@
   },
   {
    "id": 33,
+   "zon": "2_6",
    "src": "B2_Q039",
    "sub": "2.7",
    "q": "Antara berikut, manakah dua akhbar masyarakat India yang memuatkan pemikiran dan kepentingan perpaduan bagi masyarakat kelas menengah India di negara ini?",
@@ -483,6 +517,7 @@
   },
   {
    "id": 34,
+   "zon": "2_7",
    "src": "B2_Q042",
    "sub": "2.7",
    "q": "Siapakah tokoh yang menubuhkan Kesatuan Melayu Singapura (KMS) pada tahun 1926 bagi memperjuangkan kepentingan orang Melayu dalam pentadbiran, politik, serta pelajaran teknik dan pengajian tinggi?",
@@ -497,6 +532,7 @@
   },
   {
    "id": 35,
+   "zon": "2_7",
    "src": "B2_Q043",
    "sub": "2.7",
    "q": "Di manakah cawangan Persaudaraan Sahabat Pena (PASPAM) ditubuhkan di Sabah pada tahun 1939 yang dianggotai oleh tokoh seperti Mohammad Yaakob, Mohammad Shamsudin Osman, dan Zakaria Gunn?",
@@ -511,6 +547,7 @@
   },
   {
    "id": 36,
+   "zon": "2_7",
    "src": "B2_Q044",
    "sub": "2.7",
    "q": "Kesatuan Melayu Muda (KMM) yang ditubuhkan oleh Ibrahim Haji Yaakob pada Mei 1937 berjuang melalui akhbar 'Majlis' untuk mewujudkan satu gagasan gabungan Tanah Melayu dan Indonesia. Apakah nama gagasan tersebut?",
@@ -525,6 +562,7 @@
   },
   {
    "id": 37,
+   "zon": "2_8",
    "src": "B2_Q046",
    "sub": "2.8",
    "q": "Apakah bukti kejayaan kesan politik hasil desakan golongan intelektual berpendidikan Inggeris dan KMS terhadap pentadbiran British?",
@@ -539,6 +577,7 @@
   },
   {
    "id": 38,
+   "zon": "2_8",
    "src": "B2_Q047",
    "sub": "2.8",
    "q": "Apakah nama persatuan kebajikan di Singapura yang tertubuh hasil gesaan Kaum Muda dan berjaya membangkitkan semangat berniaga dalam kalangan masyarakat Melayu?",
@@ -553,6 +592,7 @@
   },
   {
    "id": 39,
+   "zon": "2_8",
    "src": "B2_Q048",
    "sub": "2.8",
    "q": "Pada tahun 1930, guru wanita di Johor Bahru yang digerakkan oleh Ibu Zain (Hajah Zainon Munshi Sulaiman) telah menerbitkan sebuah majalah untuk memuatkan berita kemajuan dan pendidikan wanita. Apakah nama majalah tersebut?",
@@ -567,6 +607,7 @@
   },
   {
    "id": 40,
+   "zon": "2_8",
    "src": "B2_Q049",
    "sub": "2.8",
    "q": "Berapakah peningkatan bilangan guru lepasan SITC antara bulan Mac 1924 hingga bulan September 1940 yang berkhidmat membantu meningkatkan taraf pendidikan masyarakat?",

@@ -9,6 +9,7 @@ var location_title: String = ""
 var location_sub: String = ""
 var show_map_button: bool = false
 var world: Node = null  ## overworld: adds the Peta (map) and Tenang (calm) buttons
+var exit_action: Callable  ## rooms: shows a Keluar button that calls this
 
 var _level: Label
 var _exp: ProgressBar
@@ -45,7 +46,20 @@ func _ready() -> void:
 	_menu_btn.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_menu_btn.tooltip_text = tr("Buka menu")
 	_menu_btn.pressed.connect(func(): set_menu_open(not _menu.visible))
-	left.add_child(_menu_btn)
+	if exit_action.is_valid():  # rooms: a Keluar button next to Menu
+		var btn_row := UI.hbox(10)
+		btn_row.add_child(_menu_btn)
+		var out := UI.button(tr("Keluar"), "", 150)
+		out.custom_minimum_size.y = 56
+		out.tooltip_text = tr("Keluar dari bilik ini")
+		out.pressed.connect(func():
+			if not Game.is_locked():
+				set_menu_open(false)
+				exit_action.call())
+		btn_row.add_child(out)
+		left.add_child(btn_row)
+	else:
+		left.add_child(_menu_btn)
 	add_child(left)
 	_build_menu(left)
 

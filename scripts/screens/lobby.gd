@@ -6,10 +6,11 @@ extends Control
 ##    (Supabase, supabase/multiplayer.sql); offline it explains that.
 
 const UI = preload("res://scripts/ui/ui.gd")
+const BrawlGuide = preload("res://scripts/ui/brawl_guide.gd")
 
 var params: Dictionary = {}
 var _format := "1v1"
-var _level := "biasa"
+var _level := "mudah"  ## new players start easy
 var _faces: HBoxContainer
 var _right: VBoxContainer
 var _room_code := ""
@@ -61,7 +62,14 @@ func _bot_card() -> Control:
 	var card := UI.panel("Glass")
 	card.custom_minimum_size = Vector2(500, 470)
 	var c := UI.vbox(10)
-	c.add_child(UI.label("GELANGGANG PESTA SILAT", "InkHeading"))
+	var head := UI.hbox(10)
+	var ht := UI.label("GELANGGANG PESTA SILAT", "InkHeading")
+	ht.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(ht)
+	var how := UI.button(tr("Cara main"), "Blue", 0)
+	how.pressed.connect(_show_guide)
+	head.add_child(how)
+	c.add_child(head)
 	var d := UI.label("Jawab betul untuk dapat semangat dan senjata sekolah, kemudian bertarung! Tiada internet diperlukan.", "Ink", true)
 	d.custom_minimum_size.x = 440
 	c.add_child(d)
@@ -117,6 +125,21 @@ func _bot_card() -> Control:
 	_show_faces()
 	go.call_deferred("grab_focus")
 	return card
+
+
+## the same Cara Main as the Gelanggang pause menu
+func _show_guide() -> void:
+	Sfx.play("pop", -6.0)
+	var cover := Control.new()
+	UI.full(cover)
+	cover.mouse_filter = Control.MOUSE_FILTER_STOP
+	cover.add_child(UI.dim(0.6))
+	var card := BrawlGuide.card("Faham!")
+	var ok: Button = card.find_child("Ok", true, false)
+	ok.pressed.connect(cover.queue_free)
+	cover.add_child(UI.center(card))
+	add_child(cover)
+	ok.grab_focus()
 
 
 func _pick(row: HBoxContainer, chosen: Button) -> void:

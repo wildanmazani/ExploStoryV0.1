@@ -12,10 +12,10 @@ config_version=5
 
 config/name="Explo-Story"
 config/description="Explo-Story: Sejarah Tingkatan 4, Bab 1 Warisan Negara Bangsa"
-boot_splash/bg_color=Color(0.117647, 0.141176, 0.2, 1)
-boot_splash/show_image=false
 run/main_scene="res://scenes/title.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+boot_splash/bg_color=Color(0.117647, 0.141176, 0.2, 1)
+boot_splash/show_image=false
 
 [audio]
 
@@ -32,6 +32,12 @@ Sfx="*res://scripts/audio/sfx.gd"
 MusicDirector="*res://scripts/audio/music_director.gd"
 Main="*res://scripts/main.gd"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
@@ -42,23 +48,10 @@ wav={
 "compress/mode": 2
 }
 
-[input_devices]
-
-pointing/emulate_mouse_from_touch=true
-
-[display]
-
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
-window/handheld/orientation=0
-
 [rendering]
-
-2d/snap/snap_2d_transforms_to_pixel=true
-2d/snap/snap_2d_vertices_to_pixel=true
 
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true

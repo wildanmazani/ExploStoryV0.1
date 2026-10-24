@@ -31,6 +31,7 @@ func _build_puzzle() -> void:
 	questions = def.get("questions", [])
 	stats["total"] = questions.size()
 	stats["passed"] = true
+	stats["wrong"] = []  ## Ujian mode: {q, picked, right, explain, zon} per lost heart
 	_need = mini(int(def.get("need", questions.size())), questions.size())
 	var top := UI.hbox(10)
 	_count = UI.label("", "Small")
@@ -176,6 +177,9 @@ func _lose_heart(i: int) -> void:
 	shake(_hearts)
 	Sfx.play("bump", -2.0)
 	var right := int(_q()["answer"])
+	var opts: Array = _q()["options"]
+	stats["wrong"].append({"q": _q()["q"], "picked": opts[i], "right": opts[right],
+		"explain": _q().get("explain", ""), "zon": _q().get("zon", "")})
 	for j in _buttons.size():
 		_buttons[j].disabled = true
 		if j == i:

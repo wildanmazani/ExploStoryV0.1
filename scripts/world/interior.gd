@@ -72,11 +72,21 @@ func _ready() -> void:
 		$Objects.add_child(npc)
 
 	hud = Hud.new()
+	hud.exit_action = _leave
 	$HUD.add_child(hud)
 	$HUD.move_child(hud, 0)
 	hud.set_location(title.to_upper(), str(Game.zone_data(zone_id).get("subtopik", "")) if zone_id != "" else "")
 	prompt.theme = Game.theme
 	prompt.pressed.connect(func(): _interact(player.facing_cell()))
+
+	if not exit_cells.is_empty():
+		var arrow := ExitArrow.new()
+		var mid := Vector2.ZERO
+		for c in exit_cells:
+			mid += Vector2(c) * TILE + Vector2(TILE / 2.0, 0)
+		mid /= exit_cells.size()
+		arrow.position = Vector2(mid.x, minf(mid.y + 4, 166))  # stay on screen
+		add_child(arrow)
 
 	player.world = self
 	player.get_node("Camera2D").enabled = false
@@ -157,11 +167,19 @@ func is_walkable(c: Vector2i) -> bool:
 func _on_step(c: Vector2i) -> void:
 	Sfx.play_varied("step_wood", -6.0, 0.12)
 	if c in exit_cells:
-		busy = true
-		player.can_move = false
-		GameState.spawn_cell = return_cell_world
-		GameState.spawn_facing = "south"
-		GameState.go_to("res://scenes/world/world.tscn")
+		_leave()
+
+
+## back to the overworld, outside this building's door
+func _leave() -> void:
+	if busy or runner.busy:
+		return
+	busy = true
+	player.can_move = false
+	Sfx.play("whoosh", -10.0)
+	GameState.spawn_cell = return_cell_world
+	GameState.spawn_facing = "south"
+	GameState.go_to("res://scenes/world/world.tscn")
 
 
 func _process(_d: float) -> void:
@@ -184,7 +202,10 @@ func _process(_d: float) -> void:
 		prompt.text = "E / Ketik: " + label
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
-		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(screen.y + 8, 120, 640))
+		var y := screen.y + 8
+		if y + prompt.size.y > 600:  # near the door: above Alif's head, off the Keluar arrow
+			y = screen.y - 150 - prompt.size.y
+		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(y, 120, 640))
 
 
 func _build_exhibits() -> void:
@@ -266,6 +287,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if tc and tc.owns(event.position):
 			return  # a thumb on the D-pad / joystick, not a tap on the floor
 		var cell := Vector2i((get_global_mouse_position() / TILE).floor())
+		if _near_exit(get_global_mouse_position()):
+			_leave()
+			return
 		var target_id := ""
 		if npc and (cell == npc.cell or cell == npc.cell + Vector2i(0, -1)):
 			cell = npc.cell
@@ -286,6 +310,15 @@ func _unhandled_input(event: InputEvent) -> void:
 				player.walk_path(path, go)
 		elif is_walkable(cell):
 			player.walk_path(Pathfind.find(self, player.cell, cell))
+
+
+## a tap on (or just around) the Keluar arrow at the door
+func _near_exit(at: Vector2) -> bool:
+	for c in exit_cells:
+		var r := Rect2(Vector2(c) * TILE + Vector2(-6, -18), Vector2(TILE + 12, TILE + 24))
+		if r.has_point(at):
+			return true
+	return false
 
 
 func _interact(c: Vector2i) -> void:
@@ -319,3 +352,26 @@ func _interact(c: Vector2i) -> void:
 	elif not handled and Dialogue.has(id):
 		await Game.say(Dialogue.lines(id))
 	busy = false
+
+
+## Pulsing "Keluar" arrow over the door, drawn in pixels so it is crisp at 4x.
+class ExitArrow extends Node2D:
+	var _t := 0.0
+
+	func _ready() -> void:
+		z_index = 15
+
+	func _process(delta: float) -> void:
+		_t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var y := sin(_t * 4.0) * 1.5
+		var ink := Color(0.17, 0.11, 0.06)
+		var gold := Color(1, 0.86, 0.3)
+		# down arrow: shaft + head, with a dark outline
+		draw_rect(Rect2(-3, y - 9, 6, 7), ink)
+		draw_rect(Rect2(-2, y - 8, 4, 6), gold)
+		for i in 5:
+			draw_rect(Rect2(-6 + i, y - 2 + i, 12 - i * 2, 1), ink if i == 4 else gold)
+		draw_rect(Rect2(-7, y - 3, 14, 1), ink)

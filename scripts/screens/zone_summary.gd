@@ -91,7 +91,7 @@ func _ready() -> void:
 	art.add_child(at)
 	right.add_child(art)
 	if not params.get("first_time", true):
-		right.add_child(UI.label("Main semula: ganjaran sudah diterima sebelum ini.", "InkSmall"))
+		right.add_child(UI.label("Main semula untuk ulang kaji: tiada ganjaran kali ini.", "InkSmall"))
 	row.add_child(right)
 	card.add_child(row)
 	var mid := CenterContainer.new()

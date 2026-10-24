@@ -6,9 +6,11 @@ extends "res://scripts/ui/modal.gd"
 var _data: Dictionary
 var _page: int = 0
 var _page_box: VBoxContainer
+var _scroll: ScrollContainer
 var _page_label: Label
 var _prev: Button
 var _next: Button
+var start_zone := ""  ## open on this mission's first page
 
 
 func _init() -> void:
@@ -25,9 +27,14 @@ func _build() -> void:
 		if FileAccess.file_exists(path):
 			start = _data["pages"].size()  # open on the newest chapter
 			_data["pages"].append_array(Game.load_json(path).get("pages", []))
+	# the page scrolls: icon summary on top, the Huraian (textbook notes) under it
+	_scroll = ScrollContainer.new()
+	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_page_box = UI.vbox(12)
-	_page_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content.add_child(_page_box)
+	_page_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_scroll.add_child(_page_box)
+	content.add_child(_scroll)
 	var nav := UI.hbox(12)
 	_prev = UI.button("« Sebelum")
 	_prev.pressed.connect(func(): _show(_page - 1))
@@ -43,6 +50,11 @@ func _build() -> void:
 	_next.pressed.connect(func(): _show(_page + 1))
 	nav.add_child(_next)
 	content.add_child(nav)
+	if start_zone != "":
+		for i in _pages().size():
+			if str(_pages()[i].get("zone", "")) == start_zone:
+				start = i
+				break
 	_show(start)
 
 
@@ -55,6 +67,7 @@ func _show(i: int) -> void:
 	_page = clampi(i, 0, pages.size() - 1)
 	for c in _page_box.get_children():
 		c.queue_free()
+	_scroll.scroll_vertical = 0
 	var p: Dictionary = pages[_page]
 	var unlocked := Game.zone_done(str(p.get("zone", "")))
 	_page_label.text = tr("Bab %d") % Game.chapter_of(str(p.get("zone", "1_1"))) + "  ·  " + tr("Halaman %d / %d") % [_page + 1, pages.size()]
@@ -105,6 +118,38 @@ func _show(i: int) -> void:
 			r.add_child(tc)
 			grid.add_child(r)
 		_page_box.add_child(grid)
+	_add_huraian(p)
+
+
+## the simplified textbook notes: titled sections of short points, then an
+## "Ingat!" box with the one line worth remembering for the exam
+func _add_huraian(p: Dictionary) -> void:
+	var secs: Array = p.get("huraian", [])
+	if secs.is_empty():
+		return
+	var line := ColorRect.new()
+	line.color = Color(0.45, 0.32, 0.2, 0.4)
+	line.custom_minimum_size = Vector2(0, 2)
+	_page_box.add_child(UI.margin(line, 0, 6, 0, 0))
+	_page_box.add_child(UI.label(tr("HURAIAN"), "InkHeading"))
+	for sec in secs:
+		var h := UI.label(str(sec.get("h", "")), "Ink")
+		h.add_theme_color_override("font_color", Color("8a4b14"))
+		_page_box.add_child(h)
+		for t in sec.get("t", []):
+			var l := UI.label("•  " + str(t), "Ink", true)
+			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			_page_box.add_child(UI.margin(l, 14, 0, 8, 0))
+	if p.has("ingat"):
+		var box := PanelContainer.new()
+		box.add_theme_stylebox_override("panel", UI.sb(Color("fff1c2"), UI.GOLD, 3, 8, 12))
+		var row := UI.hbox(12)
+		row.add_child(UI.icon("res://assets/icons/bintang.png", 40))
+		var l := UI.label(tr("Ingat! ") + str(p["ingat"]), "Ink", true)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		box.add_child(row)
+		_page_box.add_child(UI.margin(box, 0, 8, 8, 8))
 
 
 func _read_page() -> void:
@@ -112,4 +157,11 @@ func _read_page() -> void:
 	var parts: PackedStringArray = [str(p.get("title", ""))]
 	for it in p.get("items", []):
 		parts.append("%s. %s." % [it.get("text", ""), it.get("sub", "")])
+	if Game.zone_done(str(p.get("zone", ""))):
+		for sec in p.get("huraian", []):
+			parts.append(str(sec.get("h", "")) + ".")
+			for t in sec.get("t", []):
+				parts.append(str(t))
+		if p.has("ingat"):
+			parts.append(tr("Ingat! ") + str(p["ingat"]))
 	Tts.speak(" ".join(parts).replace("»", ","))

@@ -145,6 +145,9 @@ func _run() -> void:
 		print("AUTOTEST PASS (brawl only)")
 		get_tree().quit(0)
 		return
+	if "--only=ronda3" in OS.get_cmdline_user_args():
+		await _check_ronda3()
+		return
 	await wait_screen("title")
 	await shot("title")
 	Game.goto("login")
@@ -925,3 +928,112 @@ func _solve(p: Node, label: String) -> void:
 	await wait(0.4)
 	await shot("done_" + label)
 	p.completed.emit(p.stats)
+
+
+## Playtest round 3 (2026-10-24): room exit, mission replay, Nota huraian,
+## Ujian Bab feedback, Gelanggang Cara Main / Jeda / key layouts.
+func _check_ronda3() -> void:
+	await wait_screen("title")
+	Game.load_profile("Tetamu", "guest")
+	Game.save["prolog_done"] = true
+	for z in Game.chapter_zones(1):
+		var st := Game.zone_state(z)
+		st["done"] = true
+		st["steps"] = []
+		for step in Game.zone_data(z).get("steps", []):
+			st["steps"].append(step["puzzle"])
+	Game.persist()
+	# room: Keluar arrow + HUD button take Alif back outside
+	GameState.go_to("res://scenes/interior/balai.tscn")
+	await wait_screen("balai")
+	await wait_idle()
+	await shot("r3_balai_exit")
+	var out := find_button(scene(), "Keluar")
+	if out == null:
+		_fail("no Keluar button in the Balai")
+		return
+	out.pressed.emit()
+	await wait_screen("world")
+	print("ronda3: Keluar ok")
+	# replay a finished mission from its NPC
+	GameState.go_to("res://scenes/interior/balai.tscn")
+	await wait_screen("balai")
+	await wait_idle()
+	var exp_before := int(Game.save["exp"])
+	scene()._interact(scene().npc.cell)
+	await wait(0.8)
+	await shot("r3_replay_ask")
+	var yes := find_button(Main.overlay_root(), "Main semula")
+	if yes == null:
+		_fail("no replay prompt")
+		return
+	yes.pressed.emit()
+	var t := 0.0
+	while Game.active_puzzle == null and t < 20.0:
+		await wait(0.2)
+		t += 0.2
+	if not Game.zone_state("1_3").has("replay") or Game.active_puzzle == null:
+		_fail("replay did not start")
+		return
+	await shot("r3_replay_puzzle")
+	print("ronda3: replay started, exp before ", exp_before)
+	# Nota opens on the mission page with the huraian
+	var n: Control = Main.open_nota("1_3")
+	await wait(0.6)
+	await shot("r3_nota_top")
+	n._scroll.scroll_vertical = 600
+	await wait(0.3)
+	await shot("r3_nota_huraian")
+	n.close()
+	Game.active_puzzle.queue_free()
+	Game.active_puzzle = null
+	Game.unlock_input()
+	# Ujian Bab: lose every heart, then the feedback card
+	Game.goto("ujian", {"chapter": 1})
+	await wait_screen("ujian")
+	t = 0.0
+	while Game.active_puzzle == null and t < 30.0:
+		await wait(0.2)
+		t += 0.2
+	for k in 3:
+		var p = Game.active_puzzle
+		if p == null:
+			break
+		p._pick((int(p._q()["answer"]) + 1) % 4)
+		await wait(0.4)
+		if p._next.visible:
+			p._advance()
+			await wait(0.3)
+	await wait(4.0)
+	await shot("r3_ujian_fail")
+	if find_button(scene(), "Cuba lagi") == null:
+		_fail("no fail card")
+		return
+	print("ronda3: ujian feedback ok")
+	# Gelanggang: first visit shows Cara Main, then Jeda works
+	Game.save["seen"].erase("gelanggang_cara")
+	Game.goto("gelanggang", {"format": "1v1", "level": "mudah"})
+	await wait_screen("gelanggang", 30.0)
+	await wait(0.5)
+	await shot("r3_brawl_guide")
+	var ok := find_button(scene(), "Mula")
+	if ok == null:
+		_fail("no Cara Main before the first match")
+		return
+	ok.pressed.emit()
+	await wait(1.0)
+	hosted()._open_pause()
+	await wait(0.4)
+	await shot("r3_brawl_pause")
+	find_button(scene(), "Cara main").pressed.emit()
+	await wait(0.3)
+	find_button(scene(), "Anak panah").pressed.emit()
+	await wait(0.3)
+	await shot("r3_brawl_keys_panah")
+	if Game.brawl_scheme() != "panah":
+		_fail("layout switch")
+		return
+	Game.set_setting("brawl_keys", "wasd")
+	hosted()._close_pause()
+	print("AUTOTEST PASS (ronda3)")
+	get_tree().quit(0)

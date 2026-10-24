@@ -91,7 +91,7 @@ func _round() -> void:
 	if stats.get("passed", false):
 		await _passed(stats)
 	else:
-		await _failed()
+		await _failed(stats)
 
 
 func _passed(stats: Dictionary) -> void:
@@ -107,25 +107,26 @@ func _passed(stats: Dictionary) -> void:
 	Game.goto("penutup", {"chapter": _ch})
 
 
-func _failed() -> void:
+func _failed(stats: Dictionary) -> void:
 	await Game.say(str(_cfg.get("fail", "")))
 	var cover := UI.dim(0.6)
 	cover.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(cover)
 	var card := UI.panel("Paper")
-	card.custom_minimum_size = Vector2(700, 0)
-	var c := UI.vbox(14)
+	card.custom_minimum_size = Vector2(940, 0)
+	var c := UI.vbox(12)
 	var t := UI.label(tr("Belum kali ini"), "InkHeading")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
-	var b := UI.label(tr("Tak apa. Setiap cubaan dapat soalan baru. Kau boleh cuba sekarang, atau ulang kaji Nota Alif dulu dan datang balik ke %s.") % _cfg.get("where", ""), "Ink", true)
+	var wrong: Array = stats.get("wrong", [])
+	if not wrong.is_empty():
+		c.add_child(_weak_topics(wrong))
+		c.add_child(_wrong_list(wrong))
+	var b := UI.label(tr("Tak apa. Setiap cubaan dapat soalan baru. Baca balik topik di atas dalam Nota Alif, kemudian cuba lagi."), "InkSmall", true)
 	b.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(b)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var nota := UI.icon_button("res://assets/icons/nota.png", "", Vector2(200, 64), " NOTA")
-	nota.pressed.connect(func(): Game.main.open_nota())
-	row.add_child(nota)
 	var back := UI.button(tr("Ulang kaji dulu"), "", 240)
 	back.pressed.connect(func(): Game.goto("peta"))
 	row.add_child(back)
@@ -141,3 +142,51 @@ func _failed() -> void:
 	cc.queue_free()
 	_round()
 
+
+## "Topik yang perlu dibaiki": each mission the player missed questions in,
+## most mistakes first, with a button that opens Nota Alif on that page.
+func _weak_topics(wrong: Array) -> Control:
+	var count := {}
+	for w in wrong:
+		var z := str(w.get("zon", ""))
+		count[z] = int(count.get(z, 0)) + 1
+	var zones := count.keys()
+	zones.sort_custom(func(a, b): return count[a] > count[b] or (count[a] == count[b] and a < b))
+	var box := UI.vbox(6)
+	box.add_child(UI.label(tr("Topik yang perlu dibaiki:"), "Ink"))
+	for z in zones:
+		var row := UI.hbox(12)
+		var topic := str(Game.zone_data(z).get("subtopik", tr("Ulang kaji umum"))) if z != "" else tr("Ulang kaji umum")
+		var l := UI.label("• %s  (%s)" % [topic, tr("%d salah") % count[z]], "Ink", true)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		if z != "":
+			var nb := UI.icon_button("res://assets/icons/nota.png", "", Vector2(150, 48), tr(" Baca nota"))
+			nb.pressed.connect(func(): Game.main.open_nota(z))
+			row.add_child(nb)
+		box.add_child(row)
+	return box
+
+
+## every question answered wrong: your answer, the right one and why
+func _wrong_list(wrong: Array) -> Control:
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 230)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	var list := UI.vbox(10)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for i in wrong.size():
+		var w: Dictionary = wrong[i]
+		var item := UI.vbox(2)
+		item.add_child(UI.label("%d. %s" % [i + 1, w.get("q", "")], "Ink", true))
+		var mine := UI.label(tr("Jawapan kau: %s") % w.get("picked", ""), "InkSmall", true)
+		mine.add_theme_color_override("font_color", Color("b03a2e"))
+		item.add_child(mine)
+		var right := UI.label(tr("Jawapan betul: %s") % w.get("right", ""), "InkSmall", true)
+		right.add_theme_color_override("font_color", Color("2e7d32"))
+		item.add_child(right)
+		if str(w.get("explain", "")) != "":
+			item.add_child(UI.label(str(w["explain"]), "InkSmall", true))
+		list.add_child(item)
+	scroll.add_child(list)
+	return scroll

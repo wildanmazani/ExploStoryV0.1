@@ -5,6 +5,10 @@ extends Node
 ## dialogue -> a visible change in the world. Steps live at "spots" (NPC ids
 ## or objects), shown with bouncing "!" markers.
 ##
+## A finished mission can be replayed any number of times for revision: talk
+## to one of its spots and say yes. Zone state then gets a "replay" list of the
+## steps done this time round; the world stays as it is and nothing is rewarded.
+##
 ## The host (world.gd or interior.gd) provides:
 ##   spot_ids() -> Array        which step locations exist in this scene
 ##   marker_pos(id) -> Vector2  where to float the "!" marker
@@ -66,7 +70,25 @@ func owns(id: String) -> bool:
 
 
 func _done(zid: String, s: Dictionary) -> bool:
-	return Game.zone_state(zid)["steps"].has(s["puzzle"])
+	var st := Game.zone_state(zid)
+	if st.has("replay"):
+		return st["replay"].has(s["puzzle"])
+	return st["steps"].has(s["puzzle"])
+
+
+static func replaying(zid: String) -> bool:
+	return Game.zone_state(zid).has("replay")
+
+
+## the finished (and not already replaying) mission that has a step at this spot
+func _replayable_at(id: String) -> String:
+	for zid in Game.ZONES:
+		if not Game.zone_done(zid) or replaying(zid):
+			continue
+		for s in Game.zone_data(zid).get("steps", []):
+			if str(s["at"]) == id:
+				return zid
+	return ""
 
 
 func _available(zid: String, i: int) -> bool:
@@ -88,7 +110,20 @@ func _available(zid: String, i: int) -> bool:
 func handle(id: String) -> bool:
 	var found := _step_at(id)
 	if found.is_empty():
-		return false
+		var again := _replayable_at(id)
+		if again == "":
+			return false
+		var z := Game.zone_data(again)
+		var yes: bool = await Game.main.ask(tr("Main semula Misi %s: %s?\nUntuk ulang kaji sahaja, tiada ganjaran.") % [again.replace("_", "."), z.get("title", "")], "Main semula", "Tak apa")
+		if not yes:
+			return false
+		Game.zone_state(again)["replay"] = []
+		Game.persist()
+		refresh()
+		found = _step_at(id)
+		if found.is_empty() or not _available(again, found["i"]):
+			Game.main.pau_say(tr("Jom! Ikut tanda seru (!) untuk mula semula."))
+			return true
 	var zid: String = found["zid"]
 	if not Game.zone_unlocked(zid):
 		var prev := Game.prev_zone(zid)
@@ -111,6 +146,17 @@ func run_step(zid: String, s: Dictionary) -> void:
 	await Game.say(str(s.get("before", "")))
 	var pid: String = s["puzzle"]
 	var stats := await run_puzzle(zone["puzzles"][pid], "%s_%s" % [zid, pid])
+	if st.has("replay"):  # revision run: no rewards, the world is already changed
+		st["replay"].append(pid)
+		Game.persist()
+		await Game.say(str(s.get("after", "")))
+		refresh()
+		busy = false
+		if st["replay"].size() >= zone.get("steps", []).size():
+			st.erase("replay")
+			Game.persist()
+			await complete(zid)
+		return
 	st["steps"].append(pid)
 	for k in ["first_try", "retries", "hints", "total"]:
 		st[k] = int(st.get(k, 0)) + int(stats.get(k, 0))
@@ -160,11 +206,12 @@ func run_puzzle(def: Dictionary, puzzle_id: String) -> Dictionary:
 
 func complete(zid: String) -> void:
 	var zone := Game.zone_data(zid)
-	await host.on_zone_complete(zid)
-	if zone.has("outro"):
-		await Game.say(str(zone["outro"]))
 	var st := Game.zone_state(zid)
 	var first_time := not bool(st.get("done", false))
+	if first_time:
+		await host.on_zone_complete(zid)
+	if zone.has("outro"):
+		await Game.say(str(zone["outro"]))
 	if first_time and zone.has("taunt"):  # every two missions Nirbana mocks from the mist
 		await Game.say(str(zone["taunt"]))
 	var level_up := false
