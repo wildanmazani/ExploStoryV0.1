@@ -1,0 +1,48 @@
+{
+ "_info": "Bilik Alif dalam Dunia Explo-Story (scripts/world/bilik_alif.gd, lukisan: scripts/world/bilik_art.gd). cells = petak [x, y] dalam bilik 20x11; petak barang tak boleh dipijak. Petak baris 2 ialah dinding (tengok dari lantai di bawahnya). 'beg' diambil semasa tutorial pertama.",
+ "exhibits": [
+  {"id": "katil", "label": "Katil", "cells": [[3, 3], [4, 3], [5, 3], [3, 4], [4, 4], [5, 4], [3, 5], [4, 5], [5, 5]], "lines": [
+   {"s": "alif", "t": "Katil aku. Bantal peluk pun ada."},
+   {"s": "pau", "t": "Jangan sambung tidur. Kabus Lupa tak tunggu orang."}
+  ]},
+  {"id": "meja_sisi", "label": "Gambar keluarga", "cells": [[6, 3]], "lines": [
+   {"s": "alif", "e": "happy", "t": "Gambar aku dengan Mak dan Tok masa raya."},
+   {"s": "alif", "t": "Tok la yang mula-mula cerita pasal Hang Tuah kat aku."}
+  ]},
+  {"id": "kalendar", "label": "Kalendar", "cells": [[7, 2]], "lines": [
+   {"s": "alif", "e": "worried", "t": "Tarikh SPM Sejarah pun ada bulatan merah kat sini."},
+   {"s": "pau", "t": "Relaks. Satu misi, satu langkah."}
+  ]},
+  {"id": "tingkap", "label": "Tingkap", "cells": [[8, 2], [9, 2], [10, 2], [11, 2]], "lines": [
+   {"s": "alif", "e": "confused", "t": "Pokok kelapa, langit cerah... ni bukan pemandangan rumah aku."},
+   {"s": "pau", "t": "Tu Kampung Jejak. Gerbang Masa kat utara sana. Misi pertama kita."}
+  ]},
+  {"id": "rak_buku", "label": "Rak buku", "cells": [[12, 3], [13, 3]], "lines": [
+   {"s": "alif", "t": "Buku cerita, buku latihan, poster Harimau Malaya."},
+   {"s": "alif", "e": "confused", "t": "Jadual belajar tu aku buat sendiri. Ikut? Tak pernah."},
+   {"s": "pau", "e": "happy", "t": "Kali ni kita ikut sama-sama."}
+  ]},
+  {"id": "kipas", "label": "Kipas", "cells": [[14, 3]], "lines": [
+   {"s": "alif", "t": "Kipas berdiri. Tanpa dia, aku tak boleh tidur."},
+   {"s": "pau", "e": "happy", "t": "Sedapnya angin... aku nak duduk depan ni je."}
+  ]},
+  {"id": "almari", "label": "Almari baju", "cells": [[15, 3], [16, 3], [15, 4], [16, 4]], "lines": [
+   {"s": "alif", "t": "Baju sekolah, baju Melayu raya..."},
+   {"s": "pau", "t": "Pakaian lain boleh beli dengan syiling. Ketik kad kau kat bucu kanan atas, pilih Kedai."}
+  ]},
+  {"id": "meja_belajar", "label": "Meja belajar", "cells": [[15, 6], [16, 6], [15, 7], [16, 7], [14, 7]], "lines": [
+   {"s": "alif", "t": "Buku teks Sejarah. Masih terbuka kat Bab 1."},
+   {"s": "alif", "e": "worried", "t": "Lampu meja ni dah tiga malam menyala sampai pagi."},
+   {"s": "pau", "t": "Kat sini kita belajar cara lain. Jalan, tengok, faham."}
+  ]},
+  {"id": "sejadah", "label": "Sejadah", "cells": [[3, 7], [4, 7], [3, 8], [4, 8]], "lines": [
+   {"s": "alif", "t": "Sejadah hadiah Tok."},
+   {"s": "alif", "t": "Mak selalu pesan, sesibuk mana pun, jangan tinggal solat."}
+  ]},
+  {"id": "beg", "label": "Beg sekolah", "cells": [[12, 7]], "lines": []},
+  {"id": "kasut", "label": "Kasut sekolah", "cells": [[12, 9]], "lines": [
+   {"s": "alif", "t": "Kasut sekolah. Baru sapu kapur semalam."},
+   {"s": "pau", "t": "Putih berkilat! Tapi kat dunia ni banyak jalan kaki. Siap sedia."}
+  ]}
+ ]
+}

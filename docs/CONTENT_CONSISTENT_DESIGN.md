@@ -70,7 +70,6 @@ Rules:
 | demang | Demang Lebar Daun | ruler of Palembang, deep green baju, tanjak, calm elder |
 | makcik | Mak Som | village auntie, floral baju kurung, tudung |
 | nelayan | Pak Mat | fisherman, faded singlet and sarong, straw hat |
-| kurator | Mak Teh | museum curator auntie, batik baju kurung, tudung, spectacles |
 | pencetak | Pak Hamid | 1930s printer, rolled sleeves, ink apron, songkok |
 | pelatih | Pelatih SITC | teacher trainee, white shirt, songkok, books |
 | profesor | Profesor Sejarawan | old historian, brown jacket, round glasses, book |

@@ -1,6 +1,6 @@
 """Import finished PixelLab characters made to docs/CONTENT_CONSISTENT_DESIGN.md.
 
-Run: python tools/import_characters.py tunperak=<character-uuid> kurator=<uuid> ...
+Run: python tools/import_characters.py tunperak=<character-uuid> pencetak=<uuid> ...
 For each one it downloads the character zip and writes (overwriting):
   assets/characters32/<id>/<id>_<dir>.png              idle south/east/north
   assets/characters32/<id>_walk/<id>_walk_<dir>_<i>.png  walk south/east/north

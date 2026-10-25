@@ -1,8 +1,8 @@
 {
   "_info": "Legenda peta mini. 'at' = petak [x, y] dalam dunia (140x60: pulau Bab 1 di kiri, Lembah Kebangkitan Bab 2 di kanan). 'zone' = misi di tempat itu. Kata kunci diambil dari data/nota.json dan data/nota_bab2.json.",
   "places": [
-    {"id": "permulaan", "name": "Bukit Permulaan", "icon": "res://assets/icons/bintang.png", "at": [19, 50], "info": "Tempat Alif terjaga"},
-    {"id": "kampung", "name": "Kampung Jejak", "icon": "res://assets/icons/kumpulan.png", "at": [33, 33], "info": "Peta Jejak, Muzium, Arena"},
+    {"id": "permulaan", "name": "Bukit Permulaan", "icon": "res://assets/icons/bintang.png", "at": [19, 50], "info": "Rumah Alif: tempat Alif terjaga"},
+    {"id": "kampung", "name": "Kampung Jejak", "icon": "res://assets/icons/kumpulan.png", "at": [33, 33], "info": "Peta Jejak, Rumah Alif, Arena"},
     {"id": "gerbang", "zone": "1_1", "name": "Misi 1.1: Gerbang Masa", "at": [34, 16]},
     {"id": "pelabuhan", "zone": "1_2", "name": "Misi 1.2: Pelabuhan Melaka", "at": [61, 41]},
     {"id": "melaka", "zone": "1_3", "name": "Misi 1.3: Balai Penghadapan", "at": [55, 29], "info": "Masuk ikut pintu Istana"},
@@ -20,7 +20,7 @@
   ],
   "landmarks": {
     "monument": {"name": "Peta Jejak", "icon": "res://assets/icons/peta.png"},
-    "muzium": {"name": "Muzium", "icon": "res://assets/icons/muzium.png"},
+    "rumah_alif": {"name": "Rumah Alif", "icon": "res://assets/icons/sekolah.png"},
     "istana": {"name": "Istana Melaka", "icon": "res://assets/icons/mahkota.png"},
     "arena": {"name": "Arena Ulang Kaji", "icon": "res://assets/icons/pedang.png"}
   }

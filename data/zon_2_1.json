@@ -14,7 +14,21 @@
     "id": "kitab_tafsiran",
     "nama": "Kitab Tafsiran Nasionalisme",
     "icon": "kitab",
-    "info": "Himpunan tafsiran tokoh: Hans Kohn, William R. Roff, Dato' Onn Jaafar, Dr. Burhanuddin al-Helmi dan ramai lagi."
+    "info": "Himpunan tafsiran tokoh: Hans Kohn, William R. Roff, Dato' Onn Jaafar, Dr. Burhanuddin al-Helmi dan ramai lagi.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Kitab Tafsiran Nasionalisme dari Lembah Kebangkitan."
+      },
+      {
+        "s": "pau",
+        "t": "Hans Kohn kata, nasionalisme ialah fahaman yang meletakkan kesetiaan tertinggi individu kepada negara bangsa."
+      },
+      {
+        "s": "pau",
+        "t": "Kat Tanah Melayu, semangat ni mula subur awal abad ke-20."
+      }
+    ]
   },
   "intro": "z21_intro",
   "objects": [

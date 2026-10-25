@@ -8,7 +8,7 @@ Terrain chars: ~ sea, s sand, r river/pond, . grass, , meadow, = dirt path
 Object chars (anchor = bottom-left cell of the footprint):
   P palm  T tree  B bush  R rocks  F flowers  f fence  H house  M market stall
   K Peta Jejak monument  Y banyan  G open flag gate  L locked flag gate  S sign
-  U muzium  I istana  J jetty (walkable over sea)  X Ming ship  b perahu
+  U Rumah Alif (was the muzium)  I istana  J jetty (walkable over sea)  X Ming ship  b perahu
   D gudang  n bridge (walkable over the river)  l lamp  w well
   j tempayan  k barrel  c crates  g log  u stump  e bench  x firewood
   p lily pads  q reeds (flat, no collision)
@@ -298,7 +298,7 @@ HOUSES = [(25, 27), (40, 27), (20, 36)]
 for hx, hy in HOUSES:
     place("H", hx, hy, force=True)
 place("U", 19, 42, force=True)
-entities["signs"].append({"pos": [19, 42], "id": "muzium", "size": [6, 3]})
+entities["signs"].append({"pos": [19, 42], "id": "rumah_alif", "size": [6, 3]})
 # five kingdom gates start in a jumble; the Misi 1.1 puzzle puts them in order
 # (1 Funan, 2 Champa, 3 Srivijaya, 4 Melaka, 5 Johor-Riau)
 GATE_SLOTS = [27, 30, 33, 36, 39]
@@ -360,6 +360,15 @@ for n in entities["npcs"]:
 for name, sp in entities["spots"].items():
     if name not in ("kapal",):
         reserve(sp["pos"][0], sp["pos"][1], sp["size"][0], sp["size"][1])
+# Arena Ulang Kaji: Guru Jalal and two pesilat practise in front of it (inside
+# the arena's reserved ring, so they change nothing else in the layout)
+entities["npcs"] += [
+    {"id": "guru_silat", "pos": [38, 39], "facing": "east", "wander": False},
+    {"id": "pesilat_amir", "pos": [40, 39], "facing": "east", "wander": False, "practice": True},
+    {"id": "pesilat_hafiz", "pos": [42, 39], "facing": "west", "wander": False, "practice": True},
+]
+for n in entities["npcs"][-3:]:
+    blocked[n["pos"][1]][n["pos"][0]] = True
 # the istana door and the gate passage stay open
 keep_clear(55, 29, 56, 30)
 reserve(55, 29, 2, 1)

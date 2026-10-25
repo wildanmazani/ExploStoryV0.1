@@ -123,6 +123,35 @@
     30
    ],
    "facing": "south"
+  },
+  {
+   "id": "guru_silat",
+   "pos": [
+    38,
+    39
+   ],
+   "facing": "east",
+   "wander": false
+  },
+  {
+   "id": "pesilat_amir",
+   "pos": [
+    40,
+    39
+   ],
+   "facing": "east",
+   "wander": false,
+   "practice": true
+  },
+  {
+   "id": "pesilat_hafiz",
+   "pos": [
+    42,
+    39
+   ],
+   "facing": "west",
+   "wander": false,
+   "practice": true
   }
  ],
  "signs": [
@@ -149,7 +178,7 @@
     19,
     42
    ],
-   "id": "muzium",
+   "id": "rumah_alif",
    "size": [
     6,
     3

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c23qfd6mpjaop"
-path="res://.godot/imported/kurator_east.png-e7a368c8faaacc371a1406739b64cd7b.ctex"
+uid="uid://bqybwkosct76c"
+path="res://.godot/imported/guru_silat.png-fe5c2018c832baccb43ebb1414d93ed3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters32/kurator/kurator_east.png"
-dest_files=["res://.godot/imported/kurator_east.png-e7a368c8faaacc371a1406739b64cd7b.ctex"]
+source_file="res://assets/portraits/guru_silat.png"
+dest_files=["res://.godot/imported/guru_silat.png-fe5c2018c832baccb43ebb1414d93ed3.ctex"]
 
 [params]
 

@@ -1,7 +1,7 @@
 extends Node
 ## Autoload "Main": global UI layers that live above every scene (from the
 ## first prototype's root node): dialogue (20), Pau button + hint bubble (25)
-## and overlays (30: settings, Nota Alif, Muzium, calm moment, toasts).
+## and overlays (30: settings, Nota Alif, Beg Alif, calm moment, toasts).
 ## Game.main points here, so Game.say(), pau_say(), toast() work anywhere.
 
 const UI = preload("res://scripts/ui/ui.gd")
@@ -9,7 +9,7 @@ const DialogueBox = preload("res://scripts/ui/dialogue_box.gd")
 const PauButton = preload("res://scripts/ui/pau_button.gd")
 const SettingsPanel = preload("res://scripts/ui/settings_panel.gd")
 const NotaPanel = preload("res://scripts/ui/nota_panel.gd")
-const MuziumPanel = preload("res://scripts/ui/muzium_panel.gd")
+const BegPanel = preload("res://scripts/ui/beg_panel.gd")
 const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
 const MapOverlay = preload("res://scripts/ui/map_overlay.gd")
 const ProfilePanel = preload("res://scripts/ui/profile_panel.gd")
@@ -227,8 +227,9 @@ func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak") -> bool
 	return pick[0]
 
 
-func open_muzium() -> Control:
-	var p := MuziumPanel.new()
+## Beg Alif: the artifacts found so far and the Kad Tokoh
+func open_beg() -> Control:
+	var p := BegPanel.new()
 	overlay_root().add_child(p)
 	return p
 

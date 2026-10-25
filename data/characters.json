@@ -232,13 +232,6 @@
     "tokoh": false,
     "rekaan": true
   },
-  "kurator": {
-    "name": "Mak Teh",
-    "portrait": "kurator",
-    "sprite": "kurator",
-    "tokoh": false,
-    "rekaan": true
-  },
   "pencetak": {
     "name": "Pak Hamid",
     "portrait": "pencetak",
@@ -252,5 +245,38 @@
     "sprite": "pelatih",
     "tokoh": false,
     "rekaan": true
+  },
+  "guru_silat": {
+    "name": "Guru Jalal",
+    "portrait": "guru_silat",
+    "sprite": "guru_silat",
+    "tokoh": false,
+    "rekaan": true,
+    "stand_in": {
+      "sprite": "syahbandar",
+      "portrait": "syahbandar"
+    }
+  },
+  "pesilat_amir": {
+    "name": "Amir",
+    "portrait": "pesilat_amir",
+    "sprite": "pesilat_amir",
+    "tokoh": false,
+    "rekaan": true,
+    "stand_in": {
+      "sprite": "alif_pahlawan",
+      "portrait": "alif_pahlawan_neutral"
+    }
+  },
+  "pesilat_hafiz": {
+    "name": "Hafiz",
+    "portrait": "pesilat_hafiz",
+    "sprite": "pesilat_hafiz",
+    "tokoh": false,
+    "rekaan": true,
+    "stand_in": {
+      "sprite": "alif_melayu",
+      "portrait": "alif_melayu_neutral"
+    }
   }
 }

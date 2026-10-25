@@ -11,7 +11,17 @@
     "id": "serpihan2",
     "nama": "Serpihan 2: Cap Mohor",
     "icon": "capmohor",
-    "info": "Cap mohor ialah cop rasmi raja, satu lambang kebesaran Kesultanan Melayu Melaka yang mengesahkan titah."
+    "info": "Cap mohor ialah cop rasmi raja, satu lambang kebesaran Kesultanan Melayu Melaka yang mengesahkan titah.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Cap Mohor. Ni cop rasmi raja Melaka."
+      },
+      {
+        "s": "pau",
+        "t": "Surat atau titah yang ada cap ni, barulah sah. Ia lambang kebesaran, sama macam nobat, regalia dan warna kuning."
+      }
+    ]
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_2_pelabuhan_melaka.png",

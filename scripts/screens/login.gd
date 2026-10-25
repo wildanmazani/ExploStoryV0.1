@@ -2,6 +2,7 @@ extends Control
 ## Module 1: Log masuk (FR-AUTH-01, FR-AUTH-03) + Guest mode (UR-LO-01).
 
 const UI = preload("res://scripts/ui/ui.gd")
+const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
 
 var params: Dictionary = {}
 var _user: LineEdit
@@ -14,7 +15,9 @@ func _ready() -> void:
 	UI.full(self)
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("tajuk")
-	add_child(UI.bg_image("res://assets/backgrounds/bg_skrin_tajuk.png", Color(0.75, 0.78, 0.8)))
+	var bd := TitleBackdrop.new()
+	bd.tint = Color(0.75, 0.78, 0.8)
+	add_child(bd)
 	var frame := UI.panel()
 	frame.custom_minimum_size = Vector2(520, 0)
 	var col := UI.vbox(12)

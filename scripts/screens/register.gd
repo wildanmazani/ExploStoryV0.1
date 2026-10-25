@@ -2,6 +2,7 @@ extends Control
 ## Module 1: Daftar akaun (FR-AUTH-02) with role and starting avatar.
 
 const UI = preload("res://scripts/ui/ui.gd")
+const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
 
 var params: Dictionary = {}
 var _name: LineEdit
@@ -18,7 +19,9 @@ var _negeri: OptionButton
 func _ready() -> void:
 	UI.full(self)
 	Game.main.set_pau_visible(false)
-	add_child(UI.bg_image("res://assets/backgrounds/bg_skrin_tajuk.png", Color(0.75, 0.78, 0.8)))
+	var bd := TitleBackdrop.new()
+	bd.tint = Color(0.75, 0.78, 0.8)
+	add_child(bd)
 	var frame := UI.panel()
 	frame.custom_minimum_size = Vector2(640, 0)
 	var col := UI.vbox(8)

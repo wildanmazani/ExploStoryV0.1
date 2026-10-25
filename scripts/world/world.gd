@@ -12,6 +12,7 @@ const UI = preload("res://scripts/ui/ui.gd")
 const Hud = preload("res://scripts/ui/hud.gd")
 const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 const Minimap = preload("res://scripts/ui/minimap.gd")
+const ObjectiveArrow = preload("res://scripts/ui/objective_arrow.gd")
 const HOLD_TIME := 0.6  ## long-press Pau = calm moment
 const LEMBAH_X := 82   ## columns from here on are Lembah Kebangkitan (Bab 2)
 
@@ -27,7 +28,7 @@ const OBJECTS := {
 	"F": {"tex": ["bunga_kuning", "bunga_merah_jambu"], "foot": Vector2i(2, 1), "flat": true, "sway": 0.5},
 	"f": {"tex": "pagar", "foot": Vector2i(1, 1)},
 	"H": {"tex": ["rumah_biru", "rumah_merah", "rumah_hijau"], "foot": Vector2i(6, 3), "talk": "house", "order": true},
-	"U": {"tex": "muzium", "foot": Vector2i(6, 3)},
+	"U": {"tex": "rumah_alif", "fallback": "rumah_biru", "foot": Vector2i(6, 3)},  # Rumah Alif
 	"M": {"tex": ["gerai_buah", "gerai_rempah"], "foot": Vector2i(4, 2), "order": true},
 	"D": {"tex": "gudang", "foot": Vector2i(6, 3)},
 	"n": {"tex": "jambatan", "foot": Vector2i(5, 2), "flat": true, "walk": true},
@@ -93,13 +94,13 @@ const KINGDOM := {"1": "funan", "2": "champa", "3": "srivijaya", "4": "melaka", 
 ## buildings you can walk into as story / museum rooms:
 ## id -> [scene, card title, card subtitle, Pau's line at the door]
 const ROOMS := {
-	"muzium": ["res://scenes/interior/muzium.tscn", "MUZIUM WARISAN", "Kampung Jejak", "Jom masuk muzium. Tengok serpihan yang kita dah kumpul!"],
+	"rumah_alif": ["res://scenes/interior/bilik_alif.tscn", "BILIK ALIF", "Rumah Alif, Kampung Jejak", "Bilik kau! Jom masuk kejap."],
 	"sitc": ["res://scenes/interior/sitc.tscn", "MAKTAB SITC", "Tanjung Malim, 1922", "Ni Maktab Perguruan Sultan Idris. Jom jenguk kelas dia."],
 	"jelutong_press": ["res://scenes/interior/jelutong.tscn", "JELUTONG PRESS", "Pulau Pinang, 1927", "Bunyi mesin cetak! Jom tengok dalam."],
 }
 const AREA_ZONE := {"gerbang": "1_1", "pelabuhan": "1_2", "siguntang": "1_4"}
 const LABELS := {
-	"house": "Rumah", "muzium": "Muzium", "monument": "Peta Jejak", "istana": "Istana Melaka",
+	"house": "Rumah", "rumah_alif": "Rumah Alif", "monument": "Peta Jejak", "istana": "Istana Melaka",
 	"sign_start": "Papan tanda", "sign_sea": "Papan tanda", "t5": "Papan tanda",
 	"arena": "Arena Ulang Kaji", "gate_locked": "Gerbang berkunci", "gate_open_1": "Gerbang Bab 1",
 	"gate_open_2": "Pintu Kabus Bab 2", "portal_balik": "Pintu Kabus", "dewan": "Dewan Kedaulatan Rakyat",
@@ -129,6 +130,9 @@ var _ent: Dictionary
 var _last_move := 0.0
 var _thread: Line2D
 var _pau_press := -1.0  ## time Pau was pressed (long-press), -1 = not pressed
+var _ujian_cells := {}  ## chapter -> cell where its Ujian Bab boss waits
+var _goal := {}         ## objective() of this frame (the maps and the arrow all ask)
+var _goal_frame := -1
 
 @onready var ground: TileMapLayer = $Ground
 @onready var decor: Node2D = $Decor
@@ -137,9 +141,8 @@ var _pau_press := -1.0  ## time Pau was pressed (long-press), -1 = not pressed
 @onready var pau: Pau = $Objects/Pau
 @onready var camera: Camera2D = $Objects/Player/Camera2D
 @onready var emote: Label = $HUD/Emote
-@onready var title_card: Control = $HUD/TitleCard
+@onready var title_card: Control = $HUD/TitleCard  ## area title card (_area_intro)
 @onready var prompt: Button = $HUD/Prompt
-@onready var skip: Button = $SkipLayer/Skip
 
 
 func _ready() -> void:
@@ -173,6 +176,10 @@ func _ready() -> void:
 	_place_minimap()
 	Game.settings_changed.connect(_place_minimap)
 	minimap.open_requested.connect(open_map)
+	var arrow := ObjectiveArrow.new()
+	arrow.world = self
+	$HUD.add_child(arrow)
+	$HUD.move_child(arrow, 1)  # under the HUD panels and the mini map
 	prompt.pressed.connect(func(): _interact(player.facing_cell()))
 	prompt.theme = Game.theme
 
@@ -195,16 +202,11 @@ func _ready() -> void:
 	add_child(runner)
 	runner.setup(self)
 	_capture_map()
-	skip.pressed.connect(_skip_intro)
 	if GameState.flags.get("just_crossed", false):
 		GameState.flags["just_crossed"] = false
 		_arrive_lembah.call_deferred()
-	if GameState.flags.get("world_intro", false):
-		GameState.flags["world_intro"] = false
-		_play_intro()
-	else:
-		_on_step_finished(spawn)
-		_controls_tip()
+	_on_step_finished(spawn)
+	_controls_tip()
 
 
 ## once, on a phone: Pau points at Tetapan > Kawalan
@@ -248,105 +250,6 @@ func _process(_delta: float) -> void:
 	MusicDirector.set_melody(Time.get_ticks_msec() / 1000.0 - _last_move < 6.0)
 
 
-# --- Babak 2: waking up in Dunia Explo-Story --------------------------------
-var _intro_skipped := false
-var _intro_tween: Tween
-
-
-func _play_intro() -> void:
-	busy = true
-	Main.dialog_box.auto_advance = true  # a cutscene: lines move on by themselves
-	Main.set_pau_visible(false)
-	hud.visible = false
-	skip.visible = true
-	pau.visible = false
-	player.sprite.rotation_degrees = -90.0  # lying on the grass
-	_show_emote("z z z")
-	MusicDirector.play("permulaan", 3.0)
-
-	# camera starts high over the island and drifts down to Alif
-	camera.position_smoothing_enabled = false
-	camera.zoom = Vector2(1.5, 1.5)
-	camera.position = Vector2(700, 330) - player.position
-	title_card.modulate.a = 0.0
-	Sfx.play("whoosh", -8.0)
-	_intro_tween = create_tween().set_parallel()
-	_intro_tween.tween_property(camera, "position", Vector2.ZERO, 6.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_intro_tween.tween_property(camera, "zoom", Vector2(4, 4), 6.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_intro_tween.tween_property(title_card, "modulate:a", 1.0, 1.2).set_delay(0.6)
-	_intro_tween.tween_property(title_card, "modulate:a", 0.0, 1.0).set_delay(4.4)
-	await _intro_tween.finished
-	if _intro_skipped: return
-	camera.position_smoothing_enabled = true
-	await get_tree().create_timer(0.8).timeout
-	if _intro_skipped: return
-
-	# Pau pops out of Alif's pocket
-	pau.visible = true
-	Sfx.play("pop")
-	pau.place_at(_free_neighbour(player.cell))
-	var p := Player.cell_to_pos(pau.cell)
-	pau.position = player.position
-	var t := create_tween()
-	t.tween_property(pau, "position", p, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	pau.hop()
-	await t.finished
-	if _intro_skipped: return
-	await Game.say(Dialogue.lines("pro_wake_1"))
-	if _intro_skipped: return
-
-	# Alif jolts awake
-	_show_emote("!")
-	Sfx.play("pop", 0.0, 1.4)
-	player.sprite.rotation_degrees = 0.0
-	player.facing = "west"
-	player.sprite.play("idle_west")
-	var j := create_tween()
-	j.tween_property(player.sprite, "position:y", -6.0, 0.1)
-	j.tween_property(player.sprite, "position:y", 0.0, 0.15)
-	await get_tree().create_timer(0.7).timeout
-	emote.visible = false
-	if _intro_skipped: return
-	await Game.say(Dialogue.lines("pro_wake_2"))
-	_end_intro()
-
-
-func _skip_intro() -> void:
-	if _intro_skipped:
-		return
-	_intro_skipped = true
-	Sfx.play("select")
-	if _intro_tween:
-		_intro_tween.kill()
-	Main.dialog_box.cancel()
-	_end_intro()
-
-
-func _end_intro() -> void:
-	Main.dialog_box.auto_advance = false
-	skip.visible = false
-	emote.visible = false
-	hud.visible = true
-	title_card.modulate.a = 0.0
-	camera.zoom = Vector2(4, 4)
-	camera.position = Vector2.ZERO
-	camera.position_smoothing_enabled = true
-	player.sprite.rotation_degrees = 0.0
-	player.sprite.position = Vector2.ZERO
-	pau.visible = true
-	if pau.cell == player.cell or pau.cell == Vector2i.ZERO:
-		pau.place_at(_free_neighbour(player.cell))
-	busy = false
-	current_area = ""
-	_on_step_finished(player.cell)
-	_controls_tip()
-
-
-func _show_emote(text: String) -> void:
-	emote.text = text
-	emote.visible = true
-
-
 # --- building -----------------------------------------------------------
 func _build_objects() -> void:
 	var rows := FileAccess.get_file_as_string("res://data/world/objects.txt").split("\n", false)
@@ -374,7 +277,10 @@ static func object_texture(def: Dictionary, anchor: Vector2i, nth: int) -> Strin
 func _spawn_object(ch: String, anchor: Vector2i, nth := 0) -> void:
 	var def: Dictionary = OBJECTS[ch]
 	var foot: Vector2i = def["foot"]
-	var tex: Texture2D = load("res://assets/objects/%s.png" % object_texture(def, anchor, nth))
+	var path := "res://assets/objects/%s.png" % object_texture(def, anchor, nth)
+	if not ResourceLoader.exists(path) and def.has("fallback"):  # new art not dropped in yet
+		path = "res://assets/objects/%s.png" % def["fallback"]
+	var tex: Texture2D = load(path)
 	var s := Sprite2D.new()
 	s.texture = tex
 	s.offset = CharacterFrames.visible_bottom_offset(tex)
@@ -447,6 +353,8 @@ func _build_entities() -> void:
 		objects.add_child(npc)
 		if n.get("wander", true) and not blocked.has(at):
 			npc.enable_wander(self, int(n.get("radius", 2)))
+		if n.get("practice", false):
+			npc.enable_practice()
 		npcs[at] = npc
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
@@ -516,6 +424,7 @@ func _spawn_ujian() -> void:
 		npcs[at] = npc
 		blocked[at] = true
 		interact[at] = {"type": "ujian", "id": str(n)}
+		_ujian_cells[n] = at
 		var m := ZoneRunner.Marker.new()
 		m.position = Player.cell_to_pos(at) + Vector2(0, -38)
 		objects.add_child(m)
@@ -726,6 +635,77 @@ func marker_pos(id: String) -> Vector2:
 
 func return_cell() -> Vector2i:
 	return player.cell
+
+
+# --- navigation arrow (anak panah penunjuk) ---------------------------------
+## Where Alif should go next, for the arrows on the maps and at the screen
+## edge: {"tile": Vector2 (tile units, centre), "name": String}, or {} when
+## there is nothing to do. In order: the current mission's nearest "!" (a step
+## may set "target": [x, y] to point somewhere else), a waiting Ujian Bab boss,
+## then the next mission's place (zone "target", else its map legend spot).
+## A target on the other island points at the Pintu Kabus instead.
+func objective() -> Dictionary:
+	if _goal_frame != Engine.get_process_frames():
+		_goal_frame = Engine.get_process_frames()
+		_goal = _find_objective()
+	return _goal
+
+
+func _find_objective() -> Dictionary:
+	var out := {}
+	for zid in Game.ZONES:
+		var best := Vector2(-1, -1)
+		for id in runner.markers:
+			if not runner.markers[id].visible:
+				continue
+			var f: Dictionary = runner.step_at(id)
+			if f.is_empty() or f["zid"] != zid:
+				continue
+			var t: Array = f["step"].get("target", [])
+			var tile := Vector2(t[0], t[1]) + Vector2(0.5, 0.5) if t.size() == 2 else _spot_tile(id)
+			if tile.x >= 0 and (best.x < 0 or tile.distance_to(Vector2(player.cell)) < best.distance_to(Vector2(player.cell))):
+				best = tile
+		if best.x >= 0:
+			out = {"tile": best, "name": _misi_name(zid)}
+			break
+	if out.is_empty():
+		for n in _ujian_cells:
+			out = {"tile": Vector2(_ujian_cells[n]) + Vector2(0.5, 0.5), "name": tr("Ujian Bab %d") % n}
+			break
+	if out.is_empty():
+		var nz := Game.next_zone()
+		if nz != "" and Game.zone_unlocked(nz):
+			var t: Array = Game.zone_data(nz).get("target", [])
+			if t.size() == 2:
+				out = {"tile": Vector2(t[0], t[1]) + Vector2(0.5, 0.5), "name": _misi_name(nz)}
+			for p in MapView.legend()["places"]:
+				if out.is_empty() and str(p.get("zone", "")) == nz:
+					out = {"tile": Vector2(p["at"][0], p["at"][1]) + Vector2(0.5, 0.5), "name": _misi_name(nz)}
+	if out.is_empty():
+		return out
+	# the other island: first the Pintu Kabus on this side
+	var here_lembah := player.cell.x >= LEMBAH_X
+	if (out["tile"].x >= LEMBAH_X) != here_lembah:
+		var door := Vector2(-1, -1)
+		for c in portals:
+			if (c.x >= LEMBAH_X) == here_lembah and (door.x < 0 or Vector2(c).distance_to(Vector2(player.cell)) < door.distance_to(Vector2(player.cell))):
+				door = Vector2(c) + Vector2(0.5, 0.5)
+		if door.x >= 0:
+			out = {"tile": door, "name": tr("Pintu Kabus"), "then": out["name"]}
+	return out
+
+
+func _misi_name(zid: String) -> String:
+	return tr("Misi %s") % zid.replace("_", ".")
+
+
+## centre of a spot (object) or an NPC, in tiles
+func _spot_tile(id: String) -> Vector2:
+	if spots.has(id):
+		var sp: Dictionary = spots[id]
+		return Vector2(sp["pos"][0] + sp["size"][0] / 2.0, sp["pos"][1] + 0.5)
+	var n := npc_node(id)
+	return Vector2(n.cell) + Vector2(0.5, 0.5) if n else Vector2(-1, -1)
 
 
 func apply_after(zid: String, s: Dictionary, animate: bool) -> void:
@@ -989,6 +969,41 @@ func _talk_or_act(id: String) -> void:
 		"arena":
 			GameState.spawn_cell = player.cell
 			Game.goto("lobby")
+		"guru_silat":
+			await _jurus_ingatan()
+
+
+## Arena Ulang Kaji side task: Guru Jalal's Jurus Ingatan, three revision
+## questions from the missions already finished (a reward the first time,
+## then for practice). Opens once the first Serpihan is found.
+func _jurus_ingatan() -> void:
+	var done_z: Array = Game.ZONES.filter(func(z): return Game.zone_done(z))
+	if done_z.is_empty():
+		await Game.say(Dialogue.lines("silat_jurus_belum"))
+		return
+	var first: bool = not Game.save["seen"].has("jurus_ingatan")
+	var q := tr("Belajar Jurus Ingatan dengan Guru Jalal? Tiga soalan ulang kaji, tiada penalti.") if first 		else tr("Ulang Jurus Ingatan? Untuk ulang kaji sahaja.")
+	if not await Main.ask(q, "Jom!", "Nanti dulu"):
+		return
+	var qs: Array = []
+	for n in range(1, Game.current_chapter() + 1):
+		qs.append_array(Game.ujian_questions(n, 99, done_z))
+	qs.shuffle()
+	await runner.run_puzzle({
+		"type": "objektif", "title": tr("Jurus Ingatan"),
+		"instruction": tr("Jawab macam buka langkah: tenang, satu-satu."),
+		"hint": "Ingat balik apa yang kau belajar dalam misi tadi.",
+		"done_text": tr("Langkah demi langkah. Itulah Jurus Ingatan!"),
+		"questions": qs.slice(0, 3),
+	}, "silat_jurus")
+	if first:
+		Game.save["seen"].append("jurus_ingatan")
+		if Game.add_reward(30, 15):
+			Game.toast(tr("NAIK TAHAP! Tahap %d") % int(Game.save["level"]), Color("8fe08a"))
+		Game.persist()
+		Game.toast("+30 EXP   +15 Syiling")
+		MusicDirector.stinger("st_item")
+	await Game.say(Dialogue.lines("silat_jurus_lepas"))
 
 
 ## Pintu Kabus: Kampung Jejak <-> Lembah Kebangkitan (the world scene reloads

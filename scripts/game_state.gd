@@ -19,7 +19,7 @@ const CHAPTERS := [
 var unlocked_chapters: int:
 	get:
 		return Game.current_chapter()
-var flags := {}              # session flags, e.g. flags["world_intro"] = true
+var flags := {}              # session flags, e.g. flags["bilik_intro"] = true
 var spawn_cell = null        # Vector2i to place Alif at after a warp
 var spawn_facing := "south"
 

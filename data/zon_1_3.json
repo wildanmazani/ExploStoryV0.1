@@ -10,7 +10,21 @@
     "id": "serpihan3",
     "nama": "Serpihan 3: Naskhah Hukum Kanun",
     "icon": "kitab",
-    "info": "Hukum Kanun Melaka (44 fasal) dan Undang-Undang Laut Melaka (25 fasal) menjaga ketenteraman di darat dan di laut."
+    "info": "Hukum Kanun Melaka (44 fasal) dan Undang-Undang Laut Melaka (25 fasal) menjaga ketenteraman di darat dan di laut.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Naskhah Hukum Kanun Melaka. Ada 44 fasal."
+      },
+      {
+        "s": "pau",
+        "t": "Undang-Undang Laut Melaka pula 25 fasal. Kat laut, nakhoda diibaratkan macam raja dalam kapal."
+      },
+      {
+        "s": "alif",
+        "t": "Patutlah pedagang suka datang Melaka. Ada peraturan, rasa selamat."
+      }
+    ]
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_3_balai_penghadapan.png",

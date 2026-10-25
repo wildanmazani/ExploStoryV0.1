@@ -15,7 +15,17 @@
     "id": "bill_of_rights",
     "nama": "Bill of Rights & The Social Contract",
     "icon": "gulungan",
-    "info": "Bill of Rights lahir daripada Revolusi Keagungan 1688. The Social Contract tulisan Rousseau menggerakkan Revolusi Perancis 1789."
+    "info": "Bill of Rights lahir daripada Revolusi Keagungan 1688. The Social Contract tulisan Rousseau menggerakkan Revolusi Perancis 1789.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Bill of Rights, hasil Revolusi Keagungan 1688 di England. Kuasa raja mula dihadkan."
+      },
+      {
+        "s": "pau",
+        "t": "Sebelah dia, The Social Contract tulisan Rousseau. Idea ni yang bakar semangat Revolusi Perancis 1789."
+      }
+    ]
   },
   "intro": "z22_intro",
   "objects": [

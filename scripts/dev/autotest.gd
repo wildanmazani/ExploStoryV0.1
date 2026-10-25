@@ -1,9 +1,10 @@
 extends Node
 ## End-to-end play-through used by CI and for screenshots.
 ## Run:  godot --path . -- --autotest [--shots=/abs/dir]
-## title -> guest login -> prologue -> world intro -> every Bab 1 puzzle at
+## title -> guest login -> prologue -> wake-up in Bilik Alif (bag, first
+## mission, map arrow) -> every Bab 1 puzzle at
 ## its place in the world (one wrong try + Pau hints each) -> summaries ->
-## penutup -> Muzium -> lobby, then prints AUTOTEST PASS (exit 0, 1 on fail).
+## penutup -> Beg Alif -> lobby, then prints AUTOTEST PASS (exit 0, 1 on fail).
 
 const UI = preload("res://scripts/ui/ui.gd")
 const TIMEOUT := 1200.0
@@ -197,20 +198,18 @@ func _run() -> void:
 	await wait_screen("login")
 	hosted()._guest()
 
-	# ---- prologue + world intro, played in full
+	# ---- prologue + the wake-up in Alif's room, played in full
 	if not await _check_prologue():
+		return
+	if not await _check_bilik():
 		return
 	if "--only=prologue" in OS.get_cmdline_user_args():
 		# quick loop while working on the introduction
-		await wait_screen("world", 120)
 		await wait_idle(240)
 		await shot("world_start")
 		print("AUTOTEST PASS (prologue only) in %d s" % int(_t))
 		get_tree().quit(0)
 		return
-	await wait_screen("world", 120)
-	await wait(2.0)
-	await shot("world_intro_sweep")
 	await wait_idle(120)
 	await wait(0.5)
 	await shot("world_start")
@@ -287,9 +286,9 @@ func _run() -> void:
 		return
 	mo.close()
 	await wait(0.2)
-	Main.open_muzium()
+	Main.open_beg()
 	await wait(0.4)
-	await shot("muzium")
+	await shot("beg")
 	close_top_overlay()
 	Main.open_nota()
 	await wait(0.4)
@@ -349,9 +348,9 @@ func _run() -> void:
 	if scene()._gabenor != null:
 		_fail("Gabenor Sekatan should be gone after Misi 2.8")
 		return
-	Main.open_muzium()
+	Main.open_beg()
 	await wait(0.4)
-	await shot("muzium_bab2")
+	await shot("beg_bab2")
 	close_top_overlay()
 	Main.open_nota()
 	await wait(0.4)
@@ -497,10 +496,50 @@ func _ujian_puzzle():
 	return Game.active_puzzle
 
 
-## The story / museum rooms: enter from the map door, read every exhibit,
+## Pau wakes Alif in his room and explains; the start prompt sits on the bag,
+## the door waits for it, then Misi 1.1 starts and the map arrow points there.
+func _check_bilik() -> bool:
+	await wait_screen("bilik_alif", 120)
+	await wait(2.0)
+	await shot("bilik_wake")
+	var t := 0.0
+	while not scene()._waiting_bag:
+		await wait(0.2)
+		t += 0.2
+		if t > 240.0:
+			_fail("the wake-up never got to the bag")
+			return false
+	await wait(0.5)
+	await shot("bilik_start_prompt")
+	if scene()._prompt == null:
+		_fail("no start prompt over the bag")
+		return false
+	scene()._leave()
+	await wait(0.5)
+	if screen_name() != "bilik_alif":
+		_fail("Alif left his room without the bag")
+		return false
+	scene().player.place_at(Vector2i(12, 8), "north")
+	scene()._interact(Vector2i(12, 7))
+	await wait_idle(120)
+	if not Game.save["seen"].has("bilik_tutorial") or scene()._prompt != null:
+		_fail("taking the bag should clear the prompt and start Misi 1.1")
+		return false
+	await shot("bilik_mission_start")
+	scene()._leave()
+	await wait_screen("world", 60)
+	var goal: Dictionary = scene().objective()
+	if str(goal.get("name", "")) != "Misi 1.1":
+		_fail("the map arrow should point at Misi 1.1, not %s" % str(goal))
+		return false
+	await shot("world_arrow")
+	return true
+
+
+## The story rooms: enter from the map door, read every exhibit,
 ## walk out again.
 func _check_rooms() -> bool:
-	for id in ["muzium", "sitc", "jelutong_press"]:
+	for id in ["rumah_alif", "sitc", "jelutong_press"]:
 		Game.goto("world")
 		await wait_screen("world")
 		await wait_idle()
@@ -520,8 +559,9 @@ func _check_rooms() -> bool:
 				if c.has_method("close"):
 					c.close()
 			await wait_idle()
-		s._interact(s.npc.cell)
-		await wait_idle()
+		if s.npc:  # Bilik Alif has nobody but Pau
+			s._interact(s.npc.cell)
+			await wait_idle()
 		s._on_step(s.exit_cells[0])
 		await wait_screen("world", 30)
 		await wait_idle()

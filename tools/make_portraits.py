@@ -2,8 +2,10 @@
 face in the dialogue box always matches the one walking on the map
 (docs/CONTENT_CONSISTENT_DESIGN.md).
 
-Run: python tools/make_portraits.py tunperak kurator ...   (or --all)
+Run: python tools/make_portraits.py tunperak pencetak ...   (or --all)
 Writes assets/portraits/<id>.png at 48x48 (head and shoulders, nearest-neighbour).
+The 64x64 PixelLab portraits (drawn from these sprites, Oct 2026) are better than
+a crop, so they are skipped unless --force is given.
 """
 import json
 import os
@@ -21,6 +23,9 @@ def portrait(cid: str) -> str:
     box = img.getchannel("A").getbbox()
     if box is None:
         return f"skip {cid}: empty sprite"
+    out = os.path.join(ROOT, "assets", "portraits", f"{cid}.png")
+    if os.path.exists(out) and Image.open(out).size == (64, 64) and "--force" not in sys.argv:
+        return f"skip {cid}: has a PixelLab portrait (use --force to replace it)"
     x0, y0, x1, y1 = box
     # head and shoulders: a square from just above the head, about 70% of the body tall
     side = max(x1 - x0, round((y1 - y0) * 0.7))
@@ -34,7 +39,7 @@ def portrait(cid: str) -> str:
 
 
 if __name__ == "__main__":
-    ids = sys.argv[1:]
+    ids = [a for a in sys.argv[1:] if a != "--force"]
     if ids == ["--all"]:
         chars = json.load(open(os.path.join(ROOT, "data", "characters.json"), encoding="utf-8"))
         ids = [k for k, v in chars.items() if v.get("sprite") == k and v.get("portrait") == k]

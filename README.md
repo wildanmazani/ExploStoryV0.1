@@ -19,7 +19,8 @@ diterokai, 4 zon dengan 13 teka-teki, penutup dan teaser Bab 2.
 | Peta penuh + legenda | M | Ketik peta mini (bucu kanan) |
 | Tetapan | Esc | Butang gear |
 
-Tanda seru **(!)** menunjukkan tugasan seterusnya. Teka-teki: **Seret dan Padankan** dan
+Tanda seru **(!)** menunjukkan tugasan seterusnya, dan **anak panah emas** (di peta mini, peta penuh dan
+di tepi skrin) menunjuk jalan ke misi aktif. Teka-teki: **Seret dan Padankan** dan
 **Papan Siasatan**. Tiada pemasa, tiada penalti.
 
 ## Aliran permainan
@@ -28,7 +29,9 @@ Tajuk -> Log masuk / Daftar / Tetamu -> Prolog, ditonton sahaja dan boleh dilang
 kumpulan kelas 11:47 malam, Alif melihat barang dalam biliknya, kata kunci masuk dan keluar dari
 "Ingatan Alif" sambil huruf berselerak, mimpi: rakan sekelas saling lupa dalam Kabus Lupa, Nirbana
 di Gua Warisan; teks dalam `data/prologue_room.json` dan `data/dialogue/prologue.json`) ->
-bangun di Dunia Explo-Story -> Kampung Jejak -> Zon 1.1 Gerbang Masa -> Zon 1.2 Pelabuhan
+Pau kejutkan Alif di **Bilik Alif** (Rumah Alif, Dunia Explo-Story): Pau terangkan artifak (4 Serpihan),
+misi, tujuan dan cara bermain; tugasan pertama ambil beg sekolah (tanda "Tekan E" berkelip), Misi 1.1 bermula
+(`scripts/world/bilik_alif.gd`, teks `bilik_*` dalam `data/dialogue/prologue.json`) -> Kampung Jejak -> Zon 1.1 Gerbang Masa -> Zon 1.2 Pelabuhan
 Melaka -> Zon 1.3 Balai Penghadapan (dalam Istana) -> Zon 1.4 Bukit Siguntang -> Ringkasan
 setiap zon -> Penutup (Bendera 1 berkibar, Nota Alif, teaser Bab 2).
 
@@ -75,8 +78,9 @@ Kabus Lupa, memecahkan Inskripsi Telaga Batu kepada 4 Serpihan: satu serpihan ba
 bermula kelabu dan berwarna semula apabila misinya selesai. Setiap kawasan ada kad tajuk dan sebab datang pada lawatan
 pertama (`data/area_intro.json`), dan pertukaran peta menunjukkan kad tajuk. **Ujian Bab** (`data/ujian.json`) di hujung
 setiap bab: 3 nyawa, tumbangkan bos (Panglima Derhaka / Bayang Nirbana) dengan 7 jawapan betul, tiada had masa; mesti
-lulus sebelum bab seterusnya dibuka (gagal = cuba lagi atau ulang kaji, bos menunggu di peta). Bilik cerita / muzium:
-Muzium Warisan, Jelutong Press dan Maktab SITC (`data/interiors/*.json`). Potret Alif dalam dialog ikut pakaian yang
+lulus sebelum bab seterusnya dibuka (gagal = cuba lagi atau ulang kaji, bos menunggu di peta). Bilik cerita:
+Jelutong Press dan Maktab SITC (`data/interiors/*.json`). Artifak yang dijumpai disimpan dalam **Beg Alif** (Menu > Beg Alif;
+ketik artifak untuk dengar ceritanya, teks dalam `ganjaran.cerita` setiap `data/zon_*.json`). Potret Alif dalam dialog ikut pakaian yang
 dipakai. Semua aset peta pandangan atas, menghadap ke bawah; pokok hijau sahaja.
 
 **Lembah Kebangkitan dilukis semula (pek 4)**: pekan kolonial 1920-an yang tersusun: Jalan Besar, jalan batu kelikir
@@ -86,9 +90,13 @@ Misi 2.1 hingga 2.8 mengikut satu laluan, dengan papan bernombor di depan setiap
 kelabu dengan kabus putih nipis, dan peta mini serta peta penuh menunjukkan kabus yang sama. Nirbana mengejek setiap
 2 misi; Gabenor Sekatan menjaga Menara semasa Misi 2.8. `python tools/asset_sheet.py` = helaian semua objek peta.
 
-Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Muzium + Kad Tokoh, Peta Jejak (tugu batu),
-Arena Ulang Kaji (lobi), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
+Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Beg Alif + Kad Tokoh, Peta Jejak (tugu batu),
+Arena Ulang Kaji (lobi; di depannya Guru Jalal dan dua pesilat berlatih silat, dengan tugasan sampingan
+Jurus Ingatan selepas Serpihan 1), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.
+
+Seni baharu dari PixelLab (latar tajuk berlapis, bilik Alif, perabot, watak silat): senarai fail, saiz dan
+prompt dalam `docs/pixellab/PIXELLAB_ASSETS.md`. Permainan berjalan tanpa fail itu dan menukar sendiri bila fail ada.
 
 ## Struktur projek
 

@@ -8,6 +8,7 @@ const PLATE := {
 	"alif": Color("3b6fb6"), "pau": Color("d98a2b"), "nirbana": Color("5b3a7a"),
 	"panglima": Color("9c2f2f"), "gabenor": Color("6b6b6b"),
 }
+const PORTRAIT_BOX := 144.0
 ## speakers drawn on the left (the player's side)
 const LEFT_SIDE := ["alif", "pau"]
 
@@ -18,6 +19,7 @@ const VOICE := {
 	"alif": 1.0, "pau": 1.7, "penjaga": 0.62, "tunperak": 0.66, "syahbandar": 1.18,
 	"sapurba": 0.78, "demang": 0.74, "makcik": 1.3, "nelayan": 0.88, "chengho": 0.84,
 	"mak": 1.22, "aisyah": 1.4, "ravi": 0.94, "meiling": 1.5, "daniel": 1.08,
+	"guru_silat": 0.7, "pesilat_amir": 1.12, "pesilat_hafiz": 1.02,
 }
 
 ## cutscenes (the intro): each line moves on by itself once there has been
@@ -116,7 +118,7 @@ func _enter_tree() -> void:
 
 func _on_skin() -> void:
 	if visible and _who == "alif":
-		_portrait.texture = UI.tex(Game.portrait_path("alif", str(_lines[_i].get("e", ""))))
+		_set_portrait(_portrait, UI.tex(Game.portrait_path("alif", str(_lines[_i].get("e", "")))))
 
 
 func play(lines_arr: Array) -> void:
@@ -139,7 +141,7 @@ func _show_line() -> void:
 	var p := Game.portrait_path(who, str(line.get("e", "")))
 	var left := who in LEFT_SIDE
 	var frame := _portrait_frame if left else _portrait_r_frame
-	(_portrait if left else _portrait_r).texture = UI.tex(p)
+	_set_portrait(_portrait if left else _portrait_r, UI.tex(p))
 	_portrait_frame.visible = p != "" and left
 	_portrait_r_frame.visible = p != "" and not left
 	if p != "" and (who != _last_who or _i == 0):
@@ -230,6 +232,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## portraits keep whole-number pixels: the largest integer scale that fits
+## the 144 px slot (64 px art -> 128, 48 px art -> 144)
+func _set_portrait(r: TextureRect, tex: Texture2D) -> void:
+	r.texture = tex
+	if tex:
+		var side := maxf(tex.get_width(), tex.get_height())
+		r.custom_minimum_size = Vector2.ONE * side * maxf(1.0, floorf(PORTRAIT_BOX / side))
+
+
 func _make_frame() -> PanelContainer:
 	var f := UI.panel("Slot")
 	f.custom_minimum_size = Vector2(160, 160)
@@ -237,7 +248,9 @@ func _make_frame() -> PanelContainer:
 	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	t.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	t.custom_minimum_size = Vector2(144, 144)
+	t.custom_minimum_size = Vector2(PORTRAIT_BOX, PORTRAIT_BOX)
+	t.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	t.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	f.add_child(t)
 	return f
 

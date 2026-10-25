@@ -76,17 +76,5 @@ focus_mode = 0
 theme_type_variation = &"Primary"
 text = "E / Ketik"
 
-[node name="SkipLayer" type="CanvasLayer" parent="."]
-layer = 26
-
-[node name="Skip" type="Button" parent="SkipLayer"]
-visible = false
-offset_left = 1060.0
-offset_top = 20.0
-offset_right = 1256.0
-offset_bottom = 70.0
-focus_mode = 0
-text = "Langkau >>"
-
 [node name="TouchControls" type="CanvasLayer" parent="."]
 script = ExtResource("5")

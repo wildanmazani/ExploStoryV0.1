@@ -157,18 +157,82 @@
       ]
     ]
   },
-  "pro_wake_2": {
+  "bilik_bangun": {
     "variants": [
       [
-        {"who": "alif", "text": "Pau?! Kau... CAKAP? Ni kat mana?", "e": "confused"},
-        {"who": "pau", "text": "Dunia Explo-Story! Kat sini sejarah tak duduk diam dalam buku. Dia hidup.", "e": "happy"},
-        {"who": "alif", "text": "Pau, kawan-kawan aku dalam mimpi tadi... diorang dah tak kenal satu sama lain.", "e": "worried"},
-        {"who": "pau", "text": "Kabus Lupa Nirbana. Empat serpihan Telaga Batu dah terbang ke empat tempat dalam Bab 1.", "e": "scared"},
-        {"who": "pau", "text": "Kumpul semua serpihan, kabus hilang, baru pintu keluar terbuka."},
+        {"who": "alif", "text": "Pau?! Kau... CAKAP?", "e": "confused"},
+        {"who": "pau", "text": "Mestilah! Kat sini aku boleh cakap. Selamat datang ke Dunia Explo-Story!", "e": "happy"},
+        {"who": "alif", "text": "Tapi ni bilik aku. Katil aku, kipas aku... cuma lain macam sikit.", "e": "confused"},
+        {"who": "pau", "text": "Ni bilik kau dalam dunia ni. Kat sini sejarah tak duduk diam dalam buku. Dia hidup."},
+        {"who": "alif", "text": "Pau, kawan-kawan aku dalam mimpi tadi... diorang dah tak kenal satu sama lain.", "e": "worried"}
+      ]
+    ]
+  },
+  "bilik_artifak": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Tu kerja Nirbana, Penghulu Kabus Lupa. Dia pecahkan Inskripsi Telaga Batu jadi empat serpihan.", "e": "scared"},
+        {"who": "pau", "text": "Serpihan tu artifak. Setiap satu simpan satu cerita penting Bab 1: sumpah setia rakyat, Cap Mohor, Hukum Kanun dan Waadat."},
+        {"who": "pau", "text": "Selagi serpihan bersepah, Kabus Lupa makin tebal. Sebab tu semua orang lupa."},
+        {"who": "alif", "text": "Jadi kalau kita kumpul balik, ingatan diorang pulih?"},
+        {"who": "pau", "text": "Tepat!", "e": "happy"}
+      ]
+    ]
+  },
+  "bilik_misi": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Satu serpihan, satu misi. Ada empat misi, Misi 1.1 sampai 1.4. Setiap misi satu subtopik Bab 1."},
+        {"who": "pau", "text": "Dalam misi, kau borak dengan orang, selesaikan teka-teki dan kumpul kata kunci."},
+        {"who": "alif", "text": "Macam ulang kaji, tapi berjalan.", "e": "confident"},
+        {"who": "pau", "text": "Lepas empat serpihan, ada Ujian Bab. Lulus, baru Bab 1 selesai dan bendera pertama berkibar."}
+      ]
+    ]
+  },
+  "bilik_tujuan": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Itu tujuan kita: kumpul serpihan, halau Kabus Lupa, bawa balik ingatan semua orang."},
         {"who": "alif", "text": "Tapi aku lembab bab baca ni. Kau tahu kan.", "e": "worried"},
         {"who": "pau", "text": "Kau tak bodoh, Alif. Kau cuma belajar dengan cara berbeza. Kat sini, faham dulu. Hafal datang sendiri."},
-        {"who": "alif", "text": "Faham, bukan hafal. Dan kalau aku faham, esok aku boleh ajar Ravi dengan yang lain jugak.", "e": "confident"},
-        {"who": "pau", "text": "Ketik aku kalau perlukan petunjuk, tekan lama kalau nak bertenang. Jom, Kampung Jejak kat atas sana!", "e": "happy"}
+        {"who": "alif", "text": "Faham, bukan hafal. Dan kalau aku faham, esok aku boleh ajar Ravi dengan yang lain jugak.", "e": "confident"}
+      ]
+    ]
+  },
+  "bilik_gerak_papan": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Okey, cara bergerak. Guna WASD atau anak panah untuk berjalan. Tahan Shift untuk lari."},
+        {"who": "pau", "text": "Nak bercakap atau tengok barang, berdiri depan benda tu dan tekan E."},
+        {"who": "pau", "text": "Cuba sekarang. Ambil beg sekolah kau atas lantai tu.", "e": "happy"}
+      ]
+    ]
+  },
+  "bilik_gerak_sentuh": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Okey, cara bergerak. Ketik lantai untuk berjalan ke situ, atau guna butang arah kat skrin."},
+        {"who": "pau", "text": "Nak bercakap atau tengok barang, ketik je benda tu."},
+        {"who": "pau", "text": "Cuba sekarang. Ambil beg sekolah kau atas lantai tu.", "e": "happy"}
+      ]
+    ]
+  },
+  "bilik_beg": {
+    "variants": [
+      [
+        {"who": "alif", "text": "Beg sekolah aku!", "e": "happy"},
+        {"who": "pau", "text": "Mulai sekarang, semua artifak yang kita jumpa masuk dalam beg ni."},
+        {"who": "pau", "text": "Nak tengok? Buka Menu kat atas kiri, pilih Beg Alif. Ketik artifak untuk dengar ceritanya."}
+      ]
+    ]
+  },
+  "bilik_peta": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Satu lagi. Kat luar nanti ada peta kecil kat bucu skrin. Ketik dia, atau tekan M, untuk peta penuh."},
+        {"who": "pau", "text": "Tanda seru (!) tu tugasan. Anak panah emas pula tunjuk jalan ke misi seterusnya. Ikut je dia."},
+        {"who": "pau", "text": "Nak semak misi? Ketik aku atau tekan H untuk petunjuk. Batu Peta Jejak kat kampung pula senaraikan semua misi."},
+        {"who": "pau", "text": "Misi pertama: Gerbang Masa, utara kampung. Jom keluar ikut pintu!", "e": "happy"}
       ]
     ]
   }

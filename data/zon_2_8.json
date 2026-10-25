@@ -14,7 +14,22 @@
     "id": "bulan_melayu",
     "nama": "Majalah Bulan Melayu",
     "icon": "kitab",
-    "info": "Diterbitkan pada 1930 oleh guru wanita di Johor Bahru yang digerakkan oleh Ibu Zain."
+    "info": "Diterbitkan pada 1930 oleh guru wanita di Johor Bahru yang digerakkan oleh Ibu Zain.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Majalah Bulan Melayu, 1930."
+      },
+      {
+        "s": "pau",
+        "t": "Diterbitkan oleh guru-guru perempuan Melayu Johor, digerakkan oleh Ibu Zain. Perempuan pun bangkit!"
+      },
+      {
+        "s": "alif",
+        "t": "Ibu Zain memang power.",
+        "e": "happy"
+      }
+    ]
   },
   "intro": "z28_intro",
   "objects": [

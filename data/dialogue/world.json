@@ -56,30 +56,6 @@
       ]
     ]
   },
-  "muzium": {
-    "variants": [
-      [
-        {
-          "who": "pau",
-          "text": "Ni muzium kau. Kosong lagi... macam perut aku."
-        },
-        {
-          "who": "alif",
-          "text": "Muzium aku? Sejak bila?"
-        },
-        {
-          "who": "pau",
-          "text": "Sejak sekarang. Setiap misi ada satu benda untuk kau simpan."
-        }
-      ],
-      [
-        {
-          "who": "alif",
-          "text": "Rak dia masih kosong."
-        }
-      ]
-    ]
-  },
   "istana": {
     "variants": [
       [
@@ -594,6 +570,174 @@
         {
           "who": "alif",
           "text": "Besarnya kapal tu... layar merah dia macam api."
+        }
+      ]
+    ]
+  },
+  "guru_silat": {
+    "rekaan": true,
+    "variants": [
+      [
+        {
+          "who": "guru_silat",
+          "text": "Assalamualaikum, anak muda. Saya Guru Jalal, guru silat Gelanggang Pusaka kampung ni."
+        },
+        {
+          "who": "alif",
+          "text": "Waalaikumussalam. Cikgu berlatih depan Arena Ulang Kaji?"
+        },
+        {
+          "who": "guru_silat",
+          "text": "Sengaja. Silat dengan ilmu sama saja. Satu langkah, ulang seribu kali, baru jadi milik kita."
+        },
+        {
+          "who": "guru_silat",
+          "text": "Sebelum mula, kami beri salam hormat. Silat bermula dengan adab, bukan dengan tumbukan."
+        },
+        {
+          "who": "pau",
+          "text": "Patutlah diorang tunduk dulu tadi."
+        }
+      ],
+      [
+        {
+          "who": "guru_silat",
+          "text": "Silat ni warisan Alam Melayu. Dalam Hikayat Hang Tuah, Hang Tuah dan sahabatnya berguru silat sebelum berkhidmat kepada Sultan Melaka."
+        },
+        {
+          "who": "guru_silat",
+          "text": "Pada tahun 2019, UNESCO iktiraf silat sebagai warisan budaya tidak ketara dunia."
+        },
+        {
+          "who": "alif",
+          "text": "Wah. Jadi kita bukan sekadar bersenam. Kita jaga warisan.",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "guru_silat",
+          "text": "Sejak Kabus Lupa datang, anak murid saya mula lupa jurus. Langkah yang dilatih bertahun pun hilang."
+        },
+        {
+          "who": "alif",
+          "text": "Sama macam kawan-kawan saya...",
+          "e": "worried"
+        },
+        {
+          "who": "guru_silat",
+          "text": "Tapi ada satu benda yang kabus tak boleh curi: apa yang kita amal setiap hari. Jangan berhenti ulang."
+        },
+        {
+          "who": "pau",
+          "text": "Ulang kaji! Arena Ulang Kaji! Semua masuk akal sekarang.",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "guru_silat",
+          "text": "Pesilat yang hebat bukan yang paling kuat. Yang paling sabar, yang tak berhenti belajar."
+        }
+      ]
+    ]
+  },
+  "pesilat_amir": {
+    "rekaan": true,
+    "variants": [
+      [
+        {
+          "who": "pesilat_amir",
+          "text": "Hiyaa! Eh, maaf, terkejut ya? Kami tengah latih buah pukul."
+        },
+        {
+          "who": "pesilat_amir",
+          "text": "Saya Amir. Tiap pagi kami berlatih kat sini, petang masuk Arena, lawan kuiz."
+        },
+        {
+          "who": "pau",
+          "text": "Silat pagi, kuiz petang. Rajinnya!",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "pesilat_amir",
+          "text": "Guru kata, kuda-kuda kena kukuh dulu. Kalau asas goyang, semua langkah lain pun goyang."
+        },
+        {
+          "who": "alif",
+          "text": "Macam sejarah. Faham asas dulu, baru fakta lain melekat.",
+          "e": "confident"
+        }
+      ],
+      [
+        {
+          "who": "pesilat_amir",
+          "text": "Kalau kau dah yakin, cuba Gelanggang Pesta Silat dalam Arena tu. Jawab betul dulu, baru dapat Semangat!"
+        }
+      ]
+    ]
+  },
+  "pesilat_hafiz": {
+    "rekaan": true,
+    "variants": [
+      [
+        {
+          "who": "pesilat_hafiz",
+          "text": "Semalam saya lupa langkah ketiga. Kabus tu buat kepala saya berkabut."
+        },
+        {
+          "who": "pesilat_hafiz",
+          "text": "Tapi lepas ulang sepuluh kali, ingat balik! Rahsianya, ulang."
+        },
+        {
+          "who": "alif",
+          "text": "Ulang sampai melekat. Okey, faham.",
+          "e": "confident"
+        }
+      ],
+      [
+        {
+          "who": "pesilat_hafiz",
+          "text": "Kami tak berlatih untuk bergaduh. Silat untuk jaga diri, jaga kawan, jaga maruah."
+        }
+      ],
+      [
+        {
+          "who": "pesilat_hafiz",
+          "text": "Amir tu laju, tapi saya lagi sabar. Tengok nanti siapa menang!"
+        }
+      ]
+    ]
+  },
+  "silat_jurus_belum": {
+    "variants": [
+      [
+        {
+          "who": "guru_silat",
+          "text": "Jurus Ingatan saya ajar lepas kau jumpa serpihan pertama. Gerbang Masa, utara sana. Pergilah dulu."
+        }
+      ]
+    ]
+  },
+  "silat_jurus_lepas": {
+    "variants": [
+      [
+        {
+          "who": "guru_silat",
+          "text": "Bagus. Ingat, jurus yang tak diulang akan berkarat."
+        },
+        {
+          "who": "pau",
+          "text": "Macam fakta sejarah! Kena ulang selalu.",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "guru_silat",
+          "text": "Langkah kau makin kemas. Datang lagi bila-bila."
         }
       ]
     ]

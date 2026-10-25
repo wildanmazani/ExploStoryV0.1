@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbbtvxfukotge"
-path="res://.godot/imported/bg_int_muzium.png-3c89c496db5e3208acbd48a06f375a8b.ctex"
+uid="uid://bxc2wk2ww5j0i"
+path="res://.godot/imported/pesilat_hafiz.png-26a9801cabf0f10cb64389e5cf9916ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/backgrounds/bg_int_muzium.png"
-dest_files=["res://.godot/imported/bg_int_muzium.png-3c89c496db5e3208acbd48a06f375a8b.ctex"]
+source_file="res://assets/portraits/pesilat_hafiz.png"
+dest_files=["res://.godot/imported/pesilat_hafiz.png-26a9801cabf0f10cb64389e5cf9916ae.ctex"]
 
 [params]
 

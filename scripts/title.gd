@@ -1,5 +1,8 @@
 extends Control
-## Title screen: tap / click / any key to start.
+## Title screen: tap / click / any key to start. The backdrop is
+## scripts/ui/title_backdrop.gd (parallax PixelLab layers, or the old picture).
+
+const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
 
 var _t := 0.0
 var _leaving := false
@@ -9,6 +12,10 @@ var _leaving := false
 
 
 func _ready() -> void:
+	$Background.visible = false
+	var bd := TitleBackdrop.new()
+	add_child(bd)
+	move_child(bd, 0)
 	Main.set_pau_visible(false)
 	MusicDirector.play("tajuk")
 	var gear := Button.new()
@@ -28,7 +35,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	start_label.modulate.a = 0.55 + 0.45 * sin(_t * 3.0)
+	start_label.modulate.a = 0.8 + 0.2 * sin(_t * 3.0)  # stays readable on the bright art
 	pau.position.y = 560 - absf(sin(_t * 4.0)) * 24
 
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7h1uhuvp5qgf"
-path="res://.godot/imported/kurator_west.png-2e884dd44871d0ca485a78d6d317f966.ctex"
+uid="uid://ce67m40vj6sor"
+path="res://.godot/imported/pesilat_amir.png-dbdcf68fc6e7f8f359074e088bda8b2d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters32/kurator/kurator_west.png"
-dest_files=["res://.godot/imported/kurator_west.png-2e884dd44871d0ca485a78d6d317f966.ctex"]
+source_file="res://assets/portraits/pesilat_amir.png"
+dest_files=["res://.godot/imported/pesilat_amir.png-dbdcf68fc6e7f8f359074e088bda8b2d.ctex"]
 
 [params]
 

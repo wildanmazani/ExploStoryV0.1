@@ -14,7 +14,17 @@
     "id": "al_imam",
     "nama": "Naskhah Al-Imam (1906)",
     "icon": "kitab",
-    "info": "Majalah Kaum Muda yang terbit pada 23 Julai 1906 di Singapura, menyeru umat Islam kembali kepada al-Quran dan Hadis."
+    "info": "Majalah Kaum Muda yang terbit pada 23 Julai 1906 di Singapura, menyeru umat Islam kembali kepada al-Quran dan Hadis.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Al-Imam. Terbit 23 Julai 1906 di Singapura."
+      },
+      {
+        "s": "pau",
+        "t": "Majalah Kaum Muda ni ajak orang Melayu maju melalui pendidikan, dan kembali kepada al-Quran dan Hadis."
+      }
+    ]
   },
   "intro": "z27_intro",
   "objects": [

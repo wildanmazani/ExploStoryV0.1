@@ -142,7 +142,10 @@ func portrait_path(id: String, expr: String = "") -> String:
 		if ResourceLoader.exists(p):
 			return p
 		return "res://assets/portraits/%s%s.png" % [base, c.get("default_expr", "neutral")]
-	return "res://assets/portraits/%s.png" % base
+	var own := "res://assets/portraits/%s.png" % base
+	if not ResourceLoader.exists(own) and c.has("stand_in"):  # new character, art not dropped in yet
+		return "res://assets/portraits/%s.png" % str(c["stand_in"].get("portrait", base))
+	return own
 
 
 func sprite_path(id: String) -> String:
@@ -399,9 +402,12 @@ func ujian_def(no: int) -> Dictionary:
 	return _ujian.get(str(no), {})
 
 
-## n random questions from the chapter's bank, answers shuffled
-func ujian_questions(no: int, n: int) -> Array:
+## n random questions from the chapter's bank, answers shuffled (only_zones:
+## just the questions of those missions, e.g. the ones already finished)
+func ujian_questions(no: int, n: int, only_zones: Array = []) -> Array:
 	var bank: Array = BattleRules.bank_of(no).duplicate(true)
+	if not only_zones.is_empty():
+		bank = bank.filter(func(q): return only_zones.has(str(q.get("zon", ""))))
 	bank.shuffle()
 	var out: Array = []
 	for q in bank.slice(0, n):

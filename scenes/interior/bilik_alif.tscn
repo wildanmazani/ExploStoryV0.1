@@ -1,23 +1,19 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://scripts/world/interior.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/backgrounds/bg_int_muzium.png" id="2"]
+[ext_resource type="Script" path="res://scripts/world/bilik_alif.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/pau.tscn" id="4"]
 [ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="6"]
 
-[node name="Muzium" type="Node2D"]
+[node name="BilikAlif" type="Node2D"]
 script = ExtResource("1")
-background = ExtResource("2")
-title = "Muzium Warisan"
-music = "kampung"
-floor_rows = PackedStringArray("6:2-17", "7:2-17", "8:2-17", "9:2-17", "10:9-10")
+title = "Bilik Alif"
+music = "permulaan"
+floor_rows = PackedStringArray("3:3-16", "4:3-16", "5:3-16", "6:3-16", "7:3-16", "8:3-16", "9:3-16")
 exit_cells = Array[Vector2i]([Vector2i(9, 10), Vector2i(10, 10)])
 enter_cell = Vector2i(9, 9)
 return_cell_world = Vector2i(22, 43)
-npc_id = "kurator"
-npc_cell = Vector2i(12, 6)
-exhibit_file = "muzium_warisan"
+exhibit_file = "bilik_alif"
 
 [node name="Background" type="Sprite2D" parent="."]
 centered = false

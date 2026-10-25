@@ -52,7 +52,6 @@ Peraturan sensitiviti: Sultan hanya siluet dari belakang; tiada visual ganas; to
 | `assets/objects/bangunan_1_3.png` | 56x50 | world object: bangunan 1 3 |
 | `assets/objects/bangunan_1_4.png` | 56x50 | world object: bangunan 1 4 |
 | `assets/objects/bangunan_arena.png` | 56x50 | world object: bangunan arena |
-| `assets/objects/bangunan_muzium.png` | 56x50 | world object: bangunan muzium |
 | `assets/objects/bangunan_t5.png` | 56x50 | world object: bangunan t5 |
 | `assets/objects/bendera_aktif.png` | 16x32 | world object: bendera aktif |
 | `assets/objects/bendera_kunci.png` | 16x32 | world object: bendera kunci |

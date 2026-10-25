@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bq3iu3mxk4pkt"
-path="res://.godot/imported/kurator.png-3862313b4bb9939cfe0367b8be65072c.ctex"
+uid="uid://ctmcuvs1s18qx"
+path="res://.godot/imported/bg_bilik_alif_malam_v2.png-42e522a10ed11ec35b1f73c7364383ad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/kurator.png"
-dest_files=["res://.godot/imported/kurator.png-3862313b4bb9939cfe0367b8be65072c.ctex"]
+source_file="res://assets/backgrounds/bg_bilik_alif_malam_v2.png"
+dest_files=["res://.godot/imported/bg_bilik_alif_malam_v2.png-42e522a10ed11ec35b1f73c7364383ad.ctex"]
 
 [params]
 

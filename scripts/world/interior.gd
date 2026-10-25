@@ -21,8 +21,8 @@ const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 @export var npc_cell := Vector2i(10, 9)
 ## extra objects: "id:texture:x:y:w" (anchor = bottom-left cell, w = width in cells)
 @export var props: PackedStringArray
-## story / museum rooms: data/interiors/<file>.json with an intro, the
-## curator's talk and exhibits (hotspots or icons on pedestals) that each tell
+## story rooms: data/interiors/<file>.json with an intro, the
+## host's talk and exhibits (hotspots or icons on pedestals) that each tell
 ## a short story. Exhibits tied to an artifact stay dark until it is found.
 @export var exhibit_file := ""
 
@@ -261,7 +261,7 @@ func _show_exhibit(id: String) -> void:
 		Game.toast(str(e.get("label", "")))
 	await Game.say(e.get("lines", []))
 	match str(e.get("open", "")):
-		"muzium": await Main.open_muzium().closed
+		"beg": await Main.open_beg().closed
 		"nota": await Main.open_nota().closed
 
 

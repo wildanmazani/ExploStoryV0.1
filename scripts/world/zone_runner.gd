@@ -53,6 +53,12 @@ func setup(h: Node) -> void:
 
 
 ## Find the zone step that lives at this spot. {} if none.
+## {"zid", "i", "step"}; the step may carry "target": [x, y] (world cell) for
+## the navigation arrow when the place to walk to is not the spot itself.
+func step_at(id: String) -> Dictionary:
+	return _step_at(id)
+
+
 func _step_at(id: String) -> Dictionary:
 	for zid in Game.ZONES:
 		var steps: Array = Game.zone_data(zid).get("steps", [])

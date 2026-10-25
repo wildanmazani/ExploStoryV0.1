@@ -10,13 +10,17 @@ extends Control
 ##  4. he dozes off; golden pages carry us into a dream: his classmates at an
 ##     old port forget each other in the Kabus Lupa, then Gua Warisan where
 ##     Nirbana breaks the Telaga Batu inscription into four Serpihan (the goal
-##     of Bab 1). Then Dunia Explo-Story (world intro continues in world.gd).
+##     of Bab 1). Then Alif wakes up in his room in Dunia Explo-Story, where
+##     Pau explains everything (scripts/world/bilik_alif.gd).
 ## Text: data/prologue_room.json and data/dialogue/prologue.json.
 
 const UI = preload("res://scripts/ui/ui.gd")
 const PhoneChat = preload("res://scripts/ui/phone_chat.gd")
-const WORLD := "res://scenes/world/world.tscn"
+const BILIK := "res://scenes/interior/bilik_alif.tscn"
 const DATA := "res://data/prologue_room.json"
+## the Malaysian remake of Alif's night room (PixelLab, same layout as the old
+## picture so the glow rects in prologue_room.json still fit); old one until then
+const ROOM_V2 := "res://assets/backgrounds/bg_bilik_alif_malam_v2.png"
 const MIRROR := {"b": "d", "d": "b", "p": "q", "q": "p", "m": "w", "w": "m", "n": "u", "u": "n"}
 const FRIENDS := ["aisyah", "ravi", "meiling", "daniel"]
 
@@ -49,6 +53,9 @@ var _jar: HBoxContainer
 
 func _ready() -> void:
 	Main.set_pau_visible(false)
+	if ResourceLoader.exists(ROOM_V2):
+		room.texture = load(ROOM_V2)
+	room.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	MusicDirector.play("bilik", 2.5)
 	skip.pressed.connect(_skip)
 	pages.texture = _page_texture()
@@ -634,8 +641,8 @@ func _go_to_world() -> void:
 	if _leaving:
 		return
 	_leaving = true
-	Main.dialog_box.auto_advance = false  # world.gd turns it on again for the wake-up
+	Main.dialog_box.auto_advance = false  # the wake-up in the room is read at your own pace
 	Game.save["prolog_done"] = true
 	Game.persist()
-	GameState.flags["world_intro"] = true
-	GameState.go_to(WORLD, Color(1, 0.97, 0.88))
+	GameState.flags["bilik_intro"] = true
+	GameState.go_to(BILIK, Color(1, 0.97, 0.88))

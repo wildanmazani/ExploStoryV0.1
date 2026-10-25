@@ -22,6 +22,7 @@ const COL_MIST := Color(0.55, 0.4, 0.75, 0.55)
 const COL_DONE := Color("5fd068")
 const COL_OPEN := Color("f0c24a")
 const COL_LOCKED := Color("8a8a96")
+const ARRIVED := 2.5  ## tiles: this close to the objective, the arrows hide
 
 var world: Node                ## world.gd
 var px_per_tile: float = 5.0   ## zoom
@@ -260,12 +261,38 @@ func _draw() -> void:
 		var r := (10.0 + fmod(_t * 18.0, 14.0)) * s
 		draw_arc(hp, r, 0, TAU, 32, Color(1, 0.9, 0.4, 1.0 - fmod(_t * 18.0, 14.0) / 14.0), 3.0)
 
-	# Alif (blinks so it is easy to find)
+	# navigation arrow: a gold arrow beside Alif points at the objective, which
+	# gets a pulsing ring (or, off this view, an arrow on the map's edge)
 	var me := to_screen(Vector2(world.player.cell) + Vector2(0.5, 0.5))
+	var goal: Dictionary = world.objective() if world.has_method("objective") else {}
+	if not goal.is_empty() and Vector2(world.player.cell).distance_to(goal["tile"]) > ARRIVED:
+		var gp := to_screen(goal["tile"])
+		var dir := (gp - me).angle()
+		var inner := Rect2(Vector2.ZERO, size).grow(-14 * s)
+		if inner.has_point(gp):
+			var k := fmod(_t * 1.2, 1.0)
+			draw_arc(gp, (8.0 + k * 10.0) * s, 0, TAU, 28, Color(1, 0.86, 0.3, 1.0 - k), 2.5)
+		else:
+			draw_nav_arrow(self, _edge_point(me, gp, inner), dir, 11 * s)
+		draw_nav_arrow(self, me + Vector2.from_angle(dir) * (15 + sin(_t * 5.0) * 2.0) * s, dir, 8 * s)
+
+	# Alif (blinks so it is easy to find)
 	var on := fmod(_t, 1.0) < 0.7
 	draw_circle(me, 6.0 * s, Color(0.08, 0.08, 0.12))
 	draw_circle(me, 4.5 * s, Color("ff5a4a") if on else Color("ffd0c8"))
 	draw_arc(me, 6.5 * s, 0, TAU, 20, Color.WHITE, 1.5)
+
+
+## where the line from a (inside r) towards b leaves the rect r
+func _edge_point(a: Vector2, b: Vector2, r: Rect2) -> Vector2:
+	var d := b - a
+	var t := 1.0
+	for i in 2:
+		if d[i] > 0.0:
+			t = minf(t, (r.end[i] - a[i]) / d[i])
+		elif d[i] < 0.0:
+			t = minf(t, (r.position[i] - a[i]) / d[i])
+	return a + d * maxf(t, 0.0)
 
 
 ## text with a dark outline, centred on p (baseline)
@@ -293,6 +320,16 @@ static func draw_bang(ci: CanvasItem, p: Vector2, h: float) -> void:
 	ci.draw_rect(r, Color(1, 0.86, 0.3))
 	ci.draw_rect(Rect2(r.position + Vector2(r.size.x * 0.33, r.size.y * 0.12), Vector2(r.size.x * 0.34, r.size.y * 0.5)), Color(0.35, 0.2, 0.05))
 	ci.draw_rect(Rect2(r.position + Vector2(r.size.x * 0.33, r.size.y * 0.72), Vector2(r.size.x * 0.34, r.size.y * 0.16)), Color(0.35, 0.2, 0.05))
+
+
+## the gold navigation arrow (anak panah penunjuk), tip at p + h along angle,
+## dark outline like the "!" so it reads on grass, sand and sea
+static func draw_nav_arrow(ci: CanvasItem, p: Vector2, angle: float, h: float) -> void:
+	var pts := PackedVector2Array([Vector2(h, 0), Vector2(-h * 0.7, -h * 0.8), Vector2(-h * 0.3, 0), Vector2(-h * 0.7, h * 0.8)])
+	var tf := Transform2D(angle, p)
+	var shape := tf * pts
+	ci.draw_colored_polygon(shape, Color(1, 0.86, 0.3))
+	ci.draw_polyline(shape + PackedVector2Array([shape[0]]), Color(0.17, 0.11, 0.06), maxf(2.0, h * 0.18), true)
 
 
 static func draw_lock(ci: CanvasItem, p: Vector2, h: float) -> void:

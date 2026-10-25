@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://s68hy6ielcxi"
-path="res://.godot/imported/kurator_south.png-59dfcb5a4f23c3e7df72020d9bef48d7.ctex"
+uid="uid://dujmmqalkkev7"
+path="res://.godot/imported/beg.png-dbc587c89bdd13ecd848617b57191397.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters32/kurator/kurator_south.png"
-dest_files=["res://.godot/imported/kurator_south.png-59dfcb5a4f23c3e7df72020d9bef48d7.ctex"]
+source_file="res://assets/objects/bilik/beg.png"
+dest_files=["res://.godot/imported/beg.png-dbc587c89bdd13ecd848617b57191397.ctex"]
 
 [params]
 

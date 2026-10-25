@@ -3,6 +3,7 @@ extends Control
 ## Level, EXP bar, coins, artifact earned and syllabus mastery for the subtopic.
 
 const UI = preload("res://scripts/ui/ui.gd")
+const BegPanel = preload("res://scripts/ui/beg_panel.gd")
 
 var params: Dictionary = {}
 var _exp_bar: ProgressBar
@@ -107,9 +108,10 @@ func _ready() -> void:
 	var nota := UI.icon_button("res://assets/icons/nota.png", "", Vector2(200, 64), " NOTA")
 	nota.pressed.connect(func(): Game.main.open_nota())
 	btns.add_child(nota)
-	var muz := UI.icon_button("res://assets/icons/muzium.png", "", Vector2(200, 64), " MUZIUM")
-	muz.pressed.connect(func(): Game.main.open_muzium())
-	btns.add_child(muz)
+	var beg := UI.icon_button("", "", Vector2(200, 64), " BEG ALIF")
+	beg.icon = BegPanel.icon()
+	beg.pressed.connect(func(): Game.main.open_beg())
+	btns.add_child(beg)
 	var st_b := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(64, 64))
 	st_b.pressed.connect(func(): Game.main.open_settings())
 	btns.add_child(st_b)

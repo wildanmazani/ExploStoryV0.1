@@ -393,7 +393,16 @@ func _slowmo() -> void:
 	if Engine.time_scale != 1.0:
 		return   # autotest runs fast, leave it alone
 	Engine.time_scale = 0.35
-	await get_tree().create_timer(0.15, true, false, true).timeout
+	# a connection, not an await: if the match is freed mid slow-mo (Keluar)
+	# the call is dropped instead of resuming on a freed node
+	get_tree().create_timer(0.15, true, false, true).timeout.connect(_end_slowmo)
+
+
+func _end_slowmo() -> void:
+	Engine.time_scale = 1.0
+
+
+func _exit_tree() -> void:
 	Engine.time_scale = 1.0
 
 

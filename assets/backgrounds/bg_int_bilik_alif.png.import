@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dplf52tumydny"
-path="res://.godot/imported/kurator_north.png-e6e48d332d7f32c57c1566a0572d650f.ctex"
+uid="uid://p00tdwecxsw"
+path="res://.godot/imported/bg_int_bilik_alif.png-5a7fb70fd928efd57f6805c0a804317e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters32/kurator/kurator_north.png"
-dest_files=["res://.godot/imported/kurator_north.png-e6e48d332d7f32c57c1566a0572d650f.ctex"]
+source_file="res://assets/backgrounds/bg_int_bilik_alif.png"
+dest_files=["res://.godot/imported/bg_int_bilik_alif.png-5a7fb70fd928efd57f6805c0a804317e.ctex"]
 
 [params]
 

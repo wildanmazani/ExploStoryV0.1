@@ -6,6 +6,7 @@ extends Node2D
 ## asking the world first whether the tile is free.
 
 var id := ""
+var look := ""  ## sprite folder: id, or its "stand_in" art until its own sprite exists
 var cell := Vector2i.ZERO
 var facing := "south"
 
@@ -23,12 +24,15 @@ var _rest := 0.0
 
 func setup(npc_id: String, at: Vector2i, face: String) -> void:
 	id = npc_id
+	look = npc_id
+	if not ResourceLoader.exists("%s%s/%s_south.png" % [CharacterFrames.BASE, npc_id, npc_id]):
+		look = str(Game.characters.get(npc_id, {}).get("stand_in", {}).get("sprite", npc_id))
 	cell = at
 	facing = face
 	position = Player.cell_to_pos(at)
 	_sprite = AnimatedSprite2D.new()
-	_sprite.sprite_frames = CharacterFrames.build(npc_id)
-	_sprite.offset = CharacterFrames.feet_offset(npc_id)
+	_sprite.sprite_frames = CharacterFrames.build(look)
+	_sprite.offset = CharacterFrames.feet_offset(look)
 	add_child(_sprite)
 	_sprite.play("idle_" + facing)
 
@@ -37,9 +41,26 @@ func enable_wander(world: Node, radius := 2) -> void:
 	_world = world
 	home = cell
 	wander_radius = radius
-	_sprite.sprite_frames = CharacterFrames.build(id, true)
+	_sprite.sprite_frames = CharacterFrames.build(look, true)
 	_sprite.play("idle_" + facing)
 	_rest = randf_range(1.5, 5.0)
+
+
+## Silat practice (Arena Ulang Kaji): a lunge towards the partner and back,
+## a beat, again; the stance turns back to the partner after a chat.
+func enable_practice() -> void:
+	var home_face := facing
+	var tw := create_tween().set_loops()
+	tw.tween_interval(randf_range(0.9, 1.6))
+	tw.tween_callback(func():
+		facing = home_face
+		_sprite.play("idle_" + facing))
+	var dx := 3.0 if facing == "east" else -3.0
+	tw.tween_property(_sprite, "position:x", dx, 0.09).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_sprite, "position:x", 0.0, 0.22).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_interval(0.35)
+	tw.tween_property(_sprite, "position:y", -3.0, 0.12).set_ease(Tween.EASE_OUT)  # a little step-hop
+	tw.tween_property(_sprite, "position:y", 0.0, 0.12).set_ease(Tween.EASE_IN)
 
 
 func face_towards(other: Vector2i) -> void:

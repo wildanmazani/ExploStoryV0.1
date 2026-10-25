@@ -10,7 +10,22 @@
     "id": "serpihan1",
     "nama": "Serpihan 1: Batu Asas Telaga Batu",
     "icon": "prasasti",
-    "info": "Serpihan pertama Inskripsi Telaga Batu. Rakyat Srivijaya meminum air sumpah di sini sebagai tanda setia kepada raja."
+    "info": "Serpihan pertama Inskripsi Telaga Batu. Rakyat Srivijaya meminum air sumpah di sini sebagai tanda setia kepada raja.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Serpihan pertama! Inskripsi Telaga Batu dari Srivijaya."
+      },
+      {
+        "s": "pau",
+        "t": "Dulu rakyat minum air sumpah yang dituang atas batu ni. Tanda setia, tak akan derhaka pada raja."
+      },
+      {
+        "s": "alif",
+        "t": "Jadi dari dulu lagi, rakyat dah jadi tonggak negara bangsa.",
+        "e": "confident"
+      }
+    ]
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_1_gerbang_masa.png",

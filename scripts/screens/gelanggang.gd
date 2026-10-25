@@ -31,6 +31,9 @@ var _big: Label
 var _touch: CanvasLayer
 var _result: Control
 var _pause: Control        ## the Jeda overlay (null when playing)
+var _leaving := false      ## Keluar pressed: the match is frozen until the scene changes
+
+signal _pause_closed
 
 
 func _ready() -> void:
@@ -68,8 +71,12 @@ func _ready() -> void:
 		match_node.start()
 
 
+## every way out (Keluar, Main lagi, Kembali, Log keluar) ends here: nothing
+## of the match may stay paused, slowed or ducked in the next scene
 func _exit_tree() -> void:
 	get_tree().paused = false
+	Engine.time_scale = 1.0
+	MusicDirector.puzzle(false)
 	Game.use_brawl_keys(false)
 
 
@@ -243,6 +250,9 @@ func _answer(i: int) -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	var pause_key: bool = e.is_action_pressed("menu") or (e is InputEventKey and e.pressed and not e.echo and e.physical_keycode == KEY_P)
+	if _leaving:
+		get_viewport().set_input_as_handled()
+		return
 	if pause_key and _result == null:
 		get_viewport().set_input_as_handled()
 		if _pause:
@@ -385,7 +395,7 @@ func _controls_hint() -> String:
 # ------------------------------------------------------------------ Jeda (pause)
 ## first = the intro before the first match: just the guide and "Mula"
 func _open_pause(first := false) -> void:
-	if _pause:
+	if _pause or _leaving:
 		return
 	if not first:  # (the intro comes before the match: nothing to stop, and
 		get_tree().paused = true  # pausing would freeze the screen fade-in)
@@ -399,8 +409,7 @@ func _open_pause(first := false) -> void:
 		_show_guide("Mula bertarung!")
 	else:
 		_show_menu()
-	while _pause:
-		await get_tree().process_frame
+	await _pause_closed  # never comes if the player leaves: the wait ends with the screen
 
 
 func _close_pause() -> void:
@@ -408,6 +417,7 @@ func _close_pause() -> void:
 		_pause.queue_free()
 		_pause = null
 	get_tree().paused = false
+	_pause_closed.emit()
 	if match_node and match_node.phase == "aksi":
 		_hint.text = _controls_hint()  # the layout may have changed
 
@@ -450,6 +460,14 @@ func _show_guide(button_text: String, back_to_menu := false) -> void:
 
 
 func _leave() -> void:
+	if _leaving:
+		return
+	_leaving = true
+	# freeze the match itself (not the tree: the fade to the lobby must run)
+	match_node.process_mode = Node.PROCESS_MODE_DISABLED
+	_touch.process_mode = Node.PROCESS_MODE_DISABLED
+	for b in _pause.find_children("*", "Button", true, false):
+		(b as Button).disabled = true
 	get_tree().paused = false
 	MusicDirector.puzzle(false)
 	Engine.time_scale = 1.0

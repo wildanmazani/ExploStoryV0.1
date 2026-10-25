@@ -10,7 +10,22 @@
     "id": "serpihan4",
     "nama": "Serpihan 4: Warkah Waadat",
     "icon": "gulungan",
-    "info": "Waadat: janji Sang Sapurba dengan Demang Lebar Daun. Raja berlaku adil, rakyat kekal setia."
+    "info": "Waadat: janji Sang Sapurba dengan Demang Lebar Daun. Raja berlaku adil, rakyat kekal setia.",
+    "cerita": [
+      {
+        "s": "pau",
+        "t": "Warkah Waadat. Janji Sang Sapurba dengan Demang Lebar Daun."
+      },
+      {
+        "s": "pau",
+        "t": "Raja tak boleh zalim, rakyat tak boleh derhaka. Kalau dua-dua pegang janji, negeri aman."
+      },
+      {
+        "s": "alif",
+        "t": "Janji, setia, adil. Itulah teras Bab 1.",
+        "e": "confident"
+      }
+    ]
   },
   "fakta_disemak": false,
   "background": "res://assets/backgrounds/bg_zon1_4_bukit_siguntang.png",

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjtlcc1tkre6q"
-path="res://.godot/imported/muzium.png-1712bbf9037a355732e1d2acbec6a338.ctex"
+uid="uid://nw2yklhyfuka"
+path="res://.godot/imported/tajuk_penuh.png-193a553a07f36e49d6a8da528978e787.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/muzium.png"
-dest_files=["res://.godot/imported/muzium.png-1712bbf9037a355732e1d2acbec6a338.ctex"]
+source_file="res://assets/backgrounds/tajuk/tajuk_penuh.png"
+dest_files=["res://.godot/imported/tajuk_penuh.png-193a553a07f36e49d6a8da528978e787.ctex"]
 
 [params]
 
