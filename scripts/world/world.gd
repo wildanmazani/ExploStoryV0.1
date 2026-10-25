@@ -445,6 +445,8 @@ func _build_entities() -> void:
 		var at := Vector2i(n["pos"][0], n["pos"][1])
 		npc.setup(n["id"], at, n["facing"])
 		objects.add_child(npc)
+		if n.get("wander", true) and not blocked.has(at):
+			npc.enable_wander(self, int(n.get("radius", 2)))
 		npcs[at] = npc
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
@@ -671,6 +673,41 @@ func spot_ids() -> Array:
 	for n in _ent["npcs"]:
 		ids.append(n["id"])
 	return ids
+
+
+# --- wandering NPCs (Npc.enable_wander) -------------------------------------
+## NPCs only stroll while nothing is happening and Alif isn't close by, so the
+## one you're walking up to (or talking to) stays put.
+func npc_may_wander(npc: Npc) -> bool:
+	if busy or runner.busy or Game.is_locked():
+		return false
+	var d := npc.cell - player.cell
+	return absi(d.x) + absi(d.y) > 4
+
+
+func npc_cell_free(c: Vector2i) -> bool:
+	if not is_walkable(c) or c == player.cell or c == pau.cell:
+		return false
+	# keep doors, signs, spots and portals clear
+	return not interact.has(c) and not portals.has(c)
+
+
+func move_npc(npc: Npc, to: Vector2i) -> void:
+	var from := npc.cell
+	var it: Dictionary = interact.get(from, {"type": "npc", "id": npc.id})
+	npcs.erase(from)
+	blocked.erase(from)
+	interact.erase(from)
+	npcs[to] = npc
+	blocked[to] = true
+	interact[to] = it
+
+
+func npc_node(id: String) -> Npc:
+	for at in npcs:
+		if npcs[at].id == id:
+			return npcs[at]
+	return null
 
 
 func marker_pos(id: String) -> Vector2:

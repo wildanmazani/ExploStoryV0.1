@@ -30,14 +30,21 @@ func _ready() -> void:
 	root.add_child(UI.header_bar("BILIK PERTARUNGAN", tr("Jawab betul, serang lawan. Yang terakhir berdiri menang %d syiling.") % BattleRules.REWARD_COINS))
 	var row := UI.hbox(20)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	row.add_child(_bot_card())
 	_right = UI.vbox(10)
 	var friends := UI.panel("Glass")
-	friends.custom_minimum_size = Vector2(560, 470)
+	friends.custom_minimum_size = Vector2(560, 0)
 	friends.add_child(_right)
 	row.add_child(friends)
-	root.add_child(row)
+	# the two cards scroll when big text makes them taller than the screen;
+	# the button row below stays put so KEMBALI is always reachable
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.add_child(row)
+	root.add_child(scroll)
 	var btns := UI.hbox(16)
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
 	var back := UI.button("« KEMBALI", "", 240)
@@ -52,7 +59,7 @@ func _ready() -> void:
 	var st := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(200, 60), " TETAPAN")
 	st.pressed.connect(func(): Game.main.open_settings())
 	btns.add_child(st)
-	root.add_child(UI.margin(btns, 0, 0, 0, 20))
+	root.add_child(UI.margin(btns, 0, 0, 0, 14))
 	add_child(root)
 	_build_friends()
 
@@ -60,8 +67,8 @@ func _ready() -> void:
 ## Gelanggang Pesta Silat vs classmate bots: pick the teams and how tough
 func _bot_card() -> Control:
 	var card := UI.panel("Glass")
-	card.custom_minimum_size = Vector2(500, 470)
-	var c := UI.vbox(10)
+	card.custom_minimum_size = Vector2(580, 0)
+	var c := UI.vbox(8)
 	var head := UI.hbox(10)
 	var ht := UI.label("GELANGGANG PESTA SILAT", "InkHeading")
 	ht.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -71,12 +78,12 @@ func _bot_card() -> Control:
 	head.add_child(how)
 	c.add_child(head)
 	var d := UI.label("Jawab betul untuk dapat semangat dan senjata sekolah, kemudian bertarung! Tiada internet diperlukan.", "Ink", true)
-	d.custom_minimum_size.x = 440
+	d.custom_minimum_size.x = 530
 	c.add_child(d)
 	_faces = UI.hbox(4)
 	c.add_child(_faces)
-	c.add_child(UI.label("Pasukan", "InkSmall"))
 	var fmt := UI.hbox(6)
+	fmt.add_child(_row_label("Pasukan"))
 	for f in BrawlRules.FORMATS:
 		var b := UI.button(f.replace("v", " lwn "), "", 100)
 		b.pressed.connect(func():
@@ -86,8 +93,8 @@ func _bot_card() -> Control:
 		b.theme_type_variation = "Primary" if f == _format else ""
 		fmt.add_child(b)
 	c.add_child(fmt)
-	c.add_child(UI.label("Tahap lawan", "InkSmall"))
 	var lv := UI.hbox(6)
+	lv.add_child(_row_label("Tahap lawan"))
 	for l in BrawlRules.LEVELS:
 		var b := UI.button(BrawlRules.LEVELS[l]["name"], "", 130)
 		b.pressed.connect(func():
@@ -101,8 +108,8 @@ func _bot_card() -> Control:
 	if not open.has(BattleRules.chapter) and BattleRules.chapter != 0:
 		BattleRules.chapter = open[-1] if not open.is_empty() else 1
 	if open.size() > 1:
-		c.add_child(UI.label("Soalan", "InkSmall"))
 		var ch_row := UI.hbox(6)
+		ch_row.add_child(_row_label("Soalan"))
 		for n in open + [0]:
 			var b := UI.button(tr("Campur") if n == 0 else tr("Bab %d") % n, "", 110)
 			b.pressed.connect(func():
@@ -112,19 +119,32 @@ func _bot_card() -> Control:
 			ch_row.add_child(b)
 		c.add_child(ch_row)
 	c.add_child(UI.spacer(false))
-	var go := UI.button("MASUK GELANGGANG", "Primary", 360)
+	# both ways in on one row so they stay on screen without scrolling
+	var go_row := UI.hbox(10)
+	var go := UI.button("MASUK GELANGGANG", "Primary", 290)
 	go.pressed.connect(func():
 		Sfx.play("select")
 		Game.goto("gelanggang", {"format": _format, "level": _level}))
-	c.add_child(go)
+	go_row.add_child(go)
 	# the plain quiz battle (no fighting) is still there for anyone who prefers it
-	var quiz := UI.button("Kuiz sahaja (tanpa aksi)", "", 360)
+	var quiz := UI.button("Kuiz sahaja", "", 0)
+	quiz.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	quiz.tooltip_text = tr("Kuiz pertarungan tanpa aksi")
 	quiz.pressed.connect(func(): Game.goto("pertarungan", {"mode": "bot", "bots": maxi(BattleRules.MIN_FRIENDS, BrawlRules.FORMATS[_format][1])}))
-	c.add_child(quiz)
+	go_row.add_child(quiz)
+	c.add_child(go_row)
 	card.add_child(c)
 	_show_faces()
 	go.call_deferred("grab_focus")
 	return card
+
+
+## the name of a row of choices, beside it (not above) so the card stays short
+func _row_label(text: String) -> Label:
+	var l := UI.label(text, "InkSmall", true)
+	l.custom_minimum_size.x = 100
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	return l
 
 
 ## the same Cara Main as the Gelanggang pause menu
@@ -145,7 +165,8 @@ func _show_guide() -> void:
 func _pick(row: HBoxContainer, chosen: Button) -> void:
 	Sfx.play("tick", -8.0)
 	for b in row.get_children():
-		(b as Button).theme_type_variation = "Primary" if b == chosen else ""
+		if b is Button:  # skip the row's name label
+			b.theme_type_variation = "Primary" if b == chosen else ""
 
 
 ## your team (you + allies) vs the other team, as heads

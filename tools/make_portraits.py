@@ -1,0 +1,42 @@
+"""Dialogue portraits cut straight from each character's south sprite, so the
+face in the dialogue box always matches the one walking on the map
+(docs/CONTENT_CONSISTENT_DESIGN.md).
+
+Run: python tools/make_portraits.py tunperak kurator ...   (or --all)
+Writes assets/portraits/<id>.png at 48x48 (head and shoulders, nearest-neighbour).
+"""
+import json
+import os
+import sys
+
+from PIL import Image
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT = 48
+
+
+def portrait(cid: str) -> str:
+    src = os.path.join(ROOT, "assets", "characters32", cid, f"{cid}_south.png")
+    img = Image.open(src).convert("RGBA")
+    box = img.getchannel("A").getbbox()
+    if box is None:
+        return f"skip {cid}: empty sprite"
+    x0, y0, x1, y1 = box
+    # head and shoulders: a square from just above the head, about 70% of the body tall
+    side = max(x1 - x0, round((y1 - y0) * 0.7))
+    cx = (x0 + x1) / 2
+    left = round(cx - side / 2)
+    top = y0 - 1
+    crop = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+    crop.paste(img.crop((left, top, left + side, top + side)), (0, 0))
+    crop.resize((OUT, OUT), Image.NEAREST).save(os.path.join(ROOT, "assets", "portraits", f"{cid}.png"))
+    return f"ok   {cid} ({side}px crop)"
+
+
+if __name__ == "__main__":
+    ids = sys.argv[1:]
+    if ids == ["--all"]:
+        chars = json.load(open(os.path.join(ROOT, "data", "characters.json"), encoding="utf-8"))
+        ids = [k for k, v in chars.items() if v.get("sprite") == k and v.get("portrait") == k]
+    for cid in ids:
+        print(portrait(cid))

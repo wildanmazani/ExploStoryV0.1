@@ -3,3 +3,4 @@
 /android/
 /build/
 *.tmp
+__pycache__/

@@ -403,7 +403,7 @@ func _dream() -> void:
 	await _say("pro_gua_1")
 	if _skipping: return
 	# Nirbana gathers out of the mist
-	var nir := _sprite("res://assets/characters32/nirbana/nirbana_south.png", Vector2(900, 640), 7)
+	var nir := _sprite("res://assets/characters32/nirbana/nirbana_south.png", Vector2(900, 640), 8)
 	nir.modulate = Color(0.6, 0.4, 0.9, 0.0)
 	Sfx.play("whoosh", -4.0, 0.6)
 	var t := create_tween()
@@ -466,10 +466,10 @@ func _shards() -> void:
 	var targets := [Vector2(-100, 100), Vector2(1380, 120), Vector2(-100, 640), Vector2(1380, 660)]
 	var last: Tween
 	for i in 4:
-		var s := ColorRect.new()
-		s.color = Color(1, 0.86, 0.4)
-		s.size = Vector2(22, 30)
-		s.position = centre
+		# the same picture the player later earns for this Serpihan (zone ganjaran)
+		var icon := str(Game.zone_data("1_%d" % (i + 1)).get("ganjaran", {}).get("icon", "bintang"))
+		var s := _shard(icon)
+		s.position = centre - s.size / 2.0
 		s.rotation = randf_range(-0.6, 0.6)
 		add_child(s)
 		move_child(s, flash.get_index())
@@ -480,6 +480,27 @@ func _shards() -> void:
 		await _wait(0.15)
 	if last:
 		await last.finished
+
+
+## one flying Serpihan: its reward icon on a soft gold glow
+func _shard(icon: String) -> Control:
+	var box := Control.new()
+	box.size = Vector2(72, 72)
+	box.pivot_offset = box.size / 2.0
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.draw.connect(func():
+		for k in 4:
+			box.draw_circle(box.size / 2.0, 36.0 - k * 7.0, Color(1, 0.86, 0.4, 0.12 + k * 0.06)))
+	var r := TextureRect.new()
+	r.texture = load("res://assets/icons/%s.png" % icon)
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	r.size = Vector2(56, 56)
+	r.position = Vector2(8, 8)
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(r)
+	return box
 
 
 func _shake_node(n: Control, seconds: float) -> void:

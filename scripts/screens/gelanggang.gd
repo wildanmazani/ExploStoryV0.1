@@ -269,6 +269,14 @@ func _build_banner() -> void:
 	add_child(_banner)
 
 
+## long questions or big text make the card taller: lift it so the bottom
+## row of answers never runs off the screen
+func _fit_card() -> void:
+	_card.reset_size()
+	var h := get_viewport_rect().size.y
+	_card.position.y = clampf(h - _card.size.y - 16.0, 16.0, 150.0)
+
+
 func _on_phase(p: String) -> void:
 	_card.visible = p == "soalan"
 	_banner.visible = p == "keputusan"
@@ -287,6 +295,7 @@ func _on_phase(p: String) -> void:
 			Sfx.play("pop", -6.0)
 			if bool(Game.settings.get("auto_read", false)):
 				Tts.speak(_q.text)
+			_fit_card.call_deferred()
 		"keputusan":
 			for c in _banner_box.get_children():
 				c.queue_free()

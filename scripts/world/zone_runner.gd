@@ -38,6 +38,8 @@ func setup(h: Node) -> void:
 	for id in host.spot_ids():
 		var m := Marker.new()
 		m.position = host.marker_pos(id)
+		if host.has_method("npc_node"):  # a wandering NPC takes its "!" along
+			m.follow = host.npc_node(id)
 		m.visible = false
 		host.get_node("Objects").add_child(m)
 		markers[id] = m
@@ -249,6 +251,7 @@ func refresh() -> void:
 
 ## Bouncing "!" quest marker drawn in pixels (crisp at any zoom).
 class Marker extends Node2D:
+	var follow: Node2D
 	var _t := randf() * TAU
 
 	func _ready() -> void:
@@ -257,6 +260,8 @@ class Marker extends Node2D:
 
 	func _process(delta: float) -> void:
 		_t += delta
+		if follow:
+			position = follow.position + Vector2(0, -34)
 		queue_redraw()
 
 	func _draw() -> void:

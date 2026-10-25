@@ -47,6 +47,16 @@ func _ready() -> void:
 	_cards_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	root.add_child(_cards_row)
 
+	# question, answers and the explanation share whatever height the stage
+	# leaves; with big text or a long explanation this scrolls instead of
+	# pushing the bottom row of answers off the screen
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var lower := UI.vbox(8)
+	lower.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(lower)
+	root.add_child(scroll)
 	var qp := UI.panel("Paper")
 	var qrow := UI.hbox(10)
 	_q = UI.label("", "InkHeading", true)
@@ -58,24 +68,24 @@ func _ready() -> void:
 	sp.pressed.connect(func(): Tts.speak(_q.text))
 	qrow.add_child(sp)
 	qp.add_child(qrow)
-	root.add_child(UI.margin(qp, 24, 0, 24, 0))
+	lower.add_child(UI.margin(qp, 24, 0, 24, 0))
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 10)
 	for i in 4:
 		var b := UI.button("")
-		b.custom_minimum_size = Vector2(610, 60)
+		b.custom_minimum_size = Vector2(610, 52)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.pressed.connect(_answer.bind(i))
 		grid.add_child(b)
 		_buttons.append(b)
-	root.add_child(UI.center(grid))
+	lower.add_child(UI.center(grid))
 	_info = UI.label("", "", true)
 	_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_info.custom_minimum_size.x = 1200
-	root.add_child(UI.center(_info))
+	lower.add_child(UI.margin(UI.center(_info), 0, 0, 0, 12))
 	add_child(root)
 
 	if str(params.get("mode", "bot")) == "online":
@@ -143,7 +153,7 @@ func _refresh_cards(s: Dictionary) -> void:
 ## players fall over.
 class Fighter extends VBoxContainer:
 	const UI = preload("res://scripts/ui/ui.gd")
-	const SPRITE := 150.0
+	const SPRITE := 112.0
 
 	var me := false
 	var alive := true
@@ -258,7 +268,7 @@ class Fighter extends VBoxContainer:
 	func _draw_ring() -> void:
 		var c := Vector2(_stage.size.x / 2.0, SPRITE * 0.9)
 		_stage.draw_set_transform(c, 0, Vector2(1, 0.32))
-		_stage.draw_circle(Vector2.ZERO, 58, Color(0, 0, 0, 0.35))
+		_stage.draw_circle(Vector2.ZERO, SPRITE * 0.39, Color(0, 0, 0, 0.35))
 		var col := Color(0, 0, 0, 0)
 		if not alive:
 			col = Color(0.5, 0.5, 0.5, 0.5)
@@ -267,7 +277,7 @@ class Fighter extends VBoxContainer:
 		elif me:
 			col = UI.GOLD
 		if col.a > 0:
-			_stage.draw_arc(Vector2.ZERO, 64, 0, TAU, 48, col, 5.0, true)
+			_stage.draw_arc(Vector2.ZERO, SPRITE * 0.43, 0, TAU, 48, col, 5.0, true)
 		_stage.draw_set_transform(Vector2.ZERO)
 
 

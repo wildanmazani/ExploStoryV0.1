@@ -3,6 +3,8 @@ extends RefCounted
 ## Builds SpriteFrames from the PixelLab downloads in assets/characters32/:
 ##   <name>/<name>_<dir>.png                 idle, one per direction
 ##   <name>_walk/<name>_walk_<dir>_<i>.png   walk cycle (optional)
+##   <name>_hover/<name>_hover_<dir>_<i>.png  looping idle instead of the
+##                                           still pose (Nirbana floats)
 
 const DIRS := ["south", "east", "north", "west"]
 const BASE := "res://assets/characters32/"
@@ -19,7 +21,14 @@ static func build(name: String, with_walk := false) -> SpriteFrames:
 	for d in DIRS:
 		var idle: String = "idle_" + d
 		frames.add_animation(idle)
-		frames.add_frame(idle, load("%s%s/%s_%s.png" % [BASE, name, name, d]))
+		var h := 0
+		while ResourceLoader.exists("%s%s_hover/%s_hover_%s_%d.png" % [BASE, name, name, d, h]):
+			frames.add_frame(idle, load("%s%s_hover/%s_hover_%s_%d.png" % [BASE, name, name, d, h]))
+			h += 1
+		if h == 0:
+			frames.add_frame(idle, load("%s%s/%s_%s.png" % [BASE, name, name, d]))
+		else:
+			frames.set_animation_speed(idle, 7.0)
 		if with_walk:
 			var walk: String = "walk_" + d
 			frames.add_animation(walk)

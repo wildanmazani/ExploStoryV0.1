@@ -2,21 +2,12 @@
 
 Semua aset dijana dengan PixelLab. Latar 320x180 — skala 4x ke 1280x720 (guna penapis `Nearest` dalam Godot).
 
-## Watak (`characters/`)
-Sprite 68x68, 4 arah (south/east/north/west), pandangan low top-down, chibi.
+## Watak (`characters32/`)
+Sprite 36x36, 4 arah, pandangan low top-down, gaya sama dengan Alif. Panduan penuh, prompt
+dan ID PixelLab: `docs/CONTENT_CONSISTENT_DESIGN.md` dan `tools/asset_manifest.json`.
+Import watak baharu: `python tools/import_characters.py <id>=<uuid>`.
 
-| Watak | Folder | PixelLab character ID |
-| --- | --- | --- |
-| Alif | `alif/` | 474db5e1-2139-41e8-bf85-117e3f5e85a0 |
-| Bendahara Tun Perak | `tun_perak/` | 7c78a971-b513-4d56-8760-c7502b3148b4 |
-| Syahbandar | `syahbandar/` | d94799b5-c1bd-4cab-9d5d-a4d037c39a88 |
-| Penjaga Gerbang Masa | `penjaga_gerbang_masa/` | 494357c1-6473-47f8-8569-f2a7bfba406b |
-| Sang Sapurba | `sang_sapurba/` | 9b05812c-5088-48bc-85c4-438fe5545304 |
-| Demang Lebar Daun | `demang_lebar_daun/` | ecf6b209-9e91-4097-8177-5b82eca58320 |
-
-Animasi (berjalan, dsb.) boleh ditambah kemudian dengan `animate_character` menggunakan ID di atas.
-
-Lain-lain: `pau.png` (64x64), `sultan_siluet_takhta.png` (96x128, dari belakang).
+`characters/pau.png` (64x64) masih dipakai di skrin tajuk dan prolog.
 
 ## Latar (`backgrounds/`)
 `bg_skrin_tajuk`, `bg_bilik_alif_malam`, `bg_peta_jejak_pembelajaran`, `bg_zon1_1_gerbang_masa`, `bg_zon1_2_pelabuhan_melaka`, `bg_zon1_3_balai_penghadapan`, `bg_zon1_4_bukit_siguntang`.
