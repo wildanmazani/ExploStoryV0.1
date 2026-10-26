@@ -3,9 +3,13 @@ extends "res://scripts/ui/modal.gd"
 ## One row of pockets per Bab (an artifact slot for each mission) plus the
 ## Kad Tokoh met in that Bab. Tap a found artifact and Pau tells its story
 ## (zone "ganjaran.cerita", else its "info"). Tabs switch between open chapters.
+## Opened from the world, the bag also holds the Jalan Pintas: tap a place
+## already unlocked and Alif is there (world.fast_travel).
 
 const ICON := "res://assets/icons/beg.png"
+const TRAVEL := "Jalan Pintas"
 
+var world: Node  ## set when opened in the world: shows the Jalan Pintas tab
 var _body: VBoxContainer
 var _tabs: HBoxContainer
 
@@ -39,12 +43,16 @@ func _build() -> void:
 	for n in range(1, Game.current_chapter() + 1):
 		if not Game.chapter_zones(n).is_empty():
 			open.append(n)
-	if open.size() > 1:
+	if open.size() > 1 or world:
 		_tabs = UI.hbox(8)
 		for n in open:
 			var b := UI.button(tr("Bab %d") % n, "", 130)
 			b.pressed.connect(_show.bind(n))
 			_tabs.add_child(b)
+		if world:
+			var t := UI.button(tr(TRAVEL), "Blue", 200)
+			t.pressed.connect(_show_travel)
+			_tabs.add_child(t)
 		content.add_child(_tabs)
 	_body = UI.vbox(10)
 	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -52,12 +60,17 @@ func _build() -> void:
 	_show(open[-1] if not open.is_empty() else 1)
 
 
-func _show(ch: int) -> void:
+## light up the tab with this text, clear the page
+func _page(tab: String) -> void:
 	if _tabs:
 		for b in _tabs.get_children():
-			(b as Button).theme_type_variation = "Primary" if b.text == tr("Bab %d") % ch else ""
+			(b as Button).theme_type_variation = "Primary" if b.text == tab else ("Blue" if b.text == tr(TRAVEL) else "")
 	for c in _body.get_children():
 		c.queue_free()
+
+
+func _show(ch: int) -> void:
+	_page(tr("Bab %d") % ch)
 	var zones := Game.chapter_zones(ch)
 	var big := zones.size() <= 4
 	var shelf := GridContainer.new()
@@ -124,3 +137,50 @@ func _tell(g: Dictionary) -> void:
 	if lines.is_empty():
 		lines = [{"s": "pau", "t": str(g.get("info", ""))}]
 	await Game.say(lines)
+
+
+## Jalan Pintas: a card per place on the map (data/map_legend.json); the ones
+## unlocked have PERGI, the rest say what to finish first
+func _show_travel() -> void:
+	_page(tr(TRAVEL))
+	_body.add_child(UI.label("Pilih tempat yang dah dibuka. Alif terus sampai ke sana.", "Small", true))
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 10)
+	for t in world.travel_places():
+		var p: Dictionary = t["place"]
+		var ok: bool = t["ok"]
+		var card := UI.panel("SlotGood" if ok else "Slot")
+		card.custom_minimum_size = Vector2(320, 0)
+		var row := UI.hbox(10)
+		var col := MapView.status_color(MapView.zone_status(str(p["zone"]))) if p.has("zone") else UI.CREAM
+		var sym: Control = MapView.Symbol.new("flag", col) if p.has("zone") else MapView.Symbol.new("badge", Color.WHITE, UI.tex(str(p["icon"])))
+		sym.custom_minimum_size = Vector2(36, 36)
+		row.add_child(sym)
+		var txt := UI.vbox(0)
+		txt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		txt.add_child(UI.label(str(p["name"]), "", true))
+		txt.add_child(UI.label(str(p.get("info", "")) if ok else str(t["why"]), "Small", true))
+		row.add_child(txt)
+		if ok:
+			var go := UI.button("PERGI", "Primary", 96)
+			go.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			go.pressed.connect(_travel.bind(p))
+			row.add_child(go)
+		else:
+			card.modulate = Color(1, 1, 1, 0.55)
+		card.add_child(row)
+		grid.add_child(card)
+	scroll.add_child(grid)
+	_body.add_child(scroll)
+
+
+func _travel(p: Dictionary) -> void:
+	var w := world
+	close()
+	if not w.fast_travel(p):
+		Game.toast(tr("Tak boleh pindah sekarang. Cuba lagi sekejap."))

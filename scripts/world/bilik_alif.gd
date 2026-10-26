@@ -3,7 +3,8 @@ extends "res://scripts/world/interior.gd"
 ## the prologue Alif wakes up here: Pau explains the artifacts (the four
 ## Serpihan), the missions and the goal, then teaches walking and talking.
 ## The first thing to do is pick up the school bag (a blinking start prompt
-## points at it); the bag holds every artifact from then on (Menu > Beg Alif).
+## points at it; until then Alif wears no bag on his back); the bag holds
+## every artifact from then on (Menu > Beg Alif).
 ## Then Pau shows the map and the gold arrow and Misi 1.1 starts: out the door
 ## and the arrow on the map points at Gerbang Masa. Later visits: just the room.
 ## Text: data/dialogue/prologue.json (bilik_*), data/interiors/bilik_alif.json.
@@ -13,6 +14,7 @@ const BG := "res://assets/backgrounds/bg_int_bilik_alif.png"
 const BED_POS := Vector2(72, 84)   ## Alif asleep: head on the pillow
 const UP_CELL := Vector2i(6, 5)    ## where he stands after jumping out of bed
 const BAG_CELL := Vector2i(12, 7)
+const NO_BAG := "alif_tanpa_beg"   ## school uniform without the backpack
 
 signal bag_taken
 
@@ -27,6 +29,8 @@ func _ready() -> void:
 	if ResourceLoader.exists(BG):
 		background = load(BG)
 	_pieces = BilikArt.build(self, $Objects)
+	if not Game.save["seen"].has("beg_alif"):
+		player.set_look(NO_BAG)
 	_emote = Label.new()
 	_emote.add_theme_font_size_override("font_size", 40)
 	_emote.add_theme_color_override("font_outline_color", Color(0.17, 0.11, 0.06))
@@ -159,6 +163,7 @@ func _take_bag() -> void:
 	MusicDirector.stinger("st_item")
 	player.face_cell(BAG_CELL)
 	_remove_bag(true)
+	player.set_look("")  # the bag goes on his back
 	if not Game.save["seen"].has("beg_alif"):
 		Game.save["seen"].append("beg_alif")
 		Game.persist()

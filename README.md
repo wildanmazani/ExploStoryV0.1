@@ -90,9 +90,10 @@ Misi 2.1 hingga 2.8 mengikut satu laluan, dengan papan bernombor di depan setiap
 kelabu dengan kabus putih nipis, dan peta mini serta peta penuh menunjukkan kabus yang sama. Nirbana mengejek setiap
 2 misi; Gabenor Sekatan menjaga Menara semasa Misi 2.8. `python tools/asset_sheet.py` = helaian semua objek peta.
 
-Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Beg Alif + Kad Tokoh, Peta Jejak (tugu batu),
-Arena Ulang Kaji (lobi; di depannya Guru Jalal dan dua pesilat berlatih silat, dengan tugasan sampingan
-Jurus Ingatan selepas Serpihan 1), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
+Ciri lain: peta mini dengan zum (dekat / sederhana / seluruh) dan peta penuh dengan legenda tempat, kata kunci dan simbol (`data/map_legend.json`), HUD (tahap, EXP, syiling), Nota Alif, Beg Alif + Kad Tokoh + Jalan Pintas (pindah terus ke tempat yang dah dibuka;
+juga butang Pergi dalam peta penuh), Peta Jejak (tugu batu),
+Arena Ulang Kaji di setiap pulau (Kampung Jejak dan tepi padang Lembah; lobi, pemain lain bertarung berpasangan,
+patung latihan dan Papan Markah; Guru Jalal dengan tugasan sampingan Jurus Ingatan selepas Serpihan 1), Tetapan Mod Mudah Baca (Lexend / Atkinson / OpenDyslexic, saiz dan
 kelajuan teks, bacaan suara), log petunjuk untuk guru, muzik interaktif dan bunyi.
 
 Seni baharu dari PixelLab (latar tajuk berlapis, bilik Alif, perabot, watak silat): senarai fail, saiz dan

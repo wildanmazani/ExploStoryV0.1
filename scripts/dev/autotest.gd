@@ -137,6 +137,67 @@ func close_top_overlay() -> void:
 # ------------------------------------------------------------------ the run
 ## group chat, room, reading, then the dream: classmates at the port, Nirbana
 ## in Gua Warisan. It is a cutscene: the dialogue taps above just hurry it.
+## after Bab 1: the Arena yards on both islands (sparring players, dummies,
+## board) and the Jalan Pintas in Beg Alif (locked places refuse)
+func _check_arena_travel() -> bool:
+	var w := scene()
+	if w.entities().get("arenas", []).size() != 2:
+		_fail("there should be an Arena yard on each island")
+		return false
+	var beg: Node = Main.open_beg(w)
+	await wait(0.3)
+	if find_button(beg, "Jalan Pintas") == null:
+		_fail("Beg Alif in the world should have a Jalan Pintas tab")
+		return false
+	beg._show_travel()
+	await wait(0.3)
+	await shot("beg_jalan_pintas")
+	close_top_overlay()
+	var by_id := {}
+	for t in w.travel_places():
+		by_id[str(t["place"]["id"])] = t
+	if not by_id["pelabuhan"]["ok"] or not by_id["arena_lembah"]["ok"]:
+		_fail("after Bab 1, Misi 1.2 and Lembah should be open for Jalan Pintas")
+		return false
+	if by_id["serantau"]["ok"]:
+		_fail("Misi 2.4 should still be locked for Jalan Pintas")
+		return false
+	# Kampung Jejak arena yard
+	w.fast_travel({"at": [40, 38], "name": "Arena Ulang Kaji"})
+	await _wait_reload(w)
+	await wait_idle()
+	await shot("arena_yard")
+	# across the Pintu Kabus to the Lembah arena, then back to the port
+	w = scene()
+	w.fast_travel(by_id["arena_lembah"]["place"])
+	await _wait_reload(w)
+	await wait_idle()
+	if scene().player.cell.x < 82:
+		_fail("Jalan Pintas to Arena Lembah should land in Lembah, at %s" % str(scene().player.cell))
+		return false
+	await shot("arena_lembah")
+	w = scene()
+	w.fast_travel(by_id["pelabuhan"]["place"])
+	await _wait_reload(w)
+	await wait_idle()
+	if (scene().player.cell - Vector2i(61, 41)).length() > 4.0:
+		_fail("Jalan Pintas to Misi 1.2 landed at %s" % str(scene().player.cell))
+		return false
+	return true
+
+
+## a world that reloads itself (Jalan Pintas, Pintu Kabus): wait for the new one
+func _wait_reload(old: Node) -> void:
+	var t := 0.0
+	while scene() == old or scene() == null:
+		await wait(0.1)
+		t += 0.1
+		if t > 15.0:
+			_fail("the world did not reload")
+			return
+	await wait_screen("world")
+
+
 func _check_prologue() -> bool:
 	await wait_screen("prologue")
 	var phases := {}
@@ -294,6 +355,8 @@ func _run() -> void:
 	await wait(0.4)
 	await shot("nota")
 	close_top_overlay()
+	if not await _check_arena_travel():
+		return
 	await _check_shop()
 	Game.goto("arka")
 	await wait_screen("arka")
@@ -514,6 +577,9 @@ func _check_bilik() -> bool:
 	if scene()._prompt == null:
 		_fail("no start prompt over the bag")
 		return false
+	if scene().player._look != "alif_tanpa_beg":
+		_fail("before he picks up his bag, Alif should not wear one")
+		return false
 	scene()._leave()
 	await wait(0.5)
 	if screen_name() != "bilik_alif":
@@ -524,6 +590,9 @@ func _check_bilik() -> bool:
 	await wait_idle(120)
 	if not Game.save["seen"].has("bilik_tutorial") or scene()._prompt != null:
 		_fail("taking the bag should clear the prompt and start Misi 1.1")
+		return false
+	if scene().player._look != "":
+		_fail("after picking it up, Alif should wear his bag again")
 		return false
 	await shot("bilik_mission_start")
 	scene()._leave()

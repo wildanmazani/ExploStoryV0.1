@@ -61,6 +61,15 @@
    "facing": "west"
   },
   {
+   "id": "guru_silat",
+   "pos": [
+    43,
+    39
+   ],
+   "facing": "east",
+   "wander": false
+  },
+  {
    "id": "profesor",
    "pos": [
     98,
@@ -123,35 +132,6 @@
     30
    ],
    "facing": "south"
-  },
-  {
-   "id": "guru_silat",
-   "pos": [
-    38,
-    39
-   ],
-   "facing": "east",
-   "wander": false
-  },
-  {
-   "id": "pesilat_amir",
-   "pos": [
-    40,
-    39
-   ],
-   "facing": "east",
-   "wander": false,
-   "practice": true
-  },
-  {
-   "id": "pesilat_hafiz",
-   "pos": [
-    42,
-    39
-   ],
-   "facing": "west",
-   "wander": false,
-   "practice": true
   }
  ],
  "signs": [
@@ -208,6 +188,17 @@
     54
    ],
    "id": "sign_sea"
+  },
+  {
+   "pos": [
+    36,
+    37
+   ],
+   "id": "papan_markah",
+   "size": [
+    2,
+    1
+   ]
   },
   {
    "pos": [
@@ -269,6 +260,17 @@
    "size": [
     10,
     4
+   ]
+  },
+  {
+   "pos": [
+    126,
+    17
+   ],
+   "id": "papan_markah",
+   "size": [
+    2,
+    1
    ]
   }
  ],
@@ -669,6 +671,16 @@
     4
    ]
   },
+  "arena_lembah": {
+   "pos": [
+    128,
+    17
+   ],
+   "size": [
+    6,
+    2
+   ]
+  },
   "jelutong_press": {
    "pos": [
     109,
@@ -724,6 +736,86 @@
    "johor"
   ]
  },
+ "arenas": [
+  {
+   "spot": "arena",
+   "pairs": [
+    [
+     [
+      37,
+      39
+     ],
+     [
+      38,
+      39
+     ]
+    ],
+    [
+     [
+      40,
+      39
+     ],
+     [
+      41,
+      39
+     ]
+    ]
+   ],
+   "dummies": [
+    [
+     44,
+     39
+    ],
+    [
+     45,
+     38
+    ]
+   ],
+   "board": [
+    36,
+    37
+   ]
+  },
+  {
+   "spot": "arena_lembah",
+   "pairs": [
+    [
+     [
+      128,
+      19
+     ],
+     [
+      129,
+      19
+     ]
+    ],
+    [
+     [
+      131,
+      19
+     ],
+     [
+      132,
+      19
+     ]
+    ]
+   ],
+   "dummies": [
+    [
+     126,
+     19
+    ],
+    [
+     133,
+     20
+    ]
+   ],
+   "board": [
+    126,
+    17
+   ]
+  }
+ ],
  "arrive2": [
   90,
   31

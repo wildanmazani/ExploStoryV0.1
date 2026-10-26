@@ -13,6 +13,7 @@ const Hud = preload("res://scripts/ui/hud.gd")
 const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 const Minimap = preload("res://scripts/ui/minimap.gd")
 const ObjectiveArrow = preload("res://scripts/ui/objective_arrow.gd")
+const ArenaYard = preload("res://scripts/world/arena_yard.gd")
 const HOLD_TIME := 0.6  ## long-press Pau = calm moment
 const LEMBAH_X := 82   ## columns from here on are Lembah Kebangkitan (Bab 2)
 
@@ -105,6 +106,8 @@ const LABELS := {
 	"arena": "Arena Ulang Kaji", "gate_locked": "Gerbang berkunci", "gate_open_1": "Gerbang Bab 1",
 	"gate_open_2": "Pintu Kabus Bab 2", "portal_balik": "Pintu Kabus", "dewan": "Dewan Kedaulatan Rakyat",
 	"madrasah": "Madrasah", "sitc": "Maktab Perguruan Sultan Idris", "sign_lembah": "Papan tanda",
+	"arena_lembah": "Arena Ulang Kaji", "papan_markah": "Papan Markah", "patung_latihan": "Patung Latihan",
+	"pemain_arena": "Pemain lain",
 }
 
 var terrain := TerrainBuilder.new()
@@ -133,6 +136,7 @@ var _pau_press := -1.0  ## time Pau was pressed (long-press), -1 = not pressed
 var _ujian_cells := {}  ## chapter -> cell where its Ujian Bab boss waits
 var _goal := {}         ## objective() of this frame (the maps and the arrow all ask)
 var _goal_frame := -1
+var _dummies := {}      ## cell -> training dummy sprite (Arena Ulang Kaji yards)
 
 @onready var ground: TileMapLayer = $Ground
 @onready var decor: Node2D = $Decor
@@ -195,6 +199,8 @@ func _ready() -> void:
 	elif Game.save.get("map_pos", []).size() == 2:
 		spawn = Vector2i(Game.save["map_pos"][0], Game.save["map_pos"][1])
 	GameState.spawn_cell = null
+	if not is_walkable(spawn):  # an old save inside something built since (arena yards)
+		spawn = _nearest_walkable(spawn)
 	player.place_at(spawn, GameState.spawn_facing)
 	pau.place_at(_free_neighbour(spawn))
 	camera.reset_smoothing()
@@ -353,11 +359,11 @@ func _build_entities() -> void:
 		objects.add_child(npc)
 		if n.get("wander", true) and not blocked.has(at):
 			npc.enable_wander(self, int(n.get("radius", 2)))
-		if n.get("practice", false):
-			npc.enable_practice()
 		npcs[at] = npc
 		blocked[at] = true
 		interact[at] = {"type": "npc", "id": n["id"]}
+	for a in _ent.get("arenas", []):
+		_dummies.merge(ArenaYard.build(self, a))
 	areas = _ent["areas"]
 	_build_misi_signs()
 	_spawn_ujian()
@@ -966,17 +972,31 @@ func _talk_or_act(id: String) -> void:
 		"monument":  # Peta Jejak: the Arka & Zon screen (Tingkatan / Bab)
 			_leave_to("")
 			Game.goto("arka")
-		"arena":
+		"arena", "arena_lembah":
 			GameState.spawn_cell = player.cell
 			Game.goto("lobby")
+		"pemain_arena":
+			if await Main.ask(tr("Masuk Arena dan cari lawan?"), "Jom!", "Nanti dulu"):
+				GameState.spawn_cell = player.cell
+				Game.goto("lobby")
+		"papan_markah":
+			Game.main.open_papan()
+		"patung_latihan":
+			var near: Array = _dummies.keys()
+			near.sort_custom(func(x, y): return (x - player.cell).length() < (y - player.cell).length())
+			if not near.is_empty():
+				ArenaYard.wobble(_dummies[near[0]])
+			Sfx.play("bump", -4.0)
+			await _jurus_ingatan(player.cell.x < LEMBAH_X)
 		"guru_silat":
 			await _jurus_ingatan()
 
 
 ## Arena Ulang Kaji side task: Guru Jalal's Jurus Ingatan, three revision
 ## questions from the missions already finished (a reward the first time,
-## then for practice). Opens once the first Serpihan is found.
-func _jurus_ingatan() -> void:
+## then for practice). Opens once the first Serpihan is found. In Lembah
+## (no Guru Jalal there) Pau has the last word.
+func _jurus_ingatan(guru := true) -> void:
 	var done_z: Array = Game.ZONES.filter(func(z): return Game.zone_done(z))
 	if done_z.is_empty():
 		await Game.say(Dialogue.lines("silat_jurus_belum"))
@@ -1003,7 +1023,7 @@ func _jurus_ingatan() -> void:
 		Game.persist()
 		Game.toast("+30 EXP   +15 Syiling")
 		MusicDirector.stinger("st_item")
-	await Game.say(Dialogue.lines("silat_jurus_lepas"))
+	await Game.say(Dialogue.lines("silat_jurus_lepas" if guru else "patung_lepas"))
 
 
 ## Pintu Kabus: Kampung Jejak <-> Lembah Kebangkitan (the world scene reloads
@@ -1024,6 +1044,52 @@ func _cross_portal(pt: Dictionary) -> void:
 		GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0), tr("LEMBAH KEBANGKITAN"), tr("Tanah Melayu, awal 1900-an hingga 1941"))
 	else:
 		GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0), tr("KAMPUNG JEJAK"), tr("Kembali ke Bab 1: Warisan Negara Bangsa"))
+
+
+## Jalan Pintas (Beg Alif and the full map): every place of data/map_legend.json
+## as {place, ok, why}. A Misi opens with its mission, Lembah once Bab 1 is
+## done (like the Pintu Kabus); the mist gate itself is not a destination.
+func travel_places() -> Array:
+	var out: Array = []
+	var lembah_open := not Game.chapter_zones(2).is_empty() and Game.chapter_done(1)
+	for p in MapView.legend()["places"]:
+		if str(p["id"]) == "kabus":
+			continue
+		var why := ""
+		if int(p["at"][0]) >= LEMBAH_X and not lembah_open:
+			why = tr("Selesaikan Bab 1 dulu")
+		elif p.has("zone") and not Game.zone_unlocked(str(p["zone"])):
+			why = tr("Selesaikan Misi %s dulu") % Game.prev_zone(str(p["zone"])).replace("_", ".")
+		out.append({"place": p, "ok": why == "", "why": why})
+	return out
+
+
+## jump to a place from travel_places(): the world reloads with Alif on the
+## nearest free tile there (crossing to Lembah plays its arrival, as the portal does)
+func fast_travel(p: Dictionary) -> bool:
+	if busy or runner.busy or Game.is_locked():
+		return false
+	var at := _nearest_walkable(Vector2i(int(p["at"][0]), int(p["at"][1])))
+	busy = true
+	Sfx.play("whoosh")
+	GameState.spawn_cell = at
+	GameState.spawn_facing = "south"
+	GameState.flags["just_crossed"] = at.x >= LEMBAH_X and player.cell.x < LEMBAH_X
+	Game.save["map_pos"] = [at.x, at.y]
+	Game.persist()
+	GameState.go_to(scene_file_path, Color(0.85, 0.9, 1.0), tr(str(p["name"])).to_upper(), tr("Jalan Pintas"))
+	return true
+
+
+## the walkable tile closest to c (rings outwards), away from doors and portals
+func _nearest_walkable(c: Vector2i) -> Vector2i:
+	for r in range(0, 8):
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				var t := c + Vector2i(dx, dy)
+				if maxi(absi(dx), absi(dy)) == r and is_walkable(t) and not interact.has(t) and not portals.has(t):
+					return t
+	return c
 
 
 func _arrive_lembah() -> void:

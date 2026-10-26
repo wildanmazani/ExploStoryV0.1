@@ -16,7 +16,7 @@ Object chars (anchor = bottom-left cell of the footprint):
   Lembah Kebangkitan (Bab 2): O dewan  V rumah falsafah  E balai serantau  N madrasah
   C Jelutong Press  h kedai (shophouses)  m Maktab SITC  t menara  y tugu pahlawan
   a papan notis  o rak buku  d meja pengarang  v pintu kabus (portal back to island 1)  z lampu kolonial
-  A Empat Tiang (Misi 1.1)  Q panji pole (Misi 1.2)  W Arena Ulang Kaji  Z Batu Renungan (Misi 1.4)
+  A Empat Tiang (Misi 1.1)  Q panji pole (Misi 1.2)  W Arena Ulang Kaji (one per island)  Z Batu Renungan (Misi 1.4)
 "spots" in entities.json names the puzzle locations used by data/zon_1_x.json steps.
 
 Run: python tools/gen_world.py   (deterministic; edit shapes below and re-run)
@@ -360,15 +360,24 @@ for n in entities["npcs"]:
 for name, sp in entities["spots"].items():
     if name not in ("kapal",):
         reserve(sp["pos"][0], sp["pos"][1], sp["size"][0], sp["size"][1])
-# Arena Ulang Kaji: Guru Jalal and two pesilat practise in front of it (inside
-# the arena's reserved ring, so they change nothing else in the layout)
-entities["npcs"] += [
-    {"id": "guru_silat", "pos": [38, 39], "facing": "east", "wander": False},
-    {"id": "pesilat_amir", "pos": [40, 39], "facing": "east", "wander": False, "practice": True},
-    {"id": "pesilat_hafiz", "pos": [42, 39], "facing": "west", "wander": False, "practice": True},
-]
-for n in entities["npcs"][-3:]:
-    blocked[n["pos"][1]][n["pos"][0]] = True
+# Arena Ulang Kaji, a training and multiplayer yard: other players spar in
+# pairs, Guru Jalal stands by the training dummies, a Papan Markah by the
+# door (all inside the arena's reserved ring, so nothing else moves)
+entities["npcs"].append({"id": "guru_silat", "pos": [43, 39], "facing": "east", "wander": False})
+blocked[39][43] = True
+entities["arenas"] = []
+
+
+def arena_yard(spot_id, pairs, dummies, board):
+    """Sparring pairs ([left fighter, right fighter]), dummies and a score board."""
+    entities["arenas"].append({"spot": spot_id, "pairs": pairs, "dummies": dummies, "board": board})
+    for x, y in [c for p in pairs for c in p] + dummies:
+        blocked[y][x] = True
+    place("a", board[0], board[1], force=True)
+    entities["signs"].append({"pos": board, "id": "papan_markah", "size": [2, 1]})
+
+
+arena_yard("arena", [[[37, 39], [38, 39]], [[40, 39], [41, 39]]], [[44, 39], [45, 38]], [36, 37])
 # the istana door and the gate passage stay open
 keep_clear(55, 29, 56, 30)
 reserve(55, 29, 2, 1)
@@ -426,6 +435,9 @@ for n in LAYOUT["npcs"]:
     reserve(x, y, 1, 1)
 reserve(88, 30, 4, 1, r=1)
 reserve(ARRIVE[0], ARRIVE[1], 1, 1)
+# the Lembah arena sits by the padang (its landmark comes from the layout)
+arena_yard("arena_lembah", [[[128, 19], [129, 19]], [[131, 19], [132, 19]]], [[126, 19], [133, 20]], [126, 17])
+reserve(126, 20, 8, 6, r=1)
 DECOR = LAYOUT["decor"]
 for y in DECOR["lamps_y"]:
     for x in DECOR["lamps_x"]:
@@ -585,6 +597,9 @@ for y in range(H):
                     walk[cy][cx] = False
 for n in entities["npcs"]:
     walk[n["pos"][1]][n["pos"][0]] = False
+for a in entities["arenas"]:
+    for x, y in [c for p in a["pairs"] for c in p] + a["dummies"]:
+        walk[y][x] = False
 seen = {tuple(entities["spawn"]), tuple(entities["arrive2"])}
 todo = deque(seen)
 while todo:

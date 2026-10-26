@@ -1,6 +1,6 @@
 extends Control
 ## HUD (Module 2): top-left location + a Menu button that drops down a list
-## (Peta, Nota, Beg Alif, Tenang, Papan Markah, Tetapan), top-right player card
+## (Peta, Nota, Beg Alif + Jalan Pintas, Tenang, Papan Markah, Tetapan), top-right player card
 ## with the head of Alif's current outfit, level, EXP bar and coins.
 
 const UI = preload("res://scripts/ui/ui.gd")
@@ -161,7 +161,7 @@ func _build_menu(_left: Control) -> void:
 	if world:
 		col.add_child(_item(UI.tex("res://assets/icons/peta.png"), "Peta Dunia  (M)", func(): Game.main.open_map(world)))
 	col.add_child(_item(UI.tex("res://assets/icons/nota.png"), "Nota Alif", func(): Game.main.open_nota()))
-	col.add_child(_item(BegPanel.icon(), "Beg Alif", func(): Game.main.open_beg()))
+	col.add_child(_item(BegPanel.icon(), "Beg Alif", func(): Game.main.open_beg(world)))
 	if world:
 		col.add_child(_item(UI.tex("res://assets/portraits/pau_happy.png"), "Tenang dengan Pau", func(): Game.main.open_calm()))
 	col.add_child(_item(UI.tex("res://assets/icons/mahkota.png"), "Papan Markah", func(): Game.main.open_papan()))

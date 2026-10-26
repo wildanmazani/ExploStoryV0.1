@@ -584,11 +584,11 @@
         },
         {
           "who": "alif",
-          "text": "Waalaikumussalam. Cikgu berlatih depan Arena Ulang Kaji?"
+          "text": "Waalaikumussalam. Ramainya orang berlatih depan Arena Ulang Kaji ni, Cikgu."
         },
         {
           "who": "guru_silat",
-          "text": "Sengaja. Silat dengan ilmu sama saja. Satu langkah, ulang seribu kali, baru jadi milik kita."
+          "text": "Pemain dari serata tempat datang sini. Silat dengan ilmu sama saja: satu langkah, ulang seribu kali, baru jadi milik kita."
         },
         {
           "who": "guru_silat",
@@ -596,7 +596,7 @@
         },
         {
           "who": "pau",
-          "text": "Patutlah diorang tunduk dulu tadi."
+          "text": "Patutlah diorang tunduk dulu sebelum bertarung tadi."
         }
       ],
       [
@@ -637,76 +637,11 @@
       [
         {
           "who": "guru_silat",
+          "text": "Nampak patung kayu tu? Pukul dia dengan ingatan, bukan dengan tangan. Itulah Jurus Ingatan."
+        },
+        {
+          "who": "guru_silat",
           "text": "Pesilat yang hebat bukan yang paling kuat. Yang paling sabar, yang tak berhenti belajar."
-        }
-      ]
-    ]
-  },
-  "pesilat_amir": {
-    "rekaan": true,
-    "variants": [
-      [
-        {
-          "who": "pesilat_amir",
-          "text": "Hiyaa! Eh, maaf, terkejut ya? Kami tengah latih buah pukul."
-        },
-        {
-          "who": "pesilat_amir",
-          "text": "Saya Amir. Tiap pagi kami berlatih kat sini, petang masuk Arena, lawan kuiz."
-        },
-        {
-          "who": "pau",
-          "text": "Silat pagi, kuiz petang. Rajinnya!",
-          "e": "happy"
-        }
-      ],
-      [
-        {
-          "who": "pesilat_amir",
-          "text": "Guru kata, kuda-kuda kena kukuh dulu. Kalau asas goyang, semua langkah lain pun goyang."
-        },
-        {
-          "who": "alif",
-          "text": "Macam sejarah. Faham asas dulu, baru fakta lain melekat.",
-          "e": "confident"
-        }
-      ],
-      [
-        {
-          "who": "pesilat_amir",
-          "text": "Kalau kau dah yakin, cuba Gelanggang Pesta Silat dalam Arena tu. Jawab betul dulu, baru dapat Semangat!"
-        }
-      ]
-    ]
-  },
-  "pesilat_hafiz": {
-    "rekaan": true,
-    "variants": [
-      [
-        {
-          "who": "pesilat_hafiz",
-          "text": "Semalam saya lupa langkah ketiga. Kabus tu buat kepala saya berkabut."
-        },
-        {
-          "who": "pesilat_hafiz",
-          "text": "Tapi lepas ulang sepuluh kali, ingat balik! Rahsianya, ulang."
-        },
-        {
-          "who": "alif",
-          "text": "Ulang sampai melekat. Okey, faham.",
-          "e": "confident"
-        }
-      ],
-      [
-        {
-          "who": "pesilat_hafiz",
-          "text": "Kami tak berlatih untuk bergaduh. Silat untuk jaga diri, jaga kawan, jaga maruah."
-        }
-      ],
-      [
-        {
-          "who": "pesilat_hafiz",
-          "text": "Amir tu laju, tapi saya lagi sabar. Tengok nanti siapa menang!"
         }
       ]
     ]
@@ -738,6 +673,89 @@
         {
           "who": "guru_silat",
           "text": "Langkah kau makin kemas. Datang lagi bila-bila."
+        }
+      ]
+    ]
+  },
+  "arena_lembah": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Arena Ulang Kaji Lembah! Sama macam kat Kampung Jejak, tapi gaya 1920-an.",
+          "e": "happy"
+        },
+        {
+          "who": "alif",
+          "text": "Ramai juga yang berlatih kat padang ni.",
+          "e": "confident"
+        }
+      ],
+      [
+        {
+          "who": "pau",
+          "text": "Jom masuk lobi, cari lawan."
+        }
+      ]
+    ]
+  },
+  "papan_markah": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Papan Markah! Nama pemain paling banyak menang ada kat sini.",
+          "e": "happy"
+        }
+      ]
+    ]
+  },
+  "patung_latihan": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Patung latihan. Setiap soalan betul, satu tumbukan! Jom cuba Jurus Ingatan."
+        }
+      ]
+    ]
+  },
+  "patung_lepas": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Patung tu pun dah penat kena tumbuk! Ingatan kau makin tajam.",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "pau",
+          "text": "Ulang lagi bila-bila. Jurus yang tak diulang akan berkarat."
+        }
+      ]
+    ]
+  },
+  "pemain_arena": {
+    "variants": [
+      [
+        {
+          "who": "pau",
+          "text": "Diorang tengah berlatih sebelum masuk Gelanggang. Nak cari lawan juga?"
+        }
+      ],
+      [
+        {
+          "who": "pau",
+          "text": "Laju betul tendangan dia! Kau pun boleh, cuma kena jawab betul dulu.",
+          "e": "happy"
+        }
+      ],
+      [
+        {
+          "who": "pau",
+          "text": "Semua pemain ni pun tengah ulang kaji. Jom tunjuk siapa paling ingat!"
         }
       ]
     ]

@@ -46,23 +46,6 @@ func enable_wander(world: Node, radius := 2) -> void:
 	_rest = randf_range(1.5, 5.0)
 
 
-## Silat practice (Arena Ulang Kaji): a lunge towards the partner and back,
-## a beat, again; the stance turns back to the partner after a chat.
-func enable_practice() -> void:
-	var home_face := facing
-	var tw := create_tween().set_loops()
-	tw.tween_interval(randf_range(0.9, 1.6))
-	tw.tween_callback(func():
-		facing = home_face
-		_sprite.play("idle_" + facing))
-	var dx := 3.0 if facing == "east" else -3.0
-	tw.tween_property(_sprite, "position:x", dx, 0.09).set_ease(Tween.EASE_OUT)
-	tw.tween_property(_sprite, "position:x", 0.0, 0.22).set_ease(Tween.EASE_IN_OUT)
-	tw.tween_interval(0.35)
-	tw.tween_property(_sprite, "position:y", -3.0, 0.12).set_ease(Tween.EASE_OUT)  # a little step-hop
-	tw.tween_property(_sprite, "position:y", 0.0, 0.12).set_ease(Tween.EASE_IN)
-
-
 func face_towards(other: Vector2i) -> void:
 	var d := other - cell
 	if absi(d.x) > absi(d.y):

@@ -1,7 +1,8 @@
 extends "res://scripts/ui/modal.gd"
 ## Full map of Dunia Explo-Story: drag to move, + / - or mouse wheel to zoom.
-## Legend on the right: places (tap = show on map), keywords learned in each
-## zone (from data/nota.json, hidden until the zone is done) and symbols.
+## Legend on the right: places (tap = show on map, Pergi = Jalan Pintas),
+## keywords learned in each zone (from data/nota.json, hidden until the zone
+## is done) and symbols.
 
 var world: Node
 var view: MapView
@@ -125,6 +126,10 @@ func _row(sym: Control, title: String, sub: String, sub_col: Color = UI.CREAM_D)
 
 func _show_places() -> void:
 	var nz := Game.next_zone()
+	var can_go := {}  ## place id -> true when Jalan Pintas can take Alif there
+	if world.has_method("travel_places"):
+		for t in world.travel_places():
+			can_go[str(t["place"]["id"])] = t["ok"]
 	for p in MapView.legend()["places"]:
 		var sym: Control
 		var sub := str(p.get("info", ""))
@@ -152,6 +157,13 @@ func _show_places() -> void:
 				_focus(at))
 		var r := _row(sym, str(p["name"]), sub, col)
 		_ignore_mouse(r)
+		if can_go.get(str(p["id"]), false):
+			var go := UI.button("Pergi", "Primary", 0)
+			go.tooltip_text = tr("Jalan Pintas ke sini")
+			go.pressed.connect(func():
+				close()
+				world.fast_travel(p))
+			r.add_child(go)
 		b.add_child(r)
 		_list.add_child(b)
 

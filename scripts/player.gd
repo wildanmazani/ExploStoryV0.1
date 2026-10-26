@@ -28,6 +28,7 @@ var _turned := false
 var _bump_cooldown := 0.0
 var _path: Array = []
 var _on_arrive: Callable
+var _look := ""  ## set_look(): a sprite folder worn instead of the outfit
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
@@ -38,12 +39,22 @@ func _ready() -> void:
 	_idle()
 
 
-## Alif's outfit from the shop (Game.save.skin)
+## Alif's outfit from the shop (Game.save.skin), unless a scene dresses him
+## for a moment (set_look: Bilik Alif before he picks up his bag)
 func _apply_skin() -> void:
 	var folder := Game.skin_folder()
+	if _look != "" and ResourceLoader.exists("%s%s/%s_south.png" % [CharacterFrames.BASE, _look, _look]):
+		folder = _look
 	sprite.sprite_frames = CharacterFrames.build(folder, true)
 	sprite.offset = CharacterFrames.feet_offset(folder)
 	sprite.play("idle_" + facing)
+
+
+## wear this sprite folder instead of the shop outfit ("" = back to the outfit)
+func set_look(folder: String) -> void:
+	_look = folder
+	if sprite:
+		_apply_skin()
 
 
 func place_at(c: Vector2i, face := "south") -> void:

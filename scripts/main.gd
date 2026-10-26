@@ -227,9 +227,11 @@ func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak") -> bool
 	return pick[0]
 
 
-## Beg Alif: the artifacts found so far and the Kad Tokoh
-func open_beg() -> Control:
+## Beg Alif: the artifacts found so far and the Kad Tokoh; with the world
+## given, also the Jalan Pintas between places
+func open_beg(world: Node = null) -> Control:
 	var p := BegPanel.new()
+	p.world = world
 	overlay_root().add_child(p)
 	return p
 
