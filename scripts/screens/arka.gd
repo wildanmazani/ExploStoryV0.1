@@ -14,9 +14,9 @@ var _info: Label
 
 func _ready() -> void:
 	UI.full(self)
-	Game.main.set_pau_visible(true)
+	Game.main.set_pau_visible(false)
 	MusicDirector.play("kampung")
-	Game.context_hint = "Pilih Zon yang terbuka. Zon lain akan terbuka bila bab sebelumnya selesai."
+	Game.context_hint = ""
 	add_child(UI.bg_image("res://assets/backgrounds/bg_peta_jejak_pembelajaran.png", Color(0.55, 0.55, 0.62)))
 	var root := UI.vbox(8)
 	UI.full(root)
@@ -43,6 +43,8 @@ func _ready() -> void:
 	_grid.get_parent().size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_info = UI.label("", "", true)
 	_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_info.add_theme_constant_override("outline_size", 8)  # sits on the busy map
+	_info.add_theme_color_override("font_outline_color", Color(0.08, 0.1, 0.16))
 	body.add_child(_info)
 
 	var bar := UI.hbox(12)
@@ -68,6 +70,7 @@ func _ready() -> void:
 
 func _show_arc(i: int) -> void:
 	_arc = i
+	_info.remove_theme_color_override("font_color")
 	for j in _tabs.get_child_count():
 		(_tabs.get_child(j) as Button).theme_type_variation = "Primary" if j == i else ""
 	for c in _grid.get_children():
@@ -106,6 +109,7 @@ func _card(ch: Dictionary, open: bool) -> Control:
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	var col := UI.vbox(4)
 	var top := UI.hbox(6)
+	top.custom_minimum_size.y = 34  # same height with or without the padlock
 	var zl := UI.label(tr("ZON %d") % no, "Heading")
 	zl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(zl)
@@ -116,7 +120,7 @@ func _card(ch: Dictionary, open: bool) -> Control:
 	if not open:
 		ic.modulate = Color(0.5, 0.5, 0.55, 0.8)
 	col.add_child(ic)
-	var t := UI.label(str(ch.get("title", "")), "Small", true)
+	var t := UI.label(tr(str(ch.get("title", ""))), "Small", true)
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.custom_minimum_size.x = 190
 	col.add_child(t)
@@ -147,7 +151,8 @@ func _card(ch: Dictionary, open: bool) -> Control:
 func _enter(ch: Dictionary, open: bool) -> void:
 	if not open:
 		Sfx.play("bump", -4.0)
-		Game.main.pau_say(tr("Belum lagi. Zon %d akan terbuka lepas kita habiskan bab sebelumnya.") % int(ch["no"]), 4.0)
+		_info.text = tr("Belum lagi. Zon %d akan terbuka lepas kita habiskan bab sebelumnya.") % int(ch["no"])
+		_info.add_theme_color_override("font_color", UI.GOLD)
 		return
 	Sfx.play("select")
 	MusicDirector.stinger("st_correct")
