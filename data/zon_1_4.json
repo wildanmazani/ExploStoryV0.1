@@ -230,7 +230,7 @@
     "pohon_akar": {
       "type": "board",
       "title": "Pohon dan Akar",
-      "instruction": "Bina dua rantaian sebab dan akibat. Ketik satu kad, kemudian ketik kad seterusnya dalam rantaian.",
+      "instruction": "Bina dua rantaian sebab dan akibat. Klik satu kad, kemudian klik kad seterusnya dalam rantaian.",
       "hint": "Rantaian kukuh bermula dengan raja yang adil. Rantaian runtuh bermula dengan janji yang dimungkiri.",
       "columns": [
         "Punca",

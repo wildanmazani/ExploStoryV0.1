@@ -20,7 +20,7 @@ func _ready() -> void:
 	Sfx.play("whoosh", -10.0)
 	var zid: String = params.get("zone", "1_1")
 	_zone = Game.zone_data(zid)
-	Game.context_hint = "Baca persoalan misi ini. Tiada had masa. Ketik Mula Meneroka bila sedia."
+	Game.context_hint = "Baca persoalan misi ini. Tiada had masa. Klik Mula Meneroka bila sedia."
 	add_child(UI.bg_image(str(_zone.get("background", "")), Color(0.55, 0.55, 0.62)))
 	var root := UI.vbox(0)
 	UI.full(root)

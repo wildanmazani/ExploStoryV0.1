@@ -46,7 +46,7 @@ Folder: `assets/backgrounds/tajuk/`. All four files are needed before the
 layered backdrop turns on (`scripts/ui/title_backdrop.gd`). Layers 0-2 are
 352 px wide so they can drift sideways; layer 3 is the fixed foreground.
 
-Keep clear: the title text sits on art rows 8-52 (top centre), "Ketik untuk
+Keep clear: the title text sits on art rows 8-52 (top centre), "Klik untuk
 mula" on rows 150-170 (bottom centre), and the animated Pau mascot on art
 x 262-310, y 136-176 (bottom right). Leave those areas calm (sky or plain grass).
 

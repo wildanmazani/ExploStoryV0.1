@@ -11,6 +11,9 @@ var _leaving := false
 @onready var pau: TextureRect = $Pau
 
 
+var gear: Button
+
+
 func _ready() -> void:
 	$Background.visible = false
 	var bd := TitleBackdrop.new()
@@ -18,11 +21,12 @@ func _ready() -> void:
 	move_child(bd, 0)
 	Main.set_pau_visible(false)
 	MusicDirector.play("tajuk")
-	var gear := Button.new()
+	gear = Button.new()
 	gear.icon = load("res://assets/icons/tetapan.png")
 	gear.expand_icon = true
 	gear.custom_minimum_size = Vector2(64, 60)
-	gear.position = Vector2(1280 - 84, 20)
+	_place_gear()
+	get_viewport().size_changed.connect(_place_gear)
 	gear.tooltip_text = "Tetapan"
 	gear.pressed.connect(func(): Main.open_settings())
 	add_child(gear)
@@ -39,14 +43,19 @@ func _process(delta: float) -> void:
 	pau.position.y = 560 - absf(sin(_t * 4.0)) * 24
 
 
+func _place_gear() -> void:
+	gear.position = Vector2(Game.screen_w() - 84, 20)
+
+
 func _input(event: InputEvent) -> void:
 	if _leaving or Game.is_locked():
 		return
-	if event is InputEventMouseButton and event.position.x > 1180 and event.position.y < 90:
+	if event is InputEventMouseButton and event.position.x > Game.screen_w() - 100 and event.position.y < 90:
 		return  # the settings gear
 	var pressed: bool = (event is InputEventMouseButton and event.pressed) \
 		or (event is InputEventKey and event.pressed and not event.echo)
 	if pressed:
 		_leaving = true
+		Game.fullscreen_on_phone()
 		Sfx.play("select")
 		Game.goto("login")

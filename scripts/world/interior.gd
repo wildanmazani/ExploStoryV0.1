@@ -205,7 +205,7 @@ func _process(_d: float) -> void:
 		var y := screen.y + 8
 		if y + prompt.size.y > 600:  # near the door: above Alif's head, off the Keluar arrow
 			y = screen.y - 150 - prompt.size.y
-		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(y, 120, 640))
+		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, Game.screen_w() - 10 - prompt.size.x), clampf(y, 120, 640))
 
 
 func _build_exhibits() -> void:

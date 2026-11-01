@@ -84,7 +84,7 @@ func _show(ch: int) -> void:
 		var slot := UI.panel("SlotGood" if have else "Slot")
 		slot.custom_minimum_size = Vector2(230, 250 if big else 150)
 		slot.tooltip_text = ((str(g.get("info", "")) + "
-" if not big else "") + tr("Ketik untuk dengar ceritanya")) if have else ""
+" if not big else "") + tr("Klik untuk dengar ceritanya")) if have else ""
 		if have:
 			slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			slot.gui_input.connect(func(e: InputEvent):

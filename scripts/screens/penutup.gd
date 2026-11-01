@@ -17,6 +17,8 @@ func _key(part: String) -> String:
 
 func _ready() -> void:
 	UI.full(self)
+	Game.lock_16_9(true)
+	tree_exited.connect(func(): Game.lock_16_9(false))
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("tajuk")
 	var bg := TextureRect.new()

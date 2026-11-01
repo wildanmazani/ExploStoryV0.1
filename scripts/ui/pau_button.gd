@@ -27,10 +27,9 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	custom_minimum_size = Vector2(120, 130)
 	size = custom_minimum_size
-	position = Vector2(1280 - 130, 720 - 140)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	tooltip_text = "Ketik: petunjuk. Tekan lama: bertenang."
+	tooltip_text = "Klik: petunjuk. Tekan lama: bertenang."
 	_face = UI.tex(ART if ResourceLoader.exists(ART) else FALLBACK)
 	_squeezed = UI.tex(ART_SQUEEZED) if ResourceLoader.exists(ART_SQUEEZED) else _face
 	_sprite = TextureRect.new()

@@ -20,6 +20,7 @@ var pau_layer: CanvasLayer
 var overlay_layer: CanvasLayer
 var dialog_box: Control
 var pau_button: Control
+var _rotate_note: ColorRect
 var bubble: PanelContainer
 var bubble_label: Label
 var toast_box: VBoxContainer
@@ -81,6 +82,9 @@ func _ready() -> void:
 
 	_place_pau()
 	set_pau_visible(false)
+	get_viewport().size_changed.connect(_on_screen_resized)
+	_on_screen_resized()
+	_build_rotate_note()
 	Game.settings_changed.connect(func():
 		get_tree().root.theme = Game.theme
 		_place_pau())
@@ -92,11 +96,39 @@ func _ready() -> void:
 ## the thumbs, so Pau moves up (left side for left-handed: the pad is right)
 func _place_pau() -> void:
 	if not Game.controls_on_screen():
-		pau_button.position = Vector2(1280 - 130, 720 - 140)
+		pau_button.position = Vector2(Game.screen_w() - 130, 720 - 140)
 	elif Game.settings.get("left_handed", false):
 		pau_button.position = Vector2(16, 166)
 	else:
-		pau_button.position = Vector2(1280 - 130, 150)
+		pau_button.position = Vector2(Game.screen_w() - 130, 150)
+
+
+func _on_screen_resized() -> void:
+	_place_pau()
+	toast_box.position.x = (Game.screen_w() - toast_box.custom_minimum_size.x) / 2.0
+
+
+## a phone held upright: ask for landscape instead of a tiny game
+func _build_rotate_note() -> void:
+	_rotate_note = ColorRect.new()
+	_rotate_note.color = Color(0.08, 0.1, 0.16)
+	UI.full(_rotate_note)
+	_rotate_note.visible = false
+	var l := UI.label(tr("Pusingkan telefon untuk main"), "Title", true)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.custom_minimum_size.x = 1000
+	_rotate_note.add_child(UI.full(UI.center(l)))
+	var root := Control.new()
+	UI.full(root)
+	root.theme = Game.theme
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(_rotate_note)
+	_layer(40).add_child(root)
+
+
+func _process(_delta: float) -> void:
+	var sz := DisplayServer.window_get_size()
+	_rotate_note.visible = DisplayServer.is_touchscreen_available() and sz.y > sz.x
 
 
 func _layer(n: int) -> CanvasLayer:
@@ -149,7 +181,7 @@ func pau_say(text: String, seconds: float = 7.0) -> void:
 	bubble_label.text = text
 	bubble.visible = true
 	bubble.reset_size()
-	var bx := pau_button.size.x + 20.0 if pau_button.position.x < 640 else -20.0 - bubble.size.x  # Pau on the left: bubble opens right
+	var bx := pau_button.size.x + 20.0 if pau_button.position.x < Game.screen_w() / 2.0 else -20.0 - bubble.size.x  # Pau on the left: bubble opens right
 	bubble.position = pau_button.position + Vector2(bx, 10 - (bubble.size.y if pau_button.position.y > 360 else 0.0))
 	_bubble_timer.start(seconds)
 	if bool(Game.settings.get("auto_read", false)):
@@ -165,7 +197,7 @@ func _on_pau_tap() -> void:
 		return
 	var t := Game.context_hint
 	if t == "":
-		t = "Aku kat sini! Ketik aku untuk petunjuk. Tekan lama kalau nak bertenang."
+		t = "Aku kat sini! Klik aku untuk petunjuk. Tekan lama kalau nak bertenang."
 	pau_say(t)
 
 

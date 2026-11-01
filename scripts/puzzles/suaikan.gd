@@ -59,7 +59,7 @@ func _build_puzzle() -> void:
 	_lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_lines)
 	UI.full(_lines)
-	say_try("Ketik satu di kiri, kemudian pasangannya di kanan.")
+	say_try("Klik satu di kiri, kemudian pasangannya di kanan.")
 
 
 func _item_button(text: String, icon_path: String) -> Button:
@@ -82,7 +82,7 @@ func _tap_left(i: int) -> void:
 	for j in _left.size():
 		if not _done.has(j):
 			_left[j].theme_type_variation = "Blue" if j == i else ""
-	say_try(tr("Sekarang ketik pasangan untuk: %s") % str(pairs[i]["left"]))
+	say_try(tr("Sekarang klik pasangan untuk: %s") % str(pairs[i]["left"]))
 
 
 func _tap_right(k: int) -> void:

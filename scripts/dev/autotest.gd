@@ -963,7 +963,7 @@ func _check_controls() -> void:
 	Game.set_setting("controls", "tap")
 	await wait(0.3)
 	if tc.get_child_count() != 0 or tc.visible:
-		_fail("Ketik sahaja should show no buttons")
+		_fail("Klik sahaja should show no buttons")
 		return
 	Game.set_setting("left_handed", false)
 	Game.set_setting("pad_size", 1)

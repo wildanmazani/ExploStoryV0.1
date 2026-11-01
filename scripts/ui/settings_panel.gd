@@ -54,6 +54,7 @@ func _grid() -> GridContainer:
 
 # ------------------------------------------------------------------ tabs
 func _paparan() -> void:
+	_skrin_penuh()
 	_body.add_child(UI.label("Mod Mudah Baca", "Heading"))
 	var grid := _grid()
 	grid.add_child(UI.label("Fon"))
@@ -93,7 +94,7 @@ func _kawalan() -> void:
 	grid.add_child(UI.label("Jenis"))
 	var kinds := UI.vbox(6)
 	var r1 := _choice(["auto", "dpad"], ["Automatik", "D-pad"], "controls")
-	var r2 := _choice(["joystick", "tap"], ["Joystick", "Ketik sahaja"], "controls")
+	var r2 := _choice(["joystick", "tap"], ["Joystick", "Klik sahaja"], "controls")
 	_join_choices(r1, r2)
 	kinds.add_child(r1)
 	kinds.add_child(r2)
@@ -118,7 +119,7 @@ const MODE_NOTES := {
 	"auto": "Automatik: D-pad muncul di telefon dan tablet. Di komputer, guna papan kekunci (WASD / anak panah) atau klik peta.",
 	"dpad": "D-pad: anak panah untuk berjalan, A untuk bercakap atau periksa, B (tekan lama) untuk berlari.",
 	"joystick": "Joystick: letak ibu jari di mana-mana sebelah bawah kiri dan tolak. Tolak sampai hujung untuk berlari. A untuk bercakap.",
-	"tap": "Ketik sahaja: tiada butang. Ketik tempat atau orang di peta, Alif akan jalan ke sana sendiri.",
+	"tap": "Klik sahaja: tiada butang. Klik tempat atau orang di peta, Alif akan jalan ke sana sendiri.",
 }
 
 
@@ -163,6 +164,19 @@ func _akaun() -> void:
 
 
 # ------------------------------------------------------------------ widgets
+## a phone game needs the whole screen; iPhone browsers cannot do it for a page
+func _skrin_penuh() -> void:
+	if not Game.can_fullscreen():
+		_body.add_child(UI.label("Skrin penuh di iPhone: buka menu Kongsi dalam Safari, pilih Tambah ke Skrin Utama, kemudian main dari ikon itu.", "", true))
+		return
+	var b := UI.button("Keluar Skrin Penuh" if Game.is_fullscreen() else "Skrin Penuh", "Primary", 300)
+	b.pressed.connect(func():
+		var on := not Game.is_fullscreen()
+		Game.set_fullscreen(on)
+		b.text = tr("Keluar Skrin Penuh" if on else "Skrin Penuh"))
+	_body.add_child(b)
+
+
 func _choice(values: Array, names: Array, key: String) -> HBoxContainer:
 	var row := UI.hbox(8)
 	var group := ButtonGroup.new()
@@ -213,8 +227,8 @@ func _slider(key: String, min_v := 0, width := 380) -> HBoxContainer:
 
 
 func _confirm_reset(btn: Button) -> void:
-	if btn.text != tr("Pasti? Ketik lagi"):
-		btn.text = tr("Pasti? Ketik lagi")
+	if btn.text != tr("Pasti? Klik lagi"):
+		btn.text = tr("Pasti? Klik lagi")
 		return
 	Game.reset_progress()
 	close()

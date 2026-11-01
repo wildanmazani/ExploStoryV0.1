@@ -349,7 +349,7 @@ func _show_symbols() -> void:
 	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_DONE), "Misi siap", "Bendera hijau"))
 	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_OPEN), "Misi terbuka", "Bendera emas"))
 	_list.add_child(_row(MapView.Symbol.new("flag", MapView.COL_LOCKED), "Misi berkunci", "Bendera kelabu: siapkan misi sebelumnya"))
-	_list.add_child(_row(MapView.Symbol.new("npc"), "Orang", "Ketik untuk bercakap"))
+	_list.add_child(_row(MapView.Symbol.new("npc"), "Orang", "Klik untuk bercakap"))
 	for id in MapView.legend()["landmarks"]:
 		var lm: Dictionary = MapView.legend()["landmarks"][id]
 		_list.add_child(_row(MapView.Symbol.new("badge", Color.WHITE, UI.tex(str(lm["icon"]))), str(lm["name"]), ""))

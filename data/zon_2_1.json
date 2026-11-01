@@ -116,7 +116,7 @@
     "tafsiran": {
       "type": "suaikan",
       "title": "Papan Tafsiran Tokoh",
-      "instruction": "Ketik nama tokoh, kemudian ketik tafsiran nasionalisme yang dia kemukakan.",
+      "instruction": "Klik nama tokoh, kemudian klik tafsiran nasionalisme yang dia kemukakan.",
       "hint": "Dr. Burhanuddin al-Helmi bercakap tentang persatuan dan perpaduan yang kuat (National Fronts).",
       "left_title": "Tokoh",
       "right_title": "Tafsiran",

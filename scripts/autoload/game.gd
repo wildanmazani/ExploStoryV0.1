@@ -518,13 +518,57 @@ func controls_on_screen() -> bool:
 	return touch_mode() != "none"
 
 
+# ------------------------------------------------------------------ screen
+## width of the game area: 1280 at 16:9, more on a wider phone (the height is
+## always 720)
+func screen_w() -> float:
+	return get_viewport().get_visible_rect().size.x
+
+
+## scenes laid out at fixed positions (prologue, Gelanggang, penutup) stay
+## 16:9 with bars; everything else fills a wide screen
+func lock_16_9(on: bool) -> void:
+	get_window().content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP if on else Window.CONTENT_SCALE_ASPECT_KEEP_HEIGHT
+
+
+## iPhone browsers have no fullscreen for web pages; there the game goes on
+## the Home Screen instead
+func can_fullscreen() -> bool:
+	if OS.has_feature("web"):
+		return bool(JavaScriptBridge.eval("!!document.fullscreenEnabled"))
+	return true
+
+
+func is_fullscreen() -> bool:
+	if OS.has_feature("web"):
+		return bool(JavaScriptBridge.eval("!!document.fullscreenElement"))
+	return DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
+
+
+func set_fullscreen(on: bool) -> void:
+	if not can_fullscreen():
+		return
+	if OS.has_feature("web") and on:  # once fullscreen, phones may hold landscape
+		JavaScriptBridge.eval("""document.addEventListener('fullscreenchange', function () {
+			if (document.fullscreenElement && screen.orientation && screen.orientation.lock)
+				screen.orientation.lock('landscape').catch(function () {});
+		}, {once: true});""")
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if on else DisplayServer.WINDOW_MODE_WINDOWED)
+
+
+## the first tap on a phone browser: browsers only allow this after a tap
+func fullscreen_on_phone() -> void:
+	if OS.has_feature("web") and DisplayServer.is_touchscreen_available() and not is_fullscreen():
+		set_fullscreen(true)
+
+
 ## the prompt over something Alif can use: names the control this player has
 func interact_prompt(label: String) -> String:
 	if controls_on_screen():
 		return tr("Tekan A: ") + tr(label)
 	if DisplayServer.is_touchscreen_available():
-		return tr("Ketik: ") + tr(label)
-	return tr("E / Ketik: ") + tr(label)
+		return tr("Klik: ") + tr(label)
+	return tr("E / Klik: ") + tr(label)
 
 
 func toast(text: String, color: Color = UI.GOLD) -> void:

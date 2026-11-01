@@ -143,7 +143,7 @@ func _set_sel(c: BoardCard) -> void:
 	selected = c
 	if c:
 		c.theme_type_variation = "CardSel"
-		say_try("Dipilih: \"%s\". Ketik kad yang berkaitan." % c.data.get("text", ""))
+		say_try("Dipilih: \"%s\". Klik kad yang berkaitan." % c.data.get("text", ""))
 
 
 func card_down(c: BoardCard) -> void:

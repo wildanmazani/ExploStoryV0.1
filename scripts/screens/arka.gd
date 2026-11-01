@@ -85,7 +85,7 @@ func _show_arc(i: int) -> void:
 			_grid.add_child(_card({"no": n + 1, "title": "???", "icon": "kunci"}, false))
 		Sfx.play("bump", -6.0)
 		return
-	_info.text = tr("Ketik Zon yang terbuka untuk masuk ke dunianya.")
+	_info.text = tr("Klik Zon yang terbuka untuk masuk ke dunianya.")
 	for ch in arc.get("chapters", []):
 		var open := bool(ch.get("open", false)) and int(ch["no"]) <= GameState.unlocked_chapters
 		_grid.add_child(_card(ch, open))

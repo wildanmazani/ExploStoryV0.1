@@ -120,7 +120,7 @@ func _build_cards(players: Array) -> void:
 				_pick_target(pid))
 		if not p.get("me", false):
 			f.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			f.tooltip_text = tr("Ketik untuk jadikan sasaran")
+			f.tooltip_text = tr("Klik untuk jadikan sasaran")
 		_cards_row.add_child(f)
 		_cards[pid] = f
 
@@ -297,7 +297,7 @@ func _on_state(s: Dictionary) -> void:
 		elif answered:
 			_info.text = tr("Jawapan dihantar. Menunggu pemain lain...")
 		else:
-			_info.text = tr("Ketik kad pemain untuk pilih sasaran, kemudian jawab.")
+			_info.text = tr("Klik kad pemain untuk pilih sasaran, kemudian jawab.")
 	elif status == "reveal" and _last_status != "reveal":
 		_show_reveal(s)
 	elif status == "over" and _last_status != "over":

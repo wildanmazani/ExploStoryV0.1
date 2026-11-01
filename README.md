@@ -12,11 +12,11 @@ diterokai, 4 zon dengan 13 teka-teki, penutup dan teaser Bab 2.
 
 | Tindakan | Papan kekunci | Telefon / tetikus |
 | --- | --- | --- |
-| Berjalan (satu petak) | WASD / anak panah, Shift = lari | D-pad, atau ketik ke mana-mana |
-| Bercakap / guna | E, Space, Enter | Butang A, atau ketik watak / objek |
-| Petunjuk Pau | H | Ketik Pau (di dunia: Pau yang mengikut Alif) |
+| Berjalan (satu petak) | WASD / anak panah, Shift = lari | D-pad, atau klik ke mana-mana |
+| Bercakap / guna | E, Space, Enter | Butang A, atau klik watak / objek |
+| Petunjuk Pau | H | Klik Pau (di dunia: Pau yang mengikut Alif) |
 | Momen tenang | Butang Pau di bar menu | Tekan lama Pau |
-| Peta penuh + legenda | M | Ketik peta mini (bucu kanan) |
+| Peta penuh + legenda | M | Klik peta mini (bucu kanan) |
 | Tetapan | Esc | Butang gear |
 
 Tanda seru **(!)** menunjukkan tugasan seterusnya, dan **anak panah emas** (di peta mini, peta penuh dan
@@ -46,7 +46,7 @@ Maklum balas pusingan 1: pertarungan kini menunjukkan watak besar dengan HP di b
 4 rakan sekelas: Aisyah, Ravi, Mei Ling, Daniel), **Papan Markah** (Seluruh / Negeri / Rakan, ikut jumlah EXP;
 dalam talian perlukan `supabase/leaderboard.sql`, luar talian tunjuk pemain contoh), gambar profil ikut
 pakaian yang dipakai, butang **Menu** yang terbuka ke bawah, dan tab Kata Kunci di peta yang boleh dilipat
-dan dicari (ketik kata kunci untuk tunjuk tempatnya di peta).
+dan dicari (klik kata kunci untuk tunjuk tempatnya di peta).
 
 **Gelanggang Pesta Silat** (Bilik Pertarungan > Lawan Bot): pertarungan aksi sisi (macam Hobo / Streets of Rage)
 dalam dewan sekolah, 1 lwn 1, 2 lwn 2, 1 lwn 2 atau 1 lwn 3, tahap Mudah / Biasa / Sukar. Setiap pusingan:
@@ -80,7 +80,7 @@ pertama (`data/area_intro.json`), dan pertukaran peta menunjukkan kad tajuk. **U
 setiap bab: 3 nyawa, tumbangkan bos (Panglima Derhaka / Bayang Nirbana) dengan 7 jawapan betul, tiada had masa; mesti
 lulus sebelum bab seterusnya dibuka (gagal = cuba lagi atau ulang kaji, bos menunggu di peta). Bilik cerita:
 Jelutong Press dan Maktab SITC (`data/interiors/*.json`). Artifak yang dijumpai disimpan dalam **Beg Alif** (Menu > Beg Alif;
-ketik artifak untuk dengar ceritanya, teks dalam `ganjaran.cerita` setiap `data/zon_*.json`). Potret Alif dalam dialog ikut pakaian yang
+klik artifak untuk dengar ceritanya, teks dalam `ganjaran.cerita` setiap `data/zon_*.json`). Potret Alif dalam dialog ikut pakaian yang
 dipakai. Semua aset peta pandangan atas, menghadap ke bawah; pokok hijau sahaja.
 
 **Lembah Kebangkitan dilukis semula (pek 4)**: pekan kolonial 1920-an yang tersusun: Jalan Besar, jalan batu kelikir

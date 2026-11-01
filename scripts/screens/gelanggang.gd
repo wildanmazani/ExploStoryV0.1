@@ -42,6 +42,8 @@ func _ready() -> void:
 	# the touch buttons stop
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	Game.use_brawl_keys(true)
+	Game.lock_16_9(true)
+	tree_exited.connect(func(): Game.lock_16_9(false))
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("melaka")
 	MusicDirector.puzzle(true)

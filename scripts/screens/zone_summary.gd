@@ -16,7 +16,7 @@ func _ready() -> void:
 	var zid: String = params.get("zone", "1_1")
 	var zone := Game.zone_data(zid)
 	var st := Game.zone_state(zid)
-	Game.context_hint = "Tahniah! Ketik Teruskan untuk kembali ke peta."
+	Game.context_hint = "Tahniah! Klik Teruskan untuk kembali ke peta."
 	add_child(UI.bg_image(str(zone.get("background", "")), Color(0.5, 0.5, 0.58)))
 	var root := UI.vbox(0)
 	UI.full(root)

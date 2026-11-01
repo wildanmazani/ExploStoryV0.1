@@ -181,7 +181,7 @@ func select(c: DragCard) -> void:
 		selected.theme_type_variation = "Card"
 	selected = c
 	c.theme_type_variation = "CardSel"
-	say_try("Dipilih: %s. Sekarang ketik atau seret ke tempat yang betul." % c.item.get("label", ""))
+	say_try("Dipilih: %s. Sekarang klik atau seret ke tempat yang betul." % c.item.get("label", ""))
 
 
 func target_tapped(t: DropTarget) -> void:
@@ -205,7 +205,7 @@ func try_place(c: DragCard, t: DropTarget) -> void:
 		c.theme_type_variation = "Card"
 		selected = null
 		var tip := str(c.item.get("try", ""))
-		say_try("Hmm, belum tepat. " + (tip if tip != "" else "Kad itu kembali ke tempatnya. Cuba lagi, atau ketik Pau untuk petunjuk."))
+		say_try("Hmm, belum tepat. " + (tip if tip != "" else "Kad itu kembali ke tempatnya. Cuba lagi, atau klik Pau untuk petunjuk."))
 
 
 func _place(c: DragCard, t: DropTarget) -> void:

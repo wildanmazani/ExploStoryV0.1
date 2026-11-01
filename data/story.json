@@ -3,7 +3,7 @@
   "peta_first": [
     {"s": "pau", "t": "Nirbana pecahkan Inskripsi Telaga Batu jadi empat serpihan. Satu serpihan, satu misi."},
     {"s": "pau", "t": "Pergi ke bangunan yang ada tanda seru. Bila cukup empat, kita boleh lawan penjaga pintu."},
-    {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau ketik je ke mana kau nak pergi."}
+    {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau klik je ke mana kau nak pergi."}
   ],
   "flag_locked": [
     {"s": "pau", "t": "Belum lagi, kita habiskan yang ini dulu."}

@@ -23,7 +23,8 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(UI.dim(0.72))
 	_frame = UI.panel()
-	_frame.position = Vector2(30, 24)
+	_center_frame()
+	get_viewport().size_changed.connect(_center_frame)
 	_frame.size = Vector2(1220, 672)
 	_frame.custom_minimum_size = Vector2(1220, 672)
 	add_child(_frame)
@@ -72,6 +73,10 @@ func say_try(text: String) -> void:
 	_feedback_panel.add_theme_stylebox_override("panel", UI.sb(Color("fff0d8"), Color("c08a30"), 3, 6, 8))
 
 
+func _center_frame() -> void:
+	_frame.position = Vector2((Game.screen_w() - 1220.0) / 2.0, 24)
+
+
 func show_pau_hint(text: String) -> void:
 	feedback.text = "Pau: " + text
 	_feedback_panel.add_theme_stylebox_override("panel", UI.sb(Color("e4f0fb"), UI.BLUE, 3, 6, 8))
@@ -81,7 +86,7 @@ func show_pau_hint(text: String) -> void:
 
 func request_hint() -> void:
 	if _finished:
-		Game.main.pau_say("Dah siap! Ketik Teruskan.")
+		Game.main.pau_say("Dah siap! Klik Teruskan.")
 		return
 	hint_presses += 1
 	var tier := mini(hint_presses, 3)

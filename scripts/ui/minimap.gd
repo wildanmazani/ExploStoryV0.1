@@ -28,7 +28,7 @@ func _ready() -> void:
 	view.icon_scale = 0.8
 	view.mouse_filter = Control.MOUSE_FILTER_STOP
 	view.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	view.tooltip_text = "Ketik untuk buka peta penuh (M)"
+	view.tooltip_text = "Klik untuk buka peta penuh (M)"
 	view.gui_input.connect(_on_map_input)
 	col.add_child(view)
 	var row := UI.hbox(4)

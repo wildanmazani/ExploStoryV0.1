@@ -52,6 +52,8 @@ var _jar: HBoxContainer
 
 
 func _ready() -> void:
+	Game.lock_16_9(true)
+	tree_exited.connect(func(): Game.lock_16_9(false))
 	Main.set_pau_visible(false)
 	if ResourceLoader.exists(ROOM_V2):
 		room.texture = load(ROOM_V2)

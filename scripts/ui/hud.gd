@@ -24,6 +24,9 @@ var _menu: PanelContainer   ## the expanded list under the Menu button
 var _catcher: Control       ## full-screen, closes the menu when tapping outside
 
 
+var _card: Control
+
+
 func _ready() -> void:
 	UI.full(self)
 	theme = Game.theme
@@ -66,7 +69,9 @@ func _ready() -> void:
 
 	# top-right: player card
 	var card := UI.panel()
-	card.position = Vector2(1280 - 16 - 360, 14)
+	_card = card
+	_place_card()
+	get_viewport().size_changed.connect(_place_card)
 	# tap the card: Profil & Kedai
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -115,6 +120,10 @@ func _ready() -> void:
 	Game.skin_changed.connect(_refresh)
 	Game.settings_changed.connect(_refresh)  # language switch
 	_refresh()
+
+
+func _place_card() -> void:
+	_card.position = Vector2(Game.screen_w() - 16 - 360, 14)
 
 
 func _pass_clicks(n: Node) -> void:

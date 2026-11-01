@@ -21,7 +21,7 @@ func _ready() -> void:
 	_cfg = Game.ujian_def(_ch)
 	Game.main.set_pau_visible(true)
 	MusicDirector.play("tajuk")
-	Game.context_hint = "Ujian Bab %d. Tiada had masa. Ketik aku kalau perlukan petunjuk." % _ch
+	Game.context_hint = "Ujian Bab %d. Tiada had masa. Klik aku kalau perlukan petunjuk." % _ch
 	add_child(UI.bg_image(str(_cfg.get("background", "")), Color(0.45, 0.4, 0.5)))
 	var root := UI.vbox(10)
 	UI.full(root)

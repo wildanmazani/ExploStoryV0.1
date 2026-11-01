@@ -3,7 +3,7 @@ extends CanvasLayer
 ##  - dpad: D-pad + A (act) / B (run)
 ##  - joystick: a stick that appears where the thumb lands (bottom-left) + A;
 ##    push it to the edge to run
-##  - none ("Ketik sahaja", or Automatik on a laptop): nothing on screen, tap
+##  - none ("Klik sahaja", or Automatik on a laptop): nothing on screen, tap
 ##    the map to walk (world.gd _tap)
 ## Everything presses the same input actions as the keyboard, so player.gd
 ## does not care which one is used. Size, transparency and left-handed
@@ -20,11 +20,13 @@ var suspended := false   ## the screen hides the controls (e.g. while answering)
 var _built := ""
 var _zones: Array[Rect2] = []  ## screen areas the controls own (taps there don't walk)
 var _stick: Stick
+var _w := 1280.0  ## screen width the buttons were laid out for
 
 
 func _ready() -> void:
 	layer = 20
 	Game.settings_changed.connect(_rebuild)
+	get_viewport().size_changed.connect(_rebuild)
 	_rebuild()
 
 
@@ -60,7 +62,8 @@ func _rebuild() -> void:
 	var s: float = SCALES[clampi(int(Game.settings.get("pad_size", 1)), 0, 2)]
 	var alpha := clampf(float(Game.settings.get("pad_alpha", 0.7)), 0.3, 1.0)
 	var lefty := bool(Game.settings.get("left_handed", false))
-	var key := "%s|%s|%s|%s" % [m, s, alpha, lefty]
+	_w = Game.screen_w()
+	var key := "%s|%s|%s|%s|%s" % [m, s, alpha, lefty, _w]
 	if key == _built:
 		return
 	_built = key
@@ -85,20 +88,20 @@ func _rebuild() -> void:
 			_add_button("move_left", _arrow_tex(3 if not lefty else 1), c + Vector2(-pad * 1.5, -pad / 2.0), s, alpha, lefty, "move_right" if lefty else "")
 			_add_button("move_right", _arrow_tex(1 if not lefty else 3), c + Vector2(pad * 0.5, -pad / 2.0), s, alpha, lefty, "move_left" if lefty else "")
 			if not brawl:
-				_add_button("interact", _round_tex(Color("e8b04a")), Vector2(1280 - MARGIN - btn, 720 - MARGIN - btn * 1.45), s, alpha, lefty, "", "A")
-				_add_button("run", _round_tex(Color("7aa7d9")), Vector2(1280 - MARGIN - btn * 2.1, 720 - MARGIN - btn * 0.9), s, alpha, lefty, "", "B")
+				_add_button("interact", _round_tex(Color("e8b04a")), Vector2(_w - MARGIN - btn, 720 - MARGIN - btn * 1.45), s, alpha, lefty, "", "A")
+				_add_button("run", _round_tex(Color("7aa7d9")), Vector2(_w - MARGIN - btn * 2.1, 720 - MARGIN - btn * 0.9), s, alpha, lefty, "", "B")
 		"joystick":
 			_stick = Stick.new()
 			_stick.radius = 80.0 * s
-			_stick.zone = _flip(Rect2(0, 720 * 0.35, 1280 * 0.42, 720 * 0.65), lefty)
+			_stick.zone = _flip(Rect2(0, 720 * 0.35, _w * 0.42, 720 * 0.65), lefty)
 			var rest := Vector2(MARGIN + _stick.radius * 1.6, 720 - MARGIN - _stick.radius * 1.6)
-			_stick.rest = Vector2(1280 - rest.x, rest.y) if lefty else rest
+			_stick.rest = Vector2(_w - rest.x, rest.y) if lefty else rest
 			_stick.base = _stick.rest
 			_stick.modulate.a = alpha
 			add_child(_stick)
 			_zones.append(_stick.zone)
 			if not brawl:
-				_add_button("interact", _round_tex(Color("e8b04a")), Vector2(1280 - MARGIN - btn * 1.2, 720 - MARGIN - btn * 1.2), s, alpha, lefty, "", "A")
+				_add_button("interact", _round_tex(Color("e8b04a")), Vector2(_w - MARGIN - btn * 1.2, 720 - MARGIN - btn * 1.2), s, alpha, lefty, "", "A")
 	if brawl and m != "none":
 		_fight_buttons(s, alpha, lefty)
 
@@ -106,7 +109,7 @@ func _rebuild() -> void:
 ## Gelanggang: Tumbuk (big), Sepak, Lompat, Ambil/Baling, Tangkis, Jurus
 func _fight_buttons(s: float, alpha: float, lefty: bool) -> void:
 	var d := BTN * s
-	var base := Vector2(1280 - MARGIN - d, 720 - MARGIN - d)
+	var base := Vector2(_w - MARGIN - d, 720 - MARGIN - d)
 	var k := 0.78   # the smaller buttons
 	for b in [
 		["attack_punch", "Tumbuk", Color("e8b04a"), base, 1.0],
@@ -122,7 +125,7 @@ func _fight_buttons(s: float, alpha: float, lefty: bool) -> void:
 ## mirror a rect to the other side of the screen for left-handed players
 func _flip(r: Rect2, lefty: bool) -> Rect2:
 	if lefty:
-		r.position.x = 1280 - r.position.x - r.size.x
+		r.position.x = _w - r.position.x - r.size.x
 	return r
 
 
@@ -134,7 +137,7 @@ func _add_button(action: String, tex: Texture2D, pos: Vector2, s: float, alpha: 
 	b.action = action_override if action_override != "" else action
 	b.scale = Vector2(s, s)
 	var w := tex.get_size().x * s
-	b.position = Vector2(1280 - pos.x - w, pos.y) if lefty else pos
+	b.position = Vector2(_w - pos.x - w, pos.y) if lefty else pos
 	b.passby_press = true  # slide a thumb across the D-pad without lifting
 	b.visibility_mode = TouchScreenButton.VISIBILITY_ALWAYS
 	b.modulate = Color(1, 1, 1, alpha)

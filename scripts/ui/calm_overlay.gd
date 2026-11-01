@@ -21,7 +21,7 @@ func _ready() -> void:
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 	_pau = TextureRect.new()
-	_pau.texture = UI.sheet_frame("res://assets/proto/sprites/pau.png", 3, 0, 16, 16)
+	_pau.texture = UI.tex("res://assets/ui/pau_besar.png")
 	_pau.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_pau.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_pau.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -36,7 +36,7 @@ func _ready() -> void:
 	_text.size = Vector2(1280, 80)
 	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_text)
-	var sub := UI.label("Bernafas ikut Pau. Ketik di mana-mana untuk kembali.", "Small")
+	var sub := UI.label("Bernafas ikut Pau. Klik di mana-mana untuk kembali.", "Small")
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.position = Vector2(0, 570)
 	sub.size = Vector2(1280, 40)

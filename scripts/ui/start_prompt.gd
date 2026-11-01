@@ -2,7 +2,7 @@ extends Control
 ## "Do this first" indicator for the start of the game: a blinking key-cap
 ## card ("Tekan [E] untuk ambil beg") with a gold arrow bobbing over the
 ## thing to use. It follows that spot on screen and fades out with done()
-## once the player has done it. The card says "Ketik" on touch screens.
+## once the player has done it. The card says "Klik" on touch screens.
 
 const UI = preload("res://scripts/ui/ui.gd")
 
@@ -24,7 +24,7 @@ func _ready() -> void:
 	_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var row := UI.hbox(10)
 	if Game.controls_on_screen():
-		row.add_child(UI.label(tr("Ketik"), "InkHeading"))
+		row.add_child(UI.label(tr("Klik"), "InkHeading"))
 	else:
 		row.add_child(UI.label(tr("Tekan"), "InkHeading"))
 		var cap := UI.panel()  # the key, as a dark key-cap

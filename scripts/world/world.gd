@@ -180,6 +180,7 @@ func _ready() -> void:
 	$HUD.add_child(minimap)
 	_place_minimap()
 	Game.settings_changed.connect(_place_minimap)
+	get_viewport().size_changed.connect(_place_minimap)
 	minimap.open_requested.connect(open_map)
 	var arrow := ObjectiveArrow.new()
 	arrow.world = self
@@ -256,11 +257,11 @@ func _arena_reveal() -> void:
 ## under the menu buttons for left-handed players (the pad is on the right)
 func _place_minimap() -> void:
 	if not Game.controls_on_screen():
-		minimap.position = Vector2(1280 - 16 - minimap.size.x, 720 - 16 - minimap.size.y)
+		minimap.position = Vector2(Game.screen_w() - 16 - minimap.size.x, 720 - 16 - minimap.size.y)
 	elif Game.settings.get("left_handed", false):
 		minimap.position = Vector2(16, 166)
 	else:
-		minimap.position = Vector2(1280 - 16 - minimap.size.x, 150)
+		minimap.position = Vector2(Game.screen_w() - 16 - minimap.size.x, 150)
 
 
 func _process(_delta: float) -> void:
@@ -1175,7 +1176,7 @@ func _update_prompt() -> void:
 		prompt.text = Game.interact_prompt(label)
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
-		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(screen.y + 8, 120, 640))
+		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, Game.screen_w() - 10 - prompt.size.x), clampf(screen.y + 8, 120, 640))
 
 
 func _label_for(it: Dictionary) -> String:

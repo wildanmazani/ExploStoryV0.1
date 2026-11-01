@@ -155,7 +155,7 @@
     "mahkamah": {
       "type": "board",
       "title": "Mahkamah Melaka",
-      "instruction": "Sambungkan setiap kes kepada undang-undang yang betul, kemudian kepada kesannya kepada Melaka. Ketik satu kad, kemudian ketik kad yang berkaitan.",
+      "instruction": "Sambungkan setiap kes kepada undang-undang yang betul, kemudian kepada kesannya kepada Melaka. Klik satu kad, kemudian klik kad yang berkaitan.",
       "hint": "Kes di laut biasanya diadili dengan Undang-Undang Laut Melaka. Kes di darat dengan Hukum Kanun Melaka.",
       "columns": [
         "Kes",

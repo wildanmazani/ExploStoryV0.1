@@ -5,6 +5,9 @@ extends RefCounted
 ## Items are drawn pointing along +x from the hand (handle at the origin).
 
 const DIR := "res://assets/brawl/"
+## art pixels to fight units: long items reach like their moves.json "reach",
+## the rest stay in proportion with the fighters
+const SCALE := {"pembaris": 3.0, "penyapu": 3.0}
 static var _tex := {}
 
 
@@ -18,7 +21,7 @@ static func texture(id: String) -> Texture2D:
 static func draw_item(ci: CanvasItem, id: String, col: Color) -> void:
 	var t := texture(id)
 	if t:
-		var s := 2.6
+		var s: float = SCALE.get(id, 2.0)
 		ci.draw_texture_rect(t, Rect2(Vector2(-6, -t.get_height() * s / 2.0), t.get_size() * s), false)
 		return
 	var ink := Color(0.12, 0.08, 0.05)

@@ -126,7 +126,7 @@ func _forgot() -> void:
 	var e := _user.text.strip_edges()
 	if not e.contains("@"):
 		_status.theme_type_variation = "Small"
-		_status.text = "Taip e-mel anda dahulu, kemudian ketik \"Lupa kata laluan?\"."
+		_status.text = "Taip e-mel anda dahulu, kemudian klik \"Lupa kata laluan?\"."
 		return
 	_status.theme_type_variation = "Small"
 	_status.text = await Backend.reset_password(e)
