@@ -199,7 +199,7 @@ func _process(_d: float) -> void:
 				label = str(e.get("label", "Lihat")) if have else "???"
 	prompt.visible = label != ""
 	if prompt.visible:
-		prompt.text = "E / Ketik: " + label
+		prompt.text = Game.interact_prompt(label)
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
 		var y := screen.y + 8

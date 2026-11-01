@@ -82,6 +82,10 @@ Rules:
 | ibu_zain | Ibu Zain | 1930s woman educator, kebaya, selendang over the head, books |
 | panglima | Panglima Derhaka (fictional) | rebel warrior, dark armour vest, red sash, keris |
 | gabenor | Gabenor Sekatan (fictional) | British colonial governor, white suit, pith helmet |
+| rakan_aisyah | Aisyah (classmate) | white tudung, light blue baju kurung, brown school bag |
+| rakan_daniel | Daniel (classmate) | red cap, white school shirt, navy trousers |
+| rakan_meiling | Mei Ling (classmate) | side ponytail, white blouse, navy pinafore |
+| rakan_ravi | Ravi (classmate) | short curly hair, white school shirt, dark green trousers |
 | nirbana | Nirbana (villain, fictional) | see §5 |
 
 ## 5. Nirbana: villain spec

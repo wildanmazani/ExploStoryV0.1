@@ -21,8 +21,10 @@
     {"s": "pau", "t": "Itu laluan ke Sejarah Tingkatan 5. Masih berkunci. Satu langkah demi satu langkah."}
   ],
   "arena_locked": [
-    {"s": "pau", "t": "Arena Ulang Kaji! Di sini nanti kau boleh berlawan kuiz dengan rakan."},
-    {"s": "pau", "t": "Ia dibuka selepas Bab 1 selesai. Jom tengok lobinya."}
+    {"s": "pemain_arena", "t": "Arena ini hanya untuk orang yang dah habis Bab 1. Pastikan Alif telah mengumpulkan artifak untuk Bab 1."}
+  ],
+  "arena_dibuka": [
+    {"s": "pau", "e": "happy", "t": "Arena Quiz telah dibuka, uji daya ingatan kau dengan kawan-kawan."}
   ],
   "z11_intro": [
     {"s": "pau", "e": "scared", "t": "Gerbang-gerbang ni bersepah. Seram sikit..."},

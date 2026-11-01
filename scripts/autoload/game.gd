@@ -518,6 +518,15 @@ func controls_on_screen() -> bool:
 	return touch_mode() != "none"
 
 
+## the prompt over something Alif can use: names the control this player has
+func interact_prompt(label: String) -> String:
+	if controls_on_screen():
+		return tr("Tekan A: ") + tr(label)
+	if DisplayServer.is_touchscreen_available():
+		return tr("Ketik: ") + tr(label)
+	return tr("E / Ketik: ") + tr(label)
+
+
 func toast(text: String, color: Color = UI.GOLD) -> void:
 	if main and main.has_method("toast"):
 		main.toast(text, color)

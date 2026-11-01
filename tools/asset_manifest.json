@@ -15,10 +15,10 @@
   "alif_sukan": "4b83a4ce-e919-43ca-9443-cfce24a4389d",
   "alif_bomba": "3d6ae71b-915e-45cb-a61a-2d594f0930b1",
   "alif_pahlawan": "dfb4c038-c102-4c65-932c-692adabd418e",
-  "rakan_aisyah": "111ee2f9-defe-4601-becc-e4342fd31e3e",
-  "rakan_ravi": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
-  "rakan_meiling": "890af757-ff90-4a21-a90a-518ffdb29db7",
-  "rakan_daniel": "fa98de23-693f-480d-9599-e7f433932c11",
+  "rakan_aisyah": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
+  "rakan_ravi": "5c4db713-f44f-4702-b426-8b87be919195",
+  "rakan_meiling": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
+  "rakan_daniel": "c614a09c-1b45-49f7-91bd-267067818bea",
   "profesor": "a3064682-8877-4774-814c-698b6694c422",
   "nakhoda": "cc43bd0d-a507-4615-82e7-5a75656c1524",
   "pengarang": "52902a19-dd07-44e7-b45b-3cf642d03e2e",
@@ -137,69 +137,69 @@
    }
   },
   "rakan_aisyah_walk": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "south": [
-     "05c55843-0f1f-4d44-9c0e-6c6615d2a614",
+     "7a26cedb-9809-4961-a7ba-cf3e0b7f9a88",
      6
     ],
     "east": [
-     "66175085-e656-43a3-9e9f-b149d9377903",
+     "6da5e4b9-5007-4678-8a5d-f0129fb20b42",
      6
     ],
     "north": [
-     "5720d117-e099-43fd-9529-809066957b5e",
+     "9e08d315-090d-4201-8bd3-f3345fe806bd",
      6
     ]
    }
   },
   "rakan_ravi_walk": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "south": [
-     "7218cc84-3835-4929-a169-82e622cfc177",
+     "88a9c782-8557-4a09-9d2b-539410896c32",
      6
     ],
     "east": [
-     "ff4e258f-b862-4325-911b-b27d26770c38",
+     "1277f068-8cd2-4d53-a171-ef7d0f352e29",
      6
     ],
     "north": [
-     "5eb2263a-6571-4be6-81eb-2ac2001af644",
+     "db240e3b-0314-47c0-bdcb-430742094e08",
      6
     ]
    }
   },
   "rakan_meiling_walk": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "south": [
-     "358a6136-89ca-4c05-954a-e95ba499c066",
+     "a5c05e28-174e-425a-9b5e-dd36f4d1e004",
      6
     ],
     "east": [
-     "01f2ce71-61fa-4c28-9ca9-6fda5dafbce5",
+     "0ae973ef-8cd4-48ae-8666-27fcfa6796ad",
      6
     ],
     "north": [
-     "018d9555-5f48-4f2e-b179-093f3752f89b",
+     "cb2111c7-3224-4079-aef6-3c4726293fa3",
      6
     ]
    }
   },
   "rakan_daniel_walk": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "south": [
-     "20e36d0f-4675-469a-990e-90db2212d047",
+     "efb0458b-4829-44e6-993f-90aa18b36538",
      6
     ],
     "east": [
-     "0f695b40-fa58-4fb4-be90-effe755f4ccc",
+     "88f44379-acf5-4954-83c0-f503f85b4fbf",
      6
     ],
     "north": [
-     "ca3722dd-1dcb-4208-9e6b-1a47e40fb29a",
+     "8f806188-d6f3-4fe4-8c8f-b3cff44c5e58",
      6
     ]
    }
@@ -295,316 +295,316 @@
    }
   },
   "rakan_aisyah_stance": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "455d70c2-34ad-4c16-bbbb-7ed9085a2ae4",
+     "372d244b-4498-4b5d-a12a-ab3fb4880680",
      8
     ]
    }
   },
   "rakan_aisyah_jab": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "dd34e39c-622c-450e-9570-4956683eb13a",
+     "09eee9f5-5af0-46ad-8dd8-04b3b833f725",
      3
     ]
    }
   },
   "rakan_aisyah_cross": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "bd749739-24f2-4677-af66-388aa3670a2e",
+     "229b01b1-b37f-462b-9529-6c18831c7850",
      6
     ]
    }
   },
   "rakan_aisyah_kick": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "17e0dce7-e96b-401e-86d5-58bb8cf944bb",
+     "9525c844-df3a-428b-b0c7-e08dd07b1d11",
      7
     ]
    }
   },
   "rakan_aisyah_roundhouse": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "ada81a27-42d1-4ed6-a4eb-253b52ca45df",
+     "b365f021-e852-4e34-bc90-f09158f3ad33",
      7
     ]
    }
   },
   "rakan_aisyah_flykick": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "c414cef4-ab9e-48a3-a741-da8e47ced0f8",
+     "66f39876-c353-4018-95a2-9a379d83f5d3",
      6
     ]
    }
   },
   "rakan_aisyah_hurt": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "2134645f-a7c8-447c-807a-c29cb5b486a3",
+     "963afb4e-bdd5-4508-a6e4-b524955f340c",
      6
     ]
    }
   },
   "rakan_aisyah_fall": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "3c54389b-0fd1-4df5-a8e5-77fb197430db",
+     "26f9c582-ace7-42c1-bfa6-60800ba03c53",
      7
     ]
    }
   },
   "rakan_aisyah_getup": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "2c466ec8-d46e-4a51-9420-04bccd724b1a",
+     "9810f5a6-e88d-4086-84fb-da922ae7c6b1",
      5
     ]
    }
   },
   "rakan_aisyah_pickup": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "a820d2a8-01ca-451f-b24a-db5b9cf5b0d9",
+     "c94855e6-4d52-413f-8990-49dd084ace83",
      5
     ]
    }
   },
   "rakan_aisyah_throw": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "3bb87460-0a97-487f-b635-d7d0db90e3e3",
+     "bf3a754b-4234-4936-a879-ed727ce22d0a",
      7
     ]
    }
   },
   "rakan_ravi_stance": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "20af28c7-31dd-4e30-902d-6b1a5912f410",
+     "8c1bc9a5-2127-4664-9081-7448b7f87d5d",
      8
     ]
    }
   },
   "rakan_ravi_jab": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "28812c7c-4905-4b7e-b3ec-9a8086244078",
+     "2f5cfb8b-bbaf-41c1-bf73-b9a849eaa484",
      3
     ]
    }
   },
   "rakan_ravi_cross": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "9eb2aba4-0220-4f85-a1dc-9d25d5040c68",
+     "861ca3a2-f3af-4f07-a239-feba55f2761f",
      6
     ]
    }
   },
   "rakan_ravi_kick": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "bfc55b9f-2bea-4762-870b-4ca4fb3b7d41",
+     "dc29fa06-866d-49bf-a814-0c19b4fb2d57",
      7
     ]
    }
   },
   "rakan_ravi_roundhouse": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "e2f07b81-c1a6-4f19-b31a-56a57af75b5a",
+     "3e239b0f-03e2-4e55-b747-b987b4262a80",
      7
     ]
    }
   },
   "rakan_ravi_flykick": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "3ba78f2a-cd47-4a03-9b42-fc35546fae61",
+     "13ddd66f-1a68-4c83-aba3-ca73f4ac2624",
      6
     ]
    }
   },
   "rakan_ravi_hurt": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "152fba17-50ec-4b21-b039-11529eea9211",
+     "e4f69d5a-f4bc-4618-91b8-33758fc46268",
      6
     ]
    }
   },
   "rakan_ravi_fall": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "ffe62e78-de28-4110-8caa-f692fa1f3382",
+     "8f9a2514-d43e-4966-80bc-2a4b3a09d546",
      7
     ]
    }
   },
   "rakan_ravi_getup": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "bf1d3801-c371-4433-a8cb-c65e3fab448e",
+     "30a7f272-44b8-4852-b4ce-5867223d8469",
      5
     ]
    }
   },
   "rakan_ravi_pickup": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "98b5a22b-4a63-4970-b1bb-b795d2d3c393",
+     "69d51904-5caf-4ee2-9813-7aa79d5ba049",
      5
     ]
    }
   },
   "rakan_ravi_throw": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "b033a50f-b2c9-4f54-b1a9-648e598565c9",
+     "29986e56-834c-401f-bd4e-df50af96eb02",
      7
     ]
    }
   },
   "rakan_ravi_special": {
-   "character": "8e647d2e-b4d8-4862-9462-ff255d9d00ba",
+   "character": "5c4db713-f44f-4702-b426-8b87be919195",
    "dirs": {
     "east": [
-     "9b145d11-ef6f-457f-8805-459a21dd6f69",
+     "d970be1b-3c97-4345-9f13-c969565dba92",
      4
     ]
    }
   },
   "rakan_meiling_stance": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "b0445827-d70b-4c75-b25e-2755bb3b54de",
+     "aad13413-786b-404d-a934-b9893beffc43",
      8
     ]
    }
   },
   "rakan_meiling_jab": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "a429ec9f-71d4-4a97-acf7-000f65164960",
+     "d5f2ebe6-9abf-4dd6-bb59-d65e47eee91a",
      3
     ]
    }
   },
   "rakan_meiling_cross": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "e708da9f-a3a7-4d46-8220-53efa4614741",
+     "ba82bb5d-41a1-438e-97b3-565d1e6f20f5",
      6
     ]
    }
   },
   "rakan_meiling_kick": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "f773e1c8-a524-4e6b-b97e-824bc04c9818",
+     "0e2e6970-37c1-458f-8dd0-d22728d9c321",
      7
     ]
    }
   },
   "rakan_meiling_roundhouse": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "2b016fdc-b80e-4bfc-9ce1-844f3929842d",
+     "2dc64c35-366b-4405-827b-1dc197778a4d",
      7
     ]
    }
   },
   "rakan_meiling_flykick": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "bbb33743-eccb-4241-9d0e-afd9a373fb72",
+     "ff58d5a0-02f2-41a4-ba35-92319a485be8",
      6
     ]
    }
   },
   "rakan_meiling_hurt": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "68f10d5f-65f8-471c-a487-751b2b0d193a",
+     "295cbf2d-b6e3-41bc-ac37-7dd771bf8373",
      6
     ]
    }
   },
   "rakan_meiling_fall": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "b743911b-4fa7-475f-9af4-934ae44df1ee",
+     "499045b6-1717-4c0e-b88e-48d2ba43a761",
      7
     ]
    }
   },
   "rakan_meiling_getup": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "ecf59d50-da53-4aa4-a49f-5816bda560f8",
+     "a10444cd-b76d-430b-bb80-5ba7579d3b83",
      5
     ]
    }
   },
   "rakan_meiling_pickup": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "c4b7ef0a-89b1-4c82-8fae-3fcf5c7a1e54",
+     "5ccc3b70-c083-4e32-b2c3-335f8c92732f",
      5
     ]
    }
   },
   "rakan_meiling_throw": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "75d6557c-c5cd-48f6-af97-e49373b51a95",
+     "64e00e99-8a7a-4395-8540-1b40f2b76925",
      7
     ]
    }
   },
   "rakan_meiling_special": {
-   "character": "890af757-ff90-4a21-a90a-518ffdb29db7",
+   "character": "b51c098a-4a96-4a3c-8d96-7623f7de8ad3",
    "dirs": {
     "east": [
-     "4354ebbb-9e75-4adf-9f97-f3953cfb8ef5",
+     "23535c5d-dc70-420f-8cc3-72bee95c5608",
      4
     ]
    }
@@ -628,109 +628,109 @@
    }
   },
   "rakan_aisyah_special": {
-   "character": "111ee2f9-defe-4601-becc-e4342fd31e3e",
+   "character": "051edd7d-bd20-46ab-ab78-af520b44b3e8",
    "dirs": {
     "east": [
-     "7a7331c0-9df4-4ae8-a695-06f1d431542b",
+     "6e00eaca-b1bb-46e0-820c-5fa752571867",
      4
     ]
    }
   },
   "rakan_daniel_stance": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "a84381da-6c52-40db-967f-ad2905a631ae",
+     "d1d0ee51-b222-4d8d-8150-a5958407daa9",
      8
     ]
    }
   },
   "rakan_daniel_jab": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "6176f417-4f37-48e7-92d1-26b06b268072",
+     "b9bf2f02-315b-44fc-af2b-58ae35ac069d",
      3
     ]
    }
   },
   "rakan_daniel_cross": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "441a3c9d-0644-4f70-be1e-c9f60cfc6bf4",
+     "d11c9403-900d-42b2-9593-ea4f8067a8a2",
      6
     ]
    }
   },
   "rakan_daniel_roundhouse": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "a980125b-916c-457f-aa13-5fd9104dd199",
+     "fd1a7116-d5ba-4b2a-b5bb-148da1bca94e",
      7
     ]
    }
   },
   "rakan_daniel_flykick": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "e46a507a-0fcb-47db-a5f1-89bb369cd3c1",
+     "ed5edd54-2ce3-4ad7-870c-6bf15e66fbae",
      6
     ]
    }
   },
   "rakan_daniel_hurt": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "98402f44-e301-4050-8e18-f7e53081b859",
+     "034b986c-afe8-4e77-bc45-106a9ec63576",
      6
     ]
    }
   },
   "rakan_daniel_fall": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "52b59e5d-ffb5-470e-b726-8c1956dd1639",
+     "21efdaf8-61e5-4aa7-8de0-89505e90f4f9",
      7
     ]
    }
   },
   "rakan_daniel_getup": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "7e0c949a-8f37-4467-8025-8ba185368f64",
+     "ddbe5af4-ab8e-4fa4-bf40-53fc7f3c5c23",
      5
     ]
    }
   },
   "rakan_daniel_pickup": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "0b3a8876-b7ed-4840-b824-e426dcc19827",
+     "b050809c-7b76-4dfd-91c1-00be7fc14508",
      5
     ]
    }
   },
   "rakan_daniel_throw": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "f2ae00a6-bfd2-4e92-bc60-09e7a16e02b4",
+     "c1ae681e-54aa-4070-b3b3-5d4b522b4b18",
      7
     ]
    }
   },
   "rakan_daniel_special": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "d3c1b266-829d-4f19-b3f6-8163f8fa776c",
+     "2084a4d8-f310-4194-ac66-31cd44480770",
      4
     ]
    }
@@ -844,10 +844,10 @@
    }
   },
   "rakan_daniel_kick": {
-   "character": "fa98de23-693f-480d-9599-e7f433932c11",
+   "character": "c614a09c-1b45-49f7-91bd-267067818bea",
    "dirs": {
     "east": [
-     "793471d3-f23b-4e7c-acc7-72c20e35b965",
+     "267f1425-f68f-4702-8e32-21bd727a6069",
      7
     ]
    }

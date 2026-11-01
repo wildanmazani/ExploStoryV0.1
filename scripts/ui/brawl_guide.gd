@@ -36,7 +36,7 @@ static func build() -> Control:
 	var col := UI.vbox(10)
 	col.add_child(_heading("Setiap pusingan ada 3 langkah"))
 	for s in [
-		["1. SOALAN (15 saat)", "Semua orang jawab soalan yang sama. Gelanggang berhenti masa ni. Tekan 1, 2, 3 atau 4, atau ketik jawapan."],
+		["1. SOALAN (15 saat)", "Semua orang jawab soalan yang sama. Gelanggang berhenti masa ni. Ketik jawapan kau." if on_touch() else "Semua orang jawab soalan yang sama. Gelanggang berhenti masa ni. Tekan 1, 2, 3 atau 4, atau ketik jawapan."],
 		["2. KEPUTUSAN", "Jawapan betul = SEMANGAT: serangan penuh dan sebuah senjata sekolah jatuh dekat kau. Salah = LEMAH: serangan kau tinggal 30% sahaja. Paling cepat betul = JURUS KILAT."],
 		["3. AKSI! (10 saat)", "Bertarung! Pasukan yang semua ahlinya pengsan, kalah. Selepas 8 pusingan, pasukan dengan nyawa paling banyak menang."],
 	]:

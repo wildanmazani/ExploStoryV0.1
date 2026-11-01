@@ -1,20 +1,26 @@
 extends Control
-## Pau, always in the bottom-right corner. Tap = hint (3 levels inside a
-## puzzle). Press and hold = calm moment.
+## Pau, always in the bottom-right corner: just the bun, squishy under the
+## finger. Tap = hint (3 levels inside a puzzle). Press and hold = calm moment.
 
 const UI = preload("res://scripts/ui/ui.gd")
 const HOLD_TIME := 0.6
+const SPRING := 260.0
+const DAMP := 11.0
+const ART := "res://assets/ui/pau_besar.png"
+const ART_SQUEEZED := "res://assets/ui/pau_besar_picit.png"
+const FALLBACK := "res://assets/characters32/pau/pau_small.png"
 
 signal tapped
 signal held
 
 var _sprite: TextureRect
-var _frames: Array[Texture2D] = []
+var _face: Texture2D
+var _squeezed: Texture2D
 var _t: float = 0.0
 var _press_time: float = -1.0
 var _held_fired: bool = false
-var _happy_t: float = 0.0
-var _label: Label
+var _squish: float = 0.0
+var _squish_v: float = 0.0
 
 
 func _ready() -> void:
@@ -25,54 +31,39 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	tooltip_text = "Ketik: petunjuk. Tekan lama: bertenang."
-	var glow := PanelContainer.new()
-	var gs := UI.sb(Color(0.12, 0.14, 0.2, 0.75), UI.GOLD, 3, 60, 0)
-	glow.add_theme_stylebox_override("panel", gs)
-	glow.position = Vector2(8, 4)
-	glow.size = Vector2(104, 104)
-	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(glow)
-	for i in 4:
-		_frames.append(UI.sheet_frame("res://assets/proto/sprites/pau.png", i, 0, 16, 16))
+	_face = UI.tex(ART if ResourceLoader.exists(ART) else FALLBACK)
+	_squeezed = UI.tex(ART_SQUEEZED) if ResourceLoader.exists(ART_SQUEEZED) else _face
 	_sprite = TextureRect.new()
-	_sprite.texture = _frames[0]
+	_sprite.texture = _face
 	_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_sprite.size = Vector2(88, 88)
-	_sprite.position = Vector2(16, 12)
-	_sprite.pivot_offset = Vector2(44, 88)
+	_sprite.size = Vector2(112, 112)
+	_sprite.position = Vector2(4, 12)
+	_sprite.pivot_offset = Vector2(56, 112)  # squeezed from the feet, like dough on a table
 	_sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_sprite)
-	_label = UI.label("PAU", "Heading")
-	_label.position = Vector2(36, 100)
-	_label.add_theme_font_size_override("font_size", 20)
-	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_label)
 
 
+## a little jiggle when Pau speaks
 func happy() -> void:
-	_happy_t = 1.2
+	_squish_v = -9.0
 
 
+## a spring pulls the squish towards pressed (1) or rest (0), so the bun sinks
+## under the finger and wobbles back when let go
 func _process(delta: float) -> void:
 	_t += delta
-	var bounce := absf(sin(_t * 3.0))
-	_sprite.position.y = 12 - bounce * 6.0
-	if _press_time >= 0.0:
-		var held_for := _t - _press_time
-		_sprite.scale = Vector2.ONE * (1.0 + minf(held_for / HOLD_TIME, 1.0) * 0.18)
-		_sprite.texture = _frames[1]
-		if held_for >= HOLD_TIME and not _held_fired:
-			_held_fired = true
-			held.emit()
-	else:
-		_sprite.scale = Vector2.ONE
-		if _happy_t > 0.0:
-			_happy_t -= delta
-			_sprite.texture = _frames[3]
-		else:
-			_sprite.texture = _frames[0] if bounce < 0.8 else _frames[2]
+	var pressed := _press_time >= 0.0
+	var target := 1.0 if pressed else 0.0
+	_squish_v += ((target - _squish) * SPRING - _squish_v * DAMP) * delta
+	_squish += _squish_v * delta
+	var breathe := sin(_t * 2.6) * 0.025
+	_sprite.scale = Vector2(1.0 + _squish * 0.3 + breathe, 1.0 - _squish * 0.32 - breathe)
+	_sprite.texture = _squeezed if pressed else _face
+	if pressed and _t - _press_time >= HOLD_TIME and not _held_fired:
+		_held_fired = true
+		held.emit()
 
 
 func _gui_input(event: InputEvent) -> void:

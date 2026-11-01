@@ -53,7 +53,10 @@ func _ready() -> void:
 	prof.pressed.connect(func(): if Game.main.has_method("open_profile"): Game.main.open_profile())
 	bar.add_child(prof)
 	var battle := UI.button("Bilik Pertarungan", "", 260)
-	battle.pressed.connect(func(): Game.goto("lobby"))
+	if not Game.chapter_done(1):
+		battle.icon = UI.tex("res://assets/icons/kunci.png")
+		battle.expand_icon = false
+	battle.pressed.connect(_open_battle)
 	bar.add_child(battle)
 	var papan := UI.button("Papan Markah", "", 220)
 	papan.pressed.connect(func(): Game.main.open_papan())
@@ -87,6 +90,15 @@ func _show_arc(i: int) -> void:
 		var open := bool(ch.get("open", false)) and int(ch["no"]) <= GameState.unlocked_chapters
 		_grid.add_child(_card(ch, open))
 	Sfx.play("select", -8.0)
+
+
+func _open_battle() -> void:
+	if Game.chapter_done(1):
+		Game.goto("lobby")
+		return
+	Sfx.play("bump", -4.0)
+	_info.text = tr("Arena ini hanya untuk orang yang dah habis Bab 1.")
+	_info.add_theme_color_override("font_color", UI.GOLD)
 
 
 func _progress(ch: Dictionary) -> Vector2i:

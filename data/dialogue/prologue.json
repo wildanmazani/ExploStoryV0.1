@@ -211,8 +211,8 @@
   "bilik_gerak_sentuh": {
     "variants": [
       [
-        {"who": "pau", "text": "Okey, cara bergerak. Ketik lantai untuk berjalan ke situ, atau guna butang arah kat skrin."},
-        {"who": "pau", "text": "Nak bercakap atau tengok barang, ketik je benda tu."},
+        {"who": "pau", "text": "Okey, cara bergerak. Guna kawalan kat bucu skrin untuk berjalan, atau ketik je lantai."},
+        {"who": "pau", "text": "Nak bercakap atau tengok barang, berdiri depan benda tu dan tekan butang kuning A."},
         {"who": "pau", "text": "Cuba sekarang. Ambil beg sekolah kau atas lantai tu.", "e": "happy"}
       ]
     ]
@@ -223,6 +223,16 @@
         {"who": "alif", "text": "Beg sekolah aku!", "e": "happy"},
         {"who": "pau", "text": "Mulai sekarang, semua artifak yang kita jumpa masuk dalam beg ni."},
         {"who": "pau", "text": "Nak tengok? Buka Menu kat atas kiri, pilih Beg Alif. Ketik artifak untuk dengar ceritanya."}
+      ]
+    ]
+  },
+  "bilik_peta_sentuh": {
+    "variants": [
+      [
+        {"who": "pau", "text": "Satu lagi. Kat luar nanti ada peta kecil kat bucu skrin. Ketik dia untuk peta penuh."},
+        {"who": "pau", "text": "Tanda seru (!) tu tugasan. Anak panah emas pula tunjuk jalan ke misi seterusnya. Ikut je dia."},
+        {"who": "pau", "text": "Nak semak misi? Ketik aku untuk petunjuk. Batu Peta Jejak kat kampung pula senaraikan semua misi."},
+        {"who": "pau", "text": "Misi pertama: Gerbang Masa, utara kampung. Jom keluar ikut pintu!", "e": "happy"}
       ]
     ]
   },

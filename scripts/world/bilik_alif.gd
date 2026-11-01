@@ -171,7 +171,7 @@ func _take_bag() -> void:
 	await Game.say(Dialogue.lines("bilik_beg"))
 	if _waiting_bag:
 		_waiting_bag = false
-		await Game.say(Dialogue.lines("bilik_peta"))
+		await Game.say(Dialogue.lines("bilik_peta_sentuh" if Game.controls_on_screen() else "bilik_peta"))
 		_start_first_mission()
 	bag_taken.emit()
 

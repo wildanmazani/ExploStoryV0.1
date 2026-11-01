@@ -123,6 +123,7 @@ var spot_sprites := {} ## spot id -> Sprite2D
 var gate_sprites := {} ## kingdom -> Sprite2D
 var areas: Array = []
 var current_area := ""
+const ARENA_VIEW := Vector2(41, 38)  ## tile the Arena reveal centres on
 var busy := false
 var runner := ZoneRunner.new()
 var hud: Control
@@ -213,6 +214,7 @@ func _ready() -> void:
 		_arrive_lembah.call_deferred()
 	_on_step_finished(spawn)
 	_controls_tip()
+	_arena_reveal()
 
 
 ## once, on a phone: Pau points at Tetapan > Kawalan
@@ -224,6 +226,30 @@ func _controls_tip() -> void:
 		return
 	Game.save["seen"].append("tip_kawalan")
 	Main.pau_say("Susah nak gerak? Tukar kawalan dalam Tetapan > Kawalan. Ada joystick pun!", 8.0)
+
+
+## once, back in Kampung Jejak after Bab 1: the camera glides over the map to
+## the Arena while Pau announces it, then returns to Alif
+func _arena_reveal() -> void:
+	if not Game.chapter_done(1) or Game.save["seen"].has("arena_dibuka") or player.cell.x >= LEMBAH_X:
+		return
+	busy = true
+	await get_tree().create_timer(0.8).timeout
+	while runner.busy or Game.is_locked():
+		await get_tree().process_frame
+	hud.visible = false
+	var glide := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	glide.tween_property(camera, "offset", ARENA_VIEW * float(TILE) - player.global_position, 2.0)
+	MusicDirector.stinger("st_item")
+	await Game.say("arena_dibuka")
+	if glide.is_running():
+		await glide.finished
+	var back := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	back.tween_property(camera, "offset", Vector2.ZERO, 1.4)
+	await back.finished
+	hud.visible = true
+	busy = false
+	Game.persist()
 
 
 ## bottom-right normally; under the player card with on-screen controls, or
@@ -961,6 +987,9 @@ func _talk_or_act(id: String) -> void:
 		_save_pos()
 		GameState.go_to("res://scenes/interior/balai.tscn", Color.BLACK, tr("BALAI PENGHADAPAN"), tr("Istana Melaka, abad ke-15"))
 		return
+	if id in ["arena", "arena_lembah", "pemain_arena"] and not Game.chapter_done(1):
+		await Game.say("arena_locked")
+		return
 	var key := id
 	if id.begins_with("p_"):
 		key = "panji"
@@ -1143,7 +1172,7 @@ func _update_prompt() -> void:
 			label = _label_for(it)
 	prompt.visible = label != ""
 	if prompt.visible:
-		prompt.text = tr("E / Ketik: ") + tr(label)
+		prompt.text = Game.interact_prompt(label)
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
 		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, 1270 - prompt.size.x), clampf(screen.y + 8, 120, 640))

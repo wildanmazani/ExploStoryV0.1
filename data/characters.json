@@ -95,25 +95,25 @@
   },
   "aisyah": {
     "name": "Aisyah",
-    "portrait": "pelajar_2",
+    "portrait": "rakan_aisyah",
     "sprite": "rakan_aisyah",
     "tokoh": false
   },
   "ravi": {
     "name": "Ravi",
-    "portrait": "pelajar_4",
+    "portrait": "rakan_ravi",
     "sprite": "rakan_ravi",
     "tokoh": false
   },
   "meiling": {
     "name": "Mei Ling",
-    "portrait": "pelajar_3",
+    "portrait": "rakan_meiling",
     "sprite": "rakan_meiling",
     "tokoh": false
   },
   "daniel": {
     "name": "Daniel",
-    "portrait": "pelajar_1",
+    "portrait": "rakan_daniel",
     "sprite": "rakan_daniel",
     "tokoh": false
   },
@@ -127,6 +127,12 @@
     "name": "Pak Mat",
     "portrait": "nelayan",
     "sprite": "nelayan",
+    "tokoh": false
+  },
+  "pemain_arena": {
+    "name": "Pemain Arena",
+    "portrait": "",
+    "sprite": "",
     "tokoh": false
   },
   "papan": {

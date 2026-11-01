@@ -159,7 +159,7 @@ func _build_menu(_left: Control) -> void:
 	if show_map_button:
 		col.add_child(_item(UI.tex("res://assets/icons/peta.png"), "Kembali ke Peta", func(): Game.goto("peta")))
 	if world:
-		col.add_child(_item(UI.tex("res://assets/icons/peta.png"), "Peta Dunia  (M)", func(): Game.main.open_map(world)))
+		col.add_child(_item(UI.tex("res://assets/icons/peta.png"), "Peta Dunia" if Game.controls_on_screen() else "Peta Dunia  (M)", func(): Game.main.open_map(world)))
 	col.add_child(_item(UI.tex("res://assets/icons/nota.png"), "Nota Alif", func(): Game.main.open_nota()))
 	col.add_child(_item(BegPanel.icon(), "Beg Alif", func(): Game.main.open_beg(world)))
 	if world:

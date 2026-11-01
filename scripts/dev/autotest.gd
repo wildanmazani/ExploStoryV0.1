@@ -307,6 +307,13 @@ func _run() -> void:
 	await wait(0.3)
 	await shot("pau_hint_bubble")
 
+	# the Arena stays shut until Bab 1 is finished
+	await scene()._talk_or_act("arena")
+	await wait(0.6)
+	if screen_name() != "world":
+		_fail("the Arena should refuse Alif before Bab 1 is done")
+		return
+
 	# ---- Bab 1: the four zones, each puzzle at its spot in the world
 	if not await _play_zones(Game.chapter_zones(1)):
 		return
@@ -317,6 +324,19 @@ func _run() -> void:
 	await wait_screen("world")
 	await wait_idle()
 	await shot("world_after_bab1")
+	if not Game.save["seen"].has("arena_dibuka") or scene().camera.offset != Vector2.ZERO or scene().busy:
+		_fail("the Arena reveal should have played once and returned to Alif")
+		return
+	# watch it again for a picture of the glide
+	Game.save["seen"].erase("arena_dibuka")
+	scene()._arena_reveal()
+	await wait(2.9)
+	var seen_at: Vector2 = scene().camera.get_screen_center_position()
+	if seen_at.distance_to(scene().ARENA_VIEW * 16.0) > 32.0:
+		_fail("the Arena reveal should centre on the Arena, at %s" % str(seen_at))
+		return
+	await shot("arena_reveal")
+	await wait_idle()
 	scene().hud.set_menu_open(true)
 	await wait(0.3)
 	await shot("hud_menu")
@@ -889,6 +909,9 @@ func _check_controls() -> void:
 	await wait(0.3)
 	if tc.get_child_count() != 6 or not tc.visible:
 		_fail("D-pad should have 6 buttons (has %d)" % tc.get_child_count())
+		return
+	if not Game.interact_prompt("Pau").begins_with(tr("Tekan A: ")):
+		_fail("with on-screen controls the prompt should name the A button")
 		return
 	if w.minimap.position.y > 300:
 		_fail("mini map should move up when controls are on screen")
