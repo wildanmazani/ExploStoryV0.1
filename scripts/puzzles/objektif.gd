@@ -25,6 +25,7 @@ var _boss_hp: ProgressBar
 var _hearts: Hearts
 var _need := 0
 var _hits := 0
+var _cutting := false  ## a fight is playing on the stage
 
 
 func _build_puzzle() -> void:
@@ -52,7 +53,7 @@ func _build_puzzle() -> void:
 		_boss_hp.show_percentage = false
 		_boss_hp.max_value = _need
 		_boss_hp.value = _need
-		_boss_hp.custom_minimum_size = Vector2(320, 22)
+		_boss_hp.custom_minimum_size = Vector2(240 if def.has("stage") else 320, 22)
 		_boss_hp.modulate = Color(1.0, 0.55, 0.5)
 		top.add_child(_boss_hp)
 	body.add_child(top)
@@ -75,7 +76,7 @@ func _build_puzzle() -> void:
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	for i in 4:
 		var b := UI.button("")
-		b.custom_minimum_size = Vector2(570, 92)
+		b.custom_minimum_size = Vector2(570, 68 if def.has("stage") else 92)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		b.pressed.connect(_pick.bind(i))
@@ -86,7 +87,12 @@ func _build_puzzle() -> void:
 	_next.size_flags_horizontal = Control.SIZE_SHRINK_END
 	_next.visible = false
 	_next.pressed.connect(_advance)
-	body.add_child(_next)
+	if def.has("stage"):  # same row as the hearts: the fighters keep their space
+		_next.custom_minimum_size = Vector2(250, 44)
+		_next.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		top.add_child(_next)
+	else:
+		body.add_child(_next)
 	_show_question()
 
 
@@ -142,7 +148,11 @@ func _pick(i: int) -> void:
 		pulse(_buttons[i])
 		_hits += 1
 		if _boss_hp:
-			Sfx.play("punch", -4.0)
+			if def.has("stage"):
+				var last: bool = _hearts != null and _hits >= _need
+				await _fight(def["stage"].hit.bind(_hits, last))
+			else:
+				Sfx.play("punch", -4.0)
 			create_tween().tween_property(_boss_hp, "value", _need - _hits, 0.4)
 			shake(_boss_hp)
 		say_good(tr("Betul! ") + str(_q().get("explain", "")))
@@ -172,6 +182,8 @@ func _pick(i: int) -> void:
 func _lose_heart(i: int) -> void:
 	_answered = true
 	stats["retries"] = int(stats["retries"]) + 1
+	if def.has("stage"):
+		await _fight(def["stage"].hurt)
 	_hearts.count -= 1
 	_hearts.queue_redraw()
 	shake(_hearts)
@@ -198,6 +210,22 @@ func _lose_heart(i: int) -> void:
 		stats["passed"] = false
 		await get_tree().create_timer(2.4).timeout
 		completed.emit(stats)
+
+
+## the panel drops, the camera pushes in for the fight, then all returns
+func _fight(moment: Callable) -> void:
+	_cutting = true
+	var rest := _frame.position.y
+	var out := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	out.tween_property(_frame, "position:y", 760.0, 0.18)
+	await out.finished
+	await def["stage"].to_close()
+	await moment.call()
+	await def["stage"].to_row()
+	var back := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	back.tween_property(_frame, "position:y", rest, 0.26)
+	await back.finished
+	_cutting = false
 
 
 func _advance() -> void:

@@ -6,6 +6,7 @@
     "pos": [10, 28],
     "where": "Pintu Kabus di barat Kampung Jejak",
     "background": "res://assets/backgrounds/bg_zon1_4_bukit_siguntang.png",
+    "ground": 560,
     "questions": 12, "hearts": 3, "need": 7,
     "before": "ujian_1_before", "win": "ujian_1_win", "fail": "ujian_fail", "npc_talk": "ujian_1_npc"
   },
@@ -15,6 +16,7 @@
     "pos": [129, 31],
     "where": "depan Menara Pentadbiran",
     "background": "res://assets/backgrounds/bg_zon2_8.png",
+    "lair": {"background": "res://assets/backgrounds/bg_gua_kabus.png", "title": "GUA KABUS", "subtitle": "Tempat semua ingatan hilang", "summon": "ujian_2_summon"},
     "questions": 12, "hearts": 3, "need": 7,
     "before": "ujian_2_before", "win": "ujian_2_win", "fail": "ujian_fail", "npc_talk": "ujian_2_npc"
   }

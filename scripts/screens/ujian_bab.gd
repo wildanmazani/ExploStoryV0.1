@@ -7,11 +7,13 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const Objektif = preload("res://scripts/puzzles/objektif.gd")
+const BossStage = preload("res://scripts/battle/boss_stage.gd")
 
 var params: Dictionary = {}
 var _ch := 1
 var _cfg: Dictionary = {}
 var _layer: Control
+var _stage: Control
 var _tries := 0
 
 
@@ -22,46 +24,75 @@ func _ready() -> void:
 	Game.main.set_pau_visible(true)
 	MusicDirector.play("tajuk")
 	Game.context_hint = "Ujian Bab %d. Tiada had masa. Klik aku kalau perlukan petunjuk." % _ch
-	add_child(UI.bg_image(str(_cfg.get("background", "")), Color(0.45, 0.4, 0.5)))
-	var root := UI.vbox(10)
-	UI.full(root)
-	var info := Game.chapter_info(_ch)
-	root.add_child(UI.header_bar(tr("UJIAN BAB %d") % _ch, str(info.get("title", ""))))
-	var mid := CenterContainer.new()
-	mid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var col := UI.vbox(10)
-	var boss := TextureRect.new()
-	boss.texture = UI.tex("res://assets/characters32/%s/%s_south.png" % [_cfg.get("npc", ""), _cfg.get("npc", "")])
-	boss.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	boss.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	boss.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	boss.custom_minimum_size = Vector2(240, 240)
-	col.add_child(boss)
-	var bn := UI.label(str(_cfg.get("boss", "")).to_upper(), "Title")
-	bn.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	bn.add_theme_color_override("font_color", Color("ffb0a0"))
-	col.add_child(bn)
-	var rule := UI.label(tr("Jawab dengan betul untuk tumbangkan dia. Kau ada 3 nyawa. Tiada had masa."), "", true)
-	rule.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rule.custom_minimum_size.x = 760
-	col.add_child(rule)
-	mid.add_child(col)
-	root.add_child(mid)
-	add_child(root)
+	Game.lock_16_9(true)
+	tree_exited.connect(func(): Game.lock_16_9(false))
+	var lair: Dictionary = _cfg.get("lair", {})
+	_stage = BossStage.new()
+	_stage.setup(str(lair.get("background", _cfg.get("background", ""))), str(_cfg.get("npc", "")), float(_cfg.get("ground", 640.0)))
+	add_child(_stage)
 	_layer = Control.new()
 	UI.full(_layer)
 	_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_layer)
-	var t := create_tween().set_loops()
-	t.tween_property(boss, "modulate", Color(1.25, 0.9, 1.1), 0.8)
-	t.tween_property(boss, "modulate", Color.WHITE, 0.8)
+	Game.main.set_pau_visible(false)
 	_start.call_deferred()
 
 
 func _start() -> void:
-	await get_tree().create_timer(0.4).timeout
+	var lair: Dictionary = _cfg.get("lair", {})
+	_stage.visible = lair.is_empty()
+	if not lair.is_empty():
+		await _warp(lair)
+	await _stage.entrance(str(_cfg.get("boss", "")).to_upper())
 	await Game.say(str(_cfg.get("before", "")))
+	await _stage.to_row()
+	Game.main.set_pau_visible(true)
+	# top corner, off the answers; put back when the fight is over
+	Game.main.pau_button.position = Vector2(Game.screen_w() - 130, 4)
+	tree_exited.connect(Game.main._place_pau)
 	_round()
+
+
+## the boss drags Alif out of the map: he stands in the old place, the dark
+## closes in, and a title card names where he has landed
+func _warp(lair: Dictionary) -> void:
+	var here := UI.bg_image(str(_cfg.get("background", "")), Color(0.6, 0.55, 0.65))
+	_layer.add_child(here)
+	await get_tree().create_timer(0.3).timeout
+	await Game.say(str(lair.get("summon", "")))
+	var mist := ColorRect.new()
+	mist.color = Color(0.06, 0.01, 0.1, 0.0)
+	UI.full(mist)
+	_layer.add_child(mist)
+	Sfx.play("whoosh", 2.0)
+	var t := create_tween()
+	t.tween_property(mist, "color:a", 1.0, 0.8)
+	await t.finished
+	here.queue_free()
+	_stage.visible = true
+	var col := UI.vbox(8)
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	var title := UI.label(str(lair.get("title", "")), "Title")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_color", Color("e0b0ff"))
+	col.add_child(title)
+	var sub := UI.label(str(lair.get("subtitle", "")))
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(sub)
+	var card := UI.center(col)
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.modulate.a = 0.0
+	_layer.add_child(card)
+	var c := create_tween()
+	c.tween_property(card, "modulate:a", 1.0, 0.4)
+	c.tween_interval(1.1)
+	c.tween_property(card, "modulate:a", 0.0, 0.4)
+	await c.finished
+	card.queue_free()
+	var o := create_tween()
+	o.tween_property(mist, "color:a", 0.0, 0.5)
+	await o.finished
+	mist.queue_free()
 
 
 func _round() -> void:
@@ -71,6 +102,7 @@ func _round() -> void:
 		"title": tr("Ujian Bab %d: Lawan %s") % [_ch, _cfg.get("boss", "")],
 		"instruction": tr("Setiap jawapan betul melemahkan %s. Jawapan salah = hilang satu nyawa, tapi kau akan tahu jawapan betulnya.") % _cfg.get("boss", ""),
 		"boss": _cfg.get("boss", ""),
+		"stage": _stage,
 		"hearts": int(_cfg.get("hearts", 3)),
 		"need": int(_cfg.get("need", 7)),
 		"hint": "Baca semua pilihan dulu. Buang yang kau pasti salah.",

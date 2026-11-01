@@ -408,9 +408,14 @@
     {"s": "pau", "t": "Tak apa, Alif. Salah tu sebahagian daripada belajar."},
     {"s": "pau", "t": "Kau dah nampak jawapan betul tadi. Yang tu dah melekat sikit. Kita cuba lagi."}
   ],
-  "ujian_2_before": [
+  "ujian_2_summon": [
     {"s": "narator", "t": "Di depan Menara Pentadbiran, bayang Nirbana muncul semula. Kali ni lebih besar."},
-    {"s": "nirbana", "t": "Lembah ni dah berwarna balik. Tapi dalam kepala kau, berapa lama boleh tahan?"},
+    {"s": "nirbana", "t": "Sini terlalu terang untuk kita berbual. Mari, aku tunjuk tempat semua ingatan pergi bila hilang."},
+    {"s": "pau", "e": "scared", "t": "Alif, kabus tu! Dia tarik kita!"}
+  ],
+  "ujian_2_before": [
+    {"s": "pau", "e": "scared", "t": "Gua apa ni? Sejuknya... aku tak suka tempat ni, Alif."},
+    {"s": "nirbana", "t": "Selamat datang ke Gua Kabus. Lembah tadi dah berwarna balik, kan? Tapi dalam kepala kau, berapa lama boleh tahan?"},
     {"s": "nirbana", "t": "Hans Kohn, Al-Imam, KMM, SITC... nama-nama tu macam pasir. Lama-lama hilang dibawa angin."},
     {"s": "alif", "e": "confident", "t": "Kalau aku faham kenapa diorang bangkit, aku takkan lupa."},
     {"s": "pau", "e": "happy", "t": "Lapan misi dah kita lalu. Satu ujian lagi je, Alif!"}

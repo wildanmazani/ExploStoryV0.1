@@ -1283,6 +1283,96 @@
      4
     ]
    }
+  },
+  "panglima_fall": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "72135c66-1df5-4394-8f05-f9b4b3de7ce5",
+     7
+    ]
+   }
+  },
+  "panglima_flykick": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "e0d068d0-e44c-4b72-96d2-f18a1505d19d",
+     6
+    ]
+   }
+  },
+  "panglima_hurt": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "bcbeae08-fa6e-4c3d-97f4-bb7d48dadabc",
+     6
+    ]
+   }
+  },
+  "panglima_walk": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "1c746608-a3bd-4f4c-80c3-c3c085bd42c8",
+     6
+    ]
+   }
+  },
+  "panglima_roundhouse": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "97219c37-74bf-41d8-ba8f-0845fdc75505",
+     7
+    ]
+   }
+  },
+  "panglima_kick": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "d9f1b0d4-32ac-4036-ab9e-5172d959ed15",
+     7
+    ]
+   }
+  },
+  "panglima_special": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "a1246120-b9f4-4364-a656-d31645cd10b6",
+     4
+    ]
+   }
+  },
+  "panglima_cross": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "8df1fb32-65ad-4904-a20a-b741074e88e3",
+     6
+    ]
+   }
+  },
+  "panglima_stance": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "f98488a3-4e0e-461f-bdd6-f0b2917396ed",
+     8
+    ]
+   }
+  },
+  "panglima_jab": {
+   "character": "1b145926-46c3-416b-9f23-46543f3e0607",
+   "dirs": {
+    "east": [
+     "69c5b4e7-c5b5-48e6-af69-1888ba00f1b7",
+     3
+    ]
+   }
   }
  },
  "tilesets": {

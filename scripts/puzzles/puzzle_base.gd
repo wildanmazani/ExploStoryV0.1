@@ -21,13 +21,16 @@ var _finished: bool = false
 func _ready() -> void:
 	UI.full(self)
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(UI.dim(0.72))
+	if not def.has("stage"):
+		add_child(UI.dim(0.72))
 	_frame = UI.panel()
 	_center_frame()
 	get_viewport().size_changed.connect(_center_frame)
-	_frame.size = Vector2(1220, 672)
-	_frame.custom_minimum_size = Vector2(1220, 672)
+	var frame_h := 0.0 if def.has("stage") else 672.0
+	_frame.size = Vector2(1220, frame_h)
+	_frame.custom_minimum_size = Vector2(1220, frame_h)
 	add_child(_frame)
+	_frame.resized.connect(_center_frame)
 	var col := UI.vbox(10)
 	_frame.add_child(col)
 	var head := UI.hbox(12)
@@ -36,6 +39,7 @@ func _ready() -> void:
 	tcol.add_child(UI.label(str(def.get("title", "")), "Heading"))
 	var ins := UI.label(str(def.get("instruction", "")), "", true)
 	ins.custom_minimum_size.x = 900
+	ins.visible = not def.has("stage")
 	tcol.add_child(ins)
 	head.add_child(tcol)
 	var speak := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56))
@@ -74,7 +78,12 @@ func say_try(text: String) -> void:
 
 
 func _center_frame() -> void:
-	_frame.position = Vector2((Game.screen_w() - 1220.0) / 2.0, 24)
+	if _frame.position.y > 720.0:
+		return  # out of the way during a fight
+	var y := 24.0
+	if def.has("stage"):
+		y = maxf(8.0, 720.0 - _frame.size.y - 8.0)
+	_frame.position = Vector2((Game.screen_w() - 1220.0) / 2.0, y)
 
 
 func show_pau_hint(text: String) -> void:

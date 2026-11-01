@@ -515,6 +515,21 @@ func _play_zones(zones: Array) -> bool:
 ## Ujian Bab after a chapter's last summary. With fail_first: lose all hearts,
 ## go back to revise, check the boss blocks the way on the map, talk to him and
 ## pass. Passing = 7 right answers.
+## let a boss fight play out, sped up (name = a picture from the middle of it)
+func _boss_fight(p: Node, name: String) -> void:
+	Engine.time_scale = 1.0 if name != "" else 6.0
+	await wait(0.55)
+	if name != "":
+		await shot(name)
+		Engine.time_scale = 6.0
+	var guard := 0
+	while p.get("_cutting") and guard < 300:
+		await wait(0.1)
+		guard += 1
+	Engine.time_scale = 1.0
+	await wait(0.2)
+
+
 func _play_ujian(ch: int, fail_first: bool) -> bool:
 	await wait_screen("ujian", 30)
 	if fail_first:
@@ -524,7 +539,7 @@ func _play_ujian(ch: int, fail_first: bool) -> bool:
 		await shot("ujian_%d" % ch)
 		for i in 3:
 			p._pick((int(p._q()["answer"]) + 1) % 4)
-			await wait(0.2)
+			await _boss_fight(p, "ujian_%d_hurt" % ch if i == 0 else "")
 			if i < 2:
 				p._advance()
 		await wait(3.0)
@@ -550,7 +565,7 @@ func _play_ujian(ch: int, fail_first: bool) -> bool:
 		return false
 	for i in int(Game.ujian_def(ch)["need"]):
 		q._pick(int(q._q()["answer"]))
-		await wait(0.2)
+		await _boss_fight(q, "ujian_%d_hit" % ch if i == 2 else "")
 		if i == 2:
 			await shot("ujian_%d_hp" % ch)
 		if q.get("_next").visible:
