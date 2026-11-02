@@ -257,11 +257,7 @@
     "portrait": "guru_silat",
     "sprite": "guru_silat",
     "tokoh": false,
-    "rekaan": true,
-    "stand_in": {
-      "sprite": "syahbandar",
-      "portrait": "syahbandar"
-    }
+    "rekaan": true
   },
   "pesilat_amir": {
     "name": "Amir",

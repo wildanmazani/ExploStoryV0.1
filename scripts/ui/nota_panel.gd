@@ -78,7 +78,10 @@ func _show(i: int) -> void:
 	if not unlocked:
 		var lock := UI.hbox(16)
 		lock.add_child(UI.icon("res://assets/icons/kunci.png", 72))
-		lock.add_child(UI.label("Selesaikan Misi %s untuk membuka halaman ini." % str(p["zone"]).replace("_", "."), "Ink", true))
+		var why := UI.label(tr("Selesaikan Misi %s untuk membuka halaman ini.") % str(p["zone"]).replace("_", "."), "Ink", true)
+		why.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # a wrapping label has no width of its own
+		why.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		lock.add_child(why)
 		_page_box.add_child(lock)
 		return
 	var items: Array = p.get("items", [])

@@ -19,6 +19,9 @@ const COL_TREE := Color("2f7a35")
 const COL_ROOF := Color("8a4f33")
 const COL_WOOD := Color("9c6a3c")
 const COL_MIST := Color(0.55, 0.4, 0.75, 0.55)
+const COL_VEIL := Color("1c2230")  ## land not on Alif's map yet
+const VEIL_X := 82  ## world.gd LEMBAH_X
+const VEIL_MARK := Vector2(110, 30)  ## tile of the "?" over it
 const COL_DONE := Color("5fd068")
 const COL_OPEN := Color("f0c24a")
 const COL_LOCKED := Color("8a8a96")
@@ -43,6 +46,24 @@ static func legend() -> Dictionary:
 	if _legend.is_empty():
 		_legend = JSON.parse_string(FileAccess.get_file_as_string(LEGEND_PATH))
 	return _legend
+
+
+## true for a column of the map that is still a dark silhouette (Bab 2 before
+## Alif has its map, Game.bab2_map_open())
+static func veiled(tile_x: float) -> bool:
+	return tile_x >= VEIL_X and not Game.bab2_map_open()
+
+
+## paints the land of the unknown part of a map picture (px pixels per tile)
+## as one dark shape, so the player sees there is more without seeing what
+static func veil(img: Image, w: Node, px: int) -> void:
+	if not veiled(VEIL_X):
+		return
+	for y in w.terrain.height:
+		for x in range(VEIL_X, w.terrain.width):
+			var c := Vector2i(x, y)
+			if w.terrain.terrain_at(c) != TerrainBuilder.SEA:
+				img.fill_rect(Rect2i(c * px, Vector2i(px, px)), COL_VEIL)
 
 
 ## 1 px per tile picture of the world: terrain colours, trees and buildings
@@ -74,6 +95,7 @@ static func build_texture(w: Node) -> Texture2D:
 				for x in range(r[0], r[2] + 1):
 					if x < tw and y < th:
 						img.set_pixel(x, y, img.get_pixel(x, y).blend(COL_MIST))
+	veil(img, w, 1)
 	return ImageTexture.create_from_image(img)
 
 
@@ -188,6 +210,8 @@ func _draw() -> void:
 	# mission is done), soft-edged with a light drifting haze on top
 	if world.has_method("fog_rects"):
 		for r in world.fog_rects():
+			if veiled(r.x / 16.0):
+				continue
 			var tl := to_screen(Vector2(r.x, r.y) / 16.0)
 			var wh := Vector2(r.z, r.w) / 16.0 * px_per_tile
 			if wh.x <= 0.0:
@@ -200,7 +224,7 @@ func _draw() -> void:
 				draw_circle(c, step * 0.45, Color(0.96, 0.97, 1.0, 0.16))
 
 	for a in world.areas:  # the Mist of Time stays purple and mysterious
-		if a["id"] == "kabus":
+		if a["id"] == "kabus" and not veiled(float(a["rect"][0])):
 			var r: Array = a["rect"]
 			# soft drifting puffs instead of a hard box
 			for y in range(r[1], r[3] + 1, 3):
@@ -211,11 +235,15 @@ func _draw() -> void:
 	if show_names:
 		for a in world.areas:
 			var r: Array = a["rect"]
+			if veiled(float(r[0])):
+				continue
 			var name_s := str(a["name"]).replace("Misi ", "").to_upper()
 			_label(name_s, to_screen(Vector2((r[0] + r[2] + 1) / 2.0, r[1] + 1.2)), int((16 if close else 14) * s), UI.GOLD if close else UI.CREAM)
 
 	# chapter gates (locked = padlock)
 	for g in ent["gates"]:
+		if veiled(float(g["pos"][0])):
+			continue
 		var gp := to_screen(Vector2(g["pos"][0] + 2, g["pos"][1] + 0.5))
 		if not g["open"]:
 			draw_lock(self, gp, 7 * s)
@@ -223,20 +251,22 @@ func _draw() -> void:
 	# landmarks (signs with an entry in the legend, plus spots like the arena)
 	var lm: Dictionary = legend()["landmarks"]
 	for sg in ent["signs"]:
-		if lm.has(sg["id"]):
+		if lm.has(sg["id"]) and not veiled(float(sg["pos"][0])):
 			var size_a: Array = sg.get("size", [1, 1])
 			var c := Vector2(sg["pos"][0] + size_a[0] / 2.0, sg["pos"][1] - size_a[1] / 2.0 + 1)
 			draw_badge(self, to_screen(c), _icon(lm[sg["id"]]["icon"]), 18 * s)
 			if close:
 				_label(str(lm[sg["id"]]["name"]), to_screen(c) + Vector2(0, 22 * s), int(12 * s), UI.CREAM)
 	for id in lm:
-		if world.spots.has(id):
+		if world.spots.has(id) and not veiled(spot_tile(id).x):
 			draw_badge(self, to_screen(spot_tile(id)), _icon(lm[id]["icon"]), 18 * s)
 			if close:
 				_label(str(lm[id]["name"]), to_screen(spot_tile(id)) + Vector2(0, 22 * s), int(12 * s), UI.CREAM)
 
 	# people
 	for at in world.npcs:
+		if veiled(float(at.x)):
+			continue
 		var np := to_screen(Vector2(at) + Vector2(0.5, 0.5))
 		draw_circle(np, 4.0 * s, Color(0.1, 0.1, 0.12))
 		draw_circle(np, 3.0 * s, UI.CREAM)
@@ -245,9 +275,14 @@ func _draw() -> void:
 
 	# zone flags
 	for p in legend()["places"]:
-		if p.has("zone"):
+		if p.has("zone") and not veiled(float(p["at"][0])):
 			var st := zone_status(str(p["zone"]))
 			draw_flag(self, to_screen(Vector2(p["at"][0], p["at"][1]) + Vector2(0.5, 0.5)), status_color(st), 9 * s)
+
+	if veiled(VEIL_X):  # what lies beyond the Pintu Kabus
+		_label("?", to_screen(VEIL_MARK), int(46 * s), UI.GOLD)
+		if show_names:
+			_label(tr("BAB 2"), to_screen(VEIL_MARK) + Vector2(0, 40 * s), int(14 * s), UI.CREAM)
 
 	# next task
 	for o in objectives():

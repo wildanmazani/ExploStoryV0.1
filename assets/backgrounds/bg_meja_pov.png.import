@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brr6fapi1swbd"
-path="res://.godot/imported/monument.png-692dbcb04850e65567b69f0b69219aa5.ctex"
+uid="uid://tw28op2aiycg"
+path="res://.godot/imported/bg_meja_pov.png-9f2d9f62bd8f246645d423031ec19938.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/monument.png"
-dest_files=["res://.godot/imported/monument.png-692dbcb04850e65567b69f0b69219aa5.ctex"]
+source_file="res://assets/backgrounds/bg_meja_pov.png"
+dest_files=["res://.godot/imported/bg_meja_pov.png-9f2d9f62bd8f246645d423031ec19938.ctex"]
 
 [params]
 

@@ -292,8 +292,6 @@ entities["signs"].append({"pos": [23, 49], "id": "sign_start"})
 # keep a clearing around the spawn so the opening shot is clean
 sx, sy = entities["spawn"]
 keep_clear(sx - 4, sy - 3, sx + 3, sy + 4)
-place("K", 33, 30, force=True)
-entities["signs"].append({"pos": [33, 30], "id": "monument", "size": [4, 2]})
 HOUSES = [(25, 27), (40, 27), (20, 36)]
 for hx, hy in HOUSES:
     place("H", hx, hy, force=True)
@@ -336,7 +334,7 @@ place("S", 14, 54, force=True)
 entities["signs"].append({"pos": [14, 54], "id": "sign_sea"})
 
 entities["npcs"] += [
-    {"id": "makcik", "pos": [31, 33], "facing": "south"},
+    {"id": "makcik", "pos": [28, 30], "facing": "south"},
     {"id": "nelayan", "pos": [64, 43], "facing": "east"},
     {"id": "penjaga", "pos": [34, 17], "facing": "south"},
     {"id": "syahbandar", "pos": [61, 40], "facing": "south"},

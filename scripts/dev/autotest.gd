@@ -213,6 +213,9 @@ func _check_prologue() -> bool:
 				break
 		if ph == "reading" and not phases.has("ingatan") and int(scene()._words_read) >= 3:
 			phases["ingatan"] = true  # key words in the jar, the oldest falling out
+			if scene().book_text.get_content_height() > scene().PAGE_LEFT.size.y:
+				_fail("the textbook paragraph is taller than its page")
+				return false
 			await shot("prologue_ingatan")
 		for c in scene().get_children():
 			if c is TextureRect and c.texture:
@@ -307,7 +310,10 @@ func _run() -> void:
 	await wait(0.3)
 	await shot("pau_hint_bubble")
 
-	# the Arena stays shut until Bab 1 is finished
+	# the Arena stays shut until the first artifact
+	if Game.arena_open():
+		_fail("the Arena should be shut before the first artifact")
+		return
 	await scene()._talk_or_act("arena")
 	await wait(0.6)
 	if screen_name() != "world":
@@ -324,6 +330,9 @@ func _run() -> void:
 	await wait_screen("world")
 	await wait_idle()
 	await shot("world_after_bab1")
+	if MapView.veiled(100.0):
+		_fail("the Bab 2 silhouette should open with Bab 1")
+		return
 	if not Game.save["seen"].has("arena_dibuka") or scene().camera.offset != Vector2.ZERO or scene().busy:
 		_fail("the Arena reveal should have played once and returned to Alif")
 		return
@@ -601,7 +610,12 @@ func _check_bilik() -> bool:
 	await wait(2.0)
 	await shot("bilik_wake")
 	var t := 0.0
+	var seen_shards := false
 	while not scene()._waiting_bag:
+		if scene().shards_up and not seen_shards:
+			seen_shards = true
+			await wait(2.4)
+			await shot("bilik_siluet")
 		await wait(0.2)
 		t += 0.2
 		if t > 240.0:
@@ -612,7 +626,7 @@ func _check_bilik() -> bool:
 	if scene()._prompt == null:
 		_fail("no start prompt over the bag")
 		return false
-	if scene().player._look != "alif_tanpa_beg":
+	if scene().player.bag_on():
 		_fail("before he picks up his bag, Alif should not wear one")
 		return false
 	scene()._leave()
@@ -622,21 +636,80 @@ func _check_bilik() -> bool:
 		return false
 	scene().player.place_at(Vector2i(12, 8), "north")
 	scene()._interact(Vector2i(12, 7))
-	await wait_idle(120)
-	if not Game.save["seen"].has("bilik_tutorial") or scene()._prompt != null:
-		_fail("taking the bag should clear the prompt and start Misi 1.1")
-		return false
-	if scene().player._look != "":
-		_fail("after picking it up, Alif should wear his bag again")
-		return false
-	await shot("bilik_mission_start")
-	scene()._leave()
 	await wait_screen("world", 60)
+	if Game.save["seen"].has("bilik_tutorial"):
+		_fail("Misi 1.1 should only start after Mak Som's map")
+		return false
+	if scene().player.cell != Vector2i(22, 43) or not scene().player.bag_on():
+		_fail("Alif should come out of his own door, bag on, at %s" % str(scene().player.cell))
+		return false
+	Game.set_bag(false)
+	if scene().player.bag_on() or scene().player._bag.visible:
+		_fail("the bag should come off")
+		return false
+	Game.set_bag(true)
+	if not await _check_kampung_intro():
+		return false
 	var goal: Dictionary = scene().objective()
 	if str(goal.get("name", "")) != "Misi 1.1":
 		_fail("the map arrow should point at Misi 1.1, not %s" % str(goal))
 		return false
 	await shot("world_arrow")
+	return true
+
+
+## Aisyah runs, Alif trips, Mak Som and Guru Jalal: no HUD until the stone map
+## is closed, then the world is Alif's again and both go back where they live.
+func _check_kampung_intro() -> bool:
+	var w := scene()
+	if not w.busy or w.hud.visible or w.current_area == "":
+		_fail("the Kampung Jejak scene should hold the HUD back, in an area")
+		return false
+	if not MapView.veiled(100.0) or MapView.veiled(30.0) or w.travel_places().any(func(t): return int(t["place"]["at"][0]) >= 82):
+		_fail("Bab 2 should be a silhouette on the map before Bab 1 is done")
+		return false
+	var mak_home: Vector2i = w.npc_node("makcik").home
+	var guru_home: Vector2i = w.npc_node("guru_silat").cell
+	var shots := {}
+	var t := 0.0
+	while not Main.overlay_root().get_children().any(func(c): return c.get("view") != null and c.get("title_text") == "PETA BATU BAB 1"):
+		if w.player.sprite.rotation > 1.0 and not shots.has("fall"):
+			shots["fall"] = true
+			await shot("intro_fall")
+		if w.npc_node("guru_silat").cell == Vector2i(30, 32) and not shots.has("guru"):
+			shots["guru"] = true
+			await shot("intro_guru")
+		await wait(0.1)
+		t += 0.1
+		if t > 200.0:
+			_fail("the Kampung Jejak scene never reached the stone map")
+			return false
+	if not shots.has("fall") or not shots.has("guru") or w.hud.visible:
+		_fail("Alif should fall and Guru Jalal come over, with no HUD: %s" % str(shots))
+		return false
+	await wait(0.6)
+	await shot("peta_batu")
+	close_top_overlay()
+	await wait_idle(120)
+	if not Game.save["seen"].has("bilik_tutorial") or not w.hud.visible or not w.player.can_move or w.player.sprite.rotation != 0.0:
+		_fail("after the map the player should be free, on Misi 1.1")
+		return false
+	if w.npc_node("makcik").cell != mak_home or w.npc_node("guru_silat").cell != guru_home:
+		_fail("Mak Som and Guru Jalal should go back home after the scene")
+		return false
+	if load("res://scripts/world/kampung_intro.gd").needed():
+		_fail("the Kampung Jejak scene should only play once")
+		return false
+	await shot("kampung_intro_done")
+	# a locked Nota page: its reason reads across the page, not one letter a line
+	var nota: Control = Main.open_nota("1_3")
+	await wait(0.4)
+	await shot("nota_berkunci")
+	var why: Label = nota._page_box.get_child(1).get_child(1)
+	if why.size.x < 300.0:
+		_fail("the locked Nota text is squeezed to %d px wide" % int(why.size.x))
+		return false
+	close_top_overlay()
 	return true
 
 

@@ -3,7 +3,7 @@ extends Node2D
 ## Pau follows Alif one tile behind (HG/SS style): whenever Alif starts a
 ## step, Pau hops into the tile Alif just left. Squishy bounce on every hop.
 
-const TEX := preload("res://assets/characters32/pau/pau_small.png")
+const TEX := preload("res://assets/characters32/pau/pau_kaki.png")  ## no bigger than Alif's foot
 
 var cell := Vector2i.ZERO
 var _t := 0.0

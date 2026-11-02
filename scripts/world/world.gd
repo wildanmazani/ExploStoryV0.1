@@ -14,6 +14,7 @@ const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 const Minimap = preload("res://scripts/ui/minimap.gd")
 const ObjectiveArrow = preload("res://scripts/ui/objective_arrow.gd")
 const ArenaYard = preload("res://scripts/world/arena_yard.gd")
+const KampungIntro = preload("res://scripts/world/kampung_intro.gd")
 const HOLD_TIME := 0.6  ## long-press Pau = calm moment
 const LEMBAH_X := 82   ## columns from here on are Lembah Kebangkitan (Bab 2)
 
@@ -44,7 +45,6 @@ const OBJECTS := {
 	"x": {"tex": "kayu_api", "foot": Vector2i(2, 1)},
 	"p": {"tex": "teratai", "foot": Vector2i(1, 1), "flat": true},
 	"q": {"tex": "rumput_air", "foot": Vector2i(1, 1), "flat": true, "sway": 0.8},
-	"K": {"tex": "monument", "foot": Vector2i(4, 2)},
 	"Y": {"tex": "banyan", "foot": Vector2i(6, 2), "sway": 0.8},
 	"G": {"tex": "gate_open", "foot": Vector2i(4, 1), "open": [1, 2]},
 	"L": {"tex": "gate_locked", "foot": Vector2i(4, 1)},
@@ -101,7 +101,7 @@ const ROOMS := {
 }
 const AREA_ZONE := {"gerbang": "1_1", "pelabuhan": "1_2", "siguntang": "1_4"}
 const LABELS := {
-	"house": "Rumah", "rumah_alif": "Rumah Alif", "monument": "Peta Jejak", "istana": "Istana Melaka",
+	"house": "Rumah", "rumah_alif": "Rumah Alif", "istana": "Istana Melaka",
 	"sign_start": "Papan tanda", "sign_sea": "Papan tanda", "t5": "Papan tanda",
 	"arena": "Arena Ulang Kaji", "gate_locked": "Gerbang berkunci", "gate_open_1": "Gerbang Bab 1",
 	"gate_open_2": "Pintu Kabus Bab 2", "portal_balik": "Pintu Kabus", "dewan": "Dewan Kedaulatan Rakyat",
@@ -206,6 +206,10 @@ func _ready() -> void:
 	player.place_at(spawn, GameState.spawn_facing)
 	pau.place_at(_free_neighbour(spawn))
 	camera.reset_smoothing()
+	var intro := KampungIntro.needed()
+	if intro:  # before the first step, or the area card would show mid-scene
+		busy = true
+		hud.visible = false
 
 	add_child(runner)
 	runner.setup(self)
@@ -214,8 +218,11 @@ func _ready() -> void:
 		GameState.flags["just_crossed"] = false
 		_arrive_lembah.call_deferred()
 	_on_step_finished(spawn)
-	_controls_tip()
-	_arena_reveal()
+	if intro:
+		KampungIntro.play(self)
+	else:
+		_controls_tip()
+		_arena_reveal()
 
 
 ## once, on a phone: Pau points at Tetapan > Kawalan
@@ -229,10 +236,10 @@ func _controls_tip() -> void:
 	Main.pau_say("Susah nak gerak? Tukar kawalan dalam Tetapan > Kawalan. Ada joystick pun!", 8.0)
 
 
-## once, back in Kampung Jejak after Bab 1: the camera glides over the map to
+## once, back in Kampung Jejak after the first artifact: the camera glides over the map to
 ## the Arena while Pau announces it, then returns to Alif
 func _arena_reveal() -> void:
-	if not Game.chapter_done(1) or Game.save["seen"].has("arena_dibuka") or player.cell.x >= LEMBAH_X:
+	if not Game.arena_open() or Game.save["seen"].has("arena_dibuka") or player.cell.x >= LEMBAH_X:
 		return
 	busy = true
 	await get_tree().create_timer(0.8).timeout
@@ -488,6 +495,7 @@ func _capture_map() -> void:
 	if img == null or img.is_empty():
 		return
 	map_sea = img.get_pixel(2, 2)  # open sea in the corner
+	MapView.veil(img, self, TILE)
 	img.generate_mipmaps()
 	map_texture = ImageTexture.create_from_image(img)
 
@@ -988,7 +996,7 @@ func _talk_or_act(id: String) -> void:
 		_save_pos()
 		GameState.go_to("res://scenes/interior/balai.tscn", Color.BLACK, tr("BALAI PENGHADAPAN"), tr("Istana Melaka, abad ke-15"))
 		return
-	if id in ["arena", "arena_lembah", "pemain_arena"] and not Game.chapter_done(1):
+	if id in ["arena", "arena_lembah", "pemain_arena"] and not Game.arena_open():
 		await Game.say("arena_locked")
 		return
 	var key := id
@@ -999,9 +1007,6 @@ func _talk_or_act(id: String) -> void:
 	elif Game.story.has(key):
 		await Game.say(key)
 	match id:
-		"monument":  # Peta Jejak: the Arka & Zon screen (Tingkatan / Bab)
-			_leave_to("")
-			Game.goto("arka")
 		"arena", "arena_lembah":
 			GameState.spawn_cell = player.cell
 			Game.goto("lobby")
@@ -1083,7 +1088,7 @@ func travel_places() -> Array:
 	var out: Array = []
 	var lembah_open := not Game.chapter_zones(2).is_empty() and Game.chapter_done(1)
 	for p in MapView.legend()["places"]:
-		if str(p["id"]) == "kabus":
+		if str(p["id"]) == "kabus" or MapView.veiled(float(p["at"][0])):
 			continue
 		var why := ""
 		if int(p["at"][0]) >= LEMBAH_X and not lembah_open:

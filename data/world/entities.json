@@ -7,8 +7,8 @@
   {
    "id": "makcik",
    "pos": [
-    31,
-    33
+    28,
+    30
    ],
    "facing": "south"
   },
@@ -141,17 +141,6 @@
     49
    ],
    "id": "sign_start"
-  },
-  {
-   "pos": [
-    33,
-    30
-   ],
-   "id": "monument",
-   "size": [
-    4,
-    2
-   ]
   },
   {
    "pos": [

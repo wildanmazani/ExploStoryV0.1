@@ -17,6 +17,7 @@ var _i := 0
 var _gap := 0.8      ## seconds until the next message pops in
 var _last_at := 0.0  ## when the last message appeared (no accidental double-tap close)
 var _list: VBoxContainer
+var _scroll: ScrollContainer
 
 
 func setup(d: Dictionary) -> void:
@@ -53,9 +54,16 @@ func setup(d: Dictionary) -> void:
 	chat.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	chat.clip_contents = true
 	col.add_child(chat)
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	chat.add_child(_scroll)
 	_list = UI.vbox(10)
 	_list.alignment = BoxContainer.ALIGNMENT_END
-	chat.add_child(_list)
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_scroll.add_child(_list)
 
 
 func _process(delta: float) -> void:
@@ -129,3 +137,6 @@ func _show_next() -> void:
 	_gap = 1.0 + text.length() * 0.035  # time to read it
 	if _i >= _msgs.size():
 		_gap += 1.5  # linger on the last one
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_scroll.scroll_vertical = int(_list.size.y)  # the newest message stays in view

@@ -3,10 +3,11 @@ extends "res://scripts/world/interior.gd"
 ## the prologue Alif wakes up here: Pau explains the artifacts (the four
 ## Serpihan), the missions and the goal, then teaches walking and talking.
 ## The first thing to do is pick up the school bag (a blinking start prompt
-## points at it; until then Alif wears no bag on his back); the bag holds
+## points at it; until then no bag is on his back, see Player.bag_on()); the bag holds
 ## every artifact from then on (Menu > Beg Alif).
-## Then Pau shows the map and the gold arrow and Misi 1.1 starts: out the door
-## and the arrow on the map points at Gerbang Masa. Later visits: just the room.
+## Then a scream comes through the window and Alif runs out: the story goes on
+## in scripts/world/kampung_intro.gd, where Mak Som gives him the Bab 1 map and
+## Misi 1.1 starts. Later visits: just the room.
 ## Text: data/dialogue/prologue.json (bilik_*), data/interiors/bilik_alif.json.
 
 const StartPrompt = preload("res://scripts/ui/start_prompt.gd")
@@ -14,7 +15,7 @@ const BG := "res://assets/backgrounds/bg_int_bilik_alif.png"
 const BED_POS := Vector2(72, 84)   ## Alif asleep: head on the pillow
 const UP_CELL := Vector2i(6, 5)    ## where he stands after jumping out of bed
 const BAG_CELL := Vector2i(12, 7)
-const NO_BAG := "alif_tanpa_beg"   ## school uniform without the backpack
+const ASLEEP := "alif_tidur"       ## eyes closed, for the bed
 
 signal bag_taken
 
@@ -23,14 +24,13 @@ var _waiting_bag := false   ## tutorial: the door waits until the bag is taken
 var _prompt: Control
 var _emote: Label
 var _blanket: Node2D
+var shards_up := false      ## the silhouettes are on screen
 
 
 func _ready() -> void:
 	if ResourceLoader.exists(BG):
 		background = load(BG)
 	_pieces = BilikArt.build(self, $Objects)
-	if not Game.save["seen"].has("beg_alif"):
-		player.set_look(NO_BAG)
 	_emote = Label.new()
 	_emote.add_theme_font_size_override("font_size", 40)
 	_emote.add_theme_color_override("font_outline_color", Color(0.17, 0.11, 0.06))
@@ -62,6 +62,7 @@ func _wake_up() -> void:
 	hud.visible = false
 	player.can_move = false
 	player.place_at(Vector2i(4, 4), "south")
+	player.set_look(ASLEEP)
 	player.position = BED_POS
 	player.z_index = 1
 	_blanket = Blanket.new()  # tucked in up to the chest
@@ -80,6 +81,7 @@ func _wake_up() -> void:
 	await Game.say(Dialogue.lines("pro_wake_1"))
 
 	# Alif jolts awake and hops out of bed
+	player.set_look("")
 	_show_emote("!")
 	Sfx.play("pop", 0.0, 1.4)
 	if _blanket:
@@ -95,7 +97,9 @@ func _wake_up() -> void:
 
 	await Game.say(Dialogue.lines("bilik_bangun"))
 	var shards := _show_shards()
+	shards_up = true
 	await Game.say(Dialogue.lines("bilik_artifak"))
+	shards_up = false
 	_hide(shards)
 	await Game.say(Dialogue.lines("bilik_misi"))
 	await Game.say(Dialogue.lines("bilik_tujuan"))
@@ -119,30 +123,45 @@ func _show_emote(text: String) -> void:
 	_emote.visible = true
 
 
-## the four scattered Serpihan, dim (none found yet), floating over Pau
-func _show_shards() -> Node2D:
-	var row := Node2D.new()
-	row.z_index = 20
-	add_child(row)
+## the four Serpihan nobody has found yet: black silhouettes on the screen, on
+## pale cards so their shapes read clearly, to keep the player guessing
+func _show_shards() -> Control:
+	const CARD := 150.0
+	const GAP := 24.0
 	var zones: Array = Game.chapter_zones(1)
+	var row := Control.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var w := zones.size() * CARD + (zones.size() - 1) * GAP
+	row.position = Vector2((Game.screen_w() - w) / 2.0, 140)
+	$HUD.add_child(row)
 	for i in zones.size():
 		var g: Dictionary = Game.zone_data(zones[i]).get("ganjaran", {})
-		var s := Sprite2D.new()
+		var card := Panel.new()
+		card.add_theme_stylebox_override("panel", UI.sb(Color("efe3c2"), UI.GOLD, 4, 12, 0))
+		card.size = Vector2(CARD, CARD)
+		card.position = Vector2(i * (CARD + GAP), 0)
+		card.pivot_offset = card.size / 2.0
+		card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var s := TextureRect.new()
 		s.texture = load("res://assets/icons/%s.png" % g.get("icon", "kunci"))
-		s.scale = Vector2.ONE * (14.0 / s.texture.get_width())
-		s.position = Vector2(104 + (i - (zones.size() - 1) / 2.0) * 22, 40)
-		s.modulate = Color(0.75, 0.7, 0.9, 0.0)
-		row.add_child(s)
-		var tw := s.create_tween()
-		tw.tween_interval(0.25 * i)
-		tw.tween_property(s, "modulate:a", 0.8, 0.3)
-		tw.tween_property(s, "position:y", 36.0, 0.9).set_trans(Tween.TRANS_SINE)
-		tw.tween_property(s, "position:y", 40.0, 0.9).set_trans(Tween.TRANS_SINE)
-		tw.set_loops()
+		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		s.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		s.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		s.position = Vector2(20, 20)
+		s.size = Vector2(CARD - 40, CARD - 40)
+		s.modulate = Color.BLACK
+		s.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(s)
+		row.add_child(card)
+		card.modulate.a = 0.0
+		card.scale = Vector2(0.8, 0.8)
+		var tw := card.create_tween().set_parallel()
+		tw.tween_property(card, "modulate:a", 1.0, 0.3).set_delay(0.2 * i)
+		tw.tween_property(card, "scale", Vector2.ONE, 0.3).set_delay(0.2 * i).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	return row
 
 
-func _hide(n: Node2D) -> void:
+func _hide(n: CanvasItem) -> void:
 	var t := create_tween()
 	t.tween_property(n, "modulate:a", 0.0, 0.4)
 	t.tween_callback(n.queue_free)
@@ -163,17 +182,35 @@ func _take_bag() -> void:
 	MusicDirector.stinger("st_item")
 	player.face_cell(BAG_CELL)
 	_remove_bag(true)
-	player.set_look("")  # the bag goes on his back
-	if not Game.save["seen"].has("beg_alif"):
+	if not Game.save["seen"].has("beg_alif"):  # the bag goes on his back
 		Game.save["seen"].append("beg_alif")
 		Game.persist()
+	Game.set_bag(true)
 	Game.toast(tr("Dapat: Beg Alif!"))
 	await Game.say(Dialogue.lines("bilik_beg"))
 	if _waiting_bag:
 		_waiting_bag = false
-		await Game.say(Dialogue.lines("bilik_peta_sentuh" if Game.controls_on_screen() else "bilik_peta"))
-		_start_first_mission()
+		await _scream()
+		return
 	bag_taken.emit()
+
+
+## Aisyah screams outside the window: Alif and Pau run out of the house
+func _scream() -> void:
+	busy = true
+	player.can_move = false
+	await get_tree().create_timer(0.5).timeout
+	Main.shake(5.0, 0.5)
+	await Game.say("intro_jerit_1")
+	_show_emote("!")
+	pau.hop()
+	Sfx.play("pop", 0.0, 1.4)
+	await get_tree().create_timer(0.5).timeout
+	_emote.visible = false
+	await Game.say("intro_jerit_2")
+	bag_taken.emit()
+	busy = false
+	_leave()
 
 
 ## the bag leaves the floor (its tile becomes walkable)
@@ -191,19 +228,6 @@ func _remove_bag(animate: bool) -> void:
 	t.tween_property(bag, "position:y", bag.position.y - 10, 0.25)
 	t.tween_property(bag, "modulate:a", 0.0, 0.25)
 	t.chain().tween_callback(bag.queue_free)
-
-
-## Misi 1.1 is on: out of the door, the map arrow points at Gerbang Masa
-func _start_first_mission() -> void:
-	if not Game.save["seen"].has("bilik_tutorial"):
-		Game.save["seen"].append("bilik_tutorial")
-		Game.persist()
-	var zid := Game.next_zone()
-	if zid == "":
-		return
-	MusicDirector.stinger("st_zone")
-	Game.toast(tr("MISI %s BERMULA: %s") % [zid.replace("_", "."), str(Game.zone_data(zid).get("title", ""))], Color("8fe08a"))
-	Game.context_hint = tr("Keluar ikut pintu, lepas tu ikut anak panah emas ke misi pertama.")
 
 
 ## the tutorial keeps Alif in until he has his bag

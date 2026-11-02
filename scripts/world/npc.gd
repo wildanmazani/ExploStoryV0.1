@@ -55,6 +55,26 @@ func face_towards(other: Vector2i) -> void:
 	_sprite.play("idle_" + facing)
 
 
+## a cutscene walks this NPC, t seconds a step. Pass the world when the NPC is
+## registered there (its blocked tile and talk tile move with it).
+func script_walk(cells: Array, t := STEP_TIME, world: Node = null) -> void:
+	_sprite.sprite_frames = CharacterFrames.build(look, true)
+	for next: Vector2i in cells:
+		face_towards(next)
+		if world:
+			world.move_npc(self, next)
+		cell = next
+		moving = true
+		var walk := "walk_" + facing
+		if _sprite.sprite_frames.get_frame_count(walk) > 0:
+			_sprite.play(walk)
+		var tw := create_tween()
+		tw.tween_property(self, "position", Player.cell_to_pos(next), t)
+		await tw.finished
+		moving = false
+	_sprite.play("idle_" + facing)
+
+
 func _process(delta: float) -> void:
 	_t += delta
 	_sprite.scale.y = 1.0 + sin(_t * 2.2) * 0.02  # breathing

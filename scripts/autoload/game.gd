@@ -290,6 +290,18 @@ func skin_def(id: String) -> Dictionary:
 
 
 ## Character folder for the equipped skin (falls back to plain Alif).
+## the school bag is its own sprite over any outfit: on Alif's back from the
+## moment he picks it up, unless the player took it off (Menu)
+func bag_worn() -> bool:
+	return save["seen"].has("beg_alif") and bool(save.get("beg_galas", true))
+
+
+func set_bag(on: bool) -> void:
+	save["beg_galas"] = on
+	persist()
+	skin_changed.emit()
+
+
 func skin_folder() -> String:
 	var f := str(skin_def(str(save.get("skin", "sekolah")))["folder"])
 	return f if ResourceLoader.exists("res://assets/characters32/%s/%s_south.png" % [f, f]) else "alif"
@@ -375,6 +387,22 @@ func next_zone() -> String:
 
 func chapter_done(no: int) -> bool:
 	return save["chapters_done"].has(no) or save["chapters_done"].has(float(no))
+
+
+## Arena Ulang Kaji: open from the first artifact on (Guru Jalal: "setiap kali
+## kau dapat mengutip satu artifak, datanglah kemari")
+func arena_open() -> bool:
+	for z in ZONES:
+		if zone_done(z):
+			return true
+	return false
+
+
+## the Bab 2 part of the maps is a dark silhouette until Alif has that map.
+## For now it comes with finishing Bab 1; how he really gets it is still to be
+## written, and this is the only place to change.
+func bab2_map_open() -> bool:
+	return chapter_done(1)
 
 
 ## every mission of the chapter is finished (its Ujian Bab may still be ahead)

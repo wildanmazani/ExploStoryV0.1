@@ -22,13 +22,16 @@ const BANK := "res://data/soalan/bab%d.json"
 static var chapter := 1
 
 static var _bank: Array = []
-static var _bank_for := -1
+static var _bank_for := ""
 
 
-## Questions for the chosen chapter. The online room always uses Bab 1, the
-## answer key the server holds (supabase/multiplayer.sql).
+## Questions for the chosen chapter, only from the subtopics already finished
+## (the Arena opens after the first artifact). The online room always uses
+## Bab 1, the answer key the server holds (supabase/multiplayer.sql).
 static func bank() -> Array:
-	if _bank_for != chapter:
+	var done: Array = Game.ZONES.filter(func(z): return Game.zone_done(z))
+	var key := "%d:%s" % [chapter, str(done)]
+	if _bank_for != key:
 		_bank = []
 		var nos: Array = [chapter]
 		if chapter == 0:
@@ -37,8 +40,10 @@ static func bank() -> Array:
 				if n == 1 or Game.chapter_done(n) or Game.chapter_done(n - 1):
 					nos.append(n)
 		for n in nos:
-			_bank.append_array(bank_of(n))
-		_bank_for = chapter
+			var all := bank_of(n)
+			var learned := all.filter(func(q): return done.has(str(q.get("zon", ""))))
+			_bank.append_array(learned if not learned.is_empty() else all)
+		_bank_for = key
 	return _bank
 
 

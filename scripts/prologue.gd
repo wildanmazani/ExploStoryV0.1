@@ -2,9 +2,11 @@ extends Control
 ## Prologue (GDS section 2): a cutscene, nothing to press (lines move on by
 ## themselves, Langkau skips it all), told so players see their own nights:
 ##  1. cold open: the class group chat at 11:47 PM (scripts/ui/phone_chat.gd)
-##  2. Alif's room: he looks at the calendar, his trial paper, Mak's message,
-##     the window (Tok's stories) and Pau, each glowing in turn
-##  3. reading: key words fly into "Ingatan Alif", but it only holds two and
+##  2. through Alif's eyes, sitting at his desk: he looks at the calendar, his
+##     notes, Mak's message, the window (Tok's stories) and Pau, the bun Mak
+##     left him on a plate (it only comes alive in the dream), each glowing in turn
+##  3. he looks down at the textbook and his eyes read along the lines, in
+##     quick jumps with blinks: key words fly into "Ingatan Alif", but it only holds two and
 ##     the letters keep scrambling: "satu pun tak melekat" (dyslexia, and
 ##     anyone drowning in facts)
 ##  4. he dozes off; golden pages carry us into a dream: his classmates at an
@@ -18,9 +20,20 @@ const UI = preload("res://scripts/ui/ui.gd")
 const PhoneChat = preload("res://scripts/ui/phone_chat.gd")
 const BILIK := "res://scenes/interior/bilik_alif.tscn"
 const DATA := "res://data/prologue_room.json"
-## the Malaysian remake of Alif's night room (PixelLab, same layout as the old
-## picture so the glow rects in prologue_room.json still fit); old one until then
-const ROOM_V2 := "res://assets/backgrounds/bg_bilik_alif_malam_v2.png"
+## first person, on the chair: looking across the desk, and down at the open
+## book. Both 16:9; the glow rects in prologue_room.json fit the first one.
+const VIEW_DESK := "res://assets/backgrounds/bg_meja_pov.png"
+const VIEW_BOOK := "res://assets/backgrounds/bg_meja_buku.png"
+const PAU_FOOD := "res://assets/ui/pau_piring.png"  ## his favourite, on a plate from Mak
+const SCREEN := Vector2(1280, 720)
+const PAU_ON_DESK := Rect2(104, 504, 128, 128)
+const PAU_BY_BOOK := Rect2(74, 356, 150, 150)
+const PAGE_LEFT := Rect2(392, 240, 216, 280)   ## the flat part of the page the paragraph is on
+const PAGE_RIGHT := Rect2(660, 240, 216, 280)
+const READ_ZOOM := 1.35
+const READ_CENTER := Vector2(500, 420)  ## the whole page stays between the memory bar and the dialogue box
+const GAZE_MOVE := 0.18  ## how far the view follows the eyes while reading
+const LINE_H := 24.0
 const MIRROR := {"b": "d", "d": "b", "p": "q", "q": "p", "m": "w", "w": "m", "n": "u", "u": "n"}
 const FRIENDS := ["aisyah", "ravi", "meiling", "daniel"]
 
@@ -36,6 +49,13 @@ var _memory: Array = []  ## key words Alif still remembers (token index), oldest
 var _words_read := 0
 var _amount := 0.0       ## how scrambled the page is, 0..1
 var _jar: HBoxContainer
+var _cam := SCREEN / 2.0  ## the point of the picture Alif looks at
+var _zoom := 1.08
+var _micro := Vector2.ZERO  ## tiny eye jumps while he looks at one thing
+var _shake := Vector2.ZERO
+var _sway := 0.0
+var _eyes_on := false       ## the eye loops run (blinks, small jumps)
+var _reading_eyes := false  ## his gaze follows the lines
 
 @onready var room: TextureRect = $Room
 @onready var lamp: ColorRect = $LampGlow
@@ -55,9 +75,22 @@ func _ready() -> void:
 	Game.lock_16_9(true)
 	tree_exited.connect(func(): Game.lock_16_9(false))
 	Main.set_pau_visible(false)
-	if ResourceLoader.exists(ROOM_V2):
-		room.texture = load(ROOM_V2)
+	room.texture = load(VIEW_DESK)
 	room.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	room.stretch_mode = TextureRect.STRETCH_SCALE
+	room.position = Vector2.ZERO
+	room.size = SCREEN
+	pau.reparent(room, false)  # part of the desk: it moves with the view
+	pau.texture = load(PAU_FOOD)
+	pau.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pau.modulate = Color(0.9, 0.82, 0.72)  # lit like the rest of the desk
+	_place_pau(PAU_ON_DESK)
+	book.reparent(room, false)
+	book.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	book.position = PAGE_LEFT.position
+	book.size = PAGE_LEFT.size
+	book_text.add_theme_font_size_override("normal_font_size", 16)
+	book_text.add_theme_constant_override("line_separation", 6)
 	MusicDirector.play("bilik", 2.5)
 	skip.pressed.connect(_skip)
 	pages.texture = _page_texture()
@@ -71,11 +104,13 @@ func _ready() -> void:
 # --- the sequence ---------------------------------------------------------
 func _run() -> void:
 	_lamp_loop()
-	_desk_phone()
 	await _phone_open()
 	if _skipping: return
 	_clock_loop()
 	_heart_loop()
+	_eyes_on = true
+	_blink_loop()
+	_micro_loop()
 	caption.text = str(_data.get("caption", ""))
 	await _fade(caption, 1.0, 1.0)
 	await _wait(1.6)
@@ -104,35 +139,93 @@ func _phone_open() -> void:
 	chat.queue_free()
 
 
-## the room picture has no phone: one lies on the desk, screen still glowing
-func _desk_phone() -> void:
-	var p := Panel.new()
-	p.add_theme_stylebox_override("panel", UI.sb(Color("1b1d24"), Color("3a3d48"), 2, 4, 0))
-	p.position = Vector2(318, 444)
-	p.size = Vector2(54, 22)
-	p.rotation = -0.08
-	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var screen := ColorRect.new()
-	screen.color = Color("8fd8ff")
-	screen.position = Vector2(5, 4)
-	screen.size = Vector2(44, 14)
-	p.add_child(screen)
-	add_child(p)
-	move_child(p, vignette.get_index())
-	var t := screen.create_tween().set_loops()
-	t.tween_property(screen, "modulate:a", 0.45, 1.2).set_trans(Tween.TRANS_SINE)
-	t.tween_property(screen, "modulate:a", 1.0, 1.2).set_trans(Tween.TRANS_SINE)
+# --- Alif's eyes ---------------------------------------------------------------
+func _place_pau(r: Rect2) -> void:
+	pau.position = r.position
+	pau.size = r.size
+	pau.pivot_offset = Vector2(r.size.x / 2.0, r.size.y)
 
 
-## Alif looks around his room: each thing glows while he talks about it
+## the picture moves under the eyes: never past its edges
+func _process(delta: float) -> void:
+	_sway += delta
+	var z := maxf(_zoom, 1.02)
+	var half := SCREEN / (2.0 * z)
+	var look := _cam + _micro + Vector2(sin(_sway * 0.7) * 3.0, sin(_sway * 0.43) * 2.0)  # breathing
+	look.x = clampf(look.x, half.x, SCREEN.x - half.x)
+	look.y = clampf(look.y, half.y, SCREEN.y - half.y)
+	room.scale = Vector2(z, z)
+	room.position = SCREEN / 2.0 - look * z + _shake
+
+
+## eyes first, in one quick jump; the head comes after and settles
+func _look(at: Vector2, zoom: float, head := 0.7) -> void:
+	if _skipping: return
+	var t := create_tween()
+	t.tween_property(self, "_cam", _cam.lerp(at, 0.8), 0.1).set_ease(Tween.EASE_OUT)
+	t.tween_property(self, "_cam", at, head).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(self, "_zoom", zoom, head).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	await t.finished
+
+
+## a person blinks every few seconds: down fast, up a little slower
+func _blink_loop() -> void:
+	while _eyes_on and not _skipping and is_inside_tree():
+		await get_tree().create_timer(randf_range(2.2, 5.0)).timeout
+		if _eyes_on and not _skipping:
+			await _lids(1.0, 0.06)
+			await _lids(0.0, 0.11)
+
+
+## even staring at one spot, the eyes make small jumps
+func _micro_loop() -> void:
+	while _eyes_on and not _skipping and is_inside_tree():
+		await get_tree().create_timer(randf_range(0.35, 1.1)).timeout
+		if not _reading_eyes:
+			var t := create_tween()
+			t.tween_property(self, "_micro", Vector2(randf_range(-9, 9), randf_range(-6, 6)), 0.05)
+
+
+## reading: stops along a line in quick jumps, now and then back a word, then
+## the long jump to the start of the next line
+func _read_eyes() -> void:
+	_reading_eyes = true
+	_micro = Vector2.ZERO
+	var line := 0
+	var lines := int(PAGE_LEFT.size.y / LINE_H) - 1
+	while _reading_eyes and not _skipping and is_inside_tree():
+		var y := PAGE_LEFT.position.y + LINE_H * (line + 0.5)
+		var x := PAGE_LEFT.position.x + 20.0
+		while x < PAGE_LEFT.end.x - 20.0 and _reading_eyes:
+			await _eye_jump(Vector2(x, y), 0.04)
+			await _wait(randf_range(0.18, 0.34) + _amount * 0.2)
+			if _amount > 0.2 and randf() < 0.3:  # lost the word: back again
+				x -= 30.0
+				await _eye_jump(Vector2(x, y), 0.04)
+				await _wait(randf_range(0.2, 0.4))
+			x += randf_range(30.0, 50.0)
+		line = (line + 1) % lines
+		await _eye_jump(Vector2(PAGE_LEFT.position.x + 20.0, y + LINE_H), 0.1)
+
+
+func _eye_jump(at: Vector2, seconds: float) -> void:
+	if _skipping: return
+	var t := create_tween()
+	t.tween_property(self, "_cam", READ_CENTER + (at - PAGE_LEFT.get_center()) * GAZE_MOVE, seconds).set_ease(Tween.EASE_OUT)
+	await t.finished
+
+
+## Alif looks around from his chair: each thing glows while he talks about it
 func _room_tour() -> void:
 	if _skipping: return
 	phase = "room"
 	await _say("pro_room")
 	for s in _data.get("room", []):
 		if _skipping: return
+		var r: Array = s["rect"]
+		await _look(Vector2(r[0] + r[2] / 2.0, r[1] + r[3] / 2.0), float(s.get("zoom", 1.5)))
 		var glow := _glow(s)
-		await _wait(0.6)
+		await _wait(0.5)
 		_spot_fx(str(s["id"]))
 		await _say(str(s.get("say", "")))
 		if _skipping: return
@@ -155,8 +248,7 @@ func _glow(s: Dictionary) -> Control:
 	tag.add_theme_constant_override("outline_size", 8)
 	tag.position = Vector2(4, -36)
 	p.add_child(tag)
-	add_child(p)
-	move_child(p, flash.get_index())
+	room.add_child(p)  # stays on the thing as the eyes move
 	p.modulate.a = 0.0
 	create_tween().tween_property(p, "modulate:a", 1.0, 0.3)
 	var pulse := p.create_tween().set_loops()
@@ -167,8 +259,6 @@ func _glow(s: Dictionary) -> Control:
 
 func _spot_fx(id: String) -> void:
 	match id:
-		"pau":
-			_squish_pau()
 		"kalendar":
 			_heart_gap = 1.4  # and it stays with him
 			Sfx.play("heartbeat", -2.0)
@@ -185,8 +275,20 @@ func _reading() -> void:
 	phase = "reading"
 	_tokens = _parse(str(_data.get("paragraph", "")))
 	_render_book()
+	# he looks down, a blink, and the page fills his view
+	await _look(Vector2(655, 575), 1.7, 0.6)
+	await _lids(1.0, 0.1)
+	room.texture = load(VIEW_BOOK)
+	_place_pau(PAU_BY_BOOK)
+	_zoom = 1.25
+	_cam = Vector2(640, 380)
+	_page_lines()
+	book.modulate.a = 1.0
+	await _lids(0.0, 0.2)
+	await _wait(0.9)  # the whole desk: book, notes, Pau
+	await _look(READ_CENTER, READ_ZOOM, 0.9)
 	var jar := _build_jar()
-	await _fade(book, 1.0, 0.8)
+	_read_eyes()
 	await _say("pro_read")
 	_tick_gap = 0.7
 	_heart_gap = 1.1
@@ -218,9 +320,24 @@ func _reading() -> void:
 	_shake_room(true)
 	await _say("pro_scramble")
 	_shake_room(false)
-	_fade(jar, 0.0, 0.6)
-	await _fade(book, 0.0, 0.6)
+	_reading_eyes = false
+	await _fade(jar, 0.0, 0.6)
 	jar.queue_free()
+
+
+## the facing page: the rest of the text, too small to read from here
+func _page_lines() -> void:
+	var lines := Control.new()
+	lines.position = PAGE_RIGHT.position
+	lines.size = PAGE_RIGHT.size
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.draw.connect(func():
+		seed(7)
+		for i in 10:
+			var w := randf_range(0.8, 1.0) * lines.size.x
+			lines.draw_rect(Rect2(0, i * LINE_H + 8, w, 5), Color(0.3, 0.22, 0.14, 0.45))
+		randomize())
+	room.add_child(lines)
 
 
 func _parse(p: String) -> Array:
@@ -253,8 +370,8 @@ func _render_book() -> void:
 
 func _build_jar() -> PanelContainer:
 	var p := UI.panel("Paper")
-	p.position = Vector2(200, 430)
-	p.size = Vector2(880, 0)
+	p.position = Vector2(40, 20)
+	p.size = Vector2(980, 0)
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_jar = UI.hbox(10)
 	_jar.add_child(UI.label("Ingatan Alif:", "InkHeading"))
@@ -304,13 +421,12 @@ func _forget(i: int) -> void:
 			return
 
 
-## Alif gives up, squeezes Pau and dozes off; golden pages carry him away
+## Alif gives up, looks over at his pau and dozes off; golden pages carry him away
 func _doze() -> void:
 	if _skipping: return
 	phase = "doze"
-	for i in 2:
-		_squish_pau(1.0 + i * 0.1)
-		await _wait(0.5)
+	await _look(PAU_BY_BOOK.get_center() + Vector2(90, 0), 1.6)  # the pau he has not eaten yet
+	await _wait(0.9)
 	_tick_gap = 0.9
 	_heart_gap = 1.4
 	await _say("pro_pau")
@@ -318,6 +434,8 @@ func _doze() -> void:
 	# drowsy: the clock slows, eyelids close... silence
 	_tick_gap = 1.6
 	_heart_gap = 0.0
+	_eyes_on = false
+	create_tween().tween_property(self, "_cam:y", _cam.y + 60.0, 4.0).set_trans(Tween.TRANS_SINE)  # the head nods down
 	await _blink(0.55, 0.7)
 	await _blink(0.85, 1.0)
 	_ticking = false
@@ -337,13 +455,6 @@ func _doze() -> void:
 	await _fade(flash, 1.0, 0.8)
 
 
-func _squish_pau(pitch := 1.0) -> void:
-	Sfx.play("squish", -4.0, pitch)
-	var t := create_tween()
-	t.tween_property(pau, "scale", Vector2(1.25, 0.75), 0.12)
-	t.tween_property(pau, "scale", Vector2(1, 1), 0.25).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-
-
 ## The dream: his classmates at an old port forget each other in the Kabus
 ## Lupa, then the cave, Nirbana and the four Serpihan.
 func _dream() -> void:
@@ -359,7 +470,6 @@ func _dream() -> void:
 	MusicDirector.play("siguntang", 1.0)
 	flash.color = Color(1, 1, 1)
 	await _fade(flash, 0.0, 0.8)
-	room.position = Vector2.ZERO
 	await _say("pro_friends_1")
 	if _skipping: return
 
@@ -576,9 +686,9 @@ var _shaking := false
 func _shake_room(on: bool) -> void:
 	_shaking = on
 	while _shaking and not _skipping and is_inside_tree():
-		room.position = Vector2(randf_range(-3, 3), randf_range(-3, 3))
+		_shake = Vector2(randf_range(-3, 3), randf_range(-3, 3))
 		await get_tree().create_timer(0.04).timeout
-	room.position = Vector2.ZERO
+	_shake = Vector2.ZERO
 
 
 func _blink(close_to: float, seconds: float) -> void:

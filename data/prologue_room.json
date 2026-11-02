@@ -1,5 +1,5 @@
 {
-  "_info": "Prolog (scripts/prologue.gd), ditonton sahaja. chat = mesej kumpulan kelas di awal; room = barang yang Alif lihat satu demi satu, ikut susunan (rect = x, y, lebar, tinggi pada skrin 1280x720; say = kunci dialog dalam data/dialogue/prologue.json); paragraph = perenggan buku teks, {kata kunci} terbang ke Ingatan Alif; memory_size = berapa kata Alif boleh ingat; read_words = berapa kata dibaca; word_every = saat antara kata; thoughts = dialog selepas kata ke-n.",
+  "_info": "Prolog (scripts/prologue.gd), ditonton sahaja. chat = mesej kumpulan kelas di awal; room = barang yang Alif lihat satu demi satu, ikut susunan (rect = x, y, lebar, tinggi pada gambar bg_meja_pov skala 1280x720; say = kunci dialog dalam data/dialogue/prologue.json); paragraph = perenggan buku teks, {kata kunci} terbang ke Ingatan Alif; memory_size = berapa kata Alif boleh ingat; read_words = berapa kata dibaca; word_every = saat antara kata; thoughts = dialog selepas kata ke-n.",
   "chat": {
     "title": "5 Bestari",
     "time": "11:47 PM",
@@ -15,12 +15,12 @@
   },
   "caption": "11:52 malam. 3 hari sebelum SPM Sejarah.",
   "room": [
-    {"id": "kalendar", "label": "Kalendar", "rect": [950, 66, 112, 172], "say": "pro_obj_kalendar"},
-    {"id": "kertas", "label": "Kertas Percubaan", "rect": [24, 304, 104, 158], "say": "pro_obj_kertas"},
-    {"id": "telefon", "label": "Telefon", "rect": [300, 418, 96, 60], "say": "pro_obj_telefon"},
-    {"id": "tingkap", "label": "Tingkap", "rect": [430, 84, 480, 280], "say": "pro_obj_tingkap"},
-    {"id": "pau", "label": "Pau", "rect": [1040, 340, 172, 176], "say": "pro_obj_pau"},
-    {"id": "buku", "label": "Buku Teks Sejarah", "rect": [706, 552, 308, 104], "say": "pro_obj_buku"}
+    {"id": "kalendar", "label": "Kalendar", "rect": [0, 36, 200, 256], "zoom": 1.2, "say": "pro_obj_kalendar"},
+    {"id": "kertas", "label": "Kertas Percubaan", "rect": [812, 516, 168, 96], "say": "pro_obj_kertas"},
+    {"id": "telefon", "label": "Telefon", "rect": [330, 530, 130, 76], "say": "pro_obj_telefon"},
+    {"id": "tingkap", "label": "Tingkap", "rect": [440, 30, 420, 370], "zoom": 1.2, "say": "pro_obj_tingkap"},
+    {"id": "pau", "label": "Pau", "rect": [100, 500, 136, 136], "say": "pro_obj_pau"},
+    {"id": "buku", "label": "Buku Teks Sejarah", "rect": [504, 512, 300, 108], "say": "pro_obj_buku"}
   ],
   "paragraph": "Kesultanan Melayu Melaka diasaskan oleh {Parameswara} pada awal {abad ke-15}. Melaka mempunyai ciri-ciri negara bangsa iaitu {kerajaan}, {rakyat}, {kedaulatan}, {wilayah pengaruh}, {undang-undang} dan {lambang kebesaran}.",
   "memory_size": 2,

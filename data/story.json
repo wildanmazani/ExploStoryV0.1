@@ -21,7 +21,43 @@
     {"s": "pau", "t": "Itu laluan ke Sejarah Tingkatan 5. Masih berkunci. Satu langkah demi satu langkah."}
   ],
   "arena_locked": [
-    {"s": "pemain_arena", "t": "Arena ini hanya untuk orang yang dah habis Bab 1. Pastikan Alif telah mengumpulkan artifak untuk Bab 1."}
+    {"s": "pemain_arena", "t": "Arena ini hanya untuk orang yang dah kumpul artifak pertama. Dapatkan satu artifak dulu, baru datang sini."}
+  ],
+  "intro_jerit_1": [
+    {"s": "aisyah", "t": "TOLONGG! AKU DEKAT MANA NI!!!"}
+  ],
+  "intro_jerit_2": [
+    {"s": "alif", "e": "worried", "t": "Suara tu... macam kenal."},
+    {"s": "pau", "e": "scared", "t": "Dari luar! Jom!"}
+  ],
+  "intro_aisyah": [
+    {"s": "alif", "e": "worried", "t": "Aisyah?! Weh, ni aku! Alif!"},
+    {"s": "aisyah", "t": "Jangan dekat! Siapa kau?!"}
+  ],
+  "intro_kejar": [
+    {"s": "alif", "e": "worried", "t": "Aisyah, tunggu!"}
+  ],
+  "intro_tahan": [
+    {"s": "makcik", "t": "Hei budak kechil, jangan kau cuba mengganggu anak dara ini!"},
+    {"s": "makcik", "t": "Guru Jalal! Tolong! Ada budak kejar anak dara orang ni!"}
+  ],
+  "intro_guru": [
+    {"s": "guru_silat", "t": "Apa kehendak mu anak muda mengejar anak itu?"},
+    {"s": "alif", "e": "worried", "t": "Itu kawan saya, Aisyah. Saya cuba nak selamatkan dia, tapi dia dah lupa saya siapa."},
+    {"s": "alif", "e": "worried", "t": "Nirbana kata kalau nak selamatkan kawan-kawan saya, saya perlu kumpul artifak Inskripsi Telaga Batu dan kalahkan Panglima Derhaka."},
+    {"s": "guru_silat", "t": "APA? NIRBANA? Kau benar-benar telah bermain dengan api wahai anak muda!"},
+    {"s": "guru_silat", "t": "Nirbana adalah susuk tubuh ahli sihir yang sentiasa menyajikan kesenangan yang sementara dan tempat bersandar yang paling licik, untuk membuatkan kamu jauh dan sentiasa terlupa dari tujuan asal mu."},
+    {"s": "guru_silat", "t": "Nirbana bukan perkara yang kau boleh bermain-main. Ianya adalah mimpi ngeri kampung ini. Jikalau kau benar dalam soal ini, biarlah aku bantu kau dalam menempuh perjalanan mu."},
+    {"s": "guru_silat", "t": "Marilah ke arena silat ini untuk menguji daya ingatan mu, supaya menjadi bekalan untuk menyelamatkan sahabat-sahabat mu."},
+    {"s": "guru_silat", "t": "Setiap kali kau dapat mengutip satu artifak, maka datanglah kemari untuk menguji daya ingatan bersama-sama murid ku."}
+  ],
+  "intro_mak_som": [
+    {"s": "makcik", "t": "Jikalau kamu benar wahai anak, maafkanlah makcik atas salah faham terhadap kamu."},
+    {"s": "makcik", "t": "Izinkan Mak Som membantu kamu mencari artifak. Ambil peta batu ni."}
+  ],
+  "intro_lepas_peta": [
+    {"s": "makcik", "t": "Yang gelap tu tempat Mak Som sendiri tak pernah sampai. Petanya bukan pada Mak Som."},
+    {"s": "alif", "e": "confident", "t": "Terima kasih Mak Som, saya akan gunakan peta yang Mak Cik bagi untuk selamatkan kawan-kawan saya."}
   ],
   "arena_dibuka": [
     {"s": "pau", "e": "happy", "t": "Arena Quiz telah dibuka, uji daya ingatan kau dengan kawan-kawan."}

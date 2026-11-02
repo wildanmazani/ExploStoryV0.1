@@ -131,6 +131,8 @@ func _show_places() -> void:
 		for t in world.travel_places():
 			can_go[str(t["place"]["id"])] = t["ok"]
 	for p in MapView.legend()["places"]:
+		if MapView.veiled(float(p["at"][0])):
+			continue
 		var sym: Control
 		var sub := str(p.get("info", ""))
 		var col := UI.CREAM_D

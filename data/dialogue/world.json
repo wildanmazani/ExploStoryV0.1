@@ -28,34 +28,6 @@
       ]
     ]
   },
-  "monument": {
-    "variants": [
-      [
-        {
-          "who": "alif",
-          "text": "Ni... peta ke? Ada sepuluh bendera."
-        },
-        {
-          "who": "pau",
-          "text": "Satu bendera, satu bab. Yang menyala tu Bab 1."
-        },
-        {
-          "who": "alif",
-          "text": "Sepuluh bab. Tiga hari lagi SPM."
-        },
-        {
-          "who": "pau",
-          "text": "Eh, jangan kira dulu. Kita buat satu-satu je."
-        }
-      ],
-      [
-        {
-          "who": "pau",
-          "text": "Bendera 1 masih tunggu kita. Gerbang dia kat utara kampung."
-        }
-      ]
-    ]
-  },
   "istana": {
     "variants": [
       [
@@ -184,6 +156,12 @@
         {
           "who": "makcik",
           "text": "Jangan lupa makan, nak. Belajar pun perlukan tenaga."
+        }
+      ],
+      [
+        {
+          "who": "makcik",
+          "text": "Peta batu tu jaga elok-elok. Tersesat, tengok balik bendera dia."
         }
       ]
     ]
@@ -580,7 +558,7 @@
       [
         {
           "who": "guru_silat",
-          "text": "Assalamualaikum, anak muda. Saya Guru Jalal, guru silat Gelanggang Pusaka kampung ni."
+          "text": "Ha, anak muda. Inilah Gelanggang Pusaka. Bawa artifak, bawa ingatan, kita uji sama-sama."
         },
         {
           "who": "alif",

@@ -29,11 +29,15 @@ var _bump_cooldown := 0.0
 var _path: Array = []
 var _on_arrive: Callable
 var _look := ""  ## set_look(): a sprite folder worn instead of the outfit
+var _bag: Sprite2D  ## the school bag, over any outfit (Game.bag_worn())
+var _bag_dir := ""
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
 
 func _ready() -> void:
+	_bag = Sprite2D.new()
+	add_child(_bag)
 	_apply_skin()
 	Game.skin_changed.connect(_apply_skin)
 	_idle()
@@ -48,6 +52,27 @@ func _apply_skin() -> void:
 	sprite.sprite_frames = CharacterFrames.build(folder, true)
 	sprite.offset = CharacterFrames.feet_offset(folder)
 	sprite.play("idle_" + facing)
+	_bag.visible = bag_on()
+	_bag.offset = sprite.offset
+	_bag_dir = ""
+
+
+func bag_on() -> bool:
+	return Game.bag_worn() and _look == ""
+
+
+## the bag turns with Alif: on his back from behind and from the side, peeking
+## out behind him from the front. It bobs with his steps and falls with him.
+func _update_bag() -> void:
+	if facing != _bag_dir:
+		_bag_dir = facing
+		_bag.texture = load("res://assets/characters32/beg/beg_%s.png" % facing)
+		if facing == "south":
+			move_child(_bag, 0)
+		else:
+			move_child(_bag, get_child_count() - 1)
+	_bag.rotation = sprite.rotation
+	_bag.position = Vector2(0, 1 if moving and sprite.frame % 3 == 1 else 0)
 
 
 ## wear this sprite folder instead of the shop outfit ("" = back to the outfit)
@@ -87,7 +112,29 @@ func walk_path(path: Array, on_arrive := Callable()) -> void:
 	_on_arrive = on_arrive
 
 
+## a cutscene walks Alif (can_move off): one cell after another, t seconds a step
+func script_walk(cells: Array, t := WALK_TIME) -> void:
+	for next: Vector2i in cells:
+		var d := next - cell
+		facing = "east" if d.x > 0 else "west" if d.x < 0 else "south" if d.y > 0 else "north"
+		var from := cell
+		cell = next
+		moving = true
+		sprite.play("walk_" + facing)
+		sprite.speed_scale = WALK_TIME / t
+		step_started.emit(from, next, t)
+		var tween := create_tween()
+		tween.tween_property(self, "position", cell_to_pos(next), t)
+		await tween.finished
+		moving = false
+		step_finished.emit(cell)
+	sprite.speed_scale = 1.0
+	_idle()
+
+
 func _process(delta: float) -> void:
+	if _bag.visible:
+		_update_bag()
 	_bump_cooldown = maxf(_bump_cooldown - delta, 0)
 	if moving or not can_move or Game.is_locked():
 		return
