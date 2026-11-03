@@ -17,6 +17,11 @@ var _room_code := ""
 var _room_box: VBoxContainer
 var _poll_t := 0.0
 var _polling := false
+## room settings the host picks (sent with set_room_config)
+var _room_cfg := {"chapter": 1, "team": "pvp", "bot_level": "mudah"}
+var _cfg_box: VBoxContainer
+var _cfg_sent := false
+const TEAMS := {"pvp": "Lawan sesama", "coop": "Sepasukan lwn Bot"}
 
 
 func _ready() -> void:
@@ -268,7 +273,11 @@ func _load_friends() -> void:
 
 func _create_room() -> void:
 	_room_code = await Backend.create_room()
+	var open := BattleRules.chapters_open()
+	_room_cfg["chapter"] = open[-1] if not open.is_empty() else 1
+	_cfg_sent = false
 	_show_room()
+	_send_cfg()
 
 
 func _join_room(code: String) -> void:
@@ -286,6 +295,75 @@ func _show_room() -> void:
 	for c in _room_box.get_children():
 		c.queue_free()
 	_room_box.add_child(UI.label(tr("Kod bilik: %s  (kongsi dengan rakan)") % _room_code, "InkHeading"))
+	_cfg_box = UI.vbox(6)
+	_room_box.add_child(_cfg_box)
+
+
+## the host's settings: Bab, teams, bot level (bots only) and mode. Players
+## who join see them as one line (_cfg_line), filled in by the room poll.
+func _build_cfg(host: bool, s: Dictionary) -> void:
+	if not is_instance_valid(_cfg_box):
+		return
+	for c in _cfg_box.get_children():
+		c.queue_free()
+	if not host:
+		_cfg_box.add_child(UI.label(_cfg_line(s), "Ink", true))
+		return
+	var bab := UI.hbox(6)
+	bab.add_child(_row_label("Bab"))
+	for n in BattleRules.chapters_open():
+		bab.add_child(_cfg_button(tr("Bab %d") % n, int(_room_cfg["chapter"]) == n, func(): _set_cfg("chapter", n)))
+	_cfg_box.add_child(bab)
+	var team := UI.hbox(6)
+	team.add_child(_row_label("Pasukan"))
+	for t in TEAMS:
+		team.add_child(_cfg_button(tr(TEAMS[t]), _room_cfg["team"] == t, func(): _set_cfg("team", t)))
+	_cfg_box.add_child(team)
+	if _room_cfg["team"] == "coop":
+		var lv := UI.hbox(6)
+		lv.add_child(_row_label("Tahap bot"))
+		for l in BrawlRules.LEVELS:
+			lv.add_child(_cfg_button(tr(BrawlRules.LEVELS[l]["name"]), _room_cfg["bot_level"] == l, func(): _set_cfg("bot_level", l)))
+		_cfg_box.add_child(lv)
+	var mode := UI.hbox(6)
+	mode.add_child(_row_label("Mod"))
+	mode.add_child(_cfg_button(tr("Kuiz"), true, func(): pass))
+	var gel := UI.button(tr("Gelanggang (akan datang)"), "", 0)
+	gel.icon = UI.tex("res://assets/icons/kunci.png")
+	gel.expand_icon = false
+	gel.disabled = true
+	gel.tooltip_text = tr("Gelanggang dalam talian sedang dibina.")
+	mode.add_child(gel)
+	_cfg_box.add_child(mode)
+
+
+func _cfg_button(text: String, on: bool, action: Callable) -> Button:
+	var b := UI.button(text, "Primary" if on else "", 0)
+	b.pressed.connect(action)
+	return b
+
+
+func _cfg_line(s: Dictionary) -> String:
+	var line := tr("Bab %d") % int(s.get("chapter", 1)) + "  ·  " + tr(TEAMS.get(str(s.get("team", "pvp")), ""))
+	if str(s.get("team", "")) == "coop":
+		line += "  ·  " + tr("Bot %s") % tr(str(BrawlRules.LEVELS.get(str(s.get("bot_level", "mudah")), {}).get("name", "")))
+	return line + "  ·  " + tr("Kuiz")
+
+
+func _set_cfg(key: String, value) -> void:
+	if _room_cfg[key] == value:
+		return
+	_room_cfg[key] = value
+	Sfx.play("select", -6.0)
+	_build_cfg(true, {})
+	await _send_cfg()
+
+
+func _send_cfg() -> void:
+	var res := await Backend.set_room_config(_room_code, int(_room_cfg["chapter"]), str(_room_cfg["team"]), str(_room_cfg["bot_level"]))
+	_cfg_sent = res == "ok"
+	if res != "ok":
+		Game.toast(tr("Tetapan bilik tidak disimpan. Pastikan pelayan sudah dikemas kini (patch_tetapan_bilik.sql)."), Color("ff9a8a"))
 
 
 func _process(delta: float) -> void:
@@ -304,15 +382,19 @@ func _process(delta: float) -> void:
 		Game.goto("pertarungan", {"mode": "online", "code": _room_code})
 		_room_code = ""
 		return
+	var host: bool = str(s.get("host", "")) == Backend.user_id
 	for c in _room_box.get_children():
-		if c != _room_box.get_child(0):
+		if c != _room_box.get_child(0) and c != _cfg_box:
 			c.queue_free()
-	var players: Array = s.get("players", [])
+	if is_instance_valid(_cfg_box) and (_cfg_box.get_child_count() == 0 or not host):
+		_build_cfg(host, s)
+	var players: Array = s.get("players", []).filter(func(p): return not p.get("bot", false))
 	_room_box.add_child(UI.label(tr("Pemain: %d / %d") % [players.size(), BattleRules.MAX_FRIENDS + 1], "Ink"))
 	for p in players:
 		_room_box.add_child(UI.label("·  " + str(p["name"]), "Ink"))
-	if str(s.get("host", "")) == Backend.user_id:
+	if host:
 		var start := UI.button("Mula!", "Primary")
-		start.disabled = players.size() < 2  # you + at least one other player
+		# against each other: you + at least one more; as a team against bots: anyone
+		start.disabled = not _cfg_sent or (players.size() < 2 and _room_cfg["team"] == "pvp")
 		start.pressed.connect(func(): await Backend.start_battle(_room_code))
 		_room_box.add_child(start)

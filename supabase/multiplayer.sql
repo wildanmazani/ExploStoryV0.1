@@ -1,5 +1,7 @@
 -- Explo-Story: Bilik Pertarungan (multiplayer battle) for Supabase.
 -- Run AFTER supabase/schema.sql: SQL Editor -> New query -> paste -> Run.
+-- Then run patch_rakan_bilik.sql and patch_tetapan_bilik.sql (open friends
+-- and rooms, room settings: Bab, pvp or a team against bots).
 --
 -- Rules (same numbers as scripts/battle/battle_rules.gd): everyone starts with
 -- 100 HP; each round everyone answers the same question; a correct answer hits

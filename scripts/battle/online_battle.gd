@@ -34,9 +34,22 @@ func me() -> Dictionary:
 	return BattleRules.find(state.get("players", []), my_id)
 
 
+## true when this room is all the players as one team against bots
+func is_coop() -> bool:
+	return str(state.get("team", "pvp")) == "coop"
+
+
+## pvp: the last one standing; coop: the whole team when the bots are down
+func i_won() -> bool:
+	var w := str(state.get("winner", ""))
+	return w == my_id or (is_coop() and w == "team")
+
+
 func set_target(id: String) -> void:
 	if id == my_id:
 		return
+	if is_coop():
+		return  # the team always hits the weakest bot (the server picks it)
 	me()["target"] = id  # show it at once; the server keeps the real one
 	state_changed.emit(state)
 	await Backend.db_call("battle_target", {"p_code": code, "p_target": id})
@@ -48,7 +61,8 @@ func answer(i: int) -> void:
 		return
 	m["answer"] = i
 	state_changed.emit(state)
-	await Backend.db_call("battle_answer", {"p_code": code, "p_round": int(state.get("round", 0)), "p_answer": i, "p_target": m.get("target") if str(m.get("target", "")) != "" else null})
+	var tgt = m.get("target") if str(m.get("target", "")) != "" and not is_coop() else null
+	await Backend.db_call("battle_answer", {"p_code": code, "p_round": int(state.get("round", 0)), "p_answer": i, "p_target": tgt})
 
 
 func leave() -> void:
@@ -80,7 +94,8 @@ func _poll() -> void:
 	var s: Dictionary = r["data"]
 	# the bank lives in the game; the server sends only the question number
 	if s.has("qid"):
-		var online_bank := BattleRules.bank_of(1)
+		BattleRules.chapter = int(s.get("chapter", 1))
+		var online_bank := BattleRules.bank_of(BattleRules.chapter)
 		var q: Dictionary = online_bank[int(s["qid"]) % online_bank.size()]
 		s["q"] = {"q": q["q"], "options": q["options"]}
 		s["explain"] = str(q.get("explain", ""))
@@ -96,7 +111,7 @@ func _poll() -> void:
 		_rewarded = true
 		var b: Dictionary = Game.save["battle"]
 		b["played"] = int(b.get("played", 0)) + 1
-		var won: bool = str(s.get("winner", "")) == my_id
+		var won := i_won()
 		if won:
 			b["wins"] = int(b.get("wins", 0)) + 1
 		Game.add_reward(BattleRules.REWARD_EXP, BattleRules.REWARD_COINS if won else 0)

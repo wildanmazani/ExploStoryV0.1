@@ -305,6 +305,8 @@ func _on_state(s: Dictionary) -> void:
 			_info.text = tr("Kau sudah tersingkir. Tengok siapa yang menang!")
 		elif answered:
 			_info.text = tr("Jawapan dihantar. Menunggu pemain lain...")
+		elif battle.has_method("is_coop") and battle.is_coop():
+			_info.text = tr("Satu pasukan! Jawab betul untuk serang bot yang paling lemah.")
 		else:
 			_info.text = tr("Klik kad pemain untuk pilih sasaran, kemudian jawab.")
 	elif status == "reveal" and _last_status != "reveal":
@@ -382,7 +384,8 @@ func _hit(id: String, dmg: int, by_me: bool) -> void:
 
 func _show_result(s: Dictionary) -> void:
 	MusicDirector.puzzle(false)
-	var won: bool = s["winner"] == battle.my_id
+	var coop: bool = battle.has_method("is_coop") and battle.is_coop()
+	var won: bool = battle.i_won() if battle.has_method("i_won") else s["winner"] == battle.my_id
 	var winner := BattleRules.find(s["players"], str(s["winner"]))
 	_result = Control.new()
 	UI.full(_result)
@@ -392,6 +395,8 @@ func _show_result(s: Dictionary) -> void:
 	var c := UI.vbox(12)
 	c.add_child(UI.icon("res://assets/icons/%s.png" % ("mahkota" if won else "bendera"), 96))
 	var title := tr("KAU MENANG!") if won else (tr("SERI! Tiada pemenang.") if winner.is_empty() else tr("%s MENANG!") % str(winner["name"]).to_upper())
+	if coop:
+		title = tr("PASUKAN KAU MENANG!") if won else tr("BOT MENANG! Cuba lagi sama-sama.")
 	var t := UI.label(title, "InkHeading")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)

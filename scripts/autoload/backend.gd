@@ -393,6 +393,12 @@ func leaderboard(scope: String) -> Dictionary:
 	return r["data"] if r["ok"] and r["data"] is Dictionary else {}
 
 
+## host only, in the lobby: chapter, "pvp" | "coop", bot level (supabase/patch_tetapan_bilik.sql)
+func set_room_config(code: String, chapter: int, team: String, level: String) -> String:
+	var r := await db_call("set_room_config", {"p_code": code, "p_chapter": chapter, "p_team": team, "p_level": level})
+	return str(r["data"]) if r["ok"] else "error"
+
+
 func start_battle(code: String) -> String:
 	var r := await db_call("start_battle", {"p_code": code})
 	return str(r["data"]) if r["ok"] else "error"
