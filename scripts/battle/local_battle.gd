@@ -31,9 +31,9 @@ func setup(bot_count: int) -> void:
 	var prof: Dictionary = Game.save["profile"]
 	var players: Array = [{
 		"id": my_id, "name": str(prof.get("display_name", prof["username"])),
-		"skin": Game.skin_folder(), "me": true, "bot": false, "acc": 1.0,
+		"skin": Game.battle_look(), "me": true, "bot": false, "acc": 1.0,
 	}]
-	var bots := BOTS.duplicate()
+	var bots := Game.bot_roster(BOTS)
 	bots.shuffle()
 	for i in bot_count:
 		var b: Dictionary = bots[i].duplicate()

@@ -303,6 +303,57 @@ func set_bag(on: bool) -> void:
 	skin_changed.emit()
 
 
+## Who the player fights as (data/fighters.json): Alif in any outfit owned,
+## or a classmate once Alif has brought their memory back. Each entry:
+## {folder, name, ok, why} ("why" says what unlocks a locked one).
+var _fighters := {}
+
+
+func fighters() -> Array:
+	if _fighters.is_empty():
+		_fighters = load_json("res://data/fighters.json")
+	var out: Array = []
+	for s in skins():
+		if save["skins_owned"].has(s["id"]):
+			out.append({"folder": str(s["folder"]), "name": "Alif · " + tr(str(s["name"])), "ok": true, "why": ""})
+	for f in _fighters.get("friends", []):
+		var ch := int(f["chapter"])
+		out.append({"folder": str(f["folder"]), "name": str(f["name"]), "ok": chapter_done(ch),
+			"why": tr("Pulihkan ingatan %s di penghujung Bab %d dulu.") % [str(f["name"]), ch]})
+	return out
+
+
+## the classmate whose memory comes back at the end of this chapter ({} if none)
+func friend_saved_in(ch: int) -> Dictionary:
+	if _fighters.is_empty():
+		_fighters = load_json("res://data/fighters.json")
+	for f in _fighters.get("friends", []):
+		if int(f["chapter"]) == ch:
+			return f
+	return {}
+
+
+## the look used in battles: the chosen fighter if still allowed, else the outfit
+func battle_look() -> String:
+	var pick := str(save.get("fighter", ""))
+	for f in fighters():
+		if f["folder"] == pick and f["ok"]:
+			return pick
+	return skin_folder()
+
+
+func set_fighter(folder: String) -> void:
+	save["fighter"] = folder
+	persist()
+	skin_changed.emit()
+
+
+## the classmate bots for a battle, without the one the player is playing as
+func bot_roster(all: Array) -> Array:
+	var look := battle_look()
+	return all.filter(func(b): return str(b["skin"]) != look)
+
+
 func skin_folder() -> String:
 	var f := str(skin_def(str(save.get("skin", "sekolah")))["folder"])
 	return f if ResourceLoader.exists("res://assets/characters32/%s/%s_south.png" % [f, f]) else "alif"

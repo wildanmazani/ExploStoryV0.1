@@ -413,6 +413,13 @@
     {"s": "alif", "t": "Dari Locke sampai Ibu Zain. Semua mula dengan satu idea: bangsa kita layak berdiri sendiri.", "e": "confident"},
     {"s": "pau", "t": "Semua dah masuk Nota Alif. Buka bila nak ulang kaji, terutama sebelum exam!"}
   ],
+  "selamat_aisyah": [
+    {"s": "aisyah", "t": "Alif...? Alif! Aku ingat dah. Kau yang selalu pinjam pemadam aku dalam kelas."},
+    {"s": "alif", "e": "happy", "t": "Aisyah! Kau ingat aku!"},
+    {"s": "aisyah", "t": "Maaf aku lari hari tu. Semua orang nampak macam orang asing. Aku takut sangat."},
+    {"s": "pau", "e": "happy", "t": "Satu kawan dah balik. Tinggal Ravi, Mei Ling dengan Daniel."},
+    {"s": "aisyah", "t": "Lepas ni aku ikut kau. Kalau nak bertarung kat Arena, panggil je aku."}
+  ],
   "penutup_2_teaser": [
     {"s": "pau", "t": "Bendera 3: Konflik Dunia dan Pendudukan Jepun. Langit dah mula mendung..."},
     {"s": "alif", "t": "Leftenan Adnan, Sybil Kathigasu... aku pernah dengar nama tu.", "e": "confident"},

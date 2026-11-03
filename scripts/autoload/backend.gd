@@ -354,7 +354,7 @@ func my_friends() -> Array:
 
 func _me_args() -> Dictionary:
 	var p: Dictionary = Game.save["profile"]
-	return {"p_name": str(p.get("display_name", p["username"])), "p_avatar": str(p.get("avatar", "pelajar_1")), "p_skin": Game.skin_folder()}
+	return {"p_name": str(p.get("display_name", p["username"])), "p_avatar": str(p.get("avatar", "pelajar_1")), "p_skin": Game.battle_look()}
 
 
 func create_room() -> String:

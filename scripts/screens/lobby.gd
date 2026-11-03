@@ -12,6 +12,7 @@ var params: Dictionary = {}
 var _format := "1v1"
 var _level := "mudah"  ## new players start easy
 var _faces: HBoxContainer
+var _fighter_row: HBoxContainer
 var _right: VBoxContainer
 var _room_code := ""
 var _room_box: VBoxContainer
@@ -33,6 +34,10 @@ func _ready() -> void:
 	var root := UI.vbox(12)
 	UI.full(root)
 	root.add_child(UI.header_bar("BILIK PERTARUNGAN", tr("Jawab betul, serang lawan. Yang terakhir berdiri menang %d syiling.") % BattleRules.REWARD_COINS))
+	_fighter_row = UI.hbox(8)
+	_fighter_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	root.add_child(_fighter_row)
+	_show_fighters()
 	var row := UI.hbox(20)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -179,13 +184,56 @@ func _show_faces() -> void:
 	for ch in _faces.get_children():
 		ch.queue_free()
 	var sizes: Array = BrawlRules.FORMATS[_format]
-	_faces.add_child(UI.head_icon(Game.skin_folder(), 60))
+	var bots := Game.bot_roster(LocalBattle.BOTS)
+	_faces.add_child(UI.head_icon(Game.battle_look(), 60))
 	for i in int(sizes[0]) - 1:
-		_faces.add_child(UI.head_icon(str(LocalBattle.BOTS[i]["skin"]), 60))
+		_faces.add_child(UI.head_icon(str(bots[i % bots.size()]["skin"]), 60))
 	var vs := UI.label(" LWN ", "InkHeading")
 	_faces.add_child(vs)
 	for i in int(sizes[1]):
-		_faces.add_child(UI.head_icon(str(LocalBattle.BOTS[(i + int(sizes[0]) - 1) % LocalBattle.BOTS.size()]["skin"]), 60))
+		_faces.add_child(UI.head_icon(str(bots[(i + int(sizes[0]) - 1) % bots.size()]["skin"]), 60))
+
+
+## Pilih watak: Alif in each outfit owned, and the classmates whose memory
+## Alif has brought back (locked ones show which Bab frees them)
+func _show_fighters() -> void:
+	for c in _fighter_row.get_children():
+		c.queue_free()
+	_fighter_row.add_child(UI.label(tr("Pilih watak:"), "Heading"))
+	var look := Game.battle_look()
+	for f in Game.fighters():
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(118, 92)
+		b.theme_type_variation = "Primary" if f["folder"] == look else ""
+		b.tooltip_text = str(f["name"]) if f["ok"] else str(f["why"])
+		var col := UI.vbox(0)
+		col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		col.alignment = BoxContainer.ALIGNMENT_CENTER
+		UI.full(col)
+		var head := UI.head_icon(str(f["folder"]), 58)
+		head.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		col.add_child(head)
+		var nm := UI.label(str(f["name"]).get_slice(" · ", 1) if str(f["name"]).contains(" · ") else str(f["name"]), "Small")
+		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nm.clip_text = true
+		nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		col.add_child(nm)
+		b.add_child(col)
+		if not f["ok"]:
+			head.modulate = Color(0, 0, 0, 0.75)  # a silhouette until Alif frees them
+			var lock := UI.icon("res://assets/icons/kunci.png", 26)
+			lock.position = Vector2(88, 4)
+			b.add_child(lock)
+		b.pressed.connect(func():
+			if not f["ok"]:
+				Sfx.play("bump", -4.0)
+				Game.toast(str(f["why"]), Color("ff9a8a"))
+				return
+			Sfx.play("select")
+			Game.set_fighter(str(f["folder"]))
+			_show_fighters()
+			_show_faces())
+		_fighter_row.add_child(b)
 
 
 # ------------------------------------------------------------------ friends (online)

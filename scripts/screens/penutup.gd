@@ -109,6 +109,7 @@ func _run(flag1: TextureRect, flag2: TextureRect, pau: TextureRect) -> void:
 	MusicDirector.stinger("st_zone")
 	await Game.say(_key("a"))
 	hop.kill()
+	await _friend_back()
 	# Nota Alif
 	var nota_panel = load("res://scripts/ui/nota_panel.gd").new()
 	Game.main.overlay_root().add_child(nota_panel)
@@ -121,6 +122,34 @@ func _run(flag1: TextureRect, flag2: TextureRect, pau: TextureRect) -> void:
 	Game.save["map_pos"] = []
 	Game.persist()
 	Game.goto("peta")
+
+
+## the classmate whose memory comes back with this chapter: their scene, and
+## from now on they can be picked before a battle (data/fighters.json)
+func _friend_back() -> void:
+	var f := Game.friend_saved_in(_ch)
+	if f.is_empty():
+		return
+	var mate := _img_char(str(f["folder"]), Vector2(820, 600))
+	mate.modulate.a = 0.0
+	create_tween().tween_property(mate, "modulate:a", 1.0, 0.8)
+	if str(f.get("story", "")) != "" and Game.story.has(str(f["story"])):
+		await Game.say(str(f["story"]))
+	MusicDirector.stinger("st_item")
+	Game.toast(tr("%s kini boleh dipilih di Bilik Pertarungan!") % str(f["name"]), Color("8fe08a"))
+	await get_tree().create_timer(1.2).timeout
+
+
+func _img_char(folder: String, feet: Vector2) -> TextureRect:
+	var r := TextureRect.new()
+	r.texture = UI.tex("res://assets/characters32/%s/%s_south.png" % [folder, folder])
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.size = Vector2(36, 36) * 5.0
+	r.position = feet - Vector2(r.size.x / 2.0, r.size.y)
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(r)
+	return r
 
 
 func _card(title: String, text: String, icon_path: String) -> void:

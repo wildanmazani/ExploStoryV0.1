@@ -1,0 +1,9 @@
+{
+  "_info": "Watak yang boleh dipilih sebelum bertanding (Bilik Pertarungan, Gelanggang, Kuiz dalam talian). Alif dengan setiap pakaian yang dimiliki sentiasa boleh dipilih. Setiap kawan sekelas terbuka bila Alif memulihkan ingatannya, iaitu bila 'chapter' ini selesai (penutup bab itu menunjukkan dia ingat semula; 'story' = kunci dialog dalam data/story.json, kosong = belum ditulis).",
+  "friends": [
+    {"id": "aisyah", "name": "Aisyah", "folder": "rakan_aisyah", "chapter": 2, "story": "selamat_aisyah"},
+    {"id": "ravi", "name": "Ravi", "folder": "rakan_ravi", "chapter": 4, "story": ""},
+    {"id": "meiling", "name": "Mei Ling", "folder": "rakan_meiling", "chapter": 6, "story": ""},
+    {"id": "daniel", "name": "Daniel", "folder": "rakan_daniel", "chapter": 8, "story": ""}
+  ]
+}

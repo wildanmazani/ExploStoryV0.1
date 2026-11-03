@@ -48,8 +48,8 @@ func setup(fmt: String, lvl: String) -> void:
 	add_child(fx)
 	var sizes: Array = BrawlRules.FORMATS[format]
 	var prof: Dictionary = Game.save["profile"]
-	var bots := LocalBattle.BOTS.duplicate()   # same order as the Lobby shows
-	var people: Array = [{"id": "me", "name": str(prof.get("display_name", prof["username"])), "skin": Game.skin_folder(), "team": 0, "me": true}]
+	var bots := Game.bot_roster(LocalBattle.BOTS)   # same order as the Lobby shows
+	var people: Array = [{"id": "me", "name": str(prof.get("display_name", prof["username"])), "skin": Game.battle_look(), "team": 0, "me": true}]
 	var bi := 0
 	for t in 2:
 		for k in int(sizes[t]) - (1 if t == 0 else 0):
