@@ -3,6 +3,7 @@ extends "res://scripts/ui/modal.gd"
 ## friends, negeri for Papan Markah, motto, stats) and the skin shop. The
 ## profile picture is the head of the outfit being worn. Skins are Alif's
 ## outfits (data/skins.json), bought with syiling and worn in the world.
+## Kawan: the friends list (online accounts), and adding a friend by Player ID.
 
 var start_tab: int = 0
 var _tab: int = 0
@@ -22,8 +23,8 @@ func _init() -> void:
 func _build() -> void:
 	var top := UI.hbox(8)
 	_tab_row = UI.hbox(8)
-	for i in 2:
-		var b := UI.button(["Profil", "Kedai Skin"][i], "", 200)
+	for i in 3:
+		var b := UI.button(["Profil", "Kedai Skin", "Kawan"][i], "", 200)
 		b.pressed.connect(_show.bind(i))
 		_tab_row.add_child(b)
 	top.add_child(_tab_row)
@@ -60,8 +61,10 @@ func _show(i: int) -> void:
 	_preview = null
 	if i == 0:
 		_profile()
-	else:
+	elif i == 1:
 		_shop()
+	else:
+		_friends()
 
 
 ## walking-south frames of a skin, for previews
@@ -190,6 +193,101 @@ func _profile() -> void:
 	right.add_child(stats)
 	row.add_child(right)
 	_body.add_child(row)
+
+
+# ------------------------------------------------------------------ friends
+var _friend_list: VBoxContainer
+var _friend_count: Label
+var _friends_call := 0
+
+
+func _friends() -> void:
+	if not Backend.can_play_online():
+		var box := UI.panel("Slot")
+		var msg := UI.label(tr("Senarai kawan perlukan akaun dalam talian. Log masuk dengan akaun untuk tambah kawan dan main sama-sama di Arena Quiz.") if Backend.is_online()
+			else tr("Senarai kawan perlukan sambungan ke pelayan dalam talian."), "", true)
+		msg.custom_minimum_size.x = 900
+		box.add_child(msg)
+		_body.add_child(box)
+		return
+	var add_row := UI.hbox(10)
+	add_row.add_child(UI.label(tr("Tambah kawan:"), "Heading"))
+	var code := LineEdit.new()
+	code.placeholder_text = tr("ID kawan (6 aksara)")
+	code.set_meta("typing_label", "ID kawan")
+	code.max_length = 6
+	code.custom_minimum_size.x = 280
+	add_row.add_child(code)
+	var add := UI.button("Tambah", "Blue")
+	add_row.add_child(add)
+	add_row.add_child(UI.spacer())
+	var mine := UI.label(tr("ID kau: %s") % str(Game.save["player_id"]), "Heading")
+	add_row.add_child(mine)
+	_body.add_child(add_row)
+	var status := UI.label("", "Small", true)
+	_body.add_child(status)
+	add.pressed.connect(func():
+		if code.text.strip_edges().length() < 6:
+			status.text = tr("ID kawan ada 6 aksara.")
+			return
+		add.disabled = true
+		var res: String = await Backend.add_friend(code.text)
+		add.disabled = false
+		status.text = tr({"accepted": "Kini berkawan!", "pending": "Permintaan dihantar.",
+			"not_found": "ID tidak dijumpai. Semak semula dengan kawan kau.", "self": "Itu ID kau sendiri."}.get(res, "Gagal. Semak sambungan internet dan cuba lagi."))
+		if res == "accepted" or res == "pending":
+			code.text = ""
+			Sfx.play("chime", -6.0)
+		_load_friend_list())
+	_friend_count = UI.label(tr("Kawan"), "Heading")
+	_body.add_child(_friend_count)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_friend_list = UI.vbox(8)
+	_friend_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_friend_list)
+	_body.add_child(scroll)
+	_friend_list.add_child(UI.label(tr("Memuatkan senarai kawan..."), "Small"))
+	_load_friend_list()
+	# the ID shown must be the server's (friends search for that one)
+	await Backend.sync_player_code()
+	if is_instance_valid(mine):
+		mine.text = tr("ID kau: %s") % str(Game.save["player_id"])
+
+
+func _load_friend_list() -> void:
+	_friends_call += 1
+	var call := _friends_call
+	var friends: Array = await Backend.my_friends()
+	if call != _friends_call or not is_instance_valid(_friend_list):
+		return  # a newer load or the tab was closed
+	for c in _friend_list.get_children():
+		c.queue_free()
+	var accepted := friends.filter(func(f): return str(f.get("status", "")) == "accepted")
+	_friend_count.text = tr("Kawan (%d)") % accepted.size()
+	if friends.is_empty():
+		_friend_list.add_child(UI.label(tr("Belum ada kawan. Minta ID Pemain kawan sekelas kau, kemudian tambah di atas."), "", true))
+		return
+	friends.sort_custom(func(a, b): return str(a.get("name", "")).to_lower() < str(b.get("name", "")).to_lower())
+	for f in friends:
+		_friend_list.add_child(_friend_row(f))
+
+
+func _friend_row(f: Dictionary) -> Control:
+	var card := UI.panel("Slot")
+	var r := UI.hbox(14)
+	r.add_child(UI.icon("res://assets/icons/orang.png", 44))
+	var c := UI.vbox(0)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.add_child(UI.label(str(f.get("name", "?")), "Heading"))
+	c.add_child(UI.label(tr("ID: %s") % str(f.get("code", "")), "Small"))
+	r.add_child(c)
+	var st := str(f.get("status", ""))
+	if st != "accepted":
+		r.add_child(UI.label(tr("menunggu") if st == "outgoing" else tr("mahu berkawan"), "Small"))
+	card.add_child(r)
+	return card
 
 
 # ------------------------------------------------------------------ shop

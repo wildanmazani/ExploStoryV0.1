@@ -710,6 +710,14 @@ func _check_kampung_intro() -> bool:
 		_fail("the locked Nota text is squeezed to %d px wide" % int(why.size.x))
 		return false
 	close_top_overlay()
+	# Profil > Kawan: offline it explains why there is no list
+	var prof: Node = Main.open_profile(2)
+	await wait(0.4)
+	await shot("profil_kawan")
+	if prof._tab != 2:
+		_fail("the Kawan tab did not open")
+		return false
+	close_top_overlay()
 	return true
 
 
