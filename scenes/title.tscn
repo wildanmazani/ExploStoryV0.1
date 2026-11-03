@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/title.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/backgrounds/bg_skrin_tajuk.png" id="2"]
-[ext_resource type="Texture2D" path="res://assets/characters/pau.png" id="3"]
 
 [node name="Title" type="Control"]
 layout_mode = 3
@@ -73,13 +72,3 @@ text = "Klik untuk mula"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Pau" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 1080.0
-offset_top = 560.0
-offset_right = 1208.0
-offset_bottom = 688.0
-mouse_filter = 2
-texture = ExtResource("3")
-expand_mode = 1
-stretch_mode = 5

@@ -8,7 +8,6 @@ var _t := 0.0
 var _leaving := false
 
 @onready var start_label: Label = $StartLabel
-@onready var pau: TextureRect = $Pau
 
 
 var gear: Button
@@ -40,7 +39,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_t += delta
 	start_label.modulate.a = 0.8 + 0.2 * sin(_t * 3.0)  # stays readable on the bright art
-	pau.position.y = 560 - absf(sin(_t * 4.0)) * 24
 
 
 func _place_gear() -> void:
