@@ -70,7 +70,18 @@ func _headers(auth: bool = false) -> PackedStringArray:
 	return h
 
 
+## A phone browser pauses the game while its tab is hidden, so the hourly
+## token refresh can be missed: a request the server refuses for an old
+## token gets a fresh one and is sent once more.
 func _request(path: String, method: int, body: Variant = null, auth: bool = false, extra: PackedStringArray = PackedStringArray()) -> Dictionary:
+	var r := await _send(path, method, body, auth, extra)
+	if auth and int(r.get("code", 0)) == 401 and refresh_token != "":
+		if await _refresh():
+			r = await _send(path, method, body, auth, extra)
+	return r
+
+
+func _send(path: String, method: int, body: Variant, auth: bool, extra: PackedStringArray) -> Dictionary:
 	var http := HTTPRequest.new()
 	http.timeout = 15.0
 	add_child(http)
@@ -225,14 +236,15 @@ func _take_session(d: Dictionary) -> void:
 	_refresh_timer.start(maxf(60.0, life - 120.0))
 
 
-func _refresh() -> void:
+func _refresh() -> bool:
 	if refresh_token == "":
-		return
-	var r := await _request("/auth/v1/token?grant_type=refresh_token", HTTPClient.METHOD_POST, {"refresh_token": refresh_token})
+		return false
+	var r := await _send("/auth/v1/token?grant_type=refresh_token", HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, false, PackedStringArray())
 	if r["ok"] and r["data"] is Dictionary:
 		_take_session(r["data"])
-	else:
-		_refresh_timer.start(RETRY * 3)  # offline for now: try again later
+		return true
+	_refresh_timer.start(RETRY * 3)  # offline for now: try again later
+	return false
 
 
 func _local_accounts() -> Dictionary:

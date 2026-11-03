@@ -58,7 +58,10 @@ func _show(i: int) -> void:
 			return
 		_clear()
 		if data.is_empty():
-			_body.add_child(UI.label("Tak dapat sambung ke pelayan. Cuba lagi nanti.", "", true))
+			_body.add_child(UI.label("Tak dapat sambung ke pelayan. Semak internet kau, kemudian cuba lagi.", "", true))
+			var again := UI.button("Cuba lagi", "Primary", 200)
+			again.pressed.connect(_show.bind(i))
+			_body.add_child(again)
 			return
 		_fill(data.get("rows", []), data.get("me"), false)
 	else:
