@@ -55,6 +55,7 @@ func setup(d: Dictionary) -> void:
 	chat.clip_contents = true
 	col.add_child(chat)
 	_scroll = ScrollContainer.new()
+	TouchScroll.attach(_scroll)
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -29,6 +29,7 @@ func _build() -> void:
 			_data["pages"].append_array(Game.load_json(path).get("pages", []))
 	# the page scrolls: icon summary on top, the Huraian (textbook notes) under it
 	_scroll = ScrollContainer.new()
+	TouchScroll.attach(_scroll)
 	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_page_box = UI.vbox(12)

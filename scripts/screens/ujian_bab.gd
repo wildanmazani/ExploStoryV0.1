@@ -203,6 +203,7 @@ func _weak_topics(wrong: Array) -> Control:
 ## every question answered wrong: your answer, the right one and why
 func _wrong_list(wrong: Array) -> Control:
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.custom_minimum_size = Vector2(0, 230)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	var list := UI.vbox(10)

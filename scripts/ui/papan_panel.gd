@@ -133,6 +133,7 @@ func _fill(rows: Array, me: Variant, sample: bool) -> void:
 	var right := UI.vbox(8)
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	var list := UI.vbox(6)

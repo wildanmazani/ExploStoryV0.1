@@ -242,6 +242,7 @@ func _friends() -> void:
 	_friend_count = UI.label(tr("Kawan"), "Heading")
 	_body.add_child(_friend_count)
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_friend_list = UI.vbox(8)
@@ -301,6 +302,7 @@ func _shop() -> void:
 	for s in Game.skins():
 		grid.add_child(_skin_card(s))
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
 	_body.add_child(scroll)

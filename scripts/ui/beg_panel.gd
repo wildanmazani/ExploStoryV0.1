@@ -145,6 +145,7 @@ func _show_travel() -> void:
 	_page(tr(TRAVEL))
 	_body.add_child(UI.label("Pilih tempat yang dah dibuka. Alif terus sampai ke sana.", "Small", true))
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var grid := GridContainer.new()

@@ -52,6 +52,7 @@ func _ready() -> void:
 	# the two cards scroll when big text makes them taller than the screen;
 	# the button row below stays put so KEMBALI is always reachable
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.add_child(row)

@@ -73,6 +73,7 @@ func _build() -> void:
 		_tabs.append(b)
 	right.add_child(tabs)
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_list = UI.vbox(8)

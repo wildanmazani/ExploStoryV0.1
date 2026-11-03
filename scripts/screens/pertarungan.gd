@@ -51,6 +51,7 @@ func _ready() -> void:
 	# leaves; with big text or a long explanation this scrolls instead of
 	# pushing the bottom row of answers off the screen
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var lower := UI.vbox(8)

@@ -99,6 +99,7 @@ static func card(button_text: String, live := false) -> PanelContainer:
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
 	var scroll := ScrollContainer.new()
+	TouchScroll.attach(scroll)
 	scroll.custom_minimum_size = Vector2(0, 470)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	var holder := UI.vbox(0)
