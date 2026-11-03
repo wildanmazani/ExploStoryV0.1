@@ -61,16 +61,14 @@ func bag_on() -> bool:
 	return Game.bag_worn() and _look == ""
 
 
-## the bag turns with Alif: on his back from behind and from the side, peeking
-## out behind him from the front. It bobs with his steps and falls with him.
+## the bag turns with Alif: on his back from behind and from the side, its
+## two straps over his shoulders from the front. It bobs with his steps and
+## falls with him.
 func _update_bag() -> void:
 	if facing != _bag_dir:
 		_bag_dir = facing
 		_bag.texture = load("res://assets/characters32/beg/beg_%s.png" % facing)
-		if facing == "south":
-			move_child(_bag, 0)
-		else:
-			move_child(_bag, get_child_count() - 1)
+		move_child(_bag, get_child_count() - 1)
 	_bag.rotation = sprite.rotation
 	_bag.position = Vector2(0, 1 if moving and sprite.frame % 3 == 1 else 0)
 
