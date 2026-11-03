@@ -84,6 +84,10 @@ func _request(path: String, method: int, body: Variant = null, auth: bool = fals
 func _send(path: String, method: int, body: Variant, auth: bool, extra: PackedStringArray) -> Dictionary:
 	var http := HTTPRequest.new()
 	http.timeout = 15.0
+	# the server gzips larger replies (lists, saves). In a browser the browser
+	# already unzips them and Godot unzipping again broke every list on the
+	# web build, so ask for plain replies.
+	http.accept_gzip = false
 	add_child(http)
 	var headers := _headers(auth)
 	headers.append_array(extra)
