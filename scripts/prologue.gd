@@ -36,6 +36,15 @@ const GAZE_MOVE := 0.18  ## how far the view follows the eyes while reading
 const LINE_H := 24.0
 const MIRROR := {"b": "d", "d": "b", "p": "q", "q": "p", "m": "w", "w": "m", "n": "u", "u": "n"}
 const FRIENDS := ["aisyah", "ravi", "meiling", "daniel"]
+## the dream: where each friend is stuck, on the verandah of a different
+## stilt house in bg_pelabuhan_huru: [feet, left end, right end] of the floor
+const HOUSES := [
+	[Vector2(110, 462), 76.0, 166.0],
+	[Vector2(462, 468), 432.0, 494.0],
+	[Vector2(948, 408), 930.0, 964.0],
+	[Vector2(1078, 410), 1050.0, 1102.0],
+]
+var _pacing := false  ## the friends walk their verandahs looking for a way out
 
 var phase := ""  ## what is on screen: phone, room, reading, doze, port, gua
 
@@ -462,18 +471,29 @@ func _dream() -> void:
 	phase = "port"
 	var bg := _scene_image("res://assets/backgrounds/bg_pelabuhan_huru.png")
 	bg.modulate = Color(1.0, 0.75, 0.7)
-	var alif := _sprite("res://assets/characters32/%s/%s_south.png" % [Game.skin_folder(), Game.skin_folder()], Vector2(640, 610), 6)
-	var feet := [Vector2(250, 560), Vector2(430, 650), Vector2(850, 650), Vector2(1030, 560)]
+	# Alif among the reeds on the shore, his back to us, looking out at the stilt houses
+	var me := Game.skin_folder()
+	var alif := _sprite("res://assets/characters32/%s/%s_north.png" % [me, me], Vector2(300, 728), 5)
+	# each friend stuck on the verandah of a different house over the water
 	var pals: Array[TextureRect] = []
 	for i in FRIENDS.size():
-		pals.append(_sprite(_rakan(FRIENDS[i], "south"), feet[i], 5))
+		var at: Vector2 = HOUSES[i][0]
+		pals.append(_sprite(_rakan(FRIENDS[i], "south"), at, 2))
 	MusicDirector.play("siguntang", 1.0)
 	flash.color = Color(1, 1, 1)
+	_pacing = true
+	for i in pals.size():
+		_pace(pals[i], FRIENDS[i], HOUSES[i][1], HOUSES[i][2], i * 0.6)
 	await _fade(flash, 0.0, 0.8)
+	for i in pals.size():
+		_emote(pals[i], "?", Color.WHITE)
+		await _wait(0.25)
+	_step_up(alif)
 	await _say("pro_friends_1")
 	if _skipping: return
 
-	# the Kabus Lupa rolls in: they turn away from him...
+	# the Kabus Lupa rolls in: they stop, see each other across the water...
+	_pacing = false
 	var fog := ColorRect.new()
 	fog.color = Color(0.35, 0.15, 0.5, 0.0)
 	fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -485,26 +505,48 @@ func _dream() -> void:
 	k.tween_property(fog, "color:a", 0.4, 1.4)
 	for i in pals.size():
 		k.tween_property(pals[i], "modulate", Color(0.8, 0.65, 1.0), 1.4)
-		pals[i].texture = UI.tex(_rakan(FRIENDS[i], "north"))
 	await k.finished
-	await _say("pro_friends_2")
-	if _skipping: return
-	# ...then on each other
+	# ...and turn on one another: Aisyah and Ravi on the left, Mei Ling and Daniel on the right
 	var faces := ["east", "west", "east", "west"]
 	for i in pals.size():
 		pals[i].texture = UI.tex(_rakan(FRIENDS[i], faces[i]))
+		_emote(pals[i], "!", Color("ff6a5a"))
 		_hop(pals[i])
+		await _wait(0.15)
+	await _say("pro_friends_2")
+	if _skipping: return
+	for i in [0, 1]:
+		_shove(pals[i], 1 if faces[i] == "east" else -1)
+		_anger(pals[i])
 	Sfx.play("bump", -4.0)
+	for i in [2, 3]:
+		_shove(pals[i], 1 if faces[i] == "east" else -1)
+		_anger(pals[i])
 	await _say("pro_friends_3")
 	if _skipping: return
+	# one by one they go inside and slam the door
+	for i in [3, 0, 2, 1]:
+		pals[i].texture = UI.tex(_rakan(FRIENDS[i], "north"))
+		await _wait(0.2)
+		var go := create_tween()
+		go.tween_property(pals[i], "modulate:a", 0.0, 0.18)
+		Sfx.play("bump", -3.0, 0.8)
+		_shake_node(bg, 0.15)
+		await _wait(0.35)
 	_shake_node(bg, 1.6)
 	Sfx.play("bump", -2.0)
+	alif.texture = UI.tex("res://assets/characters32/%s/%s_south.png" % [me, me])
+	_hop(alif)
 	await _say("pro_huru")
 	if _skipping: return
 
-	# run into the cave
+	# run into the cave: he turns and runs off, a hop on every stride
+	alif.texture = UI.tex("res://assets/characters32/%s/%s_east.png" % [me, me])
 	var run := create_tween()
-	run.tween_property(alif, "position:x", 1300.0, 0.7).set_ease(Tween.EASE_IN)
+	run.tween_property(alif, "position:x", 1300.0, 0.9).set_ease(Tween.EASE_IN)
+	var stride := create_tween().set_loops(5)
+	stride.tween_property(alif, "position:y", alif.position.y - 14, 0.09)
+	stride.tween_property(alif, "position:y", alif.position.y, 0.09)
 	Sfx.play("whoosh")
 	flash.color = Color.BLACK
 	await _fade(flash, 1.0, 0.6)
@@ -548,6 +590,99 @@ func _dream() -> void:
 
 func _rakan(who: String, facing: String) -> String:
 	return "res://assets/characters32/rakan_%s/rakan_%s_%s.png" % [who, who, facing]
+
+
+## a friend walks up and down the verandah, stops at each end to look out
+## (south) for a way off the house, then walks back; small steps bob
+func _pace(n: TextureRect, who: String, left: float, right: float, delay: float) -> void:
+	await _wait(delay)
+	var home_y := n.position.y
+	var going_right := randf() < 0.5
+	while _pacing and is_inside_tree() and not _skipping:
+		var to := (right if going_right else left) - n.size.x / 2.0
+		n.texture = UI.tex(_rakan(who, "east" if going_right else "west"))
+		var secs := absf(to - n.position.x) / 38.0 + 0.1
+		var walk := create_tween()
+		walk.tween_property(n, "position:x", to, secs)
+		var steps := int(secs / 0.22)
+		for s in steps:
+			if not _pacing:
+				break
+			var b := create_tween()
+			b.tween_property(n, "position:y", home_y - 2.0, 0.11)
+			b.tween_property(n, "position:y", home_y, 0.11)
+			await b.finished
+		if walk.is_running():
+			await walk.finished
+		if not _pacing:
+			break
+		n.texture = UI.tex(_rakan(who, "south"))
+		await get_tree().create_timer(randf_range(0.6, 1.2)).timeout
+		going_right = not going_right
+	n.position.y = home_y
+
+
+## a little speech mark over a sprite's head ("?", "!"): pops, floats, fades
+func _emote(n: Control, text: String, col: Color) -> void:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_size_override("font_size", 28)
+	l.add_theme_color_override("font_color", col)
+	l.add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.1))
+	l.add_theme_constant_override("outline_size", 8)
+	l.size = Vector2(40, 36)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.position = n.position + Vector2(n.size.x / 2.0 - 20, n.size.y * 0.15 - 30)
+	l.pivot_offset = l.size / 2.0
+	l.scale = Vector2(0.2, 0.2)
+	add_child(l)
+	move_child(l, flash.get_index())
+	var t := create_tween()
+	t.tween_property(l, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_property(l, "position:y", l.position.y - 10, 0.9)
+	t.tween_property(l, "modulate:a", 0.0, 0.3)
+	t.tween_callback(l.queue_free)
+
+
+## an angry mark (four red strokes) that throbs over a head for a while
+func _anger(n: Control) -> void:
+	var m := Control.new()
+	m.size = Vector2(24, 24)
+	m.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	m.position = n.position + Vector2(n.size.x * 0.75 - 12, n.size.y * 0.1 - 18)
+	m.pivot_offset = m.size / 2.0
+	m.draw.connect(func():
+		var c := Color("ff3b30")
+		for s in [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]:
+			var o: Vector2 = Vector2(12, 12) + s * 5.0
+			m.draw_line(o, o + Vector2(s.x * 6.0, 0), c, 3.0)
+			m.draw_line(o, o + Vector2(0, s.y * 6.0), c, 3.0))
+	add_child(m)
+	move_child(m, flash.get_index())
+	var t := create_tween().set_loops(4)
+	t.tween_property(m, "scale", Vector2(1.3, 1.3), 0.15)
+	t.tween_property(m, "scale", Vector2.ONE, 0.15)
+	t.finished.connect(m.queue_free)
+
+
+## a stamp-and-lean towards the other house while shouting, then back
+func _shove(n: Control, dir: int) -> void:
+	var x := n.position.x
+	var t := create_tween()
+	for i in 2:
+		t.tween_property(n, "position:x", x + dir * 6.0, 0.07)
+		t.tween_property(n, "position:x", x, 0.12)
+	_hop(n)
+
+
+## Alif takes two steps towards the water's edge
+func _step_up(n: Control) -> void:
+	var y := n.position.y
+	var t := create_tween()
+	for i in 2:
+		t.tween_property(n, "position:y", y - 10 * (i + 1) - 6, 0.12)
+		t.tween_property(n, "position:y", y - 10 * (i + 1), 0.12)
 
 
 func _hop(n: Control) -> void:

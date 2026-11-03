@@ -218,7 +218,7 @@ func _build_hud() -> void:
 			var head := UI.head_icon(f.skin, 34)
 			row.add_child(head)
 			var nm := UI.label(f.display_name + (tr(" (kau)") if f.is_me else ""), "Small")
-			nm.custom_minimum_size.x = 130
+			nm.custom_minimum_size.x = 112
 			nm.clip_text = true
 			row.add_child(nm)
 			var hp := ProgressBar.new()
@@ -226,14 +226,15 @@ func _build_hud() -> void:
 			hp.max_value = BrawlRules.HP
 			hp.value = f.hp
 			hp.show_percentage = false
-			hp.custom_minimum_size = Vector2(150, 16)
+			hp.custom_minimum_size = Vector2(118, 16)
 			hp.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			row.add_child(hp)
-			var badge := UI.label("", "Small")
-			badge.custom_minimum_size.x = 90
-			row.add_child(badge)
+			var pill := _pill("")
+			pill.custom_minimum_size.x = 100
+			pill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			row.add_child(pill)
 			col.add_child(row)
-			_rows[f.id] = {"hp": hp, "badge": badge, "row": row}
+			_rows[f.id] = {"hp": hp, "badge": pill.get_child(0), "pill": pill, "row": row}
 		panel.add_child(col)
 		if t == 1:
 			var mid := UI.vbox(0)
@@ -307,20 +308,65 @@ func _refresh() -> void:
 		var hp: ProgressBar = r["hp"]
 		create_tween().tween_property(hp, "value", float(f.hp), 0.25)
 		hp.theme_type_variation = "Good" if f.hp > BrawlRules.HP / 2 else ("Warn" if f.hp > BrawlRules.HP / 4 else "")
-		var badge: Label = r["badge"]
+		var pill: PanelContainer = r["pill"]
 		if not f.alive():
-			badge.text = tr("PENGSAN")
-			badge.add_theme_color_override("font_color", Color("c9a0ff"))
+			_set_pill(pill, "pengsan")
 			(r["row"] as Control).modulate.a = 0.55
 		elif match_node.phase == "soalan":
-			badge.text = tr("sudah jawab") if match_node.answers.has(f.id) else ""
-			badge.add_theme_color_override("font_color", Color("9fe8a0"))
+			_set_pill(pill, "jawab" if match_node.answers.has(f.id) else "")
 		elif match_node.phase in ["keputusan", "aksi"]:
-			badge.text = (tr("JURUS!") if f.special_ready else tr("SEMANGAT")) if f.answered_right else tr("LEMAH")
-			badge.add_theme_color_override("font_color", UI.GOLD if f.answered_right else Color("a8b0bc"))
+			_set_pill(pill, ("jurus" if f.special_ready else "semangat") if f.answered_right else "lemah")
 	_round.text = tr("Pusingan %d") % match_node.round_no
 	if match_node.phase == "soalan" and match_node.answers.has(match_node.me.id):
 		_q_status.text = tr("Jawapan dihantar. Menunggu yang lain...")
+
+
+## the state badges: a coloured pill, the same look in the HUD and the banner
+const PILLS := {
+	"semangat": ["SEMANGAT", "f2c14e", "3a2405", "serangan penuh"],
+	"jurus": ["JURUS!", "ff7a2f", "ffffff", "Jurus Kilat sedia"],
+	"lemah": ["LEMAH", "5d6878", "e6ebf2", "serangan 30%"],
+	"pengsan": ["PENGSAN", "7b5aa6", "f3eaff", ""],
+	"jawab": ["sudah jawab", "3f8f5a", "eafff0", ""],
+}
+
+
+func _pill(kind: String, size := "Small") -> PanelContainer:
+	var p := PanelContainer.new()
+	var l := UI.label("", size)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	p.add_child(l)
+	_set_pill(p, kind)
+	return p
+
+
+func _set_pill(p: PanelContainer, kind: String) -> void:
+	var l: Label = p.get_child(0)
+	if kind == "" or not PILLS.has(kind):
+		l.text = ""
+		p.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+		return
+	var d: Array = PILLS[kind]
+	if l.text == tr(d[0]) and p.has_meta("kind") and p.get_meta("kind") == kind:
+		return
+	var changed: bool = str(p.get_meta("kind", "")) != kind
+	p.set_meta("kind", kind)
+	l.text = tr(d[0])
+	l.add_theme_color_override("font_color", Color(d[2]))
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(d[1])
+	sb.border_color = Color(d[1]).darkened(0.45)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(12)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 1
+	sb.content_margin_bottom = 1
+	p.add_theme_stylebox_override("panel", sb)
+	if changed and is_inside_tree():  # a little pop when it changes
+		p.pivot_offset = p.size / 2.0
+		p.scale = Vector2(1.25, 1.25)
+		create_tween().tween_property(p, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 # ------------------------------------------------------------------ question card
@@ -441,13 +487,40 @@ func _on_phase(p: String) -> void:
 			if match_node.explain != "":
 				_banner_box.add_child(UI.label(match_node.explain, "Small", true))
 			for r in match_node.results:
-				var txt: String = "%s%s:  %s" % [r["name"], tr(" (kau)") if r["me"] else "", tr("BETUL, SEMANGAT!") if r["right"] else tr("salah, lemah")]
+				var line := UI.hbox(10)
+				var f := match_node.find(str(r.get("id", "")))
+				if f:
+					line.add_child(UI.head_icon(f.skin, 30))
+				var nm := UI.label("%s%s" % [r["name"], tr(" (kau)") if r["me"] else ""], "")
+				nm.custom_minimum_size.x = 190
+				nm.add_theme_color_override("font_color", UI.GOLD if r["me"] else Color.WHITE)
+				line.add_child(nm)
+				var ok := UI.label(tr("BETUL") if r["right"] else tr("SALAH"), "Small")
+				ok.custom_minimum_size.x = 70
+				ok.add_theme_color_override("font_color", Color("8ee59a") if r["right"] else Color("ff8a7a"))
+				line.add_child(ok)
+				var pill := _pill("semangat" if r["right"] else "lemah")
+				line.add_child(pill)
+				var why := UI.label(tr(PILLS["semangat" if r["right"] else "lemah"][3]), "Small")
+				why.add_theme_color_override("font_color", Color("c9d2de"))
+				line.add_child(why)
 				if r["fastest"]:
-					txt += "  +" + (tr("JURUS KILAT (butang Jurus)") if BrawlGuide.on_touch() else tr("JURUS KILAT (tekan %s)") % Game.brawl_key_names("special"))
-				var l := UI.label(txt, "")
-				l.add_theme_color_override("font_color", UI.GOLD if r["right"] else Color("a8b0bc"))
-				_banner_box.add_child(l)
+					line.add_child(_pill("jurus"))
+					var key := UI.label(tr("butang Jurus") if BrawlGuide.on_touch() else tr("tekan %s") % Game.brawl_key_names("special"), "Small")
+					key.add_theme_color_override("font_color", Color("ffb27a"))
+					line.add_child(key)
+				_banner_box.add_child(line)
+				line.modulate.a = 0.0
+				var t := create_tween()
+				t.tween_interval(0.15 * _banner_box.get_child_count())
+				t.tween_property(line, "modulate:a", 1.0, 0.2)
 			_phase.text = tr("KEPUTUSAN")
+			if match_node.me.alive():
+				# under the banner, over the fighters, so neither hides the other
+				if match_node.me.answered_right:
+					_flash_big(tr("JURUS KILAT!") if match_node.me.special_ready else tr("SEMANGAT!"), UI.GOLD, 360.0)
+				else:
+					_flash_big(tr("LEMAH..."), Color("a8b4c4"), 360.0)
 			if match_node.me.answered_right:
 				MusicDirector.stinger("st_correct")
 		"aksi":
@@ -460,10 +533,13 @@ func _on_phase(p: String) -> void:
 	_refresh()
 
 
-func _flash_big(text: String) -> void:
+func _flash_big(text: String, col := UI.GOLD, y := 250.0) -> void:
 	if _big == null:
 		return
 	_big.text = text
+	_big.position.y = y
+	_big.add_theme_color_override("font_color", col)
+	move_child(_big, get_child_count() - 1)
 	_big.scale = Vector2(1.6, 1.6)
 	_big.modulate.a = 1.0
 	var t := create_tween()

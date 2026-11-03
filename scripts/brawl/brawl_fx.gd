@@ -19,6 +19,24 @@ func star(pos: Vector2, big := false) -> void:
 	_items.append({"kind": "star", "pos": pos, "t": 0.0, "life": 0.22 if not big else 0.32, "r": 34.0 if not big else 56.0, "rot": randf() * TAU})
 
 
+## the shock of a hit: a ring that opens out, speed lines bursting from the
+## point of impact and a spray of sparks (sideways, away from the attacker)
+func impact(pos: Vector2, dir: float, col: Color, big := false) -> void:
+	_items.append({"kind": "ring", "pos": pos, "t": 0.0, "life": 0.28 if not big else 0.4,
+		"r": 60.0 if not big else 100.0, "col": col})
+	var lines := 8 if not big else 12
+	for i in lines:
+		var ang := TAU * i / lines + randf_range(-0.15, 0.15)
+		_items.append({"kind": "line", "pos": pos, "t": 0.0, "life": randf_range(0.14, 0.22) * (1.4 if big else 1.0),
+			"ang": ang, "len": randf_range(38, 62) * (1.5 if big else 1.0)})
+	for i in (10 if not big else 18):
+		var v := Vector2(dir * randf_range(120, 380), randf_range(-320, -60))
+		_items.append({"kind": "spark", "pos": pos, "t": 0.0, "life": randf_range(0.25, 0.45), "vel": v,
+			"col": col.lerp(Color.WHITE, randf() * 0.6)})
+	if big:
+		_items.append({"kind": "flash", "pos": pos, "t": 0.0, "life": 0.12})
+
+
 func word(pos: Vector2, text: String, col := Color("ffe066"), big := false) -> void:
 	_items.append({"kind": "word", "pos": pos + Vector2(randf_range(-14, 14), 0), "t": 0.0, "life": 0.7,
 		"text": text, "col": col, "size": 30 if big else 20, "rot": randf_range(-0.25, 0.25)})
@@ -80,3 +98,18 @@ func _draw() -> void:
 				draw_set_transform(it["pos"], it["rot"] + k * 8.0, Vector2.ONE)
 				draw_rect(Rect2(-5, -3, 10, 6), Color(it["col"], 1.0 - k))
 				draw_set_transform(Vector2.ZERO)
+			"ring":
+				var e := 1.0 - pow(1.0 - k, 3.0)   # fast out, slow end
+				draw_set_transform(it["pos"], 0, Vector2(1, 0.6))
+				draw_arc(Vector2.ZERO, it["r"] * (0.25 + 0.75 * e), 0, TAU, 36, Color(it["col"], 0.9 * (1.0 - k)), 6.0 * (1.0 - k) + 1.0, true)
+				draw_set_transform(Vector2.ZERO)
+			"line":
+				var d := Vector2.from_angle(it["ang"])
+				var a0: float = 18.0 + 60.0 * k
+				var a1: float = a0 + it["len"] * (1.0 - k)
+				draw_line(it["pos"] + d * a0, it["pos"] + d * a1, Color(1, 1, 0.9, 1.0 - k), 4.0 * (1.0 - k) + 1.0)
+			"spark":
+				var v: Vector2 = it["vel"]
+				draw_line(it["pos"], it["pos"] - v.normalized() * 10.0, Color(it["col"], 1.0 - k), 3.0)
+			"flash":
+				draw_circle(it["pos"], 140.0 * (0.6 + k), Color(1, 1, 0.9, 0.35 * (1.0 - k)))

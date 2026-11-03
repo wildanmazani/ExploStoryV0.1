@@ -15,6 +15,7 @@ const ZonePrep = preload("res://scripts/screens/zone_prep.gd")
 ## floor rows as "y:x0-x1" strings, e.g. ["9:5-14", "10:2-17"]
 @export var floor_rows: PackedStringArray
 @export var exit_cells: Array[Vector2i] = []
+@export var exit_side := ""   ## "left" / "right": the door is in a side wall, "" = at the bottom
 @export var enter_cell := Vector2i(10, 10)
 @export var return_cell_world := Vector2i(55, 30)   ## overworld cell outside the door
 @export var npc_id := ""
@@ -85,7 +86,11 @@ func _ready() -> void:
 		for c in exit_cells:
 			mid += Vector2(c) * TILE + Vector2(TILE / 2.0, 0)
 		mid /= exit_cells.size()
-		arrow.position = Vector2(mid.x, minf(mid.y + 4, 166))  # stay on screen
+		arrow.side = exit_side
+		if exit_side != "":  # in the middle of the door cell, pointing out
+			arrow.position = mid + Vector2(0, TILE / 2.0)
+		else:
+			arrow.position = Vector2(mid.x, minf(mid.y + 4, 166))  # stay on screen
 		add_child(arrow)
 
 	player.world = self
@@ -357,6 +362,7 @@ func _interact(c: Vector2i) -> void:
 ## Pulsing "Keluar" arrow over the door, drawn in pixels so it is crisp at 4x.
 class ExitArrow extends Node2D:
 	var _t := 0.0
+	var side := ""  ## "" = the door is at the bottom (arrow down), "left" / "right" = a side door
 
 	func _ready() -> void:
 		z_index = 15
@@ -367,6 +373,8 @@ class ExitArrow extends Node2D:
 
 	func _draw() -> void:
 		var y := sin(_t * 4.0) * 1.5
+		if side != "":  # the same arrow, turned to point out of the side door
+			draw_set_transform(Vector2.ZERO, PI / 2.0 if side == "left" else -PI / 2.0, Vector2.ONE)
 		var ink := Color(0.17, 0.11, 0.06)
 		var gold := Color(1, 0.86, 0.3)
 		# down arrow: shaft + head, with a dark outline

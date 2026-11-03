@@ -25,6 +25,19 @@ func _ready() -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(title)
 
+	# signed in on this device before: one tap to carry on, or type another account below
+	if Backend.has_saved_session():
+		var who := Backend.saved_session_email()
+		var cont := UI.button(tr("TERUSKAN SEBAGAI %s") % who if who != "" else tr("TERUSKAN AKAUN TADI"), "Primary")
+		cont.pressed.connect(func():
+			cont.disabled = true
+			_resume())
+		col.add_child(cont)
+		var other := UI.label(tr("Atau log masuk dengan akaun lain:"), "Small", true)
+		other.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		other.custom_minimum_size.x = 480
+		col.add_child(other)
+
 	col.add_child(UI.label("E-MEL ATAU NAMA PENGGUNA"))
 	var r1 := UI.hbox(8)
 	r1.add_child(UI.icon("res://assets/icons/orang.png", 40))
@@ -83,11 +96,9 @@ func _ready() -> void:
 	add_child(logo)
 	if not DisplayServer.is_touchscreen_available():  # a phone opens its keyboard only on a tap
 		_user.grab_focus()
-	if Backend.has_saved_session():
-		_resume()
 
 
-## signed in on this device before: straight back in
+## "Teruskan sebagai ...": back into the account kept on this device
 func _resume() -> void:
 	_login.disabled = true
 	_status.theme_type_variation = "Small"

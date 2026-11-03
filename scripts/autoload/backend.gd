@@ -229,12 +229,23 @@ func has_saved_session() -> bool:
 	return is_online() and FileAccess.file_exists(SESSION)
 
 
+## the e-mail of the account kept on this device ("" if not known)
+func saved_session_email() -> String:
+	if not FileAccess.file_exists(SESSION):
+		return ""
+	var s = Game.load_json_user(SESSION)
+	return str(s.get("email", "")) if s is Dictionary else ""
+
+
 func _take_session(d: Dictionary) -> void:
 	access_token = str(d.get("access_token", ""))
 	refresh_token = str(d.get("refresh_token", refresh_token))
 	user_id = str(d.get("user", {}).get("id", user_id))
 	if refresh_token != "":
-		Game.write_json_user(SESSION, {"refresh_token": refresh_token})
+		var email := str(d.get("user", {}).get("email", ""))
+		if email == "":
+			email = saved_session_email()
+		Game.write_json_user(SESSION, {"refresh_token": refresh_token, "email": email})
 	# access tokens last about an hour: renew a little before that
 	var life := float(d.get("expires_in", 3600))
 	_refresh_timer.start(maxf(60.0, life - 120.0))

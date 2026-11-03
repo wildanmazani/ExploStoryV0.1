@@ -93,7 +93,12 @@
   "pro_friends_1": {
     "variants": [
       [
-        {"who": "alif", "text": "Eh? Aisyah? Ravi? Mei Ling? Daniel? Korang buat apa kat zaman dulu ni?", "e": "confused"}
+        {"who": "alif", "text": "Eh? Tu Aisyah? Ravi? Mei Ling? Daniel? Korang buat apa kat sini?", "e": "confused"},
+        {"who": "narator", "text": "Setiap seorang terperangkap di rumah atas air yang berlainan. Tiada jambatan, tiada sampan."},
+        {"who": "aisyah", "text": "Pintu belakang ni berkunci! Macam mana nak keluar ni?!"},
+        {"who": "ravi", "text": "Helo?! Ada sesiapa tak?! Tolong!"},
+        {"who": "meiling", "text": "Kenapa semua rumah ni atas air... Mana jalan balik?"},
+        {"who": "daniel", "text": "Takkan nak terjun pula. Dalam ke air ni?"}
       ]
     ]
   },
@@ -101,17 +106,17 @@
     "variants": [
       [
         {"who": "narator", "text": "Kabus ungu turun ke pelabuhan. Semakin tebal kabus itu, semakin kabur ingatan semua orang."},
-        {"who": "aisyah", "text": "Siapa kau? Aku tak kenal kau."},
-        {"who": "ravi", "text": "Ni pelabuhan aku. Orang luar, pergi!"}
+        {"who": "aisyah", "text": "Eh, kau siapa?! Kenapa tengok-tengok rumah aku?"},
+        {"who": "ravi", "text": "Rumah kau? Ni kampung aku la! Orang luar, jangan dekat!"}
       ]
     ]
   },
   "pro_friends_3": {
     "variants": [
       [
-        {"who": "meiling", "text": "Kau pun bukan orang sini!"},
-        {"who": "daniel", "text": "Kau yang patut keluar!"},
-        {"who": "alif", "text": "Weh! Kita satu kelas! Lima tahun sama-sama!", "e": "worried"}
+        {"who": "meiling", "text": "Kau pun bukan orang sini! Bising je dari tadi!"},
+        {"who": "daniel", "text": "Diamlah! Semua masuk rumah sendiri!"},
+        {"who": "alif", "text": "Weh! Kita satu kelas! Lima tahun sama-sama! Korang tak ingat ke?", "e": "worried"}
       ]
     ]
   },

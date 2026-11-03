@@ -67,6 +67,10 @@ var puppet := false
 var my_team := 0   ## the team of the player watching (ring colours: mates blue, others red)
 var _net_pos := Vector2.ZERO
 var _net_first := true
+var _squash := 0.0         ## 1 right after a hit lands on this fighter, fades to 0
+var _ghosts: Array = []    ## afterimages of a swing: {pos (match coords), tex, flip, t}
+var _ghost_gap := 0.0
+const GHOST_LIFE := 0.16
 
 
 func setup(p: Dictionary) -> void:
@@ -97,7 +101,7 @@ func _ready() -> void:
 	_tag = Label.new()
 	_tag.text = tr("KAU")
 	_tag.visible = is_me
-	_tag.add_theme_font_size_override("font_size", 20)
+	_tag.add_theme_font_size_override("font_size", 24)
 	_tag.add_theme_color_override("font_color", _team_color())
 	_tag.add_theme_color_override("font_outline_color", Color(0.08, 0.05, 0.03))
 	_tag.add_theme_constant_override("outline_size", 6)
@@ -134,6 +138,8 @@ func head_pos() -> Vector2:
 # ------------------------------------------------------------------ loop
 func _physics_process(delta: float) -> void:
 	_clock += delta
+	_squash = maxf(0.0, _squash - delta * 6.0)
+	_update_ghosts(delta)
 	if puppet:
 		state_t += delta
 		invuln = maxf(0.0, invuln - delta)
@@ -486,20 +492,69 @@ func _update_visual() -> void:
 		_sprite.modulate = Color(0.7, 0.7, 0.75)
 	if invuln > 0.0 and state != "pengsan":
 		_sprite.modulate.a = 0.55 if int(_clock * 20.0) % 2 == 0 else 1.0
-	_tag.position = Vector2(-90, -170 - z)
+	# a landed hit squashes the body for a moment (cartoon impact)
+	var sq := _squash * _squash
+	_sprite.scale = Vector2.ONE * BrawlRules.SCALE * Vector2(1.0 + 0.18 * sq, 1.0 - 0.14 * sq)
+	_tag.position = Vector2(-90, -186 - z + _tag_bob())
 	_tag.modulate.a = 0.45 if state == "pengsan" else 1.0
 	_held.queue_redraw()
 	queue_redraw()
 
 
+## a hit landed on this fighter: squash it (called on every screen, also online)
+func impact() -> void:
+	_squash = 1.0
+
+
+func _tag_bob() -> float:
+	return -absf(sin(_clock * 4.0)) * 6.0
+
+
+## afterimages while swinging: a trail of fading copies behind the move
+func _update_ghosts(delta: float) -> void:
+	for g in _ghosts:
+		g["t"] += delta
+	_ghosts = _ghosts.filter(func(g): return g["t"] < GHOST_LIFE)
+	if state != "attack" or _sprite == null:
+		return
+	_ghost_gap -= delta
+	if _ghost_gap > 0.0:
+		return
+	_ghost_gap = 0.03
+	var tex := _sprite.sprite_frames.get_frame_texture(_sprite.animation, _sprite.frame) if _sprite.sprite_frames else null
+	if tex:
+		_ghosts.append({"pos": position + _sprite.position, "tex": tex, "flip": _sprite.flip_h, "rot": _sprite.rotation, "t": 0.0})
+
+
 func _draw() -> void:
 	# shadow + team ring on the floor
 	var s := 1.0 - minf(z / 300.0, 0.5)
+	var fighting := alive() and arena != null and str(arena.get("phase")) == "aksi"
 	draw_set_transform(Vector2.ZERO, 0, Vector2(1, 0.3))
 	draw_circle(Vector2.ZERO, 46 * s, Color(0, 0, 0, 0.35))
+	if fighting and mult >= BrawlRules.SEMANGAT:  # Semangat: a warm glow under the feet
+		var pulse := 0.5 + 0.5 * sin(_clock * 6.0)
+		draw_circle(Vector2.ZERO, 70 * s, Color(1.0, 0.8, 0.25, 0.10 + 0.08 * pulse))
 	if alive():
 		draw_arc(Vector2.ZERO, 54 * s, 0, TAU, 40, Color(_team_color(), 0.85), 5.0, true)
 	draw_set_transform(Vector2.ZERO)
+	# the trail of a swing, tinted in the team colour
+	for g in _ghosts:
+		var a: float = 0.4 * (1.0 - g["t"] / GHOST_LIFE)
+		var tex: Texture2D = g["tex"]
+		var sc := BrawlRules.SCALE
+		draw_set_transform(g["pos"] - position, g["rot"], Vector2(-sc if g["flip"] else sc, sc))
+		draw_texture(tex, -tex.get_size() / 2.0, Color(_team_color().lerp(Color.WHITE, 0.4), a))
+	draw_set_transform(Vector2.ZERO)
+	if fighting:
+		_draw_mood()
+	# you: a bouncing arrow under the KAU tag, pointing at your fighter
+	if is_me and alive():
+		var y := -152.0 - z + _tag_bob()
+		var c := _team_color()
+		var tri := PackedVector2Array([Vector2(-13, y), Vector2(13, y), Vector2(0, y + 16)])
+		draw_colored_polygon(tri, c)
+		draw_polyline(PackedVector2Array([tri[0], tri[1], tri[2], tri[0]]), Color(0.08, 0.05, 0.03), 3.0, true)
 	var head := Vector2(4 * facing, -106 - z)
 	if state == "pengsan":
 		head = Vector2(-facing * 70, -26 - z)
@@ -524,6 +579,32 @@ func _draw() -> void:
 			_star(c, 7.0, Color("ffe066"))
 	if state == "pengsan":
 		draw_string(ThemeDB.fallback_font, head + Vector2(20, -46), "Zzz", HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color(1, 1, 1, 0.8))
+
+
+## how the last answer feels, around the body during AKSI: Semangat = gold
+## sparks rising, Jurus ready = orange flames as well, Lemah = slow grey drops
+## and a tired droop
+func _draw_mood() -> void:
+	var top := -110.0 - z
+	if mult >= BrawlRules.SEMANGAT:
+		var col := Color("ffb23a") if special_ready else Color("ffe066")
+		var n := 9 if special_ready else 6
+		for i in n:
+			var k := fmod(_clock * (0.9 + 0.13 * i) + i * 0.37, 1.0)
+			var p := Vector2(sin(i * 2.3 + _clock * 1.7) * 42.0, -8.0 - z + (top + 8.0) * k)
+			var a := sin(k * PI)
+			var w := 5.0 if special_ready else 4.0
+			draw_rect(Rect2(p - Vector2(w, w) / 2.0, Vector2(w, w)), Color(col, 0.85 * a))
+			draw_rect(Rect2(p + Vector2(-1, w / 2.0), Vector2(2, 8)), Color(col, 0.35 * a))
+	else:
+		for i in 3:
+			var k := fmod(_clock * 0.55 + i / 3.0, 1.0)
+			var p := Vector2((i - 1) * 30.0, top + 10.0 + 70.0 * k)
+			draw_circle(p, 4.0, Color(0.62, 0.72, 0.85, 0.7 * (1.0 - k)))
+		# a little grey cloud of "huh" over the head
+		var c := Vector2(-facing * 24.0, top - 12.0)
+		for j in 3:
+			draw_circle(c + Vector2(j * 9.0 - 9.0, sin(_clock * 3.0 + j) * 2.0), 7.0, Color(0.55, 0.6, 0.68, 0.55))
 
 
 func _star(c: Vector2, r: float, col: Color) -> void:

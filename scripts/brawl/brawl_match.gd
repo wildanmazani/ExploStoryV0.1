@@ -575,6 +575,10 @@ func _hit_fx(target: BrawlFighter, dmg: int, info: Dictionary, by: BrawlFighter)
 		Sfx.play("tock", -4.0)
 	else:
 		fx.star(p + Vector2(-target.facing * 10, 10), info["big"])
+		var away := signf(target.position.x - by.position.x)
+		fx.impact(p + Vector2(-target.facing * 10, 10), away if away != 0.0 else float(by.facing),
+			Color("ffd24a") if by.mult >= BrawlRules.SEMANGAT else Color("c8d4e4"), info["big"])
+		target.impact()
 		# one word per attack, even when it hits several people
 		if by.get_meta("word_attack", -1) != by.attack_no:
 			by.set_meta("word_attack", by.attack_no)
