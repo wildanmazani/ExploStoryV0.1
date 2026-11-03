@@ -192,6 +192,8 @@ func _build_friends() -> void:
 	id_row.add_child(UI.label("ID Pemain kau:", "Ink"))
 	var idl := UI.label(str(Game.save["player_id"]), "InkHeading")
 	id_row.add_child(idl)
+	if Backend.can_play_online():  # the ID friends search for is the server's
+		_refresh_id(idl)
 	_right.add_child(id_row)
 	if not Backend.can_play_online():
 		var off := UI.label(tr("Mod ini perlukan pelayan dalam talian dan akaun yang log masuk dengan e-mel. Buat masa ini, cuba Lawan Bot dulu!") + "\n\n" + tr("Untuk guru: jalankan supabase/schema.sql dan supabase/multiplayer.sql di Supabase, kemudian isi config/backend.json."), "Ink", true)
@@ -237,13 +239,26 @@ func _build_friends() -> void:
 	_right.add_child(_room_box)
 
 
+func _refresh_id(l: Label) -> void:
+	await Backend.sync_player_code()
+	if is_instance_valid(l):
+		l.text = str(Game.save["player_id"])
+
+
+var _friends_call := 0
+
+
 func _load_friends() -> void:
 	var list: VBoxContainer = _right.get_node_or_null("List")
 	if list == null:
 		return
+	_friends_call += 1
+	var mine := _friends_call
+	var friends: Array = await Backend.my_friends()
+	if mine != _friends_call or not is_instance_valid(list):
+		return  # a newer load (after adding a friend) wins
 	for c in list.get_children():
 		c.queue_free()
-	var friends: Array = await Backend.my_friends()
 	if friends.is_empty():
 		list.add_child(UI.label(tr("Belum ada rakan. Tukar ID dengan kawan sekelas."), "InkSmall"))
 	for f in friends:
@@ -259,7 +274,7 @@ func _create_room() -> void:
 func _join_room(code: String) -> void:
 	var res: String = await Backend.join_room(code)
 	if res != "ok":
-		Game.toast(tr({"not_found": "Bilik tidak dijumpai.", "started": "Pertarungan sudah bermula.", "not_friends": "Kau perlu berkawan dengan tuan bilik dulu.", "full": "Bilik penuh."}.get(res, "Gagal sertai bilik.")), Color("ff9a8a"))
+		Game.toast(tr({"not_found": "Bilik tidak dijumpai.", "started": "Pertarungan sudah bermula.", "full": "Bilik penuh."}.get(res, "Gagal sertai bilik.")), Color("ff9a8a"))
 		return
 	_room_code = code.strip_edges().to_upper()
 	_show_room()
@@ -298,6 +313,6 @@ func _process(delta: float) -> void:
 		_room_box.add_child(UI.label("·  " + str(p["name"]), "Ink"))
 	if str(s.get("host", "")) == Backend.user_id:
 		var start := UI.button("Mula!", "Primary")
-		start.disabled = players.size() < BattleRules.MIN_FRIENDS + 1
+		start.disabled = players.size() < 2  # you + at least one other player
 		start.pressed.connect(func(): await Backend.start_battle(_room_code))
 		_room_box.add_child(start)
