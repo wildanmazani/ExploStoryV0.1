@@ -101,6 +101,12 @@ func _err_text(r: Dictionary, fallback: String) -> String:
 			return "E-mel atau kata laluan tidak betul."
 		if m.to_lower().contains("already registered"):
 			return "E-mel ini sudah didaftarkan."
+		if m.to_lower().contains("rate limit"):
+			return "Terlalu banyak cubaan dalam masa singkat. Cuba lagi selepas sejam."
+		if m.to_lower().contains("password should be"):
+			return "Kata laluan terlalu pendek. Guna sekurang-kurangnya 6 aksara."
+		if m.to_lower().contains("invalid") and m.to_lower().contains("email"):
+			return "Alamat e-mel tidak sah."
 		if m != "":
 			return m
 	return fallback
