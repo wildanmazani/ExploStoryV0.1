@@ -13,6 +13,7 @@ var _format := "1v1"
 var _level := "mudah"  ## new players start easy
 var _faces: HBoxContainer
 var _fighter_row: HBoxContainer
+var _stage_row: HBoxContainer
 var _right: VBoxContainer
 var _room_code := ""
 var _room_box: VBoxContainer
@@ -78,7 +79,7 @@ func _ready() -> void:
 func _bot_card() -> Control:
 	var card := UI.panel("Glass")
 	card.custom_minimum_size = Vector2(580, 0)
-	var c := UI.vbox(8)
+	var c := UI.vbox(4)
 	var head := UI.hbox(10)
 	var ht := UI.label("GELANGGANG PESTA SILAT", "InkHeading")
 	ht.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -87,9 +88,7 @@ func _bot_card() -> Control:
 	how.pressed.connect(_show_guide)
 	head.add_child(how)
 	c.add_child(head)
-	var d := UI.label("Jawab betul untuk dapat semangat dan senjata sekolah, kemudian bertarung! Tiada internet diperlukan.", "Ink", true)
-	d.custom_minimum_size.x = 530
-	c.add_child(d)
+	# (how it plays is under Cara main: the card keeps room for every choice)
 	_faces = UI.hbox(4)
 	c.add_child(_faces)
 	var fmt := UI.hbox(6)
@@ -113,6 +112,12 @@ func _bot_card() -> Control:
 		b.theme_type_variation = "Primary" if l == _level else ""
 		lv.add_child(b)
 	c.add_child(lv)
+	# where to fight: the school hall, more places as Alif finishes each Bab
+	var st := UI.hbox(6)
+	st.add_child(_row_label("Tempat"))
+	_stage_row = st
+	c.add_child(st)
+	_show_stages()
 	# which chapter the questions come from (only chapters the player has opened)
 	var open := BattleRules.chapters_open()
 	if not open.has(BattleRules.chapter) and BattleRules.chapter != 0:
@@ -134,7 +139,7 @@ func _bot_card() -> Control:
 	var go := UI.button("MASUK GELANGGANG", "Primary", 290)
 	go.pressed.connect(func():
 		Sfx.play("select")
-		Game.goto("gelanggang", {"format": _format, "level": _level}))
+		Game.goto("gelanggang", {"format": _format, "level": _level, "stage": str(Game.stage_def()["id"])}))
 	go_row.add_child(go)
 	# the plain quiz battle (no fighting) is still there for anyone who prefers it
 	var quiz := UI.button("Kuiz sahaja", "", 0)
@@ -185,13 +190,60 @@ func _show_faces() -> void:
 		ch.queue_free()
 	var sizes: Array = BrawlRules.FORMATS[_format]
 	var bots := Game.bot_roster(LocalBattle.BOTS)
-	_faces.add_child(UI.head_icon(Game.battle_look(), 60))
+	_faces.add_child(UI.head_icon(Game.battle_look(), 46))
 	for i in int(sizes[0]) - 1:
-		_faces.add_child(UI.head_icon(str(bots[i % bots.size()]["skin"]), 60))
+		_faces.add_child(UI.head_icon(str(bots[i % bots.size()]["skin"]), 46))
 	var vs := UI.label(" LWN ", "InkHeading")
 	_faces.add_child(vs)
 	for i in int(sizes[1]):
-		_faces.add_child(UI.head_icon(str(bots[(i + int(sizes[0]) - 1) % bots.size()]["skin"]), 60))
+		_faces.add_child(UI.head_icon(str(bots[(i + int(sizes[0]) - 1) % bots.size()]["skin"]), 46))
+
+
+## Pilih gelanggang: a picture of each place; locked ones are dark with a
+## padlock and say which Bab opens them
+func _show_stages() -> void:
+	while _stage_row.get_child_count() > 1:
+		var c := _stage_row.get_child(1)
+		_stage_row.remove_child(c)
+		c.queue_free()
+	var chosen := str(Game.stage_def()["id"])
+	for s in Game.stages():
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(130, 68)
+		b.theme_type_variation = "Primary" if s["id"] == chosen else ""
+		b.tooltip_text = tr(str(s["name"])) if s["ok"] else str(s["why"])
+		var pic := TextureRect.new()
+		pic.texture = UI.tex(str(s["bg"]))
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		pic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		pic.position = Vector2(5, 5)
+		pic.size = Vector2(120, 40)
+		pic.clip_contents = true
+		b.add_child(pic)
+		var nm := UI.label(tr(str(s["name"])), "Small")
+		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nm.clip_text = true
+		nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		nm.position = Vector2(2, 44)
+		nm.size = Vector2(126, 22)
+		b.add_child(nm)
+		if not s["ok"]:
+			pic.modulate = Color(0.25, 0.25, 0.3)
+			var lock := UI.icon("res://assets/icons/kunci.png", 28)
+			lock.position = Vector2(51, 10)
+			b.add_child(lock)
+		b.pressed.connect(func():
+			if not s["ok"]:
+				Sfx.play("bump", -4.0)
+				Game.toast(str(s["why"]), Color("ff9a8a"))
+				return
+			Sfx.play("select")
+			Game.save["stage"] = str(s["id"])
+			Game.persist()
+			_show_stages())
+		_stage_row.add_child(b)
 
 
 ## Pilih watak: Alif in each outfit owned, and the classmates whose memory
@@ -203,14 +255,14 @@ func _show_fighters() -> void:
 	var look := Game.battle_look()
 	for f in Game.fighters():
 		var b := Button.new()
-		b.custom_minimum_size = Vector2(118, 92)
+		b.custom_minimum_size = Vector2(118, 80)
 		b.theme_type_variation = "Primary" if f["folder"] == look else ""
 		b.tooltip_text = str(f["name"]) if f["ok"] else str(f["why"])
 		var col := UI.vbox(0)
 		col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		col.alignment = BoxContainer.ALIGNMENT_CENTER
 		UI.full(col)
-		var head := UI.head_icon(str(f["folder"]), 58)
+		var head := UI.head_icon(str(f["folder"]), 50)
 		head.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		col.add_child(head)
 		var nm := UI.label(str(f["name"]).get_slice(" · ", 1) if str(f["name"]).contains(" · ") else str(f["name"]), "Small")

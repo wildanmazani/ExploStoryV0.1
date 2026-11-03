@@ -1,0 +1,8 @@
+{
+  "_info": "Gelanggang yang boleh dipilih untuk Gelanggang Pesta Silat. unlock_zones = bab yang semua misinya mesti selesai (0 = sentiasa terbuka; untuk bilik dalam talian, kemajuan tuan bilik yang dikira). zoom dan ground_y menyusun gambar supaya pemain berdiri di atas tanah: ground_y = kedudukan y tengah tanah pada gambar biasa 1280x720, dibesarkan zoom kali dan dialih ke lantai pertarungan (y 602). mat = tikar silat di lantai.",
+  "stages": [
+    {"id": "sekolah", "name": "Dewan Sekolah", "bg": "res://assets/backgrounds/bg_gelanggang.png", "mat": true, "zoom": 1.0, "ground_y": 602, "unlock_zones": 0},
+    {"id": "pokok", "name": "Pokok Besar", "bg": "res://assets/backgrounds/bg_zon1_4_bukit_siguntang.png", "mat": false, "zoom": 1.3, "ground_y": 510, "unlock_zones": 1},
+    {"id": "gua", "name": "Gua Kabus", "bg": "res://assets/backgrounds/bg_gua_kabus.png", "mat": false, "zoom": 1.0, "ground_y": 602, "unlock_zones": 2}
+  ]
+}

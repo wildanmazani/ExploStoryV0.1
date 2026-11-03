@@ -47,9 +47,10 @@ func _ready() -> void:
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("melaka")
 	MusicDirector.puzzle(true)
-	var bg := UI.bg_image(BG if ResourceLoader.exists(BG) else BG_FALLBACK, Color(1, 1, 1) if ResourceLoader.exists(BG) else Color(0.55, 0.5, 0.55))
-	add_child(bg)
-	add_child(Mat.new())
+	var stage := Game.stage_def(str(params.get("stage", "")))
+	add_child(_stage_bg(stage))
+	if stage.get("mat", false):
+		add_child(Mat.new())
 	match_node = BrawlMatch.new()
 	match_node.setup(str(params.get("format", "1v1")), str(params.get("level", "biasa")))
 	match_node.me_autopilot = bool(params.get("autopilot", false))
@@ -477,6 +478,27 @@ func _leave() -> void:
 
 
 ## the silat mat on the floor (a trapezoid, so the floor reads as depth)
+## the stage picture, scaled and moved so its ground lies under the fighters
+## (data/stages.json: zoom, ground_y)
+func _stage_bg(stage: Dictionary) -> Control:
+	var path := str(stage.get("bg", BG))
+	if not ResourceLoader.exists(path):
+		return UI.bg_image(BG_FALLBACK, Color(0.55, 0.5, 0.55))
+	var z := float(stage.get("zoom", 1.0))
+	var ground := float(stage.get("ground_y", 602))
+	if is_equal_approx(z, 1.0) and is_equal_approx(ground, 602.0):
+		return UI.bg_image(path)
+	var r := TextureRect.new()
+	r.texture = UI.tex(path)
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.size = Vector2(1280, 720) * z
+	r.position = Vector2(640.0 - 640.0 * z, 602.0 - ground * z)
+	return r
+
+
 class Mat extends Control:
 	func _ready() -> void:
 		set_anchors_preset(Control.PRESET_FULL_RECT)

@@ -333,6 +333,34 @@ func friend_saved_in(ch: int) -> Dictionary:
 	return {}
 
 
+## Gelanggang stages (data/stages.json), each with ok / why: a stage opens
+## when every mission of its Bab is done (the room host's progress)
+var _stages: Array = []
+
+
+func stages() -> Array:
+	if _stages.is_empty():
+		_stages = load_json("res://data/stages.json").get("stages", [])
+	var out: Array = []
+	for s in _stages:
+		var d: Dictionary = s.duplicate()
+		var ch := int(s.get("unlock_zones", 0))
+		d["ok"] = ch == 0 or chapter_zones_done(ch)
+		d["why"] = tr("Habiskan semua misi Bab %d dulu untuk buka %s.") % [ch, tr(str(s["name"]))]
+		out.append(d)
+	return out
+
+
+## the chosen stage if it is open, else the school hall
+func stage_def(id: String = "") -> Dictionary:
+	var want := id if id != "" else str(save.get("stage", "sekolah"))
+	var all := stages()
+	for s in all:
+		if s["id"] == want and s["ok"]:
+			return s
+	return all[0]
+
+
 ## the look used in battles: the chosen fighter if still allowed, else the outfit
 func battle_look() -> String:
 	var pick := str(save.get("fighter", ""))
