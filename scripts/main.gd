@@ -7,6 +7,7 @@ extends Node
 const UI = preload("res://scripts/ui/ui.gd")
 const DialogueBox = preload("res://scripts/ui/dialogue_box.gd")
 const PauButton = preload("res://scripts/ui/pau_button.gd")
+const TypingBar = preload("res://scripts/ui/typing_bar.gd")
 const SettingsPanel = preload("res://scripts/ui/settings_panel.gd")
 const NotaPanel = preload("res://scripts/ui/nota_panel.gd")
 const BegPanel = preload("res://scripts/ui/beg_panel.gd")
@@ -33,6 +34,7 @@ func _ready() -> void:
 	dialog_layer = _layer(20)
 	pau_layer = _layer(25)
 	overlay_layer = _layer(30)
+	add_child(TypingBar.new())  # what is being typed, above the phone keyboard
 
 	dialog_box = DialogueBox.new()
 	dialog_box.theme = Game.theme

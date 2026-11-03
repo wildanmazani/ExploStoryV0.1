@@ -30,6 +30,8 @@ func _ready() -> void:
 	r1.add_child(UI.icon("res://assets/icons/orang.png", 40))
 	_user = LineEdit.new()
 	_user.placeholder_text = "cth: alif@sekolah.edu.my"
+	_user.set_meta("typing_label", "E-mel atau nama pengguna")
+	_user.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_EMAIL_ADDRESS
 	_user.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_user.text_changed.connect(func(_t): _validate())
 	r1.add_child(_user)
@@ -41,6 +43,8 @@ func _ready() -> void:
 	_pass = LineEdit.new()
 	_pass.secret = true
 	_pass.secret_character = "*"
+	_pass.set_meta("typing_label", "Kata laluan")
+	_pass.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_PASSWORD
 	_pass.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_pass.text_changed.connect(func(_t): _validate())
 	_pass.text_submitted.connect(func(_t): _do_login())
@@ -77,7 +81,8 @@ func _ready() -> void:
 	var logo := UI.label("EXPLO-STORY", "Logo")
 	logo.position = Vector2(30, 20)
 	add_child(logo)
-	_user.grab_focus()
+	if not DisplayServer.is_touchscreen_available():  # a phone opens its keyboard only on a tap
+		_user.grab_focus()
 	if Backend.has_saved_session():
 		_resume()
 

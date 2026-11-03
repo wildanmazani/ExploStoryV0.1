@@ -89,13 +89,19 @@ func _ready() -> void:
 	col.add_child(mode)
 	frame.add_child(col)
 	add_child(UI.center(frame))
-	_name.grab_focus()
+	if not DisplayServer.is_touchscreen_available():
+		_name.grab_focus()
 
 
 func _field(grid: GridContainer, label_text: String, ph: String) -> LineEdit:
 	grid.add_child(UI.label(label_text, "Small"))
 	var e := LineEdit.new()
 	e.placeholder_text = ph
+	e.set_meta("typing_label", label_text.capitalize())
+	if label_text == "E-MEL":
+		e.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_EMAIL_ADDRESS
+	elif label_text.contains("KATA LALUAN"):
+		e.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_PASSWORD
 	e.custom_minimum_size.x = 340
 	e.text_changed.connect(func(_t): _validate())
 	grid.add_child(e)
