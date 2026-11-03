@@ -61,6 +61,12 @@ var _held: Node2D
 var _tag: Label
 var _has := {}             ## anim -> has real frames
 var _feet := 0.0
+## online, on a player's phone that is not the room host: the host runs the
+## fight and this fighter only shows what the host sends (net_apply)
+var puppet := false
+var my_team := 0   ## the team of the player watching (ring colours: mates blue, others red)
+var _net_pos := Vector2.ZERO
+var _net_first := true
 
 
 func setup(p: Dictionary) -> void:
@@ -104,7 +110,7 @@ func _ready() -> void:
 func _team_color() -> Color:
 	if is_me:
 		return TEAM_COLORS[0]
-	return ALLY_COLOR if team == 0 else TEAM_COLORS[1]
+	return ALLY_COLOR if team == my_team else TEAM_COLORS[1]
 
 
 func clear_intent() -> void:
@@ -128,6 +134,13 @@ func head_pos() -> Vector2:
 # ------------------------------------------------------------------ loop
 func _physics_process(delta: float) -> void:
 	_clock += delta
+	if puppet:
+		state_t += delta
+		invuln = maxf(0.0, invuln - delta)
+		_flash = maxf(0.0, _flash - delta)
+		position = position.lerp(_net_pos, minf(1.0, delta * 14.0))
+		_update_visual()
+		return
 	if hitpause > 0.0:
 		hitpause -= delta
 		_sprite.speed_scale = 0.0
@@ -330,6 +343,44 @@ func _hit_test() -> void:
 	if landed and weapon_id != "" and weapon_uses <= 0:
 		arena.fx_poof(position + Vector2(facing * 50, -70), BrawlRules.weapon(weapon_id).get("color", "ffffff"))
 		weapon_id = ""
+
+
+## what the host sends of this fighter, about ten times a second
+func net_state() -> Array:
+	return [id, roundi(position.x), roundi(position.y), roundi(z), facing, state, _move_name, hp,
+		weapon_id, mult >= BrawlRules.SEMANGAT, special_ready, invuln > 0.0, answered_right]
+
+
+func net_apply(a: Array) -> void:
+	_net_pos = Vector2(float(a[1]), float(a[2]))
+	if _net_first:
+		_net_first = false
+		position = _net_pos
+	z = float(a[3])
+	facing = int(a[4])
+	var st := str(a[5])
+	var mv := str(a[6])
+	if st == "attack" and (state != "attack" or mv != _move_name):
+		_move = BrawlRules.move(mv)
+		_move_name = mv
+		attack_no += 1
+		state = "attack"
+		state_t = 0.0
+		var anim: String = _move.get("anim", "jab")
+		_play(anim)
+		var n := _sprite.sprite_frames.get_frame_count(anim)
+		_sprite.speed_scale = maxf(0.2, float(n) / (float(_move.get("time", 0.3)) * 10.0))
+		Sfx.play("swish", -12.0, randf_range(0.9, 1.2))
+	elif st != "attack" and st != state:
+		if st == "pengsan" or state != "pengsan":
+			state = "" if st == "pengsan" else state
+			_set_state(st)
+	hp = int(a[7])
+	weapon_id = str(a[8])
+	mult = BrawlRules.SEMANGAT if bool(a[9]) else BrawlRules.LEMAH
+	special_ready = bool(a[10])
+	invuln = 0.2 if bool(a[11]) else 0.0
+	answered_right = bool(a[12])
 
 
 ## damage = move damage x the attacker's Semangat (1.0) or Lemah (0.3)

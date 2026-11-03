@@ -10,6 +10,21 @@ extends Node2D
 signal phase_changed(phase: String)
 signal changed
 signal hit_landed(by: BrawlFighter, target: BrawlFighter, dmg: int)
+signal want_answer(i: int)   ## online, not the host: send this answer to the host
+signal roster_ready          ## online, not the host: the host's first snapshot built the fighters
+
+## Online (scripts/screens/gelanggang.gd + RealtimeChannel): the room host runs
+## the whole fight; everyone else sends their buttons and answers to the host
+## and shows the host's snapshots (puppet fighters).
+var online := false
+var host := true
+var remote_input := {}       ## fighter id -> {mv, run, blk, c: [punch, kick, jump, grab, special] press counts}
+var _remote_seen := {}       ## fighter id -> press counts already used
+var _events: Array = []      ## hits since the last snapshot (host)
+var _roster: Array = []
+var _item_uid := 0
+var _items_by_uid := {}      ## client: uid -> FloorItem
+var _rewarded := false
 
 var format := "1v1"
 var level := "biasa"
@@ -58,10 +73,54 @@ func setup(fmt: String, lvl: String) -> void:
 			b["team"] = t
 			people.append(b)
 			bi += 1
+	_spawn(people)
+	_questions = BattleRules.bank().duplicate()
+	_questions.shuffle()
+
+
+## Online room: roster = [{id, name, skin, team}] built by the host (players
+## by their account id, bots "bot..."); my_id marks this player's fighter.
+## Not the host: the roster arrives with the first snapshot (apply_snapshot).
+func setup_online(roster: Array, my_id: String, is_host: bool, lvl: String, chapter: int) -> void:
+	online = true
+	host = is_host
+	level = lvl if BrawlRules.LEVELS.has(lvl) else "biasa"
+	scale = Vector2.ONE * BrawlRules.VIEW_SCALE
+	position = BrawlRules.SCREEN_FLOOR.position
+	stage = Node2D.new()
+	stage.y_sort_enabled = true
+	add_child(stage)
+	fx = BrawlFx.new()
+	add_child(fx)
+	set_meta("my_id", my_id)
+	if is_host:
+		_spawn(_mark_me(roster, my_id))
+		_questions = BattleRules.bank_of(chapter).duplicate()
+		if _questions.is_empty():
+			_questions = BattleRules.bank_of(1).duplicate()
+		_questions.shuffle()
+
+
+func _mark_me(roster: Array, my_id: String) -> Array:
+	var out: Array = []
+	for r in roster:
+		var p: Dictionary = r.duplicate()
+		p["me"] = str(p["id"]) == my_id
+		out.append(p)
+	return out
+
+
+func _spawn(people: Array) -> void:
+	_roster = people.map(func(p): return {"id": p["id"], "name": p["name"], "skin": p["skin"], "team": p["team"]})
+	var my_team := 0
+	for p in people:
+		if p.get("me", false):
+			my_team = int(p["team"])
 	for p in people:
 		var f := BrawlFighter.new()
 		f.setup(p)
 		f.arena = self
+		f.my_team = my_team
 		var mates := people.filter(func(o): return o["team"] == p["team"])
 		var k := mates.find(p)
 		var fl := BrawlRules.FLOOR
@@ -72,12 +131,12 @@ func setup(fmt: String, lvl: String) -> void:
 		f.hit.connect(_on_hit.bind(f))
 		stage.add_child(f)
 		fighters.append(f)
+		if online and not host:
+			f.puppet = true
 		if f.is_me:
 			me = f
-		else:
+		elif not online or (host and str(f.id).begins_with("bot")):
 			_ais[f.id] = BrawlAI.new(level)
-	_questions = BattleRules.bank().duplicate()
-	_questions.shuffle()
 
 
 func start() -> void:
@@ -182,7 +241,7 @@ func _next_round() -> void:
 	results.clear()
 	_bot_plan.clear()
 	for f in fighters:
-		if f.alive() and not f.is_me:
+		if f.alive() and not f.is_me and _ais.has(f.id):
 			var acc := randf_range(BrawlRules.LEVELS[level]["acc"][0], BrawlRules.LEVELS[level]["acc"][1])
 			var right := randf() < acc
 			_bot_plan[f.id] = {"at": randf_range(3.0, 11.0), "i": answer_index if right else (answer_index + randi_range(1, 3)) % 4}
@@ -196,6 +255,17 @@ func answer(i: int) -> void:
 	if phase != "soalan" or not me.alive() or answers.has(me.id):
 		return
 	answers[me.id] = {"i": i, "at": phase_t}
+	if online and not host:
+		want_answer.emit(i)
+	changed.emit()
+
+
+## host: another player's answer arrived
+func remote_answer(id: String, i: int) -> void:
+	var f := find(id)
+	if phase != "soalan" or f == null or not f.alive() or answers.has(id):
+		return
+	answers[id] = {"i": i, "at": phase_t}
 	changed.emit()
 
 
@@ -233,6 +303,8 @@ func _drop_item(f: BrawlFighter) -> void:
 	it.position = Vector2(x, f.position.y + 6)
 	it.z = 520.0   # falls from the sky in a little crate
 	it.crate = true
+	_item_uid += 1
+	it.set_meta("uid", _item_uid)
 	stage.add_child(it)
 	_items.append(it)
 
@@ -254,9 +326,12 @@ func _finish(team: int) -> void:
 
 
 func _reward() -> void:
+	if _rewarded:
+		return
+	_rewarded = true
 	var b: Dictionary = Game.save["battle"]
 	b["played"] = int(b.get("played", 0)) + 1
-	var won := winner_team == 0
+	var won := me != null and winner_team == me.team
 	if won:
 		b["wins"] = int(b.get("wins", 0)) + 1
 	level_up = Game.add_reward(BrawlRules.REWARD_EXP, BrawlRules.REWARD_COINS if won else 0)
@@ -264,6 +339,10 @@ func _reward() -> void:
 
 
 func _process(delta: float) -> void:
+	if online and not host:
+		if phase in ["soalan", "aksi"]:
+			phase_t += delta  # between snapshots, so the clocks run smoothly
+		return
 	if phase == "" or phase == "tamat":
 		return
 	phase_t += delta
@@ -297,11 +376,13 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	# intents first (this node runs before its children: the fighters)
-	if phase != "aksi":
+	if phase != "aksi" or (online and not host):
 		return
 	for f in fighters:
 		if f.is_me and not me_autopilot:
 			_read_player(f)
+		elif online and not f.is_me and not _ais.has(f.id):
+			_read_remote(f)
 		elif _ais.has(f.id):
 			_ais[f.id].think(f, delta, self)
 		elif f.is_me:
@@ -323,6 +404,120 @@ func _read_player(f: BrawlFighter) -> void:
 		"block": Input.is_action_pressed("block"),
 		"special": Input.is_action_just_pressed("special"),
 	}
+
+
+## host: another player's buttons, from the network. Presses arrive as
+## counts so a quick tap between two messages is never lost.
+func _read_remote(f: BrawlFighter) -> void:
+	var ri: Dictionary = remote_input.get(f.id, {})
+	if ri.is_empty():
+		f.clear_intent()
+		return
+	var c: Array = ri.get("c", [0, 0, 0, 0, 0])
+	var seen: Array = _remote_seen.get(f.id, [0, 0, 0, 0, 0])
+	var pulse := [false, false, false, false, false]
+	for k in 5:
+		if int(c[k]) > int(seen[k]):
+			pulse[k] = true
+			seen[k] = int(seen[k]) + 1
+	_remote_seen[f.id] = seen
+	var mv: Array = ri.get("mv", [0, 0])
+	f.intent = {
+		"move": Vector2(float(mv[0]), float(mv[1])).limit_length(1.0),
+		"run": bool(ri.get("run", false)), "block": bool(ri.get("blk", false)),
+		"punch": pulse[0], "kick": pulse[1], "jump": pulse[2], "grab": pulse[3], "special": pulse[4],
+	}
+
+
+# ------------------------------------------------------------------ online snapshots
+## host: the whole fight in a small dictionary, sent about ten times a second
+func snapshot() -> Dictionary:
+	var items: Array = []
+	for it in _items:
+		if is_instance_valid(it):
+			items.append([it.get_meta("uid", 0), it.id, roundi(it.position.x), roundi(it.position.y), roundi(it.z), it.crate, it.flying, it.for_id])
+	var shown := phase in ["keputusan", "aksi", "tamat"]
+	var s := {
+		"ph": phase, "pt": snappedf(phase_t, 0.05), "rn": round_no, "q": q,
+		"ai": answer_index if shown else -1, "ex": explain if shown else "",
+		"an": answers.keys(), "rs": results if shown else [], "wt": winner_team,
+		"f": fighters.map(func(f): return f.net_state()), "it": items, "ev": _events, "ro": _roster,
+	}
+	_events = []
+	return s
+
+
+## not the host: show the host's snapshot
+func apply_snapshot(s: Dictionary) -> void:
+	if fighters.is_empty():
+		var ro: Array = s.get("ro", [])
+		if ro.is_empty():
+			return
+		_spawn(_mark_me(ro, str(get_meta("my_id", ""))))
+		if me == null:
+			return
+		roster_ready.emit()
+	q = s.get("q", q)
+	answer_index = int(s.get("ai", -1))
+	explain = str(s.get("ex", ""))
+	results = s.get("rs", [])
+	winner_team = int(s.get("wt", -1))
+	round_no = int(s.get("rn", round_no))
+	for r in results:
+		r["me"] = me != null and str(r["id"]) == me.id
+	var mine: Dictionary = answers.get(me.id, {}) if me else {}
+	answers.clear()
+	for id in s.get("an", []):
+		answers[str(id)] = {}
+	if not mine.is_empty():
+		answers[me.id] = mine
+	for a in s.get("f", []):
+		var f := find(str(a[0]))
+		if f:
+			f.net_apply(a)
+	_sync_items(s.get("it", []))
+	for ev in s.get("ev", []):
+		var t := find(str(ev.get("t", "")))
+		var b := find(str(ev.get("b", "")))
+		if t and b:
+			t._flash = 0.14
+			_hit_fx(t, int(ev.get("d", 1)), ev, b)
+	var ph := str(s.get("ph", ""))
+	if ph != phase:
+		if ph == "soalan":
+			answers.clear()  # a new question
+		_set_phase(ph)
+		if ph == "tamat":
+			_reward()
+	phase_t = float(s.get("pt", phase_t))
+	changed.emit()
+
+
+func _sync_items(list: Array) -> void:
+	var keep := {}
+	for a in list:
+		var uid := int(a[0])
+		keep[uid] = true
+		var it: FloorItem = _items_by_uid.get(uid)
+		if it == null:
+			it = FloorItem.new()
+			stage.add_child(it)
+			_items_by_uid[uid] = it
+		it.id = str(a[1])
+		it.position = Vector2(float(a[2]), float(a[3]))
+		it.z = float(a[4])
+		it.crate = bool(a[5])
+		it.flying = bool(a[6])
+		it.for_id = str(a[7])
+		it.age += 0.1
+		it.queue_redraw()
+	for uid in _items_by_uid.keys():
+		if not keep.has(uid):
+			var gone: FloorItem = _items_by_uid[uid]
+			_items_by_uid.erase(uid)
+			if is_instance_valid(gone):
+				fx.poof(gone.position + Vector2(0, -gone.z), Color(str(BrawlRules.weapon(gone.id).get("color", "ffffff"))))
+				gone.queue_free()
 
 
 func _update_item(it: FloorItem, delta: float) -> void:
@@ -367,6 +562,13 @@ func _land_thrown(it: FloorItem, hit_someone: bool) -> void:
 
 
 func _on_hit(target: BrawlFighter, dmg: int, info: Dictionary, by: BrawlFighter) -> void:
+	if online:
+		_events.append({"t": target.id, "b": by.id, "d": dmg, "blocked": info["blocked"], "word": str(info["word"]),
+			"big": info["big"], "sfx": str(info["sfx"]), "ko": info["ko"]})
+	_hit_fx(target, dmg, info, by)
+
+
+func _hit_fx(target: BrawlFighter, dmg: int, info: Dictionary, by: BrawlFighter) -> void:
 	var p := target.head_pos() + Vector2(0, 40)
 	if info["blocked"]:
 		fx.word(p, "TANGKIS", Color("9fd4ff"))

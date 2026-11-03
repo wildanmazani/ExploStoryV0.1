@@ -399,6 +399,14 @@ func set_room_config(code: String, chapter: int, team: String, level: String) ->
 	return str(r["data"]) if r["ok"] else "error"
 
 
+## the room's mode ("kuiz" | "gelanggang") and Gelanggang stage too
+## (supabase/patch_gelanggang_dalam_talian.sql)
+func set_room_options(code: String, chapter: int, team: String, level: String, mode: String, stage: String) -> String:
+	var r := await db_call("set_room_options", {"p_code": code, "p_chapter": chapter, "p_team": team, "p_level": level,
+		"p_mode": mode, "p_stage": stage})
+	return str(r["data"]) if r["ok"] else "error"
+
+
 func start_battle(code: String) -> String:
 	var r := await db_call("start_battle", {"p_code": code})
 	return str(r["data"]) if r["ok"] else "error"

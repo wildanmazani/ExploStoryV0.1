@@ -20,7 +20,7 @@ var _room_box: VBoxContainer
 var _poll_t := 0.0
 var _polling := false
 ## room settings the host picks (sent with set_room_config)
-var _room_cfg := {"chapter": 1, "team": "pvp", "bot_level": "mudah"}
+var _room_cfg := {"chapter": 1, "team": "pvp", "bot_level": "mudah", "mode": "kuiz", "stage": "sekolah"}
 var _cfg_box: VBoxContainer
 var _cfg_sent := false
 const TEAMS := {"pvp": "Lawan sesama", "coop": "Sepasukan lwn Bot"}
@@ -427,14 +427,25 @@ func _build_cfg(host: bool, s: Dictionary) -> void:
 		_cfg_box.add_child(lv)
 	var mode := UI.hbox(6)
 	mode.add_child(_row_label("Mod"))
-	mode.add_child(_cfg_button(tr("Kuiz"), true, func(): pass))
-	var gel := UI.button(tr("Gelanggang (akan datang)"), "", 0)
-	gel.icon = UI.tex("res://assets/icons/kunci.png")
-	gel.expand_icon = false
-	gel.disabled = true
-	gel.tooltip_text = tr("Gelanggang dalam talian sedang dibina.")
-	mode.add_child(gel)
+	mode.add_child(_cfg_button(tr("Kuiz"), _room_cfg["mode"] == "kuiz", func(): _set_cfg("mode", "kuiz")))
+	mode.add_child(_cfg_button(tr("Gelanggang"), _room_cfg["mode"] == "gelanggang", func(): _set_cfg("mode", "gelanggang")))
 	_cfg_box.add_child(mode)
+	if _room_cfg["mode"] == "gelanggang":
+		# where: the host's own progress opens the places
+		var place := UI.hbox(6)
+		place.add_child(_row_label("Tempat"))
+		for s2 in Game.stages():
+			var b := _cfg_button(tr(str(s2["name"])), _room_cfg["stage"] == s2["id"], func(): _set_cfg("stage", str(s2["id"])))
+			if not s2["ok"]:
+				b.icon = UI.tex("res://assets/icons/kunci.png")
+				b.expand_icon = false
+				b.tooltip_text = str(s2["why"])
+				b.pressed.disconnect(b.pressed.get_connections()[0]["callable"])
+				b.pressed.connect(func():
+					Sfx.play("bump", -4.0)
+					Game.toast(str(s2["why"]), Color("ff9a8a")))
+			place.add_child(b)
+		_cfg_box.add_child(place)
 
 
 func _cfg_button(text: String, on: bool, action: Callable) -> Button:
@@ -447,6 +458,9 @@ func _cfg_line(s: Dictionary) -> String:
 	var line := tr("Bab %d") % int(s.get("chapter", 1)) + "  ·  " + tr(TEAMS.get(str(s.get("team", "pvp")), ""))
 	if str(s.get("team", "")) == "coop":
 		line += "  ·  " + tr("Bot %s") % tr(str(BrawlRules.LEVELS.get(str(s.get("bot_level", "mudah")), {}).get("name", "")))
+	if str(s.get("game_mode", "kuiz")) == "gelanggang":
+		var st := Game.stage_def(str(s.get("stage", "sekolah")))
+		return line + "  ·  " + tr("Gelanggang") + " (" + tr(str(st["name"])) + ")"
 	return line + "  ·  " + tr("Kuiz")
 
 
@@ -460,7 +474,8 @@ func _set_cfg(key: String, value) -> void:
 
 
 func _send_cfg() -> void:
-	var res := await Backend.set_room_config(_room_code, int(_room_cfg["chapter"]), str(_room_cfg["team"]), str(_room_cfg["bot_level"]))
+	var res := await Backend.set_room_options(_room_code, int(_room_cfg["chapter"]), str(_room_cfg["team"]), str(_room_cfg["bot_level"]),
+		str(_room_cfg["mode"]), str(_room_cfg["stage"]))
 	_cfg_sent = res == "ok"
 	if res != "ok":
 		Game.toast(tr("Tetapan bilik tidak disimpan. Pastikan pelayan sudah dikemas kini (patch_tetapan_bilik.sql)."), Color("ff9a8a"))
@@ -477,6 +492,14 @@ func _process(delta: float) -> void:
 	var s: Dictionary = await Backend.room_state(_room_code)
 	_polling = false
 	if s.is_empty():
+		return
+	if str(s.get("status", "")) == "gelanggang":
+		var humans: Array = s.get("players", []).filter(func(p): return not p.get("bot", false))
+		Game.goto("gelanggang", {"online": true, "code": _room_code, "my_id": Backend.user_id,
+			"host_id": str(s.get("host", "")), "players": humans, "team": str(s.get("team", "pvp")),
+			"level": str(s.get("bot_level", "mudah")), "stage": str(s.get("stage", "sekolah")),
+			"chapter": int(s.get("chapter", 1))})
+		_room_code = ""
 		return
 	if str(s.get("status", "")) != "lobby":
 		Game.goto("pertarungan", {"mode": "online", "code": _room_code})

@@ -5,6 +5,11 @@ extends Control
 ## The rules live in scripts/brawl/ (BrawlMatch, BrawlFighter, BrawlAI).
 ## Jeda (button, Esc or P) pauses the match and has the Cara Main guide and
 ## the keyboard layout switch; the guide also opens before the first match.
+## Online (params.online, from a Bilik Pertarungan room): the room host runs
+## the fight and sends snapshots over a RealtimeChannel; the others send their
+## buttons and answers. Nothing pauses online: Jeda only offers to leave.
+##   params: {online, code, my_id, host_id, players: [{id, name, skin}], team:
+##            "pvp"|"coop", level, stage, chapter}
 
 const UI = preload("res://scripts/ui/ui.gd")
 const TouchControls = preload("res://scripts/ui/touch_controls.gd")
@@ -32,6 +37,16 @@ var _touch: CanvasLayer
 var _result: Control
 var _pause: Control        ## the Jeda overlay (null when playing)
 var _leaving := false      ## Keluar pressed: the match is frozen until the scene changes
+var _online := false
+var _host := true
+var _net: RealtimeChannel
+var _net_t := 0.0
+var _last_snap := 0.0      ## seconds since the host was last heard (not the host)
+var _press := [0, 0, 0, 0, 0]   ## punch, kick, jump, grab, special presses sent so far
+var _built := false
+const SNAP_EVERY := 0.1    ## host: snapshots per second = 10
+const INPUT_EVERY := 0.066
+const HOST_LOST := 8.0
 
 signal _pause_closed
 
@@ -47,24 +62,30 @@ func _ready() -> void:
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("melaka")
 	MusicDirector.puzzle(true)
-	var stage := Game.stage_def(str(params.get("stage", "")))
+	var stage := Game.stage_def(str(params.get("stage", "")), bool(params.get("online", false)))
 	add_child(_stage_bg(stage))
 	if stage.get("mat", false):
 		add_child(Mat.new())
 	match_node = BrawlMatch.new()
-	match_node.setup(str(params.get("format", "1v1")), str(params.get("level", "biasa")))
+	_online = bool(params.get("online", false))
+	if _online:
+		_host = str(params.get("host_id", "")) == str(params.get("my_id", ""))
+		match_node.setup_online(_online_roster(), str(params.get("my_id", "")), _host, str(params.get("level", "biasa")), int(params.get("chapter", 1)))
+	else:
+		match_node.setup(str(params.get("format", "1v1")), str(params.get("level", "biasa")))
 	match_node.me_autopilot = bool(params.get("autopilot", false))
 	match_node.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(match_node)
-	_build_hud()
-	_build_card()
-	_build_banner()
 	_touch = TouchControls.new()
 	_touch.brawl = true
 	_touch.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(_touch)
 	match_node.phase_changed.connect(_on_phase)
 	match_node.changed.connect(_refresh)
+	if _online:
+		await _start_online()
+		return
+	_build_screen()
 	if Game.save["seen"].has("gelanggang_cara") or match_node.me_autopilot:
 		match_node.start()
 	else:  # first time here: how to play, then fight
@@ -74,9 +95,102 @@ func _ready() -> void:
 		match_node.start()
 
 
+func _build_screen() -> void:
+	if _built:
+		return
+	_built = true
+	_build_hud()
+	_build_card()
+	_build_banner()
+	move_child(_touch, get_child_count() - 1)
+
+
+# ------------------------------------------------------------------ online
+## the fighters of an online room, built by the host: every player by their
+## account id; against each other the players split into two teams in the
+## order they joined, as a team against bots every player gets one bot
+func _online_roster() -> Array:
+	var players: Array = params.get("players", [])
+	var out: Array = []
+	var coop := str(params.get("team", "pvp")) == "coop"
+	for i in players.size():
+		var p: Dictionary = players[i]
+		out.append({"id": str(p["id"]), "name": str(p.get("name", "?")), "skin": str(p.get("skin", "alif")),
+			"team": 0 if coop else i % 2})
+	if coop:
+		var used := players.map(func(p): return str(p.get("skin", "")))
+		var bots := LocalBattle.BOTS.filter(func(b): return not used.has(str(b["skin"])))
+		if bots.is_empty():
+			bots = LocalBattle.BOTS
+		for i in players.size():
+			var b: Dictionary = bots[i % bots.size()]
+			out.append({"id": "bot%d" % i, "name": str(b["name"]), "skin": str(b["skin"]), "team": 1})
+	return out
+
+
+func _start_online() -> void:
+	_net = RealtimeChannel.new()
+	_net.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_net)
+	_net.message.connect(_on_net)
+	_net.open("gel-" + str(params.get("code", "")))
+	match_node.want_answer.connect(func(i: int): _net.send("ans", {"id": str(params.get("my_id", "")), "i": i}))
+	match_node.roster_ready.connect(_build_screen)
+	if _host:
+		_build_screen()
+		_flash_big(tr("Menunggu pemain..."))
+		var t := 0.0
+		while not _net.is_joined and t < 10.0:
+			await get_tree().create_timer(0.2).timeout
+			t += 0.2
+		await get_tree().create_timer(2.5).timeout  # the others are opening the screen too
+		if is_inside_tree():
+			match_node.start()
+	else:
+		_flash_big(tr("Menyambung ke tuan bilik..."))
+
+
+func _on_net(event: String, p: Dictionary) -> void:
+	if _host:
+		match event:
+			"in":
+				match_node.remote_input[str(p.get("id", ""))] = p
+			"ans":
+				match_node.remote_answer(str(p.get("id", "")), int(p.get("i", -1)))
+	elif event == "snap":
+		_last_snap = 0.0
+		match_node.apply_snapshot(p)
+
+
+func _online_tick(delta: float) -> void:
+	_net_t += delta
+	if _host:
+		if _net_t >= SNAP_EVERY and match_node.phase != "":
+			_net_t = 0.0
+			_net.send("snap", match_node.snapshot())
+		return
+	# the buttons: presses counted every frame, sent a few times a second
+	for k in 5:
+		if Input.is_action_just_pressed(["attack_punch", "attack_kick", "jump", "grab", "special"][k]):
+			_press[k] += 1
+	if _net_t >= INPUT_EVERY:
+		_net_t = 0.0
+		var mv := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		_net.send("in", {"id": str(params.get("my_id", "")), "mv": [snappedf(mv.x, 0.01), snappedf(mv.y, 0.01)],
+			"run": Input.is_action_pressed("run"), "blk": Input.is_action_pressed("block"), "c": _press})
+	if match_node.phase != "tamat":
+		_last_snap += delta
+		if _last_snap > HOST_LOST and not _leaving:
+			_leaving = true
+			await Main.ask(tr("Sambungan dengan tuan bilik terputus. Pertarungan ini tamat. Cuba buka bilik semula."), "Kembali ke Arena", "OK")
+			Game.goto("lobby")
+
+
 ## every way out (Keluar, Main lagi, Kembali, Log keluar) ends here: nothing
 ## of the match may stay paused, slowed or ducked in the next scene
 func _exit_tree() -> void:
+	if _net:
+		_net.close()
 	get_tree().paused = false
 	Engine.time_scale = 1.0
 	MusicDirector.puzzle(false)
@@ -88,6 +202,8 @@ func _build_hud() -> void:
 	var top := UI.hbox(12)
 	top.position = Vector2(16, 10)
 	top.size = Vector2(1248, 0)
+	var mine := match_node.me.team if match_node.me else 0
+	var teams := [mine, 1 - mine]   # your own team always on the left
 	for t in 2:
 		var panel := UI.panel()
 		panel.custom_minimum_size = Vector2(430, 0)
@@ -96,7 +212,7 @@ func _build_hud() -> void:
 		title.add_theme_color_override("font_color", UI.GOLD if t == 0 else Color("ff8a7a"))
 		col.add_child(title)
 		for f in match_node.fighters:
-			if f.team != t:
+			if f.team != teams[t]:
 				continue
 			var row := UI.hbox(8)
 			var head := UI.head_icon(f.skin, 34)
@@ -164,6 +280,10 @@ func _build_hud() -> void:
 func _process(_d: float) -> void:
 	if match_node == null:
 		return
+	if _online and _net:
+		_online_tick(_d)
+	if not _built:
+		return
 	var left := 0.0
 	match match_node.phase:
 		"soalan":
@@ -178,6 +298,8 @@ func _process(_d: float) -> void:
 
 
 func _refresh() -> void:
+	if not _built:
+		return
 	for f in match_node.fighters:
 		var r: Dictionary = _rows.get(f.id, {})
 		if r.is_empty():
@@ -291,6 +413,8 @@ func _fit_card() -> void:
 
 
 func _on_phase(p: String) -> void:
+	if not _built:
+		return
 	_card.visible = p == "soalan"
 	_banner.visible = p == "keputusan"
 	match p:
@@ -337,6 +461,8 @@ func _on_phase(p: String) -> void:
 
 
 func _flash_big(text: String) -> void:
+	if _big == null:
+		return
 	_big.text = text
 	_big.scale = Vector2(1.6, 1.6)
 	_big.modulate.a = 1.0
@@ -349,7 +475,7 @@ func _flash_big(text: String) -> void:
 # ------------------------------------------------------------------ result
 func _show_result() -> void:
 	MusicDirector.puzzle(false)
-	var won := match_node.winner_team == 0
+	var won := match_node.me != null and match_node.winner_team == match_node.me.team
 	_result = Control.new()
 	UI.full(_result)
 	_result.add_child(UI.dim(0.55))
@@ -369,9 +495,10 @@ func _show_result() -> void:
 	c.add_child(note)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var again := UI.button("Main lagi", "Primary", 200)
-	again.pressed.connect(func(): Game.goto("gelanggang", params))
-	row.add_child(again)
+	if not _online:  # online: the room is over, open a new one from the Arena
+		var again := UI.button("Main lagi", "Primary", 200)
+		again.pressed.connect(func(): Game.goto("gelanggang", params))
+		row.add_child(again)
 	var back := UI.button("Kembali", "", 200)
 	back.pressed.connect(func(): Game.goto("lobby"))
 	row.add_child(back)
@@ -399,6 +526,11 @@ func _controls_hint() -> String:
 ## first = the intro before the first match: just the guide and "Mula"
 func _open_pause(first := false) -> void:
 	if _pause or _leaving:
+		return
+	if _online:  # the others keep fighting: no pause, only a way out
+		if await Main.ask(tr("Keluar dari gelanggang dalam talian? Pertarungan diteruskan tanpa kau."), "Keluar", "Terus main"):
+			_leaving = true
+			Game.goto("lobby")
 		return
 	if not first:  # (the intro comes before the match: nothing to stop, and
 		get_tree().paused = true  # pausing would freeze the screen fade-in)

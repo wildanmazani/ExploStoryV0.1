@@ -352,11 +352,12 @@ func stages() -> Array:
 
 
 ## the chosen stage if it is open, else the school hall
-func stage_def(id: String = "") -> Dictionary:
+## any = true: an online room's stage, chosen with the host's progress
+func stage_def(id: String = "", any := false) -> Dictionary:
 	var want := id if id != "" else str(save.get("stage", "sekolah"))
 	var all := stages()
 	for s in all:
-		if s["id"] == want and s["ok"]:
+		if s["id"] == want and (s["ok"] or any):
 			return s
 	return all[0]
 
