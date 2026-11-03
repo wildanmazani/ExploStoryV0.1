@@ -63,6 +63,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
+          echo "SUPABASE_URL: ${#SUPABASE_URL} chars, SUPABASE_ANON_KEY: ${#SUPABASE_ANON_KEY} chars (0 = not found under Actions secrets)"
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             python3 -c 'import json,os; json.dump({"supabase_url": os.environ["SUPABASE_URL"].strip(), "supabase_anon_key": os.environ["SUPABASE_ANON_KEY"].strip()}, open("config/backend.json", "w"))'
             echo "Supabase connected"
