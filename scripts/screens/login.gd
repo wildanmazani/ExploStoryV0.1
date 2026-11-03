@@ -67,16 +67,36 @@ func _ready() -> void:
 	var guest := UI.button("Main sebagai Tetamu", "Flat")
 	guest.pressed.connect(_guest)
 	col.add_child(guest)
-	var mode := UI.label(Backend.mode_text(), "Small", true)
-	mode.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	mode.custom_minimum_size.x = 480
-	col.add_child(mode)
+	for t in [Backend.mode_text(), Backend.guest_text()]:
+		var mode := UI.label(t, "Small", true)
+		mode.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		mode.custom_minimum_size.x = 480
+		col.add_child(mode)
 	frame.add_child(col)
 	add_child(UI.center(frame))
 	var logo := UI.label("EXPLO-STORY", "Logo")
 	logo.position = Vector2(30, 20)
 	add_child(logo)
 	_user.grab_focus()
+	if Backend.has_saved_session():
+		_resume()
+
+
+## signed in on this device before: straight back in
+func _resume() -> void:
+	_login.disabled = true
+	_status.theme_type_variation = "Small"
+	_status.text = tr("Menyambung semula akaun...")
+	var r: Dictionary = await Backend.restore_session()
+	if r.get("ok", false):
+		_finish(r)
+		return
+	_status.text = str(r.get("error", ""))
+	_validate_keep_status()
+
+
+func _validate_keep_status() -> void:
+	_login.disabled = _user.text.strip_edges() == "" or _pass.text == ""
 
 
 func _validate() -> void:
@@ -100,17 +120,31 @@ func _do_login() -> void:
 		_pass.theme_type_variation = "Invalid"
 		_login.disabled = false
 		return
+	_finish(r)
+
+
+func _finish(r: Dictionary) -> void:
 	var mode := "online" if Backend.is_online() else "local"
 	Game.load_profile(str(r["username"]), mode, str(r.get("role", "student")), str(r.get("avatar", "pelajar_1")), str(r.get("email", "")))
-	if r.has("cloud_save") and r["cloud_save"] is Dictionary and r["cloud_save"].has("profile"):
-		Game.save = r["cloud_save"]
+	# the cloud copy, unless this device played on after it (no internet then)
+	var cloud = r.get("cloud_save")
+	if cloud is Dictionary and cloud.has("profile") and float(cloud.get("saved_at", 0)) >= float(Game.save.get("saved_at", 0)) - 1.0:
+		Game.save = cloud
+		Game.save["profile"]["mode"] = mode
 		Game._ensure_fields()
+	Game.persist()  # the device copy, and the cloud gets the newer one
 	if Backend.can_play_online():
 		Backend.sync_player_code()  # friends add you by the server's Player ID
 	_enter_game()
 
 
 func _guest() -> void:
+	if Backend.is_online() and not await Main.ask(Backend.guest_text() + "\n\n" + tr("Teruskan sebagai Tetamu?"), "Main", "Batal"):
+		return
+	_start_guest()
+
+
+func _start_guest() -> void:
 	Game.load_profile("Tetamu", "guest")
 	_enter_game()
 

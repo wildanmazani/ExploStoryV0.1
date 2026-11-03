@@ -3,7 +3,8 @@
 Gamelan-inspired: a slendro-like 5-tone scale, saron playing the core melody
 (balungan), bonang elaborating at double speed, gong marking each cycle,
 kendang drum patterns and a breathy suling flute. Pure Python (no numpy),
-deterministic. Output: assets/audio/music/<area>_<stem>.wav and stingers.
+deterministic. Output: assets/audio/music/<area>_<stem>.ogg and stingers
+(44.1 kHz Ogg Vorbis, mastered for phone speakers: see save()).
 
 Each area has two stems that loop in sync:
   base   = gong, saron balungan, kendang, drone  (always playing)
@@ -17,9 +18,12 @@ import os
 import random
 import struct
 import wave
+
+import numpy as np
+import soundfile as sf
 from array import array
 
-RATE = 22050
+RATE = 44100
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "audio", "music")
 SLENDRO = [1.0, 1.1487, 1.3195, 1.5157, 1.7411]  # ~240 cent steps
@@ -125,15 +129,40 @@ def place(buf, snd, at_sec, loop_len):
         buf[(start + i) % n] += v
 
 
-def save(name, buf, peak=0.85):
-    m = max(1e-6, max(abs(x) for x in buf))
-    g = min(1.0, peak / m)
+def highpass(x, cutoff=120.0):
+    """2nd-order high-pass (RBJ biquad): phone speakers cannot play the deep
+    gong and drone, they only rattle and muddy everything else."""
+    w0 = 2 * math.pi * cutoff / RATE
+    alpha = math.sin(w0) / (2 * 0.707)
+    c = math.cos(w0)
+    a0 = 1 + alpha
+    b0, b1, b2 = (1 + c) / 2 / a0, -(1 + c) / a0, (1 + c) / 2 / a0
+    a1, a2 = -2 * c / a0, (1 - alpha) / a0
+    out = np.empty_like(x)
+    x1 = x2 = y1 = y2 = 0.0
+    # run twice round the loop so the start continues from the end (seamless)
+    for _ in range(2):
+        for i in range(len(x)):
+            v = x[i]
+            y = b0 * v + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+            x2, x1, y2, y1 = x1, v, y1, y
+            out[i] = y
+    return out
+
+
+def save(name, buf, peak=0.55):
+    """Peaks leave room for the two stems and the sound effects to play
+    together without clipping (the old 0.85 + 0.6 mix distorted)."""
+    x = highpass(np.frombuffer(buf, dtype=np.float32).astype(np.float64))
+    m = max(1e-6, float(np.max(np.abs(x))))
+    x = x * (peak / m)
     os.makedirs(OUT, exist_ok=True)
-    with wave.open(os.path.join(OUT, name + ".wav"), "wb") as w:
-        w.setnchannels(1)
-        w.setsampwidth(2)
-        w.setframerate(RATE)
-        w.writeframes(b"".join(struct.pack("<h", int(max(-1, min(1, x * g)) * 32767)) for x in buf))
+    data = x.astype(np.float32)
+    # in small blocks: libsndfile's Vorbis encoder overflows the stack on Windows
+    # when handed a whole loop at once
+    with sf.SoundFile(os.path.join(OUT, name + ".ogg"), "w", RATE, 1, format="OGG", subtype="VORBIS") as f:
+        for i in range(0, len(data), 4096):
+            f.write(data[i:i + 4096])
     print("wrote", name, "%.1fs" % (len(buf) / RATE))
 
 
@@ -190,7 +219,7 @@ def area(name, bpm, base, seed, drums="calm", flute=True, mood="day"):
             place(mel_buf, suling(freq(deg, base), d * 0.95), t, n)
             t += d + beat * rnd.choice([0, 1, 2])
     save(name + "_base", base_buf)
-    save(name + "_melody", mel_buf, peak=0.6)
+    save(name + "_melody", mel_buf, peak=0.4)
 
 
 def fokus(bpm=90, base=146.8):
@@ -203,7 +232,7 @@ def fokus(bpm=90, base=146.8):
         if b % 4 == 0:
             place(buf, kempul(base / 1.5, 0.18), b * beat, n)
         place(buf, bonang(freq([0, 2, 1, 3][b % 4] + 5, base), 0.07), b * beat + beat / 2, n)
-    save("fokus", buf, peak=0.5)
+    save("fokus", buf, peak=0.35)
 
 
 def stinger(name, degrees, base, step, with_gong=True):
@@ -215,7 +244,7 @@ def stinger(name, degrees, base, step, with_gong=True):
         place(buf, bonang(freq(d + 5, base), 0.18), i * step, n)
     if with_gong:
         place(buf, gong(base / 4.5, 0.45), step * (len(degrees) - 1), n)
-    save(name, buf)
+    save(name, buf, peak=0.7)
 
 
 if __name__ == "__main__":

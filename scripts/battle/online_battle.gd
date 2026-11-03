@@ -11,6 +11,9 @@ extends Node
 signal state_changed(state: Dictionary)
 signal failed(message: String)
 
+var _misses := 0    ## state polls in a row that did not reach the server
+var _lost := false
+
 const POLL := 1.0
 
 var state: Dictionary = {}
@@ -67,8 +70,13 @@ func _poll() -> void:
 	var r: Dictionary = await Backend.db_call("battle_state", {"p_code": code})
 	_busy = false
 	if not r["ok"] or not (r["data"] is Dictionary):
-		failed.emit(tr("Sambungan ke bilik terputus."))
+		_misses += 1
+		if _misses >= 4 and not _lost:  # a few seconds without the server, not one slow reply
+			_lost = true
+			set_process(false)
+			failed.emit(tr("Sambungan internet terputus. Pertarungan ini dibatalkan. Sambung semula dan cari lawan sekali lagi."))
 		return
+	_misses = 0
 	var s: Dictionary = r["data"]
 	# the bank lives in the game; the server sends only the question number
 	if s.has("qid"):

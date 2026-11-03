@@ -260,7 +260,7 @@ func _run() -> void:
 	await shot("register")
 	Game.goto("login")
 	await wait_screen("login")
-	hosted()._guest()
+	hosted()._start_guest()
 
 	# ---- prologue + the wake-up in Alif's room, played in full
 	if not await _check_prologue():

@@ -49,21 +49,20 @@ func _player() -> AudioStreamPlayer:
 	return p
 
 
+## 44.1 kHz Ogg Vorbis (tools/gen_music.py): clear on phone speakers, small download
 func _loop(path: String) -> AudioStream:
-	var s: AudioStreamWAV = load(path)
+	var s: AudioStreamOggVorbis = load(path)
 	if s == null:
 		return null
-	s.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	s.loop_begin = 0
-	s.loop_end = int(s.get_length() * s.mix_rate)
+	s.loop = true
 	return s
 
 
 func _track(name: String) -> AudioStream:
 	var sync := AudioStreamSynchronized.new()
 	sync.stream_count = 2
-	sync.set_sync_stream(0, _loop(DIR + name + "_base.wav"))
-	sync.set_sync_stream(1, _loop(DIR + name + "_melody.wav"))
+	sync.set_sync_stream(0, _loop(DIR + name + "_base.ogg"))
+	sync.set_sync_stream(1, _loop(DIR + name + "_melody.ogg"))
 	sync.set_sync_stream_volume(1, _melody_db)
 	return sync
 
@@ -127,7 +126,7 @@ func _set_melody_db(v: float) -> void:
 ## puzzles: a quiet focused pulse joins the music
 func puzzle(on: bool) -> void:
 	if on and not _fokus.playing:
-		_fokus.stream = _loop(DIR + "fokus.wav")
+		_fokus.stream = _loop(DIR + "fokus.ogg")
 		_fokus.volume_db = -40
 		_fokus.play()
 	var t := create_tween()
@@ -148,7 +147,7 @@ func _target_db() -> float:
 
 
 func stinger(name: String) -> void:
-	var s: AudioStream = load(DIR + name + ".wav")
+	var s: AudioStream = load(DIR + name + ".ogg")
 	if s == null:
 		return
 	_sting.stream = s

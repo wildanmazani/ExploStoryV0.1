@@ -20,6 +20,7 @@ boot_splash/show_image=false
 [audio]
 
 general/text_to_speech=true
+driver/output_latency.web=100
 
 [autoload]
 

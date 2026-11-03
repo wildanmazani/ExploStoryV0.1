@@ -261,6 +261,7 @@ func load_profile(username: String, mode: String, role: String = "student", avat
 
 
 func persist() -> void:
+	save["saved_at"] = Time.get_unix_time_from_system()
 	write_json_user(save_path_for(str(save["profile"]["username"])), save)
 	Backend.push_progress(save)
 

@@ -8,13 +8,18 @@ extends Node
 
 const CONFIG_PATH := "res://config/backend.json"
 const LOCAL_ACCOUNTS := "user://akaun.json"
+const SESSION := "user://sesi.json"  ## refresh token: stay signed in on this device
+const RETRY := 10.0                    ## seconds between sync attempts while offline
 
 var url: String = ""
 var anon_key: String = ""
 var access_token: String = ""
 var user_id: String = ""
+var refresh_token: String = ""
 var _push_pending: bool = false
 var _push_timer: Timer
+var _refresh_timer: Timer
+var synced := true  ## the last progress push reached the cloud
 
 
 func _ready() -> void:
@@ -28,6 +33,10 @@ func _ready() -> void:
 	_push_timer.wait_time = 3.0
 	_push_timer.timeout.connect(_do_push)
 	add_child(_push_timer)
+	_refresh_timer = Timer.new()
+	_refresh_timer.one_shot = true
+	_refresh_timer.timeout.connect(_refresh)
+	add_child(_refresh_timer)
 
 
 func is_online() -> bool:
@@ -40,8 +49,15 @@ func is_signed_in() -> bool:
 
 func mode_text() -> String:
 	if is_online():
-		return "Dalam talian: kemajuan disimpan di awan."
+		return "Log masuk: kemajuan disimpan di awan, boleh disambung di peranti lain, dan boleh main dengan kawan."
 	return "Luar talian: akaun disimpan pada peranti ini sahaja."
+
+
+## what a guest gives up (login screen and the Tetamu confirm)
+func guest_text() -> String:
+	if is_online():
+		return "Tetamu: kemajuan disimpan pada peranti ini sahaja, bukan di awan. Ia tidak boleh disambung di peranti lain, dan tambah kawan serta Arena Quiz dengan kawan perlukan akaun."
+	return "Tetamu: kemajuan disimpan pada peranti ini sahaja."
 
 
 # ------------------------------------------------------------------ HTTP
@@ -125,16 +141,7 @@ func sign_in(login_id: String, password: String) -> Dictionary:
 		var r := await _request("/auth/v1/token?grant_type=password", HTTPClient.METHOD_POST, {"email": login_id, "password": password})
 		if not r["ok"]:
 			return {"ok": false, "error": _err_text(r, "Log masuk gagal.")}
-		var d: Dictionary = r["data"]
-		_take_session(d)
-		var meta: Dictionary = d.get("user", {}).get("user_metadata", {})
-		var result := {"ok": true, "error": "", "email": login_id,
-			"username": str(meta.get("username", login_id.get_slice("@", 0))),
-			"role": str(meta.get("role", "student")), "avatar": str(meta.get("avatar", "pelajar_1"))}
-		var cloud = await pull_progress()
-		if cloud is Dictionary and not cloud.is_empty():
-			result["cloud_save"] = cloud
-		return result
+		return await _signed_in(r["data"])
 	var accts := _local_accounts()
 	var found: Dictionary = {}
 	for a in accts.values():
@@ -159,12 +166,67 @@ func reset_password(email: String) -> String:
 
 func sign_out() -> void:
 	access_token = ""
+	refresh_token = ""
 	user_id = ""
+	_refresh_timer.stop()
+	if FileAccess.file_exists(SESSION):
+		DirAccess.remove_absolute(SESSION)
+
+
+## a session from sign-in or refresh: the player's details and cloud save
+func _signed_in(d: Dictionary) -> Dictionary:
+	_take_session(d)
+	var user: Dictionary = d.get("user", {})
+	var email := str(user.get("email", ""))
+	var meta: Dictionary = user.get("user_metadata", {})
+	var result := {"ok": true, "error": "", "email": email,
+		"username": str(meta.get("username", email.get_slice("@", 0))),
+		"role": str(meta.get("role", "student")), "avatar": str(meta.get("avatar", "pelajar_1"))}
+	var cloud = await pull_progress()
+	if cloud is Dictionary and not cloud.is_empty():
+		result["cloud_save"] = cloud
+	return result
+
+
+## signed in on this device before: carry on without typing the password.
+## {} when there is no remembered session or it has expired.
+func restore_session() -> Dictionary:
+	if not is_online() or not FileAccess.file_exists(SESSION):
+		return {}
+	var s = Game.load_json_user(SESSION)
+	if not (s is Dictionary) or str(s.get("refresh_token", "")) == "":
+		return {}
+	var r := await _request("/auth/v1/token?grant_type=refresh_token", HTTPClient.METHOD_POST, {"refresh_token": s["refresh_token"]})
+	if not r["ok"] or not (r["data"] is Dictionary):
+		if int(r.get("code", 0)) != 0:  # rejected (not just offline): forget it
+			sign_out()
+		return {"ok": false, "error": _err_text(r, "Sesi tamat. Sila log masuk semula.")}
+	return await _signed_in(r["data"])
+
+
+func has_saved_session() -> bool:
+	return is_online() and FileAccess.file_exists(SESSION)
 
 
 func _take_session(d: Dictionary) -> void:
 	access_token = str(d.get("access_token", ""))
-	user_id = str(d.get("user", {}).get("id", ""))
+	refresh_token = str(d.get("refresh_token", refresh_token))
+	user_id = str(d.get("user", {}).get("id", user_id))
+	if refresh_token != "":
+		Game.write_json_user(SESSION, {"refresh_token": refresh_token})
+	# access tokens last about an hour: renew a little before that
+	var life := float(d.get("expires_in", 3600))
+	_refresh_timer.start(maxf(60.0, life - 120.0))
+
+
+func _refresh() -> void:
+	if refresh_token == "":
+		return
+	var r := await _request("/auth/v1/token?grant_type=refresh_token", HTTPClient.METHOD_POST, {"refresh_token": refresh_token})
+	if r["ok"] and r["data"] is Dictionary:
+		_take_session(r["data"])
+	else:
+		_refresh_timer.start(RETRY * 3)  # offline for now: try again later
 
 
 func _local_accounts() -> Dictionary:
@@ -190,13 +252,20 @@ func _do_push() -> void:
 		return
 	_push_pending = false
 	var s: Dictionary = Game.save
-	await _request("/rest/v1/player_progress", HTTPClient.METHOD_POST, {
+	var r := await _request("/rest/v1/player_progress", HTTPClient.METHOD_POST, {
 		"user_id": user_id,
 		"current_level": int(s.get("level", 1)),
 		"total_coins": int(s.get("coins", 0)),
 		"total_exp": int(s.get("exp", 0)),
 		"save_data": s,
 	}, true, PackedStringArray(["Prefer: resolution=merge-duplicates,return=minimal"]))
+	synced = r["ok"]
+	if not synced:  # no internet: the save is safe on the device, try again soon
+		_push_pending = true
+		if int(r.get("code", 0)) == 401:
+			await _refresh()
+		_push_timer.start(RETRY)
+		return
 	var rows: Array = []
 	for z in s.get("zones", {}).keys():
 		var st: Dictionary = s["zones"][z]

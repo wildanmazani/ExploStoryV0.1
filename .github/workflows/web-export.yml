@@ -58,6 +58,18 @@ jobs:
           grep -q "AUTOTEST PASS" autotest.log
           if grep -E "SCRIPT ERROR|Parse Error" autotest.log; then echo "Script errors found"; exit 1; fi
 
+      - name: Connect Supabase (from the repository secrets)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            python3 -c 'import json,os; json.dump({"supabase_url": os.environ["SUPABASE_URL"].strip(), "supabase_anon_key": os.environ["SUPABASE_ANON_KEY"].strip()}, open("config/backend.json", "w"))'
+            echo "Supabase connected"
+          else
+            echo "No Supabase secrets: the build stays offline"
+          fi
+
       - name: Export web build
         run: |
           mkdir -p build/web

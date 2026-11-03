@@ -92,6 +92,7 @@ func _ready() -> void:
 		battle = OnlineBattle.new()
 		add_child(battle)
 		battle.state_changed.connect(_on_state)
+		battle.failed.connect(_on_lost)
 		battle.join(str(params.get("code", "")))
 	else:
 		battle = LocalBattle.new()
@@ -99,6 +100,14 @@ func _ready() -> void:
 		battle.setup(int(params.get("bots", BattleRules.MIN_FRIENDS)))
 		battle.state_changed.connect(_on_state)
 		battle.start()
+
+
+## online and the internet dropped: this match is over, back to find another
+func _on_lost(message: String) -> void:
+	for b in _buttons:
+		b.disabled = true
+	await Main.ask(message, "Kembali ke Arena", "OK")
+	Game.goto("lobby")
 
 
 func _process(_d: float) -> void:
