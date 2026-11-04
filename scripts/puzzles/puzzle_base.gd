@@ -42,10 +42,6 @@ func _ready() -> void:
 	ins.visible = not def.has("stage")
 	tcol.add_child(ins)
 	head.add_child(tcol)
-	var speak := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56))
-	speak.tooltip_text = "Baca arahan"
-	speak.pressed.connect(func(): Tts.speak(str(def.get("instruction", ""))))
-	head.add_child(speak)
 	col.add_child(head)
 	body = UI.vbox(10)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -145,9 +141,6 @@ func finish(done_text: String) -> void:
 	c.add_child(s)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var sp := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56))
-	sp.pressed.connect(func(): Tts.speak(done_text))
-	row.add_child(sp)
 	var go := UI.button("Teruskan »", "Primary", 220)
 	go.pressed.connect(func(): completed.emit(stats))
 	row.add_child(go)

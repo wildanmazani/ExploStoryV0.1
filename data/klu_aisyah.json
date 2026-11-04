@@ -1,0 +1,9 @@
+{
+  "_info": "Bab 2: empat klu tentang gadis berpakaian putih yang ditarik pegawai British (scripts/world/klu_aisyah.gd). Setiap klu muncul sebagai tempat bersinar selepas misi 'zone' selesai, dekat 'near' (petak dunia; tempat lapang terdekat dipilih). 'talk' = dialog dalam data/story.json. Misi 2.8 dibuka hanya bila keempat-empat klu dijumpai.",
+  "klu": [
+    {"no": 1, "zone": "2_1", "near": [95, 31], "nama": "Tudung", "isi": "Tudung putih", "talk": "klu_1"},
+    {"no": 2, "zone": "2_3", "near": [111, 50], "nama": "Baju", "isi": "Baju kurung biru muda", "talk": "klu_2"},
+    {"no": 3, "zone": "2_5", "near": [119, 31], "nama": "Kain", "isi": "Kain biru, bukan seluar", "talk": "klu_3"},
+    {"no": 4, "zone": "2_7", "near": [127, 14], "nama": "Wajah", "isi": "Muka hitam manis, mata bulat", "talk": "klu_4"}
+  ]
+}

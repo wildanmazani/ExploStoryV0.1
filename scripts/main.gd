@@ -57,10 +57,6 @@ func _ready() -> void:
 	bubble_label.custom_minimum_size.x = 340
 	bubble_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bb.add_child(bubble_label)
-	var speak := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(60, 56))
-	speak.tooltip_text = "Baca dengan suara"
-	speak.pressed.connect(func(): Tts.speak(bubble_label.text))
-	bb.add_child(speak)
 	bubble.add_child(bb)
 	bubble.gui_input.connect(func(e: InputEvent):
 		if e is InputEventMouseButton and e.pressed:

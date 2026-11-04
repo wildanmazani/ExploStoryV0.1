@@ -51,7 +51,9 @@ var _qi := -1
 var _items: Array = []       ## FloorItem
 
 
-func setup(fmt: String, lvl: String) -> void:
+## foe: {name, skin} for the one fighter on the other side (Ujian Bab 2:
+## Kapten John), instead of a classmate bot
+func setup(fmt: String, lvl: String, foe := {}) -> void:
 	format = fmt if BrawlRules.FORMATS.has(fmt) else "1v1"
 	level = lvl if BrawlRules.LEVELS.has(lvl) else "biasa"
 	scale = Vector2.ONE * BrawlRules.VIEW_SCALE
@@ -73,6 +75,9 @@ func setup(fmt: String, lvl: String) -> void:
 			b["team"] = t
 			people.append(b)
 			bi += 1
+	if not foe.is_empty() and people.size() == 2:
+		people[1]["name"] = str(foe.get("name", people[1]["name"]))
+		people[1]["skin"] = str(foe.get("skin", people[1]["skin"]))
 	_spawn(people)
 	_questions = BattleRules.bank().duplicate()
 	_questions.shuffle()

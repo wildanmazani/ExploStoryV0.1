@@ -133,6 +133,9 @@ func handle(id: String) -> bool:
 			Game.main.pau_say(tr("Jom! Ikut tanda seru (!) untuk mula semula."))
 			return true
 	var zid: String = found["zid"]
+	if Game.klu_blocks(zid):
+		Game.main.pau_say(Game.klu_lock_text(), 5.0)
+		return true
 	if not Game.zone_unlocked(zid):
 		var prev := Game.prev_zone(zid)
 		if prev == "":
@@ -236,6 +239,8 @@ func complete(zid: String) -> void:
 
 func refresh() -> void:
 	var hint := ""
+	if "klu_nodes" in host and not host.klu_nodes.is_empty():
+		hint = "Ada sesuatu bersinar berdekatan. Mungkin klu tentang Aisyah! Ikut anak panah emas."
 	for id in markers:
 		var f := _step_at(id)
 		var on := not f.is_empty() and _available(f["zid"], f["i"])

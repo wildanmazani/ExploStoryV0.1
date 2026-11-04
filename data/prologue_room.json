@@ -19,7 +19,7 @@
     {"id": "kertas", "label": "Kertas Percubaan", "rect": [812, 516, 168, 96], "say": "pro_obj_kertas"},
     {"id": "telefon", "label": "Telefon", "rect": [330, 530, 130, 76], "say": "pro_obj_telefon"},
     {"id": "tingkap", "label": "Tingkap", "rect": [440, 30, 420, 370], "zoom": 1.2, "say": "pro_obj_tingkap"},
-    {"id": "pau", "label": "Pau", "rect": [100, 500, 136, 136], "say": "pro_obj_pau"},
+    {"id": "pau", "label": "Pau", "rect": [144, 532, 108, 92], "say": "pro_obj_pau"},
     {"id": "buku", "label": "Buku Teks Sejarah", "rect": [504, 512, 300, 108], "say": "pro_obj_buku"}
   ],
   "paragraph": "Kesultanan Melayu Melaka diasaskan oleh {Parameswara} pada awal {abad ke-15}. Melaka mempunyai ciri-ciri negara bangsa iaitu {kerajaan}, {rakyat}, {kedaulatan}, {wilayah pengaruh}, {undang-undang} dan {lambang kebesaran}.",

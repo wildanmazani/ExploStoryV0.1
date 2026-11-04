@@ -1,6 +1,7 @@
 extends RefCounted
 ## The story between Alif's room and Misi 1.1, played once in Kampung Jejak:
-## Aisyah runs from him, he trips at Mak Som's house, she calls Guru Jalal, and
+## before Alif comes out, Aisyah lies in the road where she fell into this
+## world; she gets up, screams, runs from him, he trips at Mak Som's house, she calls Guru Jalal, and
 ## Mak Som gives him the stone map of Bab 1 (ui/peta_batu.gd). Text: data/story.json
 ## (intro_*). Quitting halfway replays it from the door: "bilik_tutorial" goes
 ## into the save only at the end, and saves that already have it never see it.
@@ -29,11 +30,34 @@ static func play(w: Node) -> void:
 	player.can_move = false
 	player.place_at(DOOR, "south")  # also after quitting halfway
 	w.pau.place_at(w._free_neighbour(DOOR))
-	await w.get_tree().create_timer(1.2).timeout  # the fade in, and the map photo
-
+	# still inside: the street first, where Aisyah has just fallen out of the sky
+	player.visible = false
+	w.pau.visible = false
 	var aisyah := Npc.new()
 	aisyah.setup("rakan_aisyah", AISYAH_FROM, "west")
 	w.objects.add_child(aisyah)
+	var body: AnimatedSprite2D = aisyah._sprite
+	body.rotation = -FACE_DOWN  # flat on the road where she landed
+	_dust(w, aisyah.position + Vector2(-8, -2), 18)
+	await w.get_tree().create_timer(1.4).timeout  # the fade in, and the map photo
+	await Game.say("intro_aisyah_jatuh")
+	# she pushes herself up and looks round, lost
+	var up := w.create_tween()
+	up.tween_property(body, "rotation", -0.5, 0.35).set_ease(Tween.EASE_OUT)
+	up.tween_interval(0.3)
+	up.tween_property(body, "rotation", 0.0, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	await up.finished
+	for f in ["south", "north", "west"]:
+		aisyah.facing = f
+		body.play("idle_" + f)
+		await w.get_tree().create_timer(0.35).timeout
+	await Game.say("intro_jerit_luar")
+
+	# now Alif and Pau come out of the door
+	player.visible = true
+	w.pau.visible = true
+	Sfx.play("pop", -4.0)
+	await w.get_tree().create_timer(0.3).timeout
 	await player.script_walk(_path(w, player.cell, AISYAH_LOOK))
 	player.face_cell(aisyah.cell)
 	aisyah.face_towards(player.cell)
@@ -41,6 +65,7 @@ static func play(w: Node) -> void:
 
 	# she panics and is gone; he runs after her and trips
 	_flee(w, aisyah)
+	MusicDirector.play("debar", 0.6)  # the chase
 	await w.get_tree().create_timer(0.4).timeout
 	await Game.say("intro_kejar")
 	var rock := _rock(w)
@@ -66,6 +91,7 @@ static func play(w: Node) -> void:
 	await Game.say("intro_guru")
 
 	player.face_cell(mak.cell)
+	MusicDirector.play("kampung", 2.5)  # it's all right now
 	await Game.say("intro_mak_som")
 	MusicDirector.stinger("st_item")
 	Game.toast(TranslationServer.translate("Dapat: Peta Batu Bab 1!"))

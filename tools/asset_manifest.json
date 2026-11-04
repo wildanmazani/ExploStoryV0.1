@@ -32,7 +32,9 @@
   "gabenor": "f2b68a33-b0e5-4383-ba67-c6ed4dfa354a",
   "pencetak": "4bf27cfa-766b-4b9d-8aba-cd911b68c33e",
   "pelatih": "2e59db38-a5d8-4836-9388-439410095691",
-  "guru_silat": "97ebcad9-fc88-4119-adae-83d34170726d"
+  "guru_silat": "97ebcad9-fc88-4119-adae-83d34170726d",
+  "pakcik_lembah": "d957fdf9-533a-4197-856a-119aba3c35c1",
+  "kapten_john": "994e5ee1-8c3e-4b09-a371-c41a2b52479d"
  },
  "animations": {
   "rakan_aisyah_walk": {
@@ -1401,6 +1403,8 @@
   "pelatih",
   "pencetak",
   "panglima",
-  "guru_silat"
+  "guru_silat",
+  "pakcik_lembah",
+  "kapten_john"
  ]
 }

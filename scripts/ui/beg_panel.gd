@@ -8,6 +8,7 @@ extends "res://scripts/ui/modal.gd"
 
 const ICON := "res://assets/icons/beg.png"
 const TRAVEL := "Jalan Pintas"
+const AisyahLook = preload("res://scripts/ui/aisyah_look.gd")
 
 var world: Node  ## set when opened in the world: shows the Jalan Pintas tab
 var _body: VBoxContainer
@@ -105,6 +106,8 @@ func _show(ch: int) -> void:
 		slot.add_child(c)
 		shelf.add_child(slot)
 	_body.add_child(UI.center(shelf))
+	if ch == 2 and Game.save["seen"].has("lembah_intro"):
+		_body.add_child(_klu_poster())
 	_body.add_child(UI.label("Kad Tokoh", "Heading"))
 	var row := UI.hbox(10)
 	for id in Game.characters.keys():
@@ -126,6 +129,41 @@ func _show(ch: int) -> void:
 		card.add_child(cc)
 		row.add_child(card)
 	_body.add_child(row)
+
+
+## Bab 2: "ORANG HILANG", the girl the officer took. Her picture is a dark
+## shape that fills in with every clue (tudung, baju, kain, then her face).
+func _klu_poster() -> Control:
+	var shown: Array = []
+	var row := UI.hbox(18)
+	var notes := UI.vbox(6)
+	notes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	notes.add_child(UI.label(tr("Klu Aisyah  %d/4") % Game.klu_count(), "InkHeading"))
+	for k in Game.klu_list():
+		var no := int(k["no"])
+		var got := Game.klu_found(no)
+		if got:
+			shown.append(AisyahLook.PARTS[no - 1])
+		var line := UI.label(("%d. %s: %s" % [no, tr(str(k["nama"])), tr(str(k["isi"]))]) if got else ("%d. %s: ???" % [no, tr(str(k["nama"]))]), "Ink" if got else "InkSmall", true)
+		notes.add_child(line)
+	if Game.klu_count() < 4:
+		notes.add_child(UI.label(tr("Cari tempat yang bersinar selepas Misi 2.1, 2.3, 2.5 dan 2.7."), "InkSmall", true))
+	var pic := TextureRect.new()
+	pic.texture = AisyahLook.texture(shown)
+	pic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pic.custom_minimum_size = Vector2(144, 144)
+	var frame := UI.vbox(2)
+	var head := UI.label(tr("ORANG HILANG"), "InkHeading")
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	frame.add_child(head)
+	frame.add_child(pic)
+	row.add_child(frame)
+	row.add_child(notes)
+	var paper := UI.panel("Paper")
+	paper.add_child(row)
+	return paper
 
 
 ## the artifact's story, told over the bag

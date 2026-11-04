@@ -15,6 +15,8 @@ const Minimap = preload("res://scripts/ui/minimap.gd")
 const ObjectiveArrow = preload("res://scripts/ui/objective_arrow.gd")
 const ArenaYard = preload("res://scripts/world/arena_yard.gd")
 const KampungIntro = preload("res://scripts/world/kampung_intro.gd")
+const LembahIntro = preload("res://scripts/world/lembah_intro.gd")
+const KluAisyah = preload("res://scripts/world/klu_aisyah.gd")
 const HOLD_TIME := 0.6  ## long-press Pau = calm moment
 const LEMBAH_X := 82   ## columns from here on are Lembah Kebangkitan (Bab 2)
 
@@ -59,7 +61,7 @@ const OBJECTS := {
 	"N": {"tex": "madrasah", "foot": Vector2i(6, 3)},
 	"C": {"tex": "jelutong_press", "foot": Vector2i(6, 3)},
 	"h": {"tex": ["kedai_merah", "kedai_biru"], "foot": Vector2i(6, 3), "order": true},
-	"m": {"tex": "sitc", "foot": Vector2i(10, 4)},
+	"m": {"tex": "sitc", "foot": Vector2i(12, 4)},
 	"t": {"tex": "menara", "foot": Vector2i(6, 4)},
 	"y": {"tex": "tugu_pahlawan", "foot": Vector2i(3, 2)},
 	"a": {"tex": "papan_notis", "foot": Vector2i(2, 1)},
@@ -115,6 +117,7 @@ var blocked := {}      ## Vector2i -> true
 var walk_over := {}    ## Vector2i -> true (jetty planks over water)
 var interact := {}     ## Vector2i -> {type, id}
 var npcs := {}         ## Vector2i -> Npc
+var klu_nodes := {}    ## Bab 2 clue no -> {cell, node} still waiting (klu_aisyah.gd)
 var portals := {}      ## Vector2i -> {to, facing}: step in and you cross to the other island
 var houses: Array[Sprite2D] = []   ## kampung houses (chickens and kitchen smoke)
 var critters: Array[Node2D] = []   ## chickens and ducks (looks only)
@@ -214,13 +217,21 @@ func _ready() -> void:
 	add_child(runner)
 	runner.setup(self)
 	_capture_map()
-	if GameState.flags.get("just_crossed", false):
-		GameState.flags["just_crossed"] = false
-		_arrive_lembah.call_deferred()
+	var crossed: bool = GameState.flags.get("just_crossed", false)
+	GameState.flags["just_crossed"] = false
+	var lembah_intro := not intro and LembahIntro.needed(self)
+	if crossed or lembah_intro:
+		# the arrival first: the area card and the Misi 2.1 briefing wait
+		# for it (they used to open on top of the conversation)
+		busy = true
 	_on_step_finished(spawn)
 	if intro:
 		KampungIntro.play(self)
+	elif lembah_intro:
+		LembahIntro.play(self)
 	else:
+		if crossed:
+			_arrive_lembah()
 		_controls_tip()
 		_arena_reveal()
 
@@ -391,7 +402,12 @@ func _build_entities() -> void:
 		var at := Vector2i(n["pos"][0], n["pos"][1])
 		npc.setup(n["id"], at, n["facing"])
 		objects.add_child(npc)
-		if n.get("wander", true) and not blocked.has(at):
+		if n.has("patrol"):  # Guru Jalal walks round his arena
+			var pts: Array[Vector2i] = []
+			for p in n["patrol"]:
+				pts.append(Vector2i(int(p[0]), int(p[1])))
+			npc.enable_patrol(self, pts)
+		elif n.get("wander", true) and not blocked.has(at):
 			npc.enable_wander(self, int(n.get("radius", 2)))
 		npcs[at] = npc
 		blocked[at] = true
@@ -402,6 +418,7 @@ func _build_entities() -> void:
 	_build_misi_signs()
 	_spawn_ujian()
 	_spawn_gabenor()
+	KluAisyah.build(self)
 
 
 ## Misi 2.8: Gabenor Sekatan 1941 guards the Menara until he is beaten.
@@ -410,7 +427,7 @@ var _gabenor: Npc
 
 
 func _spawn_gabenor() -> void:
-	if not Game.zone_unlocked("2_8") or Game.zone_state("2_8")["steps"].has("gabenor"):
+	if is_instance_valid(_gabenor) or not Game.zone_unlocked("2_8") or Game.zone_state("2_8")["steps"].has("gabenor"):
 		return
 	if not is_walkable(GABENOR_CELL):
 		return
@@ -694,7 +711,12 @@ func objective() -> Dictionary:
 
 func _find_objective() -> Dictionary:
 	var out := {}
+	var klu := KluAisyah.waiting(self)  # a clue about Aisyah first
+	if klu.x >= 0:
+		out = {"tile": Vector2(klu) + Vector2(0.5, 0.5), "name": tr("Klu Aisyah")}
 	for zid in Game.ZONES:
+		if not out.is_empty():
+			break
 		var best := Vector2(-1, -1)
 		for id in runner.markers:
 			if not runner.markers[id].visible:
@@ -965,10 +987,15 @@ func _interact(c: Vector2i) -> void:
 
 
 func _talk_or_act(id: String) -> void:
+	if id.begins_with("klu_aisyah_"):
+		await KluAisyah.take(self, int(id.trim_prefix("klu_aisyah_")))
+		return
 	if id.begins_with("misi_"):
 		var zid := id.substr(5).replace(".", "_")
 		var z := Game.zone_data(zid)
 		var state := "Dah selesai. Syabas!" if Game.zone_done(zid) else ("Tanda seru (!) tunggu kat sini." if Game.zone_unlocked(zid) else "Belum dibuka. Habiskan Misi %s dulu." % Game.prev_zone(zid).replace("_", "."))
+		if Game.klu_blocks(zid):
+			state = "Belum dibuka. Cari keempat-empat klu Aisyah dulu (%d/4)." % Game.klu_count()
 		await Game.say([{"s": "papan", "t": "Misi %s: %s. %s" % [zid.replace("_", "."), z.get("title", ""), state]}])
 		return
 	if id == "gate_open_2" or id == "portal_balik":
@@ -1093,6 +1120,8 @@ func travel_places() -> Array:
 		var why := ""
 		if int(p["at"][0]) >= LEMBAH_X and not lembah_open:
 			why = tr("Selesaikan Bab 1 dulu")
+		elif p.has("zone") and Game.klu_blocks(str(p["zone"])):
+			why = tr("Cari 4 klu Aisyah dulu")
 		elif p.has("zone") and not Game.zone_unlocked(str(p["zone"])):
 			why = tr("Selesaikan Misi %s dulu") % Game.prev_zone(str(p["zone"])).replace("_", ".")
 		out.append({"place": p, "ok": why == "", "why": why})
@@ -1127,10 +1156,11 @@ func _nearest_walkable(c: Vector2i) -> Vector2i:
 	return c
 
 
+## back in Lembah after the first time (lembah_intro.gd told the story)
 func _arrive_lembah() -> void:
 	busy = true
 	await get_tree().create_timer(0.6).timeout
-	await Game.say("bab2_arrive")
+	await Game.say("bab2_arrive_lagi")
 	busy = false
 	_enter_area_at(player.cell)
 
@@ -1282,6 +1312,9 @@ func _area_intro(a: Dictionary) -> void:
 ## First visit to an open zone: the prototype's "Persiapan Misi" briefing,
 ## then the zone's intro conversation.
 func _zone_welcome(zid: String) -> void:
+	if Game.klu_blocks(zid):
+		Main.pau_say(Game.klu_lock_text(), 5.0)
+		return
 	if not Game.zone_unlocked(zid):
 		var prev := Game.prev_zone(zid)
 		var need := ("Misi " + prev.replace("_", ".")) if prev != "" else ("Bab %d" % (Game.chapter_of(zid) - 1))

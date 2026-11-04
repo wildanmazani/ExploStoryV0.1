@@ -8,6 +8,7 @@ extends Control
 const UI = preload("res://scripts/ui/ui.gd")
 const Objektif = preload("res://scripts/puzzles/objektif.gd")
 const BossStage = preload("res://scripts/battle/boss_stage.gd")
+const AisyahPilih = preload("res://scripts/ui/aisyah_pilih.gd")
 
 var params: Dictionary = {}
 var _ch := 1
@@ -35,6 +36,9 @@ func _ready() -> void:
 	_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_layer)
 	Game.main.set_pau_visible(false)
+	if params.get("won", false):  # back from the Gelanggang fight (Ujian Bab 2)
+		_passed.call_deferred({})
+		return
 	_start.call_deferred()
 
 
@@ -44,6 +48,8 @@ func _start() -> void:
 	if not lair.is_empty():
 		await _warp(lair)
 	await _stage.entrance(str(_cfg.get("boss", "")).to_upper())
+	if _ch == 2 and not Game.save["seen"].has("aisyah_dikenal"):
+		await _find_aisyah()
 	await Game.say(str(_cfg.get("before", "")))
 	await _stage.to_row()
 	Game.main.set_pau_visible(true)
@@ -51,6 +57,20 @@ func _start() -> void:
 	Game.main.pau_button.position = Vector2(Game.screen_w() - 130, 4)
 	tree_exited.connect(Game.main._place_pau)
 	_round()
+
+
+## Bab 2: the officer and three girls in white in the fog; the clues tell
+## which one is Aisyah (ui/aisyah_pilih.gd)
+func _find_aisyah() -> void:
+	await Game.say("ujian_2_aisyah")
+	var pick := AisyahPilih.new()
+	pick.theme = Game.theme
+	_layer.add_child(pick)
+	await pick.picked
+	pick.queue_free()
+	Game.save["seen"].append("aisyah_dikenal")
+	Game.persist()
+	await Game.say("ujian_2_kenal")
 
 
 ## the boss drags Alif out of the map: he stands in the old place, the dark
@@ -97,6 +117,10 @@ func _warp(lair: Dictionary) -> void:
 
 func _round() -> void:
 	_tries += 1
+	if _cfg.get("brawl", false):  # a silat fight in the Gelanggang, with this chapter's questions
+		Game.goto("gelanggang", {"format": "1v1", "level": str(_cfg.get("level", "biasa")), "stage": str(_cfg.get("stage", "")),
+			"ujian": _ch, "foe": {"name": str(_cfg.get("boss", "")), "skin": str(_cfg.get("npc", ""))}})
+		return
 	var def := {
 		"type": "objektif",
 		"title": tr("Ujian Bab %d: Lawan %s") % [_ch, _cfg.get("boss", "")],

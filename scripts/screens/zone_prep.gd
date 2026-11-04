@@ -59,10 +59,6 @@ func _ready() -> void:
 	var g: Dictionary = _zone.get("ganjaran", {})
 	_row(ic, "GANJARAN:", str(g.get("nama", "")))
 	ic.get_child(ic.get_child_count() - 1).add_child(UI.icon("res://assets/icons/%s.png" % g.get("icon", "bintang"), 48))
-	var speak := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56), "  Dengar")
-	speak.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	speak.pressed.connect(func(): Tts.speak("Misi %s, %s. Persoalan: %s" % [_zone["no"], _zone["title"], _zone["persoalan"]]))
-	ic.add_child(speak)
 	if Game.zone_done(zid):
 		ic.add_child(UI.label("Misi ini sudah selesai. Kau boleh main semula untuk ulang kaji.", "InkSmall", true))
 	info.add_child(ic)

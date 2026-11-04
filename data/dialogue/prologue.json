@@ -105,7 +105,7 @@
   "pro_friends_2": {
     "variants": [
       [
-        {"who": "narator", "text": "Kabus ungu turun ke pelabuhan. Semakin tebal kabus itu, semakin kabur ingatan semua orang."},
+        {"who": "narator", "text": "Kabus putih naik dari laut, tebal macam asap, menyelubungi rumah-rumah itu. Semakin tebal kabus, semakin kabur ingatan mereka."},
         {"who": "aisyah", "text": "Eh, kau siapa?! Kenapa tengok-tengok rumah aku?"},
         {"who": "ravi", "text": "Rumah kau? Ni kampung aku la! Orang luar, jangan dekat!"}
       ]
@@ -123,15 +123,24 @@
   "pro_huru": {
     "variants": [
       [
-        {"who": "narator", "text": "Bayang-bayang hitam bersenjatakan tombak meluru ke arah Alif."},
-        {"who": "alif", "text": "Lari! LARI!", "e": "worried"}
+        {"who": "narator", "text": "Kabus itu tidak berhenti di rumah mereka. Ia merayap atas air, terus ke tebing. Ke arah Alif."},
+        {"who": "alif", "text": "Kalau kabus ni kena aku... aku pun lupa semua orang?", "e": "worried"},
+        {"who": "alif", "text": "Tak boleh. Lari! LARI!", "e": "worried"}
+      ]
+    ]
+  },
+  "pro_lari": {
+    "variants": [
+      [
+        {"who": "narator", "text": "Alif berlari sepanjang tebing. Setiap kali dia toleh, kabus itu makin dekat."},
+        {"who": "alif", "text": "Gua! Masuk situ!", "e": "worried"}
       ]
     ]
   },
   "pro_gua_1": {
     "variants": [
       [
-        {"who": "narator", "text": "Alif menyorok dalam sebuah gua batu kapur. Di tengahnya ada batu bersurat yang besar."},
+        {"who": "narator", "text": "Alif terduduk dalam gua batu kapur, tercungap-cungap. Di tengah gua ada batu bersurat yang besar."},
         {"who": "alif", "text": "Inskripsi Telaga Batu... Macam dalam buku teks.", "e": "confused"}
       ]
     ]

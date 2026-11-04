@@ -41,7 +41,6 @@ var _more: Control
 var _name: Label
 var _text: Label
 var _next: Button
-var _speak: Button
 var _tag: Label
 var _who := ""
 var _last_who := ""
@@ -99,10 +98,6 @@ func _ready() -> void:
 	row.add_child(_portrait_r_frame)
 
 	var btns := UI.vbox(10)
-	_speak = UI.icon_button("res://assets/icons/suara.png", "Blue")
-	_speak.tooltip_text = "Baca dengan suara"
-	_speak.pressed.connect(_on_speak)
-	btns.add_child(_speak)
 	_next = UI.button("»", "Primary")
 	_next.custom_minimum_size = Vector2(72, 64)
 	_next.tooltip_text = "Seterusnya"
@@ -212,10 +207,6 @@ func cancel() -> void:
 	visible = false
 	Tts.stop()
 	finished.emit()
-
-
-func _on_speak() -> void:
-	Tts.speak(_text.text)
 
 
 func _gui_input(event: InputEvent) -> void:

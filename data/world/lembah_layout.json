@@ -48,7 +48,7 @@
   ["kedai_deret_a", "6", 116, 10, {}],
   ["meja_pengarang", "d", 116, 12, {"spot": "meja_pengarang"}],
   ["gerai_akhbar", "$", 118, 12, {}],
-  ["sitc", "m", 125, 11, {"sign": "sitc"}],
+  ["sitc", "m", 124, 11, {"sign": "sitc"}],
   ["papan_persatuan", "a", 131, 12, {"spot": "papan_persatuan"}]
  ],
  "misi_signs": [
@@ -62,6 +62,7 @@
   ["2.8", 132, 30]
  ],
  "npcs": [
+  {"id": "pakcik_lembah", "pos": [92, 35], "facing": "north", "wander": false},
   {"id": "profesor", "pos": [98, 30], "facing": "south"},
   {"id": "nakhoda", "pos": [113, 49], "facing": "south"},
   {"id": "pengarang", "pos": [120, 30], "facing": "south"},

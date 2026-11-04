@@ -252,6 +252,34 @@
     "tokoh": false,
     "rekaan": true
   },
+  "pakcik_lembah": {
+    "name": "Pak Wahab",
+    "portrait": "pakcik_lembah",
+    "sprite": "pakcik_lembah",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "kapten_john": {
+    "name": "Kapten John",
+    "portrait": "kapten_john",
+    "sprite": "kapten_john",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "kapten_john_sedar": {
+    "name": "Kapten John",
+    "portrait": "kapten_john_sedar",
+    "sprite": "kapten_john",
+    "tokoh": false,
+    "rekaan": true
+  },
+  "orang_awam_nirbana": {
+    "name": "Orang Awam (Nirbana)",
+    "portrait": "orang_awam_nirbana",
+    "sprite": "nelayan",
+    "tokoh": false,
+    "rekaan": true
+  },
   "guru_silat": {
     "name": "Guru Jalal",
     "portrait": "guru_silat",

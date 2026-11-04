@@ -1,7 +1,8 @@
 class_name Player
 extends Node2D
-## Alif on the overworld grid, Pokémon-style: one 16 px tile per step,
-## a quick tap only turns him, hold B (Shift / X) to run.
+## Alif on the overworld grid, Pokémon-style: one 16 px tile per step (two
+## direction keys together step diagonally), a quick tap only turns him, hold
+## B (Shift / X) to run.
 
 signal step_started(from: Vector2i, to: Vector2i, duration: float)
 signal step_finished(cell: Vector2i)
@@ -23,7 +24,7 @@ var moving := false
 var world: Node  ## must provide is_walkable(cell) -> bool
 
 var _hold_time := 0.0
-var _held_dir := ""
+var _held_vec := Vector2i.ZERO
 var _turned := false
 var _bump_cooldown := 0.0
 var _path: Array = []
@@ -136,53 +137,77 @@ func _process(delta: float) -> void:
 	_bump_cooldown = maxf(_bump_cooldown - delta, 0)
 	if moving or not can_move or Game.is_locked():
 		return
-	var dir := _input_dir()
-	if dir != "":
+	var v := _input_vec()
+	if v != Vector2i.ZERO:
 		_path.clear()  # keyboard / D-pad always wins over a tap path
 	elif not _path.is_empty():
 		var next: Vector2i = _path.pop_front()
-		var d := next - cell
-		var pdir := "east" if d.x > 0 else "west" if d.x < 0 else "south" if d.y > 0 else "north"
+		var pdir := dir_name(next - cell)
 		facing = pdir
 		if world and not world.is_walkable(next):
 			_path.clear()
 			_idle()
 			return
-		_try_step(pdir)
+		_try_step(next - cell)
 		if _path.is_empty() and _on_arrive.is_valid():
 			var cb := _on_arrive
 			_on_arrive = Callable()
 			await step_finished
 			cb.call()
 		return
-	if dir == "":
-		_held_dir = ""
+	if v == Vector2i.ZERO:
+		_held_vec = Vector2i.ZERO
 		_hold_time = 0.0
 		_idle()
 		return
-	if dir != _held_dir:  # new press
-		_held_dir = dir
-		_hold_time = 0.0
-		_turned = dir != facing
+	var dir := dir_name(v)
+	if v != _held_vec:  # new press
+		var fresh := _held_vec == Vector2i.ZERO
+		_held_vec = v
+		if fresh:
+			_hold_time = 0.0
+			_turned = dir != facing
 		facing = dir
 		_idle()
 	_hold_time += delta
 	if _turned and _hold_time < TURN_GRACE:
 		return  # tap = turn on the spot
-	_try_step(dir)
+	_try_step(v)
 
 
-func _input_dir() -> String:
-	# last-pressed wins would be nicer; vertical first is the classic feel
-	if Input.is_action_pressed("move_up"): return "north"
-	if Input.is_action_pressed("move_down"): return "south"
-	if Input.is_action_pressed("move_left"): return "west"
-	if Input.is_action_pressed("move_right"): return "east"
-	return ""
+## the held direction keys as one step: two keys together walk diagonally
+func _input_vec() -> Vector2i:
+	var v := Vector2i.ZERO
+	if Input.is_action_pressed("move_up"): v.y -= 1
+	if Input.is_action_pressed("move_down"): v.y += 1
+	if Input.is_action_pressed("move_left"): v.x -= 1
+	if Input.is_action_pressed("move_right"): v.x += 1
+	return v
 
 
-func _try_step(dir: String) -> void:
-	var target: Vector2i = cell + DIRS[dir]
+## the way a step faces: sideways for diagonals (the sprites have four sides)
+static func dir_name(v: Vector2i) -> String:
+	if v.x != 0:
+		return "east" if v.x > 0 else "west"
+	return "south" if v.y > 0 else "north"
+
+
+func _try_step(v: Vector2i) -> void:
+	if v.x != 0 and v.y != 0 and world:
+		# a diagonal step needs the corner free on both sides (no cutting
+		# through a wall's edge); otherwise slide along the open side
+		var side := cell + Vector2i(v.x, 0)
+		var up := cell + Vector2i(0, v.y)
+		if not (world.is_walkable(cell + v) and world.is_walkable(side) and world.is_walkable(up)):
+			if world.is_walkable(side):
+				v = Vector2i(v.x, 0)
+			elif world.is_walkable(up):
+				v = Vector2i(0, v.y)
+			else:
+				v = Vector2i(v.x, 0)
+	var dir := dir_name(v)
+	facing = dir
+	var target: Vector2i = cell + v
 	if world and not world.is_walkable(target):
 		_idle()
 		if _bump_cooldown <= 0:
@@ -192,18 +217,20 @@ func _try_step(dir: String) -> void:
 		return
 	var running := Input.is_action_pressed("run")
 	var t := RUN_TIME if running else WALK_TIME
+	if v.x != 0 and v.y != 0:
+		t *= 1.4  # the same speed along the diagonal
 	var from := cell
 	cell = target
 	moving = true
 	sprite.play("walk_" + dir)
-	sprite.speed_scale = WALK_TIME / t
+	sprite.speed_scale = WALK_TIME / t * (1.4 if v.x != 0 and v.y != 0 else 1.0)
 	step_started.emit(from, target, t)
 	var tween := create_tween()
 	tween.tween_property(self, "position", cell_to_pos(target), t)
 	await tween.finished
 	moving = false
 	step_finished.emit(cell)
-	if _input_dir() == "" and _path.is_empty():
+	if _input_vec() == Vector2i.ZERO and _path.is_empty():
 		_idle()
 
 

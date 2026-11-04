@@ -64,10 +64,6 @@ func _ready() -> void:
 	_q.custom_minimum_size.x = 1080
 	_q.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	qrow.add_child(_q)
-	var sp := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(60, 52))
-	sp.tooltip_text = "Baca soalan"
-	sp.pressed.connect(func(): Tts.speak(_q.text))
-	qrow.add_child(sp)
 	qp.add_child(qrow)
 	lower.add_child(UI.margin(qp, 24, 0, 24, 0))
 	var grid := GridContainer.new()

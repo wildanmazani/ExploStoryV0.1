@@ -449,7 +449,44 @@ func zone_unlocked(id: String) -> bool:
 		return false
 	if i == 0:
 		return ch <= 1 or chapter_done(ch - 1)
+	if klu_blocks(id):
+		return false
 	return zone_done(list[i - 1])
+
+
+# ------------------------------------------------------------------ Klu Aisyah (Bab 2)
+## A British officer pulled a girl in white into the fog as Alif came into
+## Lembah: four clues along Bab 2 tell him it was Aisyah. They are in
+## save.seen as "klu_aisyah_<no>" (data/klu_aisyah.json).
+const KLU_ZONE := "2_8"  ## needs all four clues
+var _klu: Array = []
+
+
+func klu_list() -> Array:
+	if _klu.is_empty():
+		_klu = load_json("res://data/klu_aisyah.json").get("klu", [])
+	return _klu
+
+
+func klu_found(no: int) -> bool:
+	return save["seen"].has("klu_aisyah_%d" % no)
+
+
+func klu_count() -> int:
+	var n := 0
+	for k in klu_list():
+		if klu_found(int(k["no"])):
+			n += 1
+	return n
+
+
+## Misi 2.8 waits for the clues once Misi 2.7 is done
+func klu_blocks(zid: String) -> bool:
+	return zid == KLU_ZONE and zone_done(prev_zone(zid)) and klu_count() < klu_list().size()
+
+
+func klu_lock_text() -> String:
+	return tr("Kita belum cukup klu tentang Aisyah (%d/4). Cari tempat yang bersinar dulu.") % klu_count()
 
 
 ## the mission before zid in the same chapter ("" for a chapter's first one)

@@ -139,6 +139,68 @@ func close_top_overlay() -> void:
 ## in Gua Warisan. It is a cutscene: the dialogue taps above just hurry it.
 ## after Bab 1: the Arena yards on both islands (sparring players, dummies,
 ## board) and the Jalan Pintas in Beg Alif (locked places refuse)
+## Walk through the Pintu Kabus from Kampung Jejak, as a player does: one
+## conversation at a time on arrival (no area card or mission briefing on top
+## of it), Alif lands clear of the way back, and walking back works too.
+func _check_portal() -> bool:
+	for s in ["beg_alif", "bilik_tutorial", "arena_dibuka"]:
+		if not Game.save["seen"].has(s):
+			Game.save["seen"].append(s)
+	for z in Game.chapter_zones(1):
+		Game.zone_state(z)["done"] = true
+	if not Game.chapter_done(1):
+		Game.save["chapters_done"].append(1)
+	Game.save["map_pos"] = [11, 28]
+	Game.goto("world")
+	await wait_screen("world")
+	await wait_idle()
+	var w := scene()
+	w.player.place_at(Vector2i(11, 27), "north")
+	w.player._try_step(Vector2i(0, -1))
+	await _wait_reload(w)
+	# the first seconds in Lembah: who talks, and what else opens
+	var t := 0.0
+	var clash := ""
+	while t < 25.0:
+		var preps := Main.overlay_root().get_children().filter(func(c): return str(c.get_script().resource_path).ends_with("zone_prep.gd") if c.get_script() else false)
+		var card: bool = scene().title_card.modulate.a > 0.1
+		if Main.dialog_box.visible and (not preps.is_empty() or card):
+			clash = "dialogue with %s on top" % ("a mission briefing" if not preps.is_empty() else "the area card")
+			await shot("portal_clash")
+			break
+		await _close_preps()
+		await wait(0.05)
+		t += 0.05
+	if clash != "":
+		_fail("arriving in Lembah: " + clash)
+		return false
+	await wait_idle()
+	w = scene()
+	await shot("portal_lembah")
+	if w.player.cell.x < 82:
+		_fail("the portal should take Alif to Lembah, he is at %s" % str(w.player.cell))
+		return false
+	var near := false
+	for d in [Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]:
+		if w.portals.has(w.player.cell + d):
+			near = true
+	if near:
+		_fail("Alif lands right next to the way back (%s): one step and he is home again" % str(w.player.cell))
+		return false
+	# and back home through the gate behind him
+	var back: Vector2i = w.portals.keys().filter(func(c): return c.x >= 82)[0]
+	w.player.place_at(back + Vector2i(0, 1), "north")
+	w.player._try_step(Vector2i(0, -1))
+	await _wait_reload(w)
+	await wait_idle()
+	w = scene()
+	await shot("portal_home")
+	if w.player.cell.x >= 82 or w.portals.has(w.player.cell + Vector2i.UP):
+		_fail("walking back should land in Kampung Jejak, a step clear of the gate: %s" % str(w.player.cell))
+		return false
+	return true
+
+
 func _check_arena_travel() -> bool:
 	var w := scene()
 	if w.entities().get("arenas", []).size() != 2:
@@ -217,15 +279,16 @@ func _check_prologue() -> bool:
 				_fail("the textbook paragraph is taller than its page")
 				return false
 			await shot("prologue_ingatan")
-		for c in scene().get_children():
-			if c is TextureRect and c.texture:
+		var room: Control = scene().room  # the dream is seen through Alif's eyes: in the picture
+		for c in [room] + room.get_children() + scene().get_children():
+			if c is TextureRect and c.texture and c.is_visible_in_tree():
 				for k in dream_shots:
 					if not dream_shots[k] and c.texture.resource_path.get_file().get_basename() == k and c.modulate.a > 0.9:
 						dream_shots[k] = true
 						await shot("prologue_" + k)
 		await wait(0.1)
 		tw += 0.1
-	for ph in ["phone", "room", "reading", "doze", "port", "gua"]:
+	for ph in ["phone", "room", "reading", "doze", "port", "lari", "gua"]:
 		if not phases.has(ph):
 			_fail("prologue never reached '%s' (got %s)" % [ph, str(phases.keys())])
 			return false
@@ -246,6 +309,13 @@ func _run() -> void:
 		await _check_brawl()
 		print("AUTOTEST PASS (brawl only)")
 		get_tree().quit(0)
+		return
+	if "--only=portal" in OS.get_cmdline_user_args():
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		if await _check_portal():
+			print("AUTOTEST PASS (portal only) in %d s" % int(_t))
+			get_tree().quit(0)
 		return
 	if "--only=ronda3" in OS.get_cmdline_user_args():
 		await _check_ronda3()
@@ -403,10 +473,15 @@ func _run() -> void:
 
 	# ---- Bab 2: through the Pintu Kabus into Lembah Kebangkitan, eight missions
 	var ent: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world/entities.json"))
+	if not Game.save["seen"].has("lembah_intro"):
+		_fail("the Lembah scene should have played on the first trip there (Jalan Pintas)")
+		return
+	Game.save["seen"].erase("lembah_intro")  # once more, to watch it here
 	GameState.spawn_cell = Vector2i(int(ent["arrive2"][0]), int(ent["arrive2"][1]))
 	Game.goto("world")
 	await wait_screen("world")
-	await wait_idle()
+	if not await _check_lembah_intro():
+		return
 	await shot("lembah_arrive")
 	if scene().entities().get("misi_signs", []).size() != 8:
 		_fail("Lembah should have 8 numbered mission signposts")
@@ -492,6 +567,8 @@ func _play_zones(zones: Array) -> bool:
 			await wait_screen("world")
 			await wait_idle()
 		await shot("zone_" + z)
+		if z.begins_with("2_") and screen_name() == "world" and not await _take_klu(z):
+			return false
 		if z == "2_8" and screen_name() == "world" and scene()._gabenor == null:
 			_fail("Gabenor Sekatan should guard the Menara during Misi 2.8")
 			return false
@@ -569,6 +646,8 @@ func _play_ujian(ch: int, fail_first: bool) -> bool:
 			return false
 		await shot("ujian_%d_boss_on_map" % ch)
 		await wait_screen("ujian", 30)
+	if Game.ujian_def(ch).get("brawl", false):
+		return await _ujian_brawl(ch)
 	var q = await _ujian_puzzle()
 	if q == null:
 		return false
@@ -591,6 +670,58 @@ func _play_ujian(ch: int, fail_first: bool) -> bool:
 	return true
 
 
+## Ujian Bab 2: find Aisyah, then fight Kapten John in the Gelanggang with
+## Bab 2 questions; a win goes back to the Ujian (win scene) and the penutup
+func _ujian_brawl(ch: int) -> bool:
+	if not await _find_aisyah():
+		return false
+	await wait_screen("gelanggang", 60)
+	var s := hosted()
+	var m: BrawlMatch = s.match_node
+	if not m.fighters.any(func(f): return f.skin == "kapten_john" and f.display_name == "Kapten John"):
+		_fail("Ujian %d should be against Kapten John" % ch)
+		return false
+	if BattleRules.chapter != ch:
+		_fail("Ujian %d should ask Bab %d questions" % [ch, ch])
+		return false
+	if s._pause:
+		s._close_pause()
+	m.me_autopilot = true
+	Engine.time_scale = 4.0
+	var shot_done := false
+	var t := 0.0
+	while m.phase != "tamat":
+		if m.phase == "aksi":
+			for f in m.fighters:
+				if not f.is_me:
+					f.hp = mini(f.hp, 2)  # let the test win
+			if not shot_done:
+				shot_done = true
+				Engine.time_scale = 1.0
+				await wait(0.6)
+				await shot("ujian_%d_gelanggang" % ch)
+				Engine.time_scale = 4.0
+		await wait(0.1)
+		t += 0.1
+		if t > 120.0:
+			Engine.time_scale = 1.0
+			_fail("the Kapten John fight never ended")
+			return false
+	Engine.time_scale = 1.0
+	await wait(1.5)
+	await shot("ujian_%d_menang" % ch)
+	var go := find_button(s, "Teruskan")
+	if go == null:
+		_fail("Ujian %d fight not won" % ch)
+		return false
+	go.pressed.emit()
+	await wait_screen("penutup", 60)
+	if not Game.save["ujian"].has(ch):
+		_fail("Ujian %d not saved" % ch)
+		return false
+	return true
+
+
 func _ujian_puzzle():
 	var t := 0.0
 	while Game.active_puzzle == null:
@@ -601,6 +732,91 @@ func _ujian_puzzle():
 			return null
 	await wait(0.4)
 	return Game.active_puzzle
+
+
+## Lembah Kebangkitan, the first time: the officer and the girl in white, Pak
+## Wahab, no HUD until it is over, never twice.
+func _check_lembah_intro() -> bool:
+	var w := scene()
+	if not w.busy or w.hud.visible:
+		_fail("the Lembah scene should start at once, with the HUD hidden")
+		return false
+	var shot_pegawai := false
+	var t := 0.0
+	while not Game.save["seen"].has("lembah_intro"):
+		if not shot_pegawai and w.objects.get_children().any(func(n): return n is Npc and n.id == "kapten_john"):
+			shot_pegawai = true
+			await wait(0.8)
+			await shot("lembah_pegawai")
+		await wait(0.1)
+		t += 0.1
+		if t > 120.0:
+			_fail("the Lembah scene never finished")
+			return false
+	await wait_idle()
+	if not shot_pegawai or w.npc_node("pakcik_lembah") == null or not w.hud.visible or not w.player.can_move:
+		_fail("Lembah scene: officer %s, Pak Wahab %s, then Alif free" % [shot_pegawai, w.npc_node("pakcik_lembah")])
+		return false
+	return true
+
+
+## after a Bab 2 mission: a clue may be glowing nearby; the arrow points there
+## first, it goes into Beg Alif, and Misi 2.8 stays shut until all four
+func _take_klu(z: String) -> bool:
+	var w := scene()
+	for no in w.klu_nodes.keys():
+		if str(w.objective().get("name", "")) != "Klu Aisyah":
+			_fail("the gold arrow should point at the waiting clue, not %s" % str(w.objective()))
+			return false
+		if no == 4 and Game.zone_unlocked("2_8"):
+			_fail("Misi 2.8 should wait for the fourth clue")
+			return false
+		await w._talk_or_act("klu_aisyah_%d" % no)
+		await wait_idle()
+		if not Game.klu_found(no) or w.klu_nodes.has(no):
+			_fail("clue %d was not taken" % no)
+			return false
+		if no in [2, 4]:
+			Main.open_beg(w)
+			await wait(0.4)
+			await shot("beg_klu_%d" % no)
+			close_top_overlay()
+	if z == "2_8" and (Game.klu_count() != 4 or not Game.zone_unlocked("2_8")):
+		_fail("Misi 2.8 should open with all 4 clues (%d)" % Game.klu_count())
+		return false
+	return true
+
+
+## Gua Kabus: three girls in white; a wrong one first (no fight yet), then her
+func _find_aisyah() -> bool:
+	if Game.save["seen"].has("aisyah_dikenal"):
+		return true
+	var pick: Node = null
+	var t := 0.0
+	while pick == null:
+		for n in get_tree().root.find_children("*", "Control", true, false):
+			if str(n.get_script().resource_path if n.get_script() else "").ends_with("aisyah_pilih.gd"):
+				pick = n
+		await wait(0.1)
+		t += 0.1
+		if t > 60.0:
+			_fail("the Gua Kabus line-up never opened")
+			return false
+	await wait(0.5)
+	await shot("aisyah_pilih")
+	for b in pick.cards:
+		if int(b.get_meta("girl")) != 0:
+			pick._pick(b)
+			break
+	await wait(0.4)
+	await wait_idle()
+	if Game.active_puzzle != null or not is_instance_valid(pick):
+		_fail("a wrong girl should not start the Ujian")
+		return false
+	for b in pick.cards:
+		if int(b.get_meta("girl")) == 0:
+			pick._pick(b)
+	return true
 
 
 ## Pau wakes Alif in his room and explains; the start prompt sits on the bag,
@@ -694,7 +910,7 @@ func _check_kampung_intro() -> bool:
 	if not Game.save["seen"].has("bilik_tutorial") or not w.hud.visible or not w.player.can_move or w.player.sprite.rotation != 0.0:
 		_fail("after the map the player should be free, on Misi 1.1")
 		return false
-	if w.npc_node("makcik").cell != mak_home or w.npc_node("guru_silat").cell != guru_home:
+	if w.npc_node("makcik").cell != mak_home or (w.npc_node("guru_silat").cell - guru_home).length() > 9.0:  # he walks round the arena
 		_fail("Mak Som and Guru Jalal should go back home after the scene")
 		return false
 	if load("res://scripts/world/kampung_intro.gd").needed():

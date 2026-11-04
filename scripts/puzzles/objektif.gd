@@ -63,10 +63,6 @@ func _build_puzzle() -> void:
 	_q_label.custom_minimum_size.x = 1040
 	_q_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	qrow.add_child(_q_label)
-	var sp := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(60, 52))
-	sp.tooltip_text = "Baca soalan"
-	sp.pressed.connect(func(): Tts.speak(_q_text()))
-	qrow.add_child(sp)
 	qp.add_child(qrow)
 	body.add_child(qp)
 	var grid := GridContainer.new()

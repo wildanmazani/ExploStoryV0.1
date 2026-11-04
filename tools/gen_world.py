@@ -215,7 +215,7 @@ FOOT = {  # footprint (w, h) in cells; anchored at bottom-left
     "A": (4, 1), "Q": (1, 1), "W": (6, 2), "Z": (2, 1), "K": (4, 2), "Y": (6, 2), "G": (4, 1), "L": (4, 1), "S": (1, 1),
     "D": (6, 3), "n": (5, 2), "l": (1, 1), "w": (2, 1), "j": (1, 1), "k": (1, 1), "c": (2, 1),
     "g": (2, 1), "u": (1, 1), "e": (2, 1), "x": (2, 1), "p": (1, 1), "q": (1, 1),
-    "O": (8, 4), "V": (6, 3), "E": (6, 3), "N": (6, 3), "C": (6, 3), "h": (6, 3), "m": (10, 4),
+    "O": (8, 4), "V": (6, 3), "E": (6, 3), "N": (6, 3), "C": (6, 3), "h": (6, 3), "m": (12, 4),
     "t": (6, 4), "y": (3, 2), "a": (2, 1), "o": (2, 1), "d": (2, 1), "v": (4, 1), "z": (1, 1),
     # 1920s town (Lembah): 6/7 shophouse rows, 8 clock tower, 9 bandstand, @ steamship, $ newspaper stand,
     # ! mission signpost, % angsana, & rubber tree, + telegraph pole, 0 bicycle, # iron railing
@@ -361,7 +361,8 @@ for name, sp in entities["spots"].items():
 # Arena Ulang Kaji, a training and multiplayer yard: other players spar in
 # pairs, Guru Jalal stands by the training dummies, a Papan Markah by the
 # door (all inside the arena's reserved ring, so nothing else moves)
-entities["npcs"].append({"id": "guru_silat", "pos": [43, 39], "facing": "east", "wander": False})
+entities["npcs"].append({"id": "guru_silat", "pos": [43, 39], "facing": "east", "wander": False,
+                         "patrol": [[43, 40], [35, 40], [35, 38], [43, 38], [43, 39]]})  # he walks round the yard
 blocked[39][43] = True
 entities["arenas"] = []
 
@@ -382,11 +383,11 @@ reserve(55, 29, 2, 1)
 reserve(34, 22, 4, 1, r=1)
 
 # --- Lembah Kebangkitan landmarks (Bab 2) ------------------------------------
-ARRIVE = [90, 31]                       # where the portal from island 1 drops you
+ARRIVE = [90, 32]                       # where the portal from island 1 drops you (a step clear of the way back)
 entities["arrive2"] = ARRIVE
 entities["portals"] = [                 # stepping into the open columns warps
     {"cells": [[10, 26], [11, 26]], "to": ARRIVE, "facing": "south", "chapter": 2},
-    {"cells": [[89, 30], [90, 30]], "to": [11, 27], "facing": "south", "chapter": 2},
+    {"cells": [[89, 30], [90, 30]], "to": [11, 28], "facing": "south", "chapter": 2},
 ]
 for bx, by in BRIDGES2:
     place("n", bx, by, force=True)

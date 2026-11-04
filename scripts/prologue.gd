@@ -9,10 +9,11 @@ extends Control
 ##     quick jumps with blinks: key words fly into "Ingatan Alif", but it only holds two and
 ##     the letters keep scrambling: "satu pun tak melekat" (dyslexia, and
 ##     anyone drowning in facts)
-##  4. he dozes off; golden pages carry us into a dream: his classmates at an
-##     old port forget each other in the Kabus Lupa, then Gua Warisan where
-##     Nirbana breaks the Telaga Batu inscription into four Serpihan (the goal
-##     of Bab 1). Then Alif wakes up in his room in Dunia Explo-Story, where
+##  4. he dozes off; golden pages carry us into a dream, still through his
+##     eyes: his classmates on the stilt houses of an old port forget each
+##     other in the white Kabus Lupa, the fog chases him along the shore into
+##     Gua Warisan, where it becomes Nirbana, who breaks the Telaga Batu
+##     inscription into four Serpihan (the goal of Bab 1). Then Alif wakes up in his room in Dunia Explo-Story, where
 ##     Pau explains everything (scripts/world/bilik_alif.gd).
 ## Text: data/prologue_room.json and data/dialogue/prologue.json.
 
@@ -26,7 +27,7 @@ const VIEW_DESK := "res://assets/backgrounds/bg_meja_pov.png"
 const VIEW_BOOK := "res://assets/backgrounds/bg_meja_buku.png"
 const PAU_FOOD := "res://assets/ui/pau_piring.png"  ## his favourite, on a plate from Mak
 const SCREEN := Vector2(1280, 720)
-const PAU_ON_DESK := Rect2(104, 504, 128, 128)
+const PAU_ON_DESK := Rect2(150, 528, 96, 96)  ## on the desk, in front of the lamp
 const PAU_BY_BOOK := Rect2(74, 356, 150, 150)
 const PAGE_LEFT := Rect2(392, 240, 216, 280)   ## the flat part of the page the paragraph is on
 const PAGE_RIGHT := Rect2(660, 240, 216, 280)
@@ -45,8 +46,13 @@ const HOUSES := [
 	[Vector2(1078, 410), 1050.0, 1102.0],
 ]
 var _pacing := false  ## the friends walk their verandahs looking for a way out
+const PORT_VIEW := "res://assets/backgrounds/bg_pelabuhan_huru.png"
+const RUN_VIEW := "res://assets/backgrounds/bg_lari_gua.png"  ## the shore path to the cave
+const CAVE_MOUTH := Vector2(864, 304)  ## in RUN_VIEW at 1280x720
+var _fogs: Array[TextureRect] = []  ## drifting smoke bands (_fog_layer)
+var _running := false
 
-var phase := ""  ## what is on screen: phone, room, reading, doze, port, gua
+var phase := ""  ## what is on screen: phone, room, reading, doze, port, lari, gua
 
 var _data: Dictionary
 var _skipping := false
@@ -158,6 +164,10 @@ func _place_pau(r: Rect2) -> void:
 ## the picture moves under the eyes: never past its edges
 func _process(delta: float) -> void:
 	_sway += delta
+	for f in _fogs:
+		if is_instance_valid(f):
+			var loop: float = f.get_meta("loop")
+			f.position.x = fposmod(f.position.x - float(f.get_meta("speed")) * delta, loop) - loop
 	var z := maxf(_zoom, 1.02)
 	var half := SCREEN / (2.0 * z)
 	var look := _cam + _micro + Vector2(sin(_sway * 0.7) * 3.0, sin(_sway * 0.43) * 2.0)  # breathing
@@ -464,49 +474,72 @@ func _doze() -> void:
 	await _fade(flash, 1.0, 0.8)
 
 
-## The dream: his classmates at an old port forget each other in the Kabus
-## Lupa, then the cave, Nirbana and the four Serpihan.
+## The dream, through Alif's eyes like the room: from the reeds on the shore
+## of an old port he sees his classmates, each stuck on a different stilt
+## house. White fog (the Kabus Lupa) rolls in off the sea over them: they
+## forget each other, quarrel and shut themselves in. Then the fog comes for
+## him; he runs along the shore into a cave, the fog follows him in and
+## gathers into Nirbana, who breaks the inscription into four Serpihan.
 func _dream() -> void:
 	if _skipping: return
 	phase = "port"
-	var bg := _scene_image("res://assets/backgrounds/bg_pelabuhan_huru.png")
-	bg.modulate = Color(1.0, 0.75, 0.7)
-	# Alif among the reeds on the shore, his back to us, looking out at the stilt houses
-	var me := Game.skin_folder()
-	var alif := _sprite("res://assets/characters32/%s/%s_north.png" % [me, me], Vector2(300, 728), 5)
-	# each friend stuck on the verandah of a different house over the water
+	for c in room.get_children():  # nothing of the desk comes with him
+		c.visible = false
+	lamp.visible = false
+	pages.emitting = false
+	room.texture = UI.tex(PORT_VIEW)
+	room.modulate = Color(1.0, 0.82, 0.8)
+	_cam = Vector2(640, 380)
+	_zoom = 1.12
+	_micro = Vector2.ZERO
+	_shake = Vector2.ZERO
+	for lid in [lid_top, lid_bottom]:
+		lid.color = Color.BLACK
+	lid_top.size.y = 0.0
+	lid_bottom.position.y = 720.0
+	lid_bottom.size.y = 0.0
+	# a friend on the verandah of each house, lit from behind like the houses
 	var pals: Array[TextureRect] = []
 	for i in FRIENDS.size():
-		var at: Vector2 = HOUSES[i][0]
-		pals.append(_sprite(_rakan(FRIENDS[i], "south"), at, 2))
+		var p := _sprite(_rakan(FRIENDS[i], "south"), HOUSES[i][0], 2, room)
+		p.modulate = Color(0.8, 0.68, 0.76)
+		pals.append(p)
 	MusicDirector.play("siguntang", 1.0)
 	flash.color = Color(1, 1, 1)
 	_pacing = true
 	for i in pals.size():
 		_pace(pals[i], FRIENDS[i], HOUSES[i][1], HOUSES[i][2], i * 0.6)
-	await _fade(flash, 0.0, 0.8)
+	_eyes_on = true
+	_blink_loop()
+	_micro_loop()
+	await _fade(flash, 0.0, 1.0)
+	# his eyes go from house to house: someone he knows on every one
 	for i in pals.size():
+		if _skipping: return
+		await _look(HOUSES[i][0] + Vector2(0, -40), 1.8, 0.55)
 		_emote(pals[i], "?", Color.WHITE)
-		await _wait(0.25)
-	_step_up(alif)
+		await _wait(0.8)
+	await _look(Vector2(640, 380), 1.12, 0.8)
 	await _say("pro_friends_1")
 	if _skipping: return
 
-	# the Kabus Lupa rolls in: they stop, see each other across the water...
+	# the white fog comes in off the sea, over the houses and round the stilts
 	_pacing = false
-	var fog := ColorRect.new()
-	fog.color = Color(0.35, 0.15, 0.5, 0.0)
-	fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fog.size = Vector2(1280, 720)
-	add_child(fog)
-	move_child(fog, bg.get_index() + 1)
-	Sfx.play("whoosh", -4.0, 0.7)
+	_heart_gap = 1.3
+	var far := _fog_layer(room, 230.0, 3.0, 5.0, 11)
+	var mid := _fog_layer(room, 520.0, 4.0, 12.0, 23)
+	far.modulate.a = 0.0
+	mid.modulate.a = 0.0
+	Sfx.play("whoosh", -4.0, 0.5)
 	var k := create_tween().set_parallel()
-	k.tween_property(fog, "color:a", 0.4, 1.4)
-	for i in pals.size():
-		k.tween_property(pals[i], "modulate", Color(0.8, 0.65, 1.0), 1.4)
+	k.tween_property(far, "modulate:a", 0.85, 3.5)
+	k.tween_property(mid, "modulate:a", 0.8, 3.5)
+	k.tween_property(mid, "position:y", 300.0, 3.5).set_trans(Tween.TRANS_SINE)
+	k.tween_property(room, "modulate", Color(0.86, 0.83, 0.87), 3.5)  # the colour goes out of everything
+	for p in pals:
+		k.tween_property(p, "modulate", Color(0.9, 0.9, 0.94), 3.5)  # pale in the fog
 	await k.finished
-	# ...and turn on one another: Aisyah and Ravi on the left, Mei Ling and Daniel on the right
+	# ...they see each other through it, and no longer know who they are
 	var faces := ["east", "west", "east", "west"]
 	for i in pals.size():
 		pals[i].texture = UI.tex(_rakan(FRIENDS[i], faces[i]))
@@ -527,48 +560,94 @@ func _dream() -> void:
 	# one by one they go inside and slam the door
 	for i in [3, 0, 2, 1]:
 		pals[i].texture = UI.tex(_rakan(FRIENDS[i], "north"))
-		await _wait(0.2)
+		await _wait(0.25)
 		var go := create_tween()
 		go.tween_property(pals[i], "modulate:a", 0.0, 0.18)
 		Sfx.play("bump", -3.0, 0.8)
-		_shake_node(bg, 0.15)
-		await _wait(0.35)
-	_shake_node(bg, 1.6)
-	Sfx.play("bump", -2.0)
-	alif.texture = UI.tex("res://assets/characters32/%s/%s_south.png" % [me, me])
-	_hop(alif)
+		_shake_room(true)
+		await _wait(0.12)
+		_shake_room(false)
+		await _wait(0.3)
+
+	# and now the fog comes across the water for him
+	_heart_gap = 0.75
+	MusicDirector.play("debar", 0.8)
+	var near := _fog_layer(self, 760.0, 5.0, 30.0, 37)  # right in front of his eyes
+	move_child(near, lid_top.get_index())
+	near.modulate.a = 0.0
+	Sfx.play("whoosh", -2.0, 0.4)
+	var c := create_tween().set_parallel()
+	c.tween_property(mid, "position:y", 380.0, 3.0)
+	c.tween_property(mid, "modulate:a", 1.0, 3.0)
+	c.tween_property(far, "modulate:a", 1.0, 3.0)
+	c.tween_property(near, "position:y", 430.0, 3.0).set_trans(Tween.TRANS_SINE)
+	c.tween_property(near, "modulate:a", 0.9, 3.0)
+	c.tween_property(self, "_zoom", 1.03, 3.0)  # he backs away
+	await c.finished
 	await _say("pro_huru")
 	if _skipping: return
 
-	# run into the cave: he turns and runs off, a hop on every stride
-	alif.texture = UI.tex("res://assets/characters32/%s/%s_east.png" % [me, me])
-	var run := create_tween()
-	run.tween_property(alif, "position:x", 1300.0, 0.9).set_ease(Tween.EASE_IN)
-	var stride := create_tween().set_loops(5)
-	stride.tween_property(alif, "position:y", alif.position.y - 14, 0.09)
-	stride.tween_property(alif, "position:y", alif.position.y, 0.09)
+	# he turns and runs: the view whips round
 	Sfx.play("whoosh")
+	create_tween().tween_property(self, "_cam:x", 1280.0, 0.25).set_ease(Tween.EASE_IN)
 	flash.color = Color.BLACK
-	await _fade(flash, 1.0, 0.6)
-	if run.is_running():
-		await run.finished
-	phase = "gua"
+	await _fade(flash, 1.0, 0.25)
 	for p in pals:
 		p.queue_free()
-	fog.queue_free()
-	bg.texture = UI.tex("res://assets/backgrounds/bg_gua_warisan.png")
-	bg.modulate = Color.WHITE
-	alif.position = Vector2(300 - alif.size.x / 2.0, 640 - alif.size.y)
-	alif.texture = UI.tex("res://assets/characters32/%s/%s_east.png" % [Game.skin_folder(), Game.skin_folder()])
-	await _fade(flash, 0.0, 0.8)
+	far.queue_free()
+	mid.queue_free()
+	phase = "lari"
+	room.texture = UI.tex(RUN_VIEW)
+	room.modulate = Color.WHITE
+	_cam = Vector2(640, 400)
+	_zoom = 1.05
+	near.position.y = 600.0  # still right behind him, at the edge of his eyes
+	near.modulate.a = 0.75
+	_running = true
+	_run_steps()
+	await _fade(flash, 0.0, 0.25)
+	var run := create_tween().set_parallel()
+	run.tween_property(self, "_zoom", 1.7, 5.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	run.tween_property(self, "_cam", CAVE_MOUTH, 5.0).set_trans(Tween.TRANS_SINE)
+	run.tween_property(near, "position:y", 470.0, 5.0)
+	await _say("pro_lari")
+	if _skipping: return
+	if run.is_running():
+		await run.finished
+	# into the dark mouth of the cave
+	var dive := create_tween().set_parallel()
+	dive.tween_property(self, "_zoom", 3.2, 0.9).set_ease(Tween.EASE_IN)
+	dive.tween_property(near, "position:y", 360.0, 0.9)
+	await _fade(flash, 1.0, 0.9)
+	_running = false
+	_shake = Vector2.ZERO
+
+	phase = "gua"
+	room.texture = UI.tex("res://assets/backgrounds/bg_gua_warisan.png")
+	_cam = Vector2(640, 380)
+	_zoom = 1.08
+	near.modulate.a = 0.0
+	_heart_gap = 1.2
+	MusicDirector.play("siguntang", 2.5)
+	await _fade(flash, 0.0, 0.9)
 	await _say("pro_gua_1")
 	if _skipping: return
-	# Nirbana gathers out of the mist
-	var nir := _sprite("res://assets/characters32/nirbana/nirbana_south.png", Vector2(900, 640), 8)
-	nir.modulate = Color(0.6, 0.4, 0.9, 0.0)
+	# the fog comes in after him and curls in the middle of the cave...
+	var swirl := _fog_layer(room, 300.0, 4.0, -22.0, 51)
+	swirl.modulate.a = 0.0
 	Sfx.play("whoosh", -4.0, 0.6)
+	var sw := create_tween()
+	sw.tween_property(swirl, "modulate:a", 0.9, 1.6)
+	await _look(Vector2(640, 430), 1.25, 1.2)
+	if sw.is_running():
+		await sw.finished
+	# ...and Nirbana takes shape out of it, white at first
+	var nir := _sprite("res://assets/characters32/nirbana/nirbana_south.png", Vector2(640, 640), 8, room)
+	nir.modulate = Color(2.4, 2.4, 2.5, 0.0)
 	var t := create_tween()
+	t.tween_property(nir, "modulate", Color(2.4, 2.4, 2.5, 1.0), 1.0)
 	t.tween_property(nir, "modulate", Color.WHITE, 1.2)
+	t.parallel().tween_property(swirl, "modulate:a", 0.35, 1.2)
 	await t.finished
 	var bob := create_tween().set_loops()
 	bob.tween_property(nir, "position:y", nir.position.y - 8, 1.0).set_trans(Tween.TRANS_SINE)
@@ -577,15 +656,63 @@ func _dream() -> void:
 	if _skipping: return
 	# the inscription cracks into four shards that fly out of the cave
 	Sfx.play("bump", 0.0, 0.6)
-	_shake_node(bg, 0.6)
+	_shake_room(true)
 	flash.color = Color(1, 1, 1)
 	flash.modulate.a = 0.0
 	var f := create_tween()
 	f.tween_property(flash, "modulate:a", 0.8, 0.08)
 	f.tween_property(flash, "modulate:a", 0.0, 0.4)
+	await _wait(0.5)
+	_shake_room(false)
 	await _shards()
 	await _say("pro_gua_3")
 	bob.kill()
+
+
+## running: the view bobs with every stride, footsteps on the sand
+func _run_steps() -> void:
+	var t := 0.0
+	var foot := 0
+	while _running and not _skipping and is_inside_tree():
+		await get_tree().create_timer(0.03).timeout
+		t += 0.03
+		_shake = Vector2(sin(t * 7.0) * 5.0, -absf(sin(t * 7.0)) * 14.0)
+		if int(t * 7.0 / PI) != foot:
+			foot = int(t * 7.0 / PI)
+			Sfx.play("step_sand", 0.0, randf_range(0.9, 1.1))
+	_shake = Vector2.ZERO
+
+
+## a band of white smoke: seamless noise, soft at the top and bottom, drifting
+## sideways for ever (_process). Chunky pixels, like the pictures under it.
+func _fog_layer(parent: Control, y: float, px: float, speed: float, noise_seed: int) -> TextureRect:
+	const W := 320
+	const H := 96
+	var noise := FastNoiseLite.new()
+	noise.seed = noise_seed
+	noise.frequency = 0.018
+	noise.fractal_octaves = 4
+	var src := noise.get_seamless_image(W, H)
+	var img := Image.create(W, H, false, Image.FORMAT_RGBA8)
+	for yy in H:
+		var edge := sin(PI * float(yy) / float(H - 1))
+		for x in W:
+			var v := src.get_pixel(x, yy).r
+			var a := clampf((v - 0.25) / 0.45, 0.0, 1.0) * edge
+			img.set_pixel(x, yy, Color(0.94, 0.94, 0.96, snappedf(a, 0.2)))
+	var r := TextureRect.new()
+	r.texture = ImageTexture.create_from_image(img)
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	r.stretch_mode = TextureRect.STRETCH_TILE
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.scale = Vector2(px, px)
+	r.size = Vector2(1280.0 / px + W * 2, H)
+	r.position = Vector2(-randf() * W * px, y)
+	r.set_meta("speed", speed)
+	r.set_meta("loop", W * px)
+	parent.add_child(r)
+	_fogs.append(r)
+	return r
 
 
 func _rakan(who: String, facing: String) -> String:
@@ -636,8 +763,7 @@ func _emote(n: Control, text: String, col: Color) -> void:
 	l.position = n.position + Vector2(n.size.x / 2.0 - 20, n.size.y * 0.15 - 30)
 	l.pivot_offset = l.size / 2.0
 	l.scale = Vector2(0.2, 0.2)
-	add_child(l)
-	move_child(l, flash.get_index())
+	_put(l, n.get_parent())
 	var t := create_tween()
 	t.tween_property(l, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	t.tween_property(l, "position:y", l.position.y - 10, 0.9)
@@ -658,8 +784,7 @@ func _anger(n: Control) -> void:
 			var o: Vector2 = Vector2(12, 12) + s * 5.0
 			m.draw_line(o, o + Vector2(s.x * 6.0, 0), c, 3.0)
 			m.draw_line(o, o + Vector2(0, s.y * 6.0), c, 3.0))
-	add_child(m)
-	move_child(m, flash.get_index())
+	_put(m, n.get_parent())
 	var t := create_tween().set_loops(4)
 	t.tween_property(m, "scale", Vector2(1.3, 1.3), 0.15)
 	t.tween_property(m, "scale", Vector2.ONE, 0.15)
@@ -676,43 +801,29 @@ func _shove(n: Control, dir: int) -> void:
 	_hop(n)
 
 
-## Alif takes two steps towards the water's edge
-func _step_up(n: Control) -> void:
-	var y := n.position.y
-	var t := create_tween()
-	for i in 2:
-		t.tween_property(n, "position:y", y - 10 * (i + 1) - 6, 0.12)
-		t.tween_property(n, "position:y", y - 10 * (i + 1), 0.12)
-
-
 func _hop(n: Control) -> void:
 	var t := create_tween()
 	t.tween_property(n, "position:y", n.position.y - 12, 0.1)
 	t.tween_property(n, "position:y", n.position.y, 0.15)
 
 
-func _scene_image(path: String) -> TextureRect:
-	var r := TextureRect.new()
-	r.texture = UI.tex(path)
-	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	r.size = Vector2(1280, 720)
-	add_child(r)
-	move_child(r, flash.get_index())
-	return r
-
-
-## a character sprite standing with its feet at `feet`, `sc` times bigger
-func _sprite(path: String, feet: Vector2, sc: float) -> TextureRect:
+func _sprite(path: String, feet: Vector2, sc: float, parent: Control = null) -> TextureRect:
 	var r := TextureRect.new()
 	r.texture = UI.tex(path)
 	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	r.size = r.texture.get_size() * sc
 	r.position = feet - Vector2(r.size.x / 2.0, r.size.y)
-	add_child(r)
-	move_child(r, flash.get_index())
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_put(r, parent if parent else self)
 	return r
+
+
+## into the picture (it moves with Alif's eyes) or on the screen, under the flash
+func _put(n: Control, parent: Control) -> void:
+	parent.add_child(n)
+	if parent == self:
+		move_child(n, flash.get_index())
 
 
 func _shards() -> void:
@@ -757,16 +868,6 @@ func _shard(icon: String) -> Control:
 	return box
 
 
-func _shake_node(n: Control, seconds: float) -> void:
-	var t := 0.0
-	while t < seconds and not _skipping and is_inside_tree():
-		n.position = Vector2(randf_range(-5, 5), randf_range(-5, 5))
-		await get_tree().create_timer(0.04).timeout
-		t += 0.04
-	n.position = Vector2.ZERO
-
-
-# --- helpers ----------------------------------------------------------------
 func _say(id: String) -> void:
 	if _skipping: return
 	await Game.say(Dialogue.lines(id))

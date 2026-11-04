@@ -44,9 +44,6 @@ func _build() -> void:
 	_page_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	nav.add_child(_page_label)
-	var read := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56))
-	read.pressed.connect(_read_page)
-	nav.add_child(read)
 	_next = UI.button("Seterus »")
 	_next.pressed.connect(func(): _show(_page + 1))
 	nav.add_child(_next)

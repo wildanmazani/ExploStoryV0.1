@@ -10,6 +10,9 @@ extends Control
 ## buttons and answers. Nothing pauses online: Jeda only offers to leave.
 ##   params: {online, code, my_id, host_id, players: [{id, name, skin}], team:
 ##            "pvp"|"coop", level, stage, chapter}
+## Ujian Bab (params.ujian = chapter, params.foe = {name, skin}): 1 lawan 1
+## against the boss with that chapter's questions; winning goes back to the
+## Ujian screen (the win scene and the penutup), losing offers another go.
 
 const UI = preload("res://scripts/ui/ui.gd")
 const TouchControls = preload("res://scripts/ui/touch_controls.gd")
@@ -72,7 +75,9 @@ func _ready() -> void:
 		_host = str(params.get("host_id", "")) == str(params.get("my_id", ""))
 		match_node.setup_online(_online_roster(), str(params.get("my_id", "")), _host, str(params.get("level", "biasa")), int(params.get("chapter", 1)))
 	else:
-		match_node.setup(str(params.get("format", "1v1")), str(params.get("level", "biasa")))
+		if params.has("ujian"):
+			BattleRules.chapter = int(params["ujian"])
+		match_node.setup(str(params.get("format", "1v1")), str(params.get("level", "biasa")), params.get("foe", {}))
 	match_node.me_autopilot = bool(params.get("autopilot", false))
 	match_node.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(match_node)
@@ -383,10 +388,6 @@ func _build_card() -> void:
 	_q = UI.label("", "InkHeading", true)
 	_q.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	qrow.add_child(_q)
-	var sp := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(60, 52))
-	sp.tooltip_text = "Baca soalan"
-	sp.pressed.connect(func(): Tts.speak(_q.text))
-	qrow.add_child(sp)
 	col.add_child(qrow)
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -578,6 +579,22 @@ func _show_result() -> void:
 	var back := UI.button("Kembali", "", 200)
 	back.pressed.connect(func(): Game.goto("lobby"))
 	row.add_child(back)
+	if params.has("ujian"):  # the chapter test: win to go on, or try again
+		for b in row.get_children():
+			b.queue_free()
+		t.text = tr("%s TUMBANG!") % str(params.get("foe", {}).get("name", "")).to_upper() if won else tr("BELUM KALI INI")
+		note.text = tr("Ujian Bab %d lulus!") % int(params["ujian"]) if won else tr("Ulang kaji Nota Alif, kemudian cuba lagi. Soalan baru setiap kali.")
+		if won:
+			var go := UI.button(tr("Teruskan »"), "Primary", 240)
+			go.pressed.connect(func(): Game.goto("ujian", {"chapter": int(params["ujian"]), "won": true}))
+			row.add_child(go)
+		else:
+			var rev := UI.button(tr("Ulang kaji dulu"), "", 240)
+			rev.pressed.connect(func(): Game.goto("peta"))
+			row.add_child(rev)
+			var again2 := UI.button(tr("Cuba lagi »"), "Primary", 240)
+			again2.pressed.connect(func(): Game.goto("gelanggang", params))
+			row.add_child(again2)
 	c.add_child(row)
 	card.add_child(c)
 	_result.add_child(UI.center(card))
@@ -682,7 +699,7 @@ func _leave() -> void:
 	get_tree().paused = false
 	MusicDirector.puzzle(false)
 	Engine.time_scale = 1.0
-	Game.goto("lobby")
+	Game.goto("peta" if params.has("ujian") else "lobby")
 
 
 ## the silat mat on the floor (a trapezoid, so the floor reads as depth)

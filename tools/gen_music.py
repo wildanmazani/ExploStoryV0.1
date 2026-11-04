@@ -9,7 +9,8 @@ deterministic. Output: assets/audio/music/<area>_<stem>.ogg and stingers
 Each area has two stems that loop in sync:
   base   = gong, saron balungan, kendang, drone  (always playing)
   melody = bonang + suling                        (faded in while exploring)
-Plus a shared "fokus" stem for puzzles and short one-shot stingers.
+Plus a shared "fokus" stem for puzzles, "debar" for chases and short one-shot
+stingers.
 
 Run: python tools/gen_music.py
 """
@@ -235,6 +236,41 @@ def fokus(bpm=90, base=146.8):
     save("fokus", buf, peak=0.35)
 
 
+def debar(bpm=132, base=110.0):
+    """Chases and fear (the fog in the dream, Aisyah running): a racing kendang
+    and a low pulse that never settles, a semitone apart, under bonang
+    tremolos that climb a little every bar. Same two stems as an area."""
+    beat = 60.0 / bpm
+    beats = 32
+    total = beats * beat
+    n = int(total * RATE)
+    base_buf = array("f", bytes(4 * n))
+    mel_buf = array("f", bytes(4 * n))
+    semi = 2 ** (1 / 12)
+    for b in range(beats):
+        t = b * beat
+        bar = b // 4
+        # heartbeat kendang: dhung-dhung on the beat, slaps in between
+        place(base_buf, kendang("dhung", 0.4), t, n)
+        place(base_buf, kendang("dhung", 0.26), t + beat * 0.28, n)
+        place(base_buf, kendang("tak", 0.2), t + beat * 0.5, n)
+        place(base_buf, kendang("tung", 0.14), t + beat * 0.75, n)
+        # the low pulse rocks between two notes a semitone apart
+        f = base if bar % 2 == 0 else base * semi
+        place(base_buf, kempul(f, 0.2), t, n)
+        place(base_buf, kempul(f, 0.12), t + beat / 2, n)
+        if b % 8 == 0:
+            place(base_buf, gong(base / 2, 0.4), t, n)
+        # tremolo: the tritone, rising a step every bar and back down
+        lift = semi ** [0, 1, 2, 3, 2, 1, 3, 4][bar]
+        for k in range(4):
+            fk = base * 4 * lift * (1 if k % 2 == 0 else math.sqrt(2))
+            place(mel_buf, bonang(fk, 0.07 + 0.01 * (bar % 4)), t + k * beat / 4, n)
+    place(base_buf, drone(base / 2, total, 0.05), 0, n)
+    save("debar_base", base_buf)
+    save("debar_melody", mel_buf, peak=0.32)
+
+
 def stinger(name, degrees, base, step, with_gong=True):
     total = step * len(degrees) + 3.0
     n = int(total * RATE)
@@ -248,6 +284,10 @@ def stinger(name, degrees, base, step, with_gong=True):
 
 
 if __name__ == "__main__":
+    import sys
+    if "debar" in sys.argv[1:]:  # python tools/gen_music.py debar: only that one
+        debar()
+        sys.exit()
     area("tajuk", 76, 293.7, 11, drums="calm")
     area("bilik", 64, 220.0, 5, drums="none", flute=False, mood="night")
     area("permulaan", 84, 261.6, 21, drums="calm")
@@ -257,6 +297,7 @@ if __name__ == "__main__":
     area("melaka", 80, 277.2, 17, drums="calm")
     area("siguntang", 66, 233.1, 29, drums="none")
     fokus()
+    debar()
     stinger("st_item", [0, 2, 4, 5, 7], 293.7, 0.13)
     stinger("st_zone", [0, 2, 3, 5, 7, 10], 261.6, 0.18)
     stinger("st_levelup", [0, 3, 5, 8], 329.6, 0.11, with_gong=False)

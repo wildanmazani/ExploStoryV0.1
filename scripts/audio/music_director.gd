@@ -10,6 +10,7 @@ const DIR := "res://assets/audio/music/"
 const BPM := {
 	"tajuk": 76, "bilik": 64, "permulaan": 84, "kampung": 92, "gerbang": 70,
 	"pelabuhan": 108, "melaka": 80, "siguntang": 66,
+	"debar": 132,  ## chases and fear: the fog in the dream, Aisyah running away
 }
 const AREA_TRACK := {  # world area id -> track
 	"permulaan": "permulaan", "kampung": "kampung", "gerbang": "gerbang",

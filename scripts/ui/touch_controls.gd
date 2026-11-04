@@ -184,7 +184,8 @@ static func _round_tex(color: Color) -> Texture2D:
 # ------------------------------------------------------------------ joystick
 ## Floating stick: waits faintly at its rest spot, jumps to wherever the thumb
 ## lands inside its zone and follows the thumb if it slides too far. The
-## strongest axis presses one of the four move actions (the world is a grid);
+## direction presses one or two of the four move actions (diagonals step
+## diagonally on the grid);
 ## pushing to the rim also presses "run".
 class Stick extends Node2D:
 	const DEAD := 0.3
@@ -198,7 +199,7 @@ class Stick extends Node2D:
 	var knob := Vector2.ZERO   ## thumb offset from base
 	var touch := -1            ## finger index holding the stick, -1 = none
 	var _held := {}            ## action -> pressed by us
-	var _dir := ""
+	var _dir: Array = []
 
 	func _input(e: InputEvent) -> void:
 		if not is_visible_in_tree():
@@ -223,18 +224,15 @@ class Stick extends Node2D:
 			v = pos - base
 		knob = v
 		var n := v / radius
-		var want := ""
+		var want: Array = []
 		if n.length() >= DEAD:
-			# a little stickiness near the diagonals so the direction doesn't flicker
-			var horiz := absf(n.x) > absf(n.y)
-			if _dir in ["move_left", "move_right"]:
-				horiz = absf(n.x) * 1.25 > absf(n.y)
-			elif _dir in ["move_up", "move_down"]:
-				horiz = absf(n.x) > absf(n.y) * 1.25
-			if horiz:
-				want = "move_right" if n.x > 0 else "move_left"
-			else:
-				want = "move_down" if n.y > 0 else "move_up"
+			# eight ways: each 45 degree slice of the circle, the diagonals press
+			# two keys at once (Alif steps diagonally)
+			var slice := posmod(roundi(n.angle() / (PI / 4.0)), 8)
+			if slice in [7, 0, 1]: want.append("move_right")
+			if slice in [3, 4, 5]: want.append("move_left")
+			if slice in [1, 2, 3]: want.append("move_down")
+			if slice in [5, 6, 7]: want.append("move_up")
 		_apply(want, n.length() >= RUN)
 		queue_redraw()
 
@@ -242,13 +240,13 @@ class Stick extends Node2D:
 		touch = -1
 		knob = Vector2.ZERO
 		base = rest
-		_apply("", false)
+		_apply([], false)
 		queue_redraw()
 
-	func _apply(dir: String, run: bool) -> void:
-		_dir = dir
+	func _apply(dirs: Array, run: bool) -> void:
+		_dir = dirs
 		for a in MOVES + ["run"]:
-			var on: bool = a == dir or (a == "run" and run and dir != "")
+			var on: bool = a in dirs or (a == "run" and run and not dirs.is_empty())
 			if on != bool(_held.get(a, false)):
 				_held[a] = on
 				if on:

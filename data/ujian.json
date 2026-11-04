@@ -11,8 +11,9 @@
     "before": "ujian_1_before", "win": "ujian_1_win", "fail": "ujian_fail", "npc_talk": "ujian_1_npc"
   },
   "2": {
-    "boss": "Bayang Nirbana",
-    "npc": "nirbana",
+    "boss": "Kapten John",
+    "npc": "kapten_john",
+    "brawl": true, "stage": "gua", "level": "biasa",
     "pos": [129, 31],
     "where": "depan Menara Pentadbiran",
     "background": "res://assets/backgrounds/bg_zon2_8.png",

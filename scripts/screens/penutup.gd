@@ -168,9 +168,6 @@ func _card(title: String, text: String, icon_path: String) -> void:
 	c.add_child(b)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var sp := UI.icon_button("res://assets/icons/suara.png", "Blue", Vector2(64, 56))
-	sp.pressed.connect(func(): Tts.speak(text))
-	row.add_child(sp)
 	var ok := UI.button("Teruskan »", "Primary", 220)
 	row.add_child(ok)
 	c.add_child(row)
