@@ -10,20 +10,20 @@ const UI = preload("res://scripts/ui/ui.gd")
 const MOVES := [
 	["attack_punch", "Tumbuk"],
 	["attack_kick", "Sepak"],
-	["jump", "Lompat (tekan Sepak masa di udara = tendangan terbang)"],
-	["grab", "Ambil senjata / baling senjata"],
-	["block", "Tangkis (tahan) - kurangkan kesakitan"],
-	["special", "Jurus Kilat (hanya bila dapat JURUS!)"],
-	["run", "Lari (tahan sambil bergerak)"],
+	["jump", "Lompat"],
+	["grab", "Ambil / baling senjata"],
+	["block", "Tangkis (tahan)"],
+	["special", "Jurus Kilat"],
+	["run", "Lari (tahan)"],
 ]
 ## the on-screen buttons, same names as touch_controls.gd
 const TOUCH := [
-	["Tumbuk", "Butang kuning paling besar"],
+	["Tumbuk", "Butang kuning besar"],
 	["Sepak", "Butang oren"],
 	["Lompat", "Butang biru"],
-	["Ambil", "Butang hijau: ambil / baling senjata"],
-	["Tangkis", "Butang kelabu: tahan untuk menangkis"],
-	["Jurus", "Butang ungu: Jurus Kilat (bila dapat JURUS!)"],
+	["Ambil", "Butang hijau: ambil / baling"],
+	["Tangkis", "Butang kelabu (tahan)"],
+	["Jurus", "Butang ungu"],
 ]
 
 
@@ -31,37 +31,42 @@ static func on_touch() -> bool:
 	return Game.controls_on_screen()
 
 
-## the whole guide; scroll it if the space is short
+## the whole guide, short on purpose: Cara main (3 steps), Tip, Kawalan
 static func build() -> Control:
 	var col := UI.vbox(10)
-	col.add_child(_heading("Setiap pusingan ada 3 langkah"))
+	col.add_child(_heading("Cara main"))
+	var steps := UI.hbox(10)
 	for s in [
-		["1. SOALAN (15 saat)", "Semua orang jawab soalan yang sama. Gelanggang berhenti masa ni. Klik jawapan kau." if on_touch() else "Semua orang jawab soalan yang sama. Gelanggang berhenti masa ni. Tekan 1, 2, 3 atau 4, atau klik jawapan."],
-		["2. KEPUTUSAN", "Jawapan betul = SEMANGAT: serangan penuh dan sebuah senjata sekolah jatuh dekat kau. Salah = LEMAH: serangan kau tinggal 30% sahaja. Paling cepat betul = JURUS KILAT."],
-		["3. AKSI! (10 saat)", "Bertarung! Pasukan yang semua ahlinya pengsan, kalah. Selepas 8 pusingan, pasukan dengan nyawa paling banyak menang."],
+		["1. SOALAN", "Jawab soalan."],
+		["2. KEPUTUSAN", "Betul = SEMANGAT\nSalah = LEMAH"],
+		["3. AKSI!", "Bertarung 10 saat."],
 	]:
-		col.add_child(_point(s[0], s[1]))
-	col.add_child(_heading("Kawalan skrin sentuh" if on_touch() else "Kawalan papan kekunci"))
+		steps.add_child(_step(s[0], s[1]))
+	col.add_child(steps)
+	var win := UI.label(_t("Menang: semua lawan pengsan, atau nyawa paling banyak selepas 8 pusingan."), "Ink", true)
+	win.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	col.add_child(win)
+	col.add_child(_heading("Tip"))
+	for t in [
+		"Jawab betul = serangan 3 kali ganda.",
+		"Paling cepat betul = JURUS KILAT.",
+		"Kutip senjata, pukul atau baling.",
+		"Diserang? Tahan Tangkis.",
+	]:
+		var l := UI.label("•  " + _t(t), "Ink", true)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.add_child(l)
+	col.add_child(_heading("Kawalan"))
 	if on_touch():
-		col.add_child(_point("Bergerak", "D-pad atau joystick di sebelah kiri"))
+		col.add_child(_point("Bergerak", "Joystick di kiri"))
 		for t in TOUCH:
 			col.add_child(_point(t[0], t[1]))
 	else:
 		col.add_child(_point(Game.brawl_key_names("move_up") + " " + Game.brawl_key_names("move_left") + " " + Game.brawl_key_names("move_down") + " " + Game.brawl_key_names("move_right"), "Bergerak"))
 		for m in MOVES:
 			col.add_child(_point(Game.brawl_key_names(m[0]), m[1]))
-		col.add_child(_point("Esc / P", "Jeda permainan"))
-	col.add_child(_heading("Tip"))
-	for t in [
-		"Jawab dengan betul dulu. Semangat buat serangan kau 3 kali lebih kuat.",
-		"Kutip senjata yang jatuh (Ambil). Pukul dengan senjata atau baling ke arah lawan.",
-		"Lawan menyerang? Tahan Tangkis. Kau hanya rasa sedikit sakit.",
-		"Kombo: Tumbuk, Tumbuk, Sepak dengan cepat.",
-		"Baru main? Pilih tahap lawan Mudah dan pasukan 1 lwn 1.",
-	]:
-		var l := UI.label("•  " + _t(t), "Ink", true)
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		col.add_child(l)
+		col.add_child(_point("1 2 3 4", "Jawab soalan"))
+		col.add_child(_point("Esc / P", "Jeda"))
 	return col
 
 
@@ -69,6 +74,24 @@ static func _heading(t: String) -> Label:
 	var h := UI.label(_t(t), "InkHeading")
 	h.add_theme_color_override("font_color", Color("8a4b14"))
 	return h
+
+
+## one of the three round steps: a small box, name on top, a few words under
+static func _step(title: String, what: String) -> Control:
+	var box := PanelContainer.new()
+	box.add_theme_stylebox_override("panel", UI.sb(Color("3a2a1c"), Color("c99a4a"), 2, 8, 10))
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var v := UI.vbox(4)
+	var h := UI.label(_t(title), "")
+	h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	h.add_theme_color_override("font_color", Color("ffe7a8"))
+	v.add_child(h)
+	var l := UI.label(_t(what), "Small", true)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.add_theme_color_override("font_color", Color.WHITE)
+	v.add_child(l)
+	box.add_child(v)
+	return box
 
 
 ## a key chip (or step name) on the left, what it does on the right
@@ -95,7 +118,7 @@ static func card(button_text: String, live := false) -> PanelContainer:
 	var card := UI.panel("Paper")
 	card.custom_minimum_size = Vector2(980, 0)
 	var c := UI.vbox(12)
-	var t := UI.label(_t("CARA MAIN: GELANGGANG PESTA SILAT"), "InkHeading")
+	var t := UI.label(_t("CARA MAIN: GELANGGANG"), "InkHeading")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
 	var scroll := ScrollContainer.new()

@@ -158,6 +158,5 @@ func _submit() -> void:
 	var mode := "online" if Backend.is_online() else "local"
 	Game.load_profile(str(r["username"]), mode, _role, _avatar, str(r.get("email", "")))
 	if _negeri.selected > 0:
-		Game.save["profile"]["negeri"] = Game.NEGERI[_negeri.selected - 1]
-		Game.persist()
+		Game.set_negeri(Game.NEGERI[_negeri.selected - 1])
 	Game.goto("prolog")

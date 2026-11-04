@@ -144,17 +144,44 @@ func _profile() -> void:
 		Game.persist())
 	grid.add_child(motto)
 	grid.add_child(UI.label("Negeri"))
+	# once a month: the first pick is free, after that a 30-day wait
+	var neg_col := UI.vbox(4)
 	var neg := OptionButton.new()
 	neg.custom_minimum_size = Vector2(360, 52)
 	neg.add_item(tr("(Pilih negeri)"))
 	for n in Game.NEGERI:
 		neg.add_item(n)
-	neg.selected = Game.NEGERI.find(str(p.get("negeri", ""))) + 1
+	var had := str(p.get("negeri", ""))
+	neg.selected = Game.NEGERI.find(had) + 1
+	if had != "":
+		neg.set_item_disabled(0, true)
+	var wait := Game.negeri_wait_left()
+	neg.disabled = wait > 0
+	neg_col.add_child(neg)
+	var neg_note := UI.label("", "Small", true)
+	neg_note.custom_minimum_size.x = 360
+	if wait > 0:
+		neg_note.text = tr("Boleh tukar lagi dalam %d hari.") % ceili(wait / 86400.0)
+	elif had != "":
+		neg_note.text = tr("Negeri boleh ditukar sekali sebulan.")
+	neg_note.visible = neg_note.text != ""
+	neg_col.add_child(neg_note)
 	neg.item_selected.connect(func(i: int):
-		p["negeri"] = Game.NEGERI[i - 1] if i > 0 else ""
-		Game.persist()
-		Sfx.play("select"))
-	grid.add_child(neg)
+		var before := str(p.get("negeri", ""))
+		if i == 0 or Game.NEGERI[i - 1] == before:
+			neg.selected = Game.NEGERI.find(before) + 1
+			return
+		var pick: String = Game.NEGERI[i - 1]
+		if before != "" and not await Main.ask(tr("Tukar negeri ke %s? Lepas ni, negeri hanya boleh ditukar semula selepas 30 hari.") % pick, "Tukar", "Batal"):
+			neg.selected = Game.NEGERI.find(before) + 1
+			return
+		Game.set_negeri(pick)
+		Sfx.play("select")
+		neg.set_item_disabled(0, true)
+		neg.disabled = true
+		neg_note.text = tr("Boleh tukar lagi dalam %d hari.") % 30
+		neg_note.visible = true)
+	grid.add_child(neg_col)
 	grid.add_child(UI.label("Gambar profil"))
 	var pic_row := UI.hbox(10)
 	var pic := UI.panel("Slot")

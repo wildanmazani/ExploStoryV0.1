@@ -40,6 +40,23 @@ const NEGERI := [
 	"Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu",
 	"WP Kuala Lumpur", "WP Labuan", "WP Putrajaya",
 ]
+## the negeri can be changed once a month (so nobody hops between the
+## state leaderboards); the first pick is free
+const NEGERI_WAIT := 30 * 86400
+
+
+## seconds until the negeri may change again (0 = now)
+func negeri_wait_left() -> int:
+	if str(save["profile"].get("negeri", "")) == "":
+		return 0
+	var at := int(save["profile"].get("negeri_at", 0))
+	return maxi(0, at + NEGERI_WAIT - int(Time.get_unix_time_from_system()))
+
+
+func set_negeri(n: String) -> void:
+	save["profile"]["negeri"] = n
+	save["profile"]["negeri_at"] = int(Time.get_unix_time_from_system())
+	persist()
 
 const DEFAULT_SETTINGS := {
 	"font": "lexend", "text_size": 1, "text_speed": 1, "auto_read": false,

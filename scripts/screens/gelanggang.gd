@@ -213,7 +213,7 @@ func _build_hud() -> void:
 		var panel := UI.panel()
 		panel.custom_minimum_size = Vector2(430, 0)
 		var col := UI.vbox(4)
-		var title := UI.label("PASUKAN KAU" if t == 0 else "LAWAN", "Small")
+		var title := UI.label("PASUKAN ANDA" if t == 0 else "LAWAN", "Small")
 		title.add_theme_color_override("font_color", UI.GOLD if t == 0 else Color("ff8a7a"))
 		col.add_child(title)
 		for f in match_node.fighters:
@@ -222,8 +222,8 @@ func _build_hud() -> void:
 			var row := UI.hbox(8)
 			var head := UI.head_icon(f.skin, 34)
 			row.add_child(head)
-			var nm := UI.label(f.display_name + (tr(" (kau)") if f.is_me else ""), "Small")
-			nm.custom_minimum_size.x = 112
+			var nm := UI.label(f.display_name + (tr(" (anda)") if f.is_me else ""), "Small")
+			nm.custom_minimum_size.x = 132
 			nm.clip_text = true
 			row.add_child(nm)
 			var hp := ProgressBar.new()
@@ -231,7 +231,7 @@ func _build_hud() -> void:
 			hp.max_value = BrawlRules.HP
 			hp.value = f.hp
 			hp.show_percentage = false
-			hp.custom_minimum_size = Vector2(118, 16)
+			hp.custom_minimum_size = Vector2(98, 16)
 			hp.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			row.add_child(hp)
 			var pill := _pill("")
@@ -402,8 +402,20 @@ func _build_card() -> void:
 		grid.add_child(b)
 		_buttons.append(b)
 	col.add_child(grid)
+	var foot := UI.hbox(10)
 	_q_status = UI.label("", "InkSmall", true)
-	col.add_child(_q_status)
+	_q_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_q_status.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	foot.add_child(_q_status)
+	# a break or a way out in the middle of a question too
+	var stop := UI.button(tr("Jeda"), "", 120)
+	stop.pressed.connect(_open_pause)
+	foot.add_child(stop)
+	var quit := UI.button(tr("Keluar kuiz"), "", 170)
+	quit.name = "KeluarKuiz"
+	quit.pressed.connect(_ask_leave)
+	foot.add_child(quit)
+	col.add_child(foot)
 	_card.add_child(col)
 	_card.position = Vector2(90, 150)
 	_card.visible = false
@@ -473,7 +485,7 @@ func _on_phase(p: String) -> void:
 				b.disabled = not match_node.me.alive()
 				b.theme_type_variation = ""
 				b.modulate = Color.WHITE
-			_q_status.text = tr("Jawab betul untuk dapat SEMANGAT (serangan penuh) dan senjata sekolah!") if match_node.me.alive() else tr("Kau pengsan. Tengok rakan sepasukan berjuang!")
+			_q_status.text = tr("Jawab betul untuk dapat SEMANGAT (serangan penuh) dan senjata sekolah!") if match_node.me.alive() else tr("Anda pengsan. Sokong rakan sepasukan!")
 			_phase.text = tr("SOALAN")
 			_hint.text = ""
 			Sfx.play("pop", -6.0)
@@ -492,7 +504,7 @@ func _on_phase(p: String) -> void:
 				var f := match_node.find(str(r.get("id", "")))
 				if f:
 					line.add_child(UI.head_icon(f.skin, 30))
-				var nm := UI.label("%s%s" % [r["name"], tr(" (kau)") if r["me"] else ""], "")
+				var nm := UI.label("%s%s" % [r["name"], tr(" (anda)") if r["me"] else ""], "")
 				nm.custom_minimum_size.x = 190
 				nm.add_theme_color_override("font_color", UI.GOLD if r["me"] else Color.WHITE)
 				line.add_child(nm)
@@ -560,14 +572,14 @@ func _show_result() -> void:
 	card.custom_minimum_size = Vector2(640, 0)
 	var c := UI.vbox(12)
 	c.add_child(UI.center(UI.icon("res://assets/icons/%s.png" % ("mahkota" if won else "bendera"), 96)))
-	var t := UI.label(tr("PASUKAN KAU MENANG!") if won else tr("PASUKAN LAWAN MENANG"), "InkHeading")
+	var t := UI.label(tr("PASUKAN ANDA MENANG!") if won else tr("PASUKAN LAWAN MENANG"), "InkHeading")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
 	var reward := "+%d EXP" % BrawlRules.REWARD_EXP + (("   +%d " % BrawlRules.REWARD_COINS) + tr("Syiling") if won else "")
 	var r := UI.label(reward, "Ink")
 	r.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(r)
-	var note := UI.label(tr("Syabas! Setiap soalan yang kau jawab ialah ulang kaji %s.") % BattleRules.chapter_name() if won else tr("Takpe, cuba lagi! Lagi banyak jawapan betul, lagi kuat serangan kau."), "InkSmall", true)
+	var note := UI.label(tr("Syabas! Setiap soalan yang anda jawab ialah ulang kaji %s.") % BattleRules.chapter_name() if won else tr("Tak apa, cuba lagi! Lagi banyak jawapan betul, lagi kuat serangan anda."), "InkSmall", true)
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(note)
 	var row := UI.hbox(12)
@@ -621,7 +633,7 @@ func _open_pause(first := false) -> void:
 	if _pause or _leaving:
 		return
 	if _online:  # the others keep fighting: no pause, only a way out
-		if await Main.ask(tr("Keluar dari gelanggang dalam talian? Pertarungan diteruskan tanpa kau."), "Keluar", "Terus main"):
+		if await Main.ask(tr("Keluar dari gelanggang dalam talian? Pertarungan diteruskan tanpa anda."), "Keluar", "Terus main"):
 			_leaving = true
 			Game.goto("lobby")
 		return
@@ -667,7 +679,7 @@ func _show_menu() -> void:
 	var go := UI.button(tr("Sambung"), "Primary", 380)
 	go.pressed.connect(_close_pause)
 	c.add_child(go)
-	var how := UI.button(tr("Cara main & kawalan"), "Blue", 380)
+	var how := UI.button(tr("Cara main"), "Blue", 380)
 	how.pressed.connect(func(): _show_guide("« Kembali", true))
 	c.add_child(how)
 	var out := UI.button(tr("Keluar gelanggang"), "", 380)
@@ -676,6 +688,39 @@ func _show_menu() -> void:
 	card.add_child(c)
 	_pause.add_child(UI.center(card))
 	go.grab_focus()
+
+
+## "Keluar kuiz" on the question card: stop the clock, then make sure
+func _ask_leave() -> void:
+	if _leaving or _result != null:
+		return
+	if _online:
+		_open_pause()  # online: no pause, just the "leave?" question
+		return
+	if _pause == null:
+		_open_pause()  # stops the match; the menu is replaced at once below
+	_clear_pause()
+	var card := UI.panel("Paper")
+	card.custom_minimum_size = Vector2(520, 0)
+	var c := UI.vbox(14)
+	var t := UI.label(tr("Keluar kuiz?"), "InkHeading")
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	c.add_child(t)
+	var note := UI.label(tr("Pertarungan ini tamat dan tiada ganjaran."), "Ink", true)
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	c.add_child(note)
+	var row := UI.hbox(12)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	var stay := UI.button(tr("Terus main"), "Primary", 200)
+	stay.pressed.connect(_close_pause)
+	row.add_child(stay)
+	var out := UI.button(tr("Keluar"), "", 200)
+	out.pressed.connect(_leave)
+	row.add_child(out)
+	c.add_child(row)
+	card.add_child(c)
+	_pause.add_child(UI.center(card))
+	stay.grab_focus()
 
 
 func _show_guide(button_text: String, back_to_menu := false) -> void:
@@ -694,8 +739,9 @@ func _leave() -> void:
 	# freeze the match itself (not the tree: the fade to the lobby must run)
 	match_node.process_mode = Node.PROCESS_MODE_DISABLED
 	_touch.process_mode = Node.PROCESS_MODE_DISABLED
-	for b in _pause.find_children("*", "Button", true, false):
-		(b as Button).disabled = true
+	if _pause:
+		for b in _pause.find_children("*", "Button", true, false):
+			(b as Button).disabled = true
 	get_tree().paused = false
 	MusicDirector.puzzle(false)
 	Engine.time_scale = 1.0

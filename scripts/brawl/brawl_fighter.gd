@@ -99,7 +99,7 @@ func _ready() -> void:
 	# only you get a tag ("KAU"); team rings + the HUD name everyone else, so a
 	# crowded fight doesn't turn into a pile of names
 	_tag = Label.new()
-	_tag.text = tr("KAU")
+	_tag.text = tr("ANDA")
 	_tag.visible = is_me
 	_tag.add_theme_font_size_override("font_size", 24)
 	_tag.add_theme_color_override("font_color", _team_color())

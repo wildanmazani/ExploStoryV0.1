@@ -281,7 +281,7 @@ func _check_prologue() -> bool:
 			await shot("prologue_ingatan")
 		var room: Control = scene().room  # the dream is seen through Alif's eyes: in the picture
 		for c in [room] + room.get_children() + scene().get_children():
-			if c is TextureRect and c.texture and c.is_visible_in_tree():
+			if is_instance_valid(c) and c is TextureRect and c.texture and c.is_visible_in_tree():
 				for k in dream_shots:
 					if not dream_shots[k] and c.texture.resource_path.get_file().get_basename() == k and c.modulate.a > 0.9:
 						dream_shots[k] = true
@@ -1468,16 +1468,17 @@ func _check_ronda3() -> void:
 	while Game.active_puzzle == null and t < 30.0:
 		await wait(0.2)
 		t += 0.2
-	for k in 3:
+	t = 0.0
+	while find_button(scene(), "Cuba lagi") == null and t < 40.0:
 		var p = Game.active_puzzle
-		if p == null:
-			break
-		p._pick((int(p._q()["answer"]) + 1) % 4)
-		await wait(0.4)
-		if p._next.visible:
-			p._advance()
-			await wait(0.3)
-	await wait(4.0)
+		if p != null and is_instance_valid(p):
+			if p._next.visible:
+				p._advance()
+			else:
+				p._pick((int(p._q()["answer"]) + 1) % 4)
+		await wait(0.5)
+		t += 0.5
+	await wait(1.0)
 	await shot("r3_ujian_fail")
 	if find_button(scene(), "Cuba lagi") == null:
 		_fail("no fail card")
@@ -1507,6 +1508,44 @@ func _check_ronda3() -> void:
 		_fail("layout switch")
 		return
 	Game.set_setting("brawl_keys", "wasd")
-	hosted()._close_pause()
+	var g: Node = hosted()
+	g._close_pause()
+	# Keluar kuiz on the question card: stops the clock and asks first
+	var waited := 0.0
+	while g.match_node.phase != "soalan" and waited < 20.0:
+		await wait(0.2)
+		waited += 0.2
+	var kk := find_button(scene(), "Keluar kuiz")
+	if kk == null:
+		_fail("no Keluar kuiz button on the question card")
+		return
+	kk.pressed.emit()
+	await wait(0.4)
+	await shot("r3_keluar_kuiz")
+	var stay := find_button(scene(), "Terus main")
+	if not get_tree().paused or stay == null:
+		_fail("Keluar kuiz should pause the match and ask first")
+		return
+	stay.pressed.emit()
+	await wait(0.3)
+	if get_tree().paused or g.match_node.phase != "soalan":
+		_fail("Terus main should go back to the question")
+		return
+	# the negeri: once a month
+	Game.save["profile"]["negeri"] = ""
+	if Game.negeri_wait_left() != 0:
+		_fail("the first negeri pick should be free")
+		return
+	Game.set_negeri("Johor")
+	if Game.negeri_wait_left() < 29 * 86400:
+		_fail("a new negeri should lock for a month")
+		return
+	g._open_pause()
+	g._leave()
+	await wait_screen("lobby", 20.0)
+	var pp: Node = Main.open_profile()
+	await wait(0.5)
+	await shot("r3_profil_negeri_kunci")
+	pp.close()
 	print("AUTOTEST PASS (ronda3)")
 	get_tree().quit(0)
