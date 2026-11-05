@@ -888,7 +888,7 @@ func _check_kampung_intro() -> bool:
 	var guru_home: Vector2i = w.npc_node("guru_silat").cell
 	var shots := {}
 	var t := 0.0
-	while not Main.overlay_root().get_children().any(func(c): return c.get("view") != null and c.get("title_text") == "PETA BATU BAB 1"):
+	while not Main.overlay_root().get_children().any(func(c): return c.get("view") != null and c.get("title_text") == "PETA BAB 1"):
 		if w.player.sprite.rotation > 1.0 and not shots.has("fall"):
 			shots["fall"] = true
 			await shot("intro_fall")
@@ -904,7 +904,7 @@ func _check_kampung_intro() -> bool:
 		_fail("Alif should fall and Guru Jalal come over, with no HUD: %s" % str(shots))
 		return false
 	await wait(0.6)
-	await shot("peta_batu")
+	await shot("peta_kertas")
 	close_top_overlay()
 	await wait_idle(120)
 	if not Game.save["seen"].has("bilik_tutorial") or not w.hud.visible or not w.player.can_move or w.player.sprite.rotation != 0.0:

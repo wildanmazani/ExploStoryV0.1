@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rf4sv18fmxub"
-path="res://.godot/imported/peta_batu.png-b34e459a59b9076df063219a8b7a1862.ctex"
+uid="uid://djt0be75e1ctr"
+path="res://.godot/imported/peta_kertas.png-01d258bf6616f6a30ded4447393b4999.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/peta_batu.png"
-dest_files=["res://.godot/imported/peta_batu.png-b34e459a59b9076df063219a8b7a1862.ctex"]
+source_file="res://assets/ui/peta_kertas.png"
+dest_files=["res://.godot/imported/peta_kertas.png-01d258bf6616f6a30ded4447393b4999.ctex"]
 
 [params]
 

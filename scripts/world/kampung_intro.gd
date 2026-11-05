@@ -2,11 +2,11 @@ extends RefCounted
 ## The story between Alif's room and Misi 1.1, played once in Kampung Jejak:
 ## before Alif comes out, Aisyah lies in the road where she fell into this
 ## world; she gets up, screams, runs from him, he trips at Mak Som's house, she calls Guru Jalal, and
-## Mak Som gives him the stone map of Bab 1 (ui/peta_batu.gd). Text: data/story.json
+## Mak Som gives him the paper map of Bab 1 (ui/peta_kertas.gd). Text: data/story.json
 ## (intro_*). Quitting halfway replays it from the door: "bilik_tutorial" goes
 ## into the save only at the end, and saves that already have it never see it.
 
-const PetaBatu = preload("res://scripts/ui/peta_batu.gd")
+const PetaKertas = preload("res://scripts/ui/peta_kertas.gd")
 const DOOR := Vector2i(22, 43)          ## outside Rumah Alif (bilik_alif.tscn return_cell_world)
 const AISYAH_FROM := Vector2i(27, 44)
 const AISYAH_LOOK := Vector2i(25, 44)  ## Alif walks up to here...
@@ -94,8 +94,8 @@ static func play(w: Node) -> void:
 	MusicDirector.play("kampung", 2.5)  # it's all right now
 	await Game.say("intro_mak_som")
 	MusicDirector.stinger("st_item")
-	Game.toast(TranslationServer.translate("Dapat: Peta Batu Bab 1!"))
-	var stone := PetaBatu.new()
+	Game.toast(TranslationServer.translate("Dapat: Peta Bab 1!"))
+	var stone := PetaKertas.new()
 	stone.world = w
 	Main.overlay_root().add_child(stone)
 	await stone.closed
