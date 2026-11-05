@@ -234,6 +234,9 @@ func _ready() -> void:
 			_arrive_lembah()
 		_controls_tip()
 		_arena_reveal()
+		if GameState.flags.get("replay_hint", false):  # MAIN SEMULA from the Beg
+			GameState.flags["replay_hint"] = false
+			Main.pau_say.call_deferred(tr("Main semula untuk ulang kaji. Tiada EXP. Ikut tanda seru (!)."), 7.0)
 
 
 ## once, on a phone: Pau points at Tetapan > Kawalan

@@ -44,7 +44,8 @@ func _ready() -> void:
 	left.add_child(lvl_panel)
 	var er := UI.hbox(8)
 	er.add_child(UI.label("EXP:", "InkHeading"))
-	var ev := UI.label("%d / %d" % [int(Game.save["exp"]) % Game.EXP_PER_LEVEL, Game.EXP_PER_LEVEL], "Ink")
+	var lp := Game.level_progress()
+	var ev := UI.label("%d / %d" % [lp[0], lp[1]], "Ink")
 	ev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ev.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	er.add_child(ev)
@@ -53,7 +54,7 @@ func _ready() -> void:
 	_exp_bar.theme_type_variation = "Good"
 	_exp_bar.show_percentage = false
 	_exp_bar.custom_minimum_size = Vector2(0, 24)
-	_exp_bar.max_value = Game.EXP_PER_LEVEL
+	_exp_bar.max_value = lp[1]
 	_exp_bar.value = 0
 	left.add_child(_exp_bar)
 	if params.get("level_up", false):
@@ -123,7 +124,7 @@ func _ready() -> void:
 	go.grab_focus()
 
 	var tw := create_tween()
-	tw.tween_property(_exp_bar, "value", float(int(Game.save["exp"]) % Game.EXP_PER_LEVEL), 1.2).set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(_exp_bar, "value", float(lp[0]), 1.2).set_trans(Tween.TRANS_QUAD)
 	tw.parallel().tween_method(func(v: float): _coin_label.text = str(int(v)), 0.0, float(Game.save["coins"]), 1.2)
 
 

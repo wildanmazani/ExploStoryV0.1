@@ -219,7 +219,8 @@ func open_nota(zone: String = "") -> Control:
 
 
 ## A yes/no card over everything. Returns true for yes.
-func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak") -> bool:
+## warn = true: a red "AMARAN" heading on top, for things that lose progress
+func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak", warn := false) -> bool:
 	Game.lock_input()
 	var root := Control.new()
 	UI.full(root)
@@ -229,6 +230,12 @@ func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak") -> bool
 	var card := UI.panel("Paper")
 	card.custom_minimum_size = Vector2(620, 0)
 	var col := UI.vbox(16)
+	if warn:
+		Sfx.play("bump")
+		var h := UI.label(tr("AMARAN!"), "InkHeading")
+		h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		h.add_theme_color_override("font_color", Color("c0392b"))
+		col.add_child(h)
 	var l := UI.label(tr(text), "Ink", true)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(l)

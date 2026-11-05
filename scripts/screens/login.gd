@@ -84,11 +84,6 @@ func _ready() -> void:
 	var guest := UI.button("Main sebagai Tetamu", "Flat")
 	guest.pressed.connect(_guest)
 	col.add_child(guest)
-	for t in [Backend.mode_text(), Backend.guest_text()]:
-		var mode := UI.label(t, "Small", true)
-		mode.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		mode.custom_minimum_size.x = 480
-		col.add_child(mode)
 	frame.add_child(col)
 	add_child(UI.center(frame))
 	var logo := UI.label("EXPLO-STORY", "Logo")
@@ -155,12 +150,15 @@ func _finish(r: Dictionary) -> void:
 
 
 func _guest() -> void:
-	if Backend.is_online() and not await Main.ask(Backend.guest_text() + "\n\n" + tr("Teruskan sebagai Tetamu?"), "Main", "Batal"):
+	if not await Main.ask("Main sebagai Tetamu: progres anda TIDAK disimpan!", "Faham, main", "Daftar akaun", true):
+		Game.goto("register")
 		return
 	_start_guest()
 
 
+## a guest always starts fresh: nothing of an earlier guest is kept
 func _start_guest() -> void:
+	Game.write_json_user(Game.save_path_for("Tetamu"), {})
 	Game.load_profile("Tetamu", "guest")
 	_enter_game()
 

@@ -205,17 +205,39 @@ func _show_travel() -> void:
 		txt.add_child(UI.label(str(p["name"]), "", true))
 		txt.add_child(UI.label(str(p.get("info", "")) if ok else str(t["why"]), "Small", true))
 		row.add_child(txt)
+		var stack := UI.vbox(6)
+		stack.add_child(row)
 		if ok:
 			var go := UI.button("PERGI", "Primary", 96)
 			go.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			go.pressed.connect(_travel.bind(p))
 			row.add_child(go)
+			var zid := str(p.get("zone", ""))
+			if zid != "" and Game.zone_done(zid) and not ZoneRunner.replaying(zid):
+				var again := UI.button(tr("MAIN SEMULA (tiada EXP)"))
+				again.name = "MainSemula_" + zid
+				again.pressed.connect(_replay.bind(p))
+				stack.add_child(again)
 		else:
 			card.modulate = Color(1, 1, 1, 0.55)
-		card.add_child(row)
+		card.add_child(stack)
 		grid.add_child(card)
 	scroll.add_child(grid)
 	_body.add_child(scroll)
+
+
+## a finished mission again, for revision (no EXP): go there and its "!" light up
+func _replay(p: Dictionary) -> void:
+	var zid := str(p["zone"])
+	var w := world
+	close()
+	ZoneRunner.start_replay(zid)
+	GameState.flags["replay_hint"] = true
+	if not w.fast_travel(p):
+		Game.zone_state(zid).erase("replay")
+		GameState.flags["replay_hint"] = false
+		Game.persist()
+		Game.toast(tr("Tak boleh pindah sekarang. Cuba lagi sekejap."))
 
 
 func _travel(p: Dictionary) -> void:

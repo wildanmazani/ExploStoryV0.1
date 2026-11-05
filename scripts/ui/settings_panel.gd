@@ -152,15 +152,51 @@ func _akaun() -> void:
 	_body.add_child(who)
 	var acc := UI.hbox(12)
 	var reset := UI.button("Mula semula permainan")
-	reset.pressed.connect(_confirm_reset.bind(reset))
+	reset.pressed.connect(_reset_choices)
 	acc.add_child(reset)
 	var out := UI.button("Log keluar")
-	out.pressed.connect(func():
-		Backend.sign_out()
-		close()
-		Game.goto("login"))
+	out.pressed.connect(_log_out)
 	acc.add_child(out)
 	_body.add_child(acc)
+	if Game.is_guest():
+		var warn := UI.label("Tetamu: progres anda TIDAK disimpan.", "Bad", true)
+		_body.add_child(warn)
+
+
+func _log_out() -> void:
+	if Game.is_guest() and not await Main.ask("Log keluar? Semua progres Tetamu akan hilang.", "Log keluar", "Batal", true):
+		return
+	await Game.log_out()
+	close()
+	Game.goto("login")
+
+
+## where to start again: two plain choices, so nobody wonders where they land
+func _reset_choices() -> void:
+	for c in _body.get_children():
+		c.queue_free()
+	_body.add_child(UI.label("Mula semula dari mana?", "Heading"))
+	var opts := [
+		["Dari awal cerita", "Mula dengan mimpi di sekolah, sebelum Alif masuk dunia ExploStory.", false],
+		["Dari permulaan dunia ExploStory", "Langkau cerita sekolah. Alif terus bangun di biliknya.", true],
+	]
+	for o in opts:
+		var card := UI.panel("Slot")
+		var row := UI.hbox(14)
+		var b := UI.button(str(o[0]), "Primary", 330)
+		b.name = "Reset_" + ("dunia" if o[2] else "awal")
+		b.pressed.connect(_do_reset.bind(bool(o[2])))
+		row.add_child(b)
+		var why := UI.label(str(o[1]), "Small", true)
+		why.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		why.custom_minimum_size.x = 380
+		row.add_child(why)
+		card.add_child(row)
+		_body.add_child(card)
+	_body.add_child(UI.label("Semua misi, EXP dan syiling bermula semula. Nama, ID pemain dan pakaian yang dibeli kekal.", "Small", true))
+	var back := UI.button("Batal", "", 200)
+	back.pressed.connect(_show.bind(4))
+	_body.add_child(back)
 
 
 # ------------------------------------------------------------------ widgets
@@ -226,13 +262,16 @@ func _slider(key: String, min_v := 0, width := 380) -> HBoxContainer:
 	return row
 
 
-func _confirm_reset(btn: Button) -> void:
-	if btn.text != tr("Pasti? Klik lagi"):
-		btn.text = tr("Pasti? Klik lagi")
+func _do_reset(skip_prolog: bool) -> void:
+	if not await Main.ask("Mula semula? Semua misi yang dah siap akan hilang.", "Mula semula", "Batal", true):
 		return
-	Game.reset_progress()
+	Game.reset_progress(skip_prolog)
 	close()
-	Game.goto("peta")
+	if skip_prolog:  # same as the end of the school dream (prologue.gd)
+		GameState.flags["bilik_intro"] = true
+		GameState.go_to("res://scenes/interior/bilik_alif.tscn", Color(1, 0.97, 0.88))
+	else:
+		Game.goto("prolog")
 
 
 ## a little 16:9 phone screen showing where the controls will sit

@@ -60,7 +60,7 @@ func _ready() -> void:
 	_row(ic, "GANJARAN:", str(g.get("nama", "")))
 	ic.get_child(ic.get_child_count() - 1).add_child(UI.icon("res://assets/icons/%s.png" % g.get("icon", "bintang"), 48))
 	if Game.zone_done(zid):
-		ic.add_child(UI.label("Misi ini sudah selesai. Kau boleh main semula untuk ulang kaji.", "InkSmall", true))
+		ic.add_child(UI.label("Misi ini sudah selesai. Main semula dari Beg > Jalan Pintas, tanpa EXP.", "InkSmall", true))
 	info.add_child(ic)
 	mid.add_child(info)
 	root.add_child(UI.margin(mid, 30, 10, 40, 0))

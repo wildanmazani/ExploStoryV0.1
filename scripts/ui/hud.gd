@@ -104,7 +104,6 @@ func _ready() -> void:
 	_exp.custom_minimum_size = Vector2(150, 16)
 	_exp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_exp.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_exp.max_value = Game.EXP_PER_LEVEL
 	exp_row.add_child(_exp)
 	info.add_child(exp_row)
 	var coin_row := UI.hbox(6)
@@ -148,7 +147,9 @@ func _refresh() -> void:
 	_name.text = str(prof.get("display_name", prof["username"]))
 	_avatar.texture = UI.head(Game.skin_folder())  # always matches the outfit
 	_level.text = tr("TAHAP %d") % int(Game.save["level"])
-	_exp.value = int(Game.save["exp"]) % Game.EXP_PER_LEVEL
+	var lp := Game.level_progress()
+	_exp.max_value = lp[1]
+	_exp.value = lp[0]
 	_coins.text = tr("SYILING: %d") % int(Game.save["coins"])
 
 

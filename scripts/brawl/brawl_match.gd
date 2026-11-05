@@ -25,6 +25,7 @@ var _roster: Array = []
 var _item_uid := 0
 var _items_by_uid := {}      ## client: uid -> FloorItem
 var _rewarded := false
+var no_reward := false  ## a retaken Ujian Bab: wins still count, no EXP
 
 var format := "1v1"
 var level := "biasa"
@@ -339,7 +340,8 @@ func _reward() -> void:
 	var won := me != null and winner_team == me.team
 	if won:
 		b["wins"] = int(b.get("wins", 0)) + 1
-	level_up = Game.add_reward(BrawlRules.REWARD_EXP, BrawlRules.REWARD_COINS if won else 0)
+	if not no_reward:
+		level_up = Game.add_reward(BrawlRules.REWARD_EXP, BrawlRules.REWARD_COINS if won else 0)
 	Game.persist()
 
 

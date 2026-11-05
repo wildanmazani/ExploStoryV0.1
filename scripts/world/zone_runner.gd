@@ -88,6 +88,12 @@ static func replaying(zid: String) -> bool:
 	return Game.zone_state(zid).has("replay")
 
 
+## a finished mission again, for revision: its steps open anew, no rewards
+static func start_replay(zid: String) -> void:
+	Game.zone_state(zid)["replay"] = []
+	Game.persist()
+
+
 ## the finished (and not already replaying) mission that has a step at this spot
 func _replayable_at(id: String) -> String:
 	for zid in Game.ZONES:
@@ -125,8 +131,7 @@ func handle(id: String) -> bool:
 		var yes: bool = await Game.main.ask(tr("Main semula Misi %s: %s?\nUntuk ulang kaji sahaja, tiada ganjaran.") % [again.replace("_", "."), z.get("title", "")], "Main semula", "Tak apa")
 		if not yes:
 			return false
-		Game.zone_state(again)["replay"] = []
-		Game.persist()
+		start_replay(again)
 		refresh()
 		found = _step_at(id)
 		if found.is_empty() or not _available(again, found["i"]):

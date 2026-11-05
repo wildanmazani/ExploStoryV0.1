@@ -78,6 +78,8 @@ func _ready() -> void:
 		if params.has("ujian"):
 			BattleRules.chapter = int(params["ujian"])
 		match_node.setup(str(params.get("format", "1v1")), str(params.get("level", "biasa")), params.get("foe", {}))
+		# an Ujian Bab passed before is revision: no EXP from the fight either
+		match_node.no_reward = params.has("ujian") and Game.save["ujian"].has(int(params["ujian"]))
 	match_node.me_autopilot = bool(params.get("autopilot", false))
 	match_node.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(match_node)
@@ -576,6 +578,8 @@ func _show_result() -> void:
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
 	var reward := "+%d EXP" % BrawlRules.REWARD_EXP + (("   +%d " % BrawlRules.REWARD_COINS) + tr("Syiling") if won else "")
+	if match_node.no_reward:
+		reward = tr("Ulang kaji: tiada EXP.")
 	var r := UI.label(reward, "Ink")
 	r.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(r)

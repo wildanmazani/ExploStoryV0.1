@@ -1405,6 +1405,107 @@ func _solve(p: Node, label: String) -> void:
 
 ## Playtest round 3 (2026-10-24): room exit, mission replay, Nota huraian,
 ## Ujian Bab feedback, Gelanggang Cara Main / Jeda / key layouts.
+## Playtest round 5 (2026-11-05): level curve, Ujian retake without EXP,
+## MAIN SEMULA from the Beg, two ways to start again, guest log out, sign-out
+func _check_ronda5() -> bool:
+	for pair in [[0, 1], [99, 1], [100, 2], [299, 2], [300, 3], [999, 4], [1000, 5], [4500, 10]]:
+		if Game.level_for(pair[0]) != pair[1]:
+			_fail("level_for(%d) should be %d, got %d" % [pair[0], pair[1], Game.level_for(pair[0])])
+			return false
+	var lp := Game.level_progress(350)
+	if lp != [50, 300]:
+		_fail("level_progress(350) should be [50, 300], got %s" % str(lp))
+		return false
+	# a retaken Ujian Bab: no EXP from the fight
+	if not Game.save["ujian"].has(1):
+		Game.save["ujian"].append(1)
+	Game.goto("gelanggang", {"format": "1v1", "level": "mudah", "ujian": 1})
+	await wait_screen("gelanggang", 30.0)
+	await wait(0.5)
+	if not hosted().match_node.no_reward:
+		_fail("a retaken Ujian should give no EXP")
+		return false
+	hosted()._open_pause()
+	hosted()._leave()
+	await wait(1.0)
+	# MAIN SEMULA in Beg > Jalan Pintas
+	Game.zone_state("1_1").erase("replay")
+	Game.zone_state("1_3").erase("replay")
+	Game.save["map_pos"] = [40, 38]
+	Game.goto("world")
+	await wait_screen("world", 30.0)
+	await wait_idle()
+	var exp_before := int(Game.save["exp"])
+	var beg: Node = Main.open_beg(scene())
+	await wait(0.4)
+	beg._show_travel()
+	await wait(0.4)
+	await shot("r5_main_semula")
+	var again := beg.find_child("MainSemula_1_1", true, false) as Button
+	if again == null:
+		_fail("no MAIN SEMULA for a finished mission in Jalan Pintas")
+		return false
+	again.pressed.emit()
+	await wait(1.5)
+	await wait_screen("world", 30.0)
+	if not Game.zone_state("1_1").has("replay") or int(Game.save["exp"]) != exp_before:
+		_fail("MAIN SEMULA should start a replay of 1_1 with no EXP")
+		return false
+	print("ronda5: MAIN SEMULA ok")
+	# Mula semula: two choices
+	var sp: Node = Main.open_settings()
+	await wait(0.3)
+	sp._show(4)
+	await wait(0.2)
+	find_button(sp, "Mula semula permainan").pressed.emit()
+	await wait(0.3)
+	await shot("r5_mula_semula")
+	var dunia := sp.find_child("Reset_dunia", true, false) as Button
+	if dunia == null or sp.find_child("Reset_awal", true, false) == null:
+		_fail("Mula semula should offer two starts")
+		return false
+	dunia.pressed.emit()
+	await wait(0.4)
+	var sure := find_button(Main.overlay_root(), "Mula semula")
+	if sure == null:
+		_fail("Mula semula should ask first")
+		return false
+	sure.pressed.emit()
+	await wait_screen("bilik_alif", 30.0)
+	if not bool(Game.save["prolog_done"]) or Game.zone_done("1_1"):
+		_fail("start from the ExploStory world: prologue skipped, missions cleared")
+		return false
+	print("ronda5: Mula semula (dunia) ok")
+	# a guest who logs out loses the progress
+	Game.zone_state("1_1")["done"] = true
+	Game.persist()
+	await Game.log_out()
+	Game.load_profile("Tetamu", "guest")
+	if Game.zone_done("1_1"):
+		_fail("a guest's progress should be gone after logging out")
+		return false
+	# the session file is emptied on sign-out (a browser keeps deleted files)
+	Game.write_json_user(Backend.SESSION, {"refresh_token": "lama", "email": "a@b.c"})
+	await Backend.sign_out()
+	var s = Game.load_json_user(Backend.SESSION)
+	if s is Dictionary and str(s.get("refresh_token", "")) != "":
+		_fail("sign_out should empty the session file")
+		return false
+	Game.goto("login")
+	await wait_screen("login")
+	find_button(hosted(), "Main sebagai Tetamu").pressed.emit()
+	await wait(0.4)
+	await shot("r5_amaran_tetamu")
+	var faham := find_button(Main.overlay_root(), "Faham, main")
+	if faham == null:
+		_fail("no guest warning")
+		return false
+	faham.pressed.emit()
+	await wait(1.0)
+	print("ronda5: guest + sign-out ok")
+	return true
+
+
 func _check_ronda3() -> void:
 	await wait_screen("title")
 	Game.load_profile("Tetamu", "guest")
@@ -1547,5 +1648,7 @@ func _check_ronda3() -> void:
 	await wait(0.5)
 	await shot("r3_profil_negeri_kunci")
 	pp.close()
+	if not await _check_ronda5():
+		return
 	print("AUTOTEST PASS (ronda3)")
 	get_tree().quit(0)

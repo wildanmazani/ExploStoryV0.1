@@ -154,9 +154,11 @@ func _passed(stats: Dictionary) -> void:
 	Sfx.play("whoosh")
 	MusicDirector.stinger("st_zone")
 	var ft := int(stats.get("first_try", 0))
-	Game.add_reward(80 + ft * 10, 40)
-	Game.toast("+%d EXP   +40 Syiling" % (80 + ft * 10))
-	if not Game.save["ujian"].has(_ch):
+	if Game.save["ujian"].has(_ch):  # passed before: revision only
+		Game.toast(tr("Ulang kaji: tiada EXP."))
+	else:
+		Game.add_reward(80 + ft * 10, 40)
+		Game.toast("+%d EXP   +40 Syiling" % (80 + ft * 10))
 		Game.save["ujian"].append(_ch)
 	Game.persist()
 	await Game.say(str(_cfg.get("win", "")))

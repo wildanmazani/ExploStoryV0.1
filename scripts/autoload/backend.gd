@@ -20,6 +20,7 @@ var _push_pending: bool = false
 var _push_timer: Timer
 var _refresh_timer: Timer
 var synced := true  ## the last progress push reached the cloud
+var _session_epoch := 0  ## goes up on sign-out: late token replies are dropped
 
 
 func _ready() -> void:
@@ -185,13 +186,35 @@ func reset_password(email: String) -> String:
 	return _err_text(r, "Tidak dapat menghantar e-mel.")
 
 
+## Log keluar. The last progress goes up first, then the session is ended on
+## the server too, so the old token cannot sign in again. The session file is
+## written empty rather than deleted: a browser keeps a deleted file until
+## the next write, and "TERUSKAN SEBAGAI ..." came back after a reload.
 func sign_out() -> void:
+	_push_timer.stop()
+	if _push_pending and is_online() and is_signed_in():
+		await _do_push()
+	_push_timer.stop()
+	_push_pending = false
+	_session_epoch += 1  # a refresh still on its way must not sign back in
+	var token := access_token
 	access_token = ""
 	refresh_token = ""
 	user_id = ""
 	_refresh_timer.stop()
-	if FileAccess.file_exists(SESSION):
-		DirAccess.remove_absolute(SESSION)
+	Game.write_json_user(SESSION, {})
+	if is_online() and token != "":
+		_end_remote_session(token)
+
+
+func _end_remote_session(token: String) -> void:
+	var http := HTTPRequest.new()
+	http.timeout = 10.0
+	add_child(http)
+	http.request_completed.connect(func(_a, _b, _c, _d): http.queue_free())
+	var h := PackedStringArray(["Content-Type: application/json", "apikey: " + anon_key, "Authorization: Bearer " + token])
+	if http.request(url + "/auth/v1/logout?scope=local", h, HTTPClient.METHOD_POST, "{}") != OK:
+		http.queue_free()
 
 
 ## a session from sign-in or refresh: the player's details and cloud save
@@ -212,12 +235,13 @@ func _signed_in(d: Dictionary) -> Dictionary:
 ## signed in on this device before: carry on without typing the password.
 ## {} when there is no remembered session or it has expired.
 func restore_session() -> Dictionary:
-	if not is_online() or not FileAccess.file_exists(SESSION):
+	if not has_saved_session():
 		return {}
 	var s = Game.load_json_user(SESSION)
-	if not (s is Dictionary) or str(s.get("refresh_token", "")) == "":
-		return {}
+	var epoch := _session_epoch
 	var r := await _request("/auth/v1/token?grant_type=refresh_token", HTTPClient.METHOD_POST, {"refresh_token": s["refresh_token"]})
+	if epoch != _session_epoch:
+		return {"ok": false, "error": "Sesi tamat. Sila log masuk semula."}
 	if not r["ok"] or not (r["data"] is Dictionary):
 		if int(r.get("code", 0)) != 0:  # rejected (not just offline): forget it
 			sign_out()
@@ -226,7 +250,10 @@ func restore_session() -> Dictionary:
 
 
 func has_saved_session() -> bool:
-	return is_online() and FileAccess.file_exists(SESSION)
+	if not is_online() or not FileAccess.file_exists(SESSION):
+		return false
+	var s = Game.load_json_user(SESSION)
+	return s is Dictionary and str(s.get("refresh_token", "")) != ""
 
 
 ## the e-mail of the account kept on this device ("" if not known)
@@ -234,7 +261,7 @@ func saved_session_email() -> String:
 	if not FileAccess.file_exists(SESSION):
 		return ""
 	var s = Game.load_json_user(SESSION)
-	return str(s.get("email", "")) if s is Dictionary else ""
+	return str(s.get("email", "")) if s is Dictionary and str(s.get("refresh_token", "")) != "" else ""
 
 
 func _take_session(d: Dictionary) -> void:
@@ -254,7 +281,10 @@ func _take_session(d: Dictionary) -> void:
 func _refresh() -> bool:
 	if refresh_token == "":
 		return false
+	var epoch := _session_epoch
 	var r := await _send("/auth/v1/token?grant_type=refresh_token", HTTPClient.METHOD_POST, {"refresh_token": refresh_token}, false, PackedStringArray())
+	if epoch != _session_epoch:
+		return false  # signed out meanwhile
 	if r["ok"] and r["data"] is Dictionary:
 		_take_session(r["data"])
 		return true

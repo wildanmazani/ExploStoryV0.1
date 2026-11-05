@@ -32,7 +32,6 @@ const SCREENS := {
 
 ## every zone of every open chapter, in play order (filled from data/chapters.json)
 var ZONES: Array = []
-const EXP_PER_LEVEL := 200
 const SETTINGS_PATH := "user://tetapan.json"
 ## for Papan Markah (leaderboard by negeri)
 const NEGERI := [
@@ -248,6 +247,7 @@ func _ensure_fields() -> void:
 	for k in ["display_name", "motto", "negeri"]:
 		if not save["profile"].has(k):
 			save["profile"][k] = save["profile"]["username"] if k == "display_name" else ""
+	save["level"] = level_for(int(save.get("exp", 0)))  # the level curve can change
 
 
 ## 6 characters, no look-alikes (0/O, 1/I) so it is easy to read out to a friend
@@ -283,14 +283,35 @@ func persist() -> void:
 	Backend.push_progress(save)
 
 
-func reset_progress() -> void:
+## skip_prolog: start where Alif wakes up in his room in the ExploStory world,
+## not with the school dream
+func reset_progress(skip_prolog := false) -> void:
 	# Bab 1 starts again; the player keeps their ID, profile and bought skins
 	var keep := {"profile": save["profile"], "player_id": save["player_id"], "skins_owned": save["skins_owned"], "skin": save["skin"], "battle": save["battle"]}
 	var p: Dictionary = save["profile"]
 	new_save(str(p["username"]), str(p["mode"]), str(p["role"]), str(p["avatar"]), str(p.get("email", "")))
 	for k in keep:
 		save[k] = keep[k]
+	save["prolog_done"] = skip_prolog
 	persist()
+
+
+## Log keluar: an account is saved first; a guest's progress is wiped (the
+## file is written empty, not deleted: a browser only stores writes). Either
+## way nothing of the old player stays in memory.
+func log_out() -> void:
+	if str(save["profile"].get("mode", "")) == "guest":
+		write_json_user(save_path_for(str(save["profile"]["username"])), {})
+	else:
+		persist()
+	await Backend.sign_out()
+	new_save("Tetamu", "guest")
+	stats_changed.emit()
+	skin_changed.emit()
+
+
+func is_guest() -> bool:
+	return str(save["profile"].get("mode", "")) == "guest"
 
 
 # ------------------------------------------------------------------ skins and shop
@@ -434,8 +455,24 @@ func equip_skin(id: String) -> void:
 
 
 # ------------------------------------------------------------------ progression (Module 5)
+## each level asks for more: level L -> L+1 needs 100 x L EXP, so reaching
+## level L takes 50 x L x (L - 1) in all (2: 100, 3: 300, 5: 1000, 10: 4500)
+func exp_at_level(lv: int) -> int:
+	return 50 * lv * (lv - 1)
+
+
 func level_for(exp_total: int) -> int:
-	return 1 + exp_total / EXP_PER_LEVEL
+	var lv := 1
+	while exp_at_level(lv + 1) <= exp_total:
+		lv += 1
+	return lv
+
+
+## [EXP into the current level, EXP this level needs] for the EXP bars
+func level_progress(exp_total: int = -1) -> Array:
+	var e := int(save["exp"]) if exp_total < 0 else exp_total
+	var lv := level_for(e)
+	return [e - exp_at_level(lv), exp_at_level(lv + 1) - exp_at_level(lv)]
 
 
 func add_reward(exp_gain: int, coin_gain: int) -> bool:
@@ -691,6 +728,8 @@ func screen_w() -> float:
 ## scenes laid out at fixed positions (prologue, Gelanggang, penutup) stay
 ## 16:9 with bars; everything else fills a wide screen
 func lock_16_9(on: bool) -> void:
+	if not is_inside_tree() or get_window() == null:
+		return  # quitting
 	get_window().content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP if on else Window.CONTENT_SCALE_ASPECT_KEEP_HEIGHT
 
 

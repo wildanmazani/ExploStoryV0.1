@@ -84,9 +84,6 @@ func _ready() -> void:
 	_go.pressed.connect(_submit)
 	row.add_child(_go)
 	col.add_child(row)
-	var mode := UI.label(Backend.mode_text(), "Small", true)
-	mode.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(mode)
 	frame.add_child(col)
 	add_child(UI.center(frame))
 	if not DisplayServer.is_touchscreen_available():
