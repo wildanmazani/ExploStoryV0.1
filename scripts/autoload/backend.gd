@@ -10,6 +10,7 @@ const CONFIG_PATH := "res://config/backend.json"
 const LOCAL_ACCOUNTS := "user://akaun.json"
 const SESSION := "user://sesi.json"  ## refresh token: stay signed in on this device
 const RETRY := 10.0                    ## seconds between sync attempts while offline
+const RATINGS_PENDING := "user://penilaian_tunda.json"  ## star ratings not sent yet
 
 var url: String = ""
 var anon_key: String = ""
@@ -38,6 +39,7 @@ func _ready() -> void:
 	_refresh_timer.one_shot = true
 	_refresh_timer.timeout.connect(_refresh)
 	add_child(_refresh_timer)
+	flush_ratings.call_deferred()
 
 
 func is_online() -> bool:
@@ -357,6 +359,41 @@ func log_hint(puzzle_id: String, tier: int) -> void:
 		return
 	_request("/rest/v1/hint_usage", HTTPClient.METHOD_POST, {"puzzle_id": puzzle_id, "tier": tier}, false,
 		PackedStringArray(["Prefer: return=minimal"]))
+
+
+## Anonymous star rating (kotak bintang). Kept on this device first and sent
+## when online; anything not sent yet goes out the next time the game starts.
+func send_rating(stars: int, comment: String, context: String) -> void:
+	var row := {
+		"stars": clampi(stars, 1, 5),
+		"comment": comment.left(300),
+		"context": context,
+		"level": int(Game.save.get("level", 1)),
+		"bab": (Game.save.get("chapters_done", []) as Array).size(),
+		"lang": str(Game.settings.get("lang", "ms")),
+		"device": "touch" if Game.controls_on_screen() else "desktop",
+	}
+	var pending := _pending_ratings()
+	pending.append(row)
+	Game.write_json_user(RATINGS_PENDING, pending)
+	await flush_ratings()
+
+
+func _pending_ratings() -> Array:
+	var p = Game.load_json_user(RATINGS_PENDING)
+	return p if p is Array else []
+
+
+func flush_ratings() -> void:
+	if not is_online():
+		return
+	var sent := _pending_ratings()
+	if sent.is_empty():
+		return
+	var r := await _request("/rest/v1/game_ratings", HTTPClient.METHOD_POST, sent, false,
+		PackedStringArray(["Prefer: return=minimal"]))
+	if r["ok"]:  # keep only what was added while this was on its way
+		Game.write_json_user(RATINGS_PENDING, _pending_ratings().slice(sent.size()))
 
 
 # ------------------------------------------------------------------ Bilik Pertarungan

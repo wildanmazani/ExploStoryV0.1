@@ -592,6 +592,8 @@ func _play_zones(zones: Array) -> bool:
 		await wait_screen("zone_summary", 40)
 		await shot("summary_" + z)
 		hosted()._continue()
+		if z == "1_1":
+			await _skip_rating("kotak_bintang_1_1")
 		if not Game.is_last_zone(z):
 			await wait_screen("world")
 			await wait_idle()
@@ -969,12 +971,29 @@ func _check_rooms() -> bool:
 	return true
 
 
+## The optional star box (after Misi 1.1 and after Bab 1): picture it, then
+## Nanti. Waits up to `tries` tenths of a second; true if it was there.
+func _skip_rating(pic: String, tries := 10) -> bool:
+	for i in tries:
+		var kb := Main.overlay_root().find_child("KotakBintang", true, false)
+		if kb:
+			await wait(0.3)
+			await shot(pic)
+			find_button(kb, "Nanti").pressed.emit()
+			await wait(0.3)
+			return true
+		await wait(0.1)
+	return false
+
+
 ## Clicks through the chapter ending: flag, Nota Alif, wellbeing card, teaser.
 func _finish_penutup(teaser: String) -> bool:
 	await wait_screen("penutup", 30)
 	var t := 0.0
 	var shot_flag := false
 	while screen_name() == "penutup":
+		if await _skip_rating("kotak_bintang_" + teaser, 1):
+			continue
 		var nota: Node = null
 		for c in Main.overlay_root().get_children():
 			if c.has_method("_read_page"):
@@ -1452,6 +1471,41 @@ func _check_ronda5() -> bool:
 		_fail("MAIN SEMULA should start a replay of 1_1 with no EXP")
 		return false
 	print("ronda5: MAIN SEMULA ok")
+	# the optional star rating from the HUD: small box, Hantar waits for a star
+	await wait(3.0)  # the Jalan Pintas fade (the world is built again)
+	await wait_screen("world", 30.0)
+	await wait_idle()
+	var star := scene().find_child("BintangHUD", true, false) as Button
+	if star == null:
+		_fail("no star button in the HUD")
+		return false
+	await shot("r5_hud_bintang")
+	star.pressed.emit()
+	await wait(0.4)
+	await shot("r5_kotak_bintang")
+	var kb := Main.overlay_root().find_child("KotakBintang", true, false)
+	var hantar: Button = find_button(kb, "Hantar") if kb else null
+	if hantar == null or not hantar.disabled:
+		_fail("the star box should open with Hantar off until a star is picked")
+		return false
+	kb.get_parent().pick(4)
+	await wait(0.2)
+	await shot("r5_kotak_bintang_4")
+	var real_url := Backend.url
+	Backend.url = ""  # never send a test rating to the real table
+	Game.write_json_user(Backend.RATINGS_PENDING, [])
+	hantar.pressed.emit()
+	await wait(0.5)
+	Backend.url = real_url
+	var pend = Game.load_json_user(Backend.RATINGS_PENDING)
+	var ok_pend: bool = pend is Array and pend.size() == 1 and int(pend[0]["stars"]) == 4 and str(pend[0]["context"]) == "hud"
+	if not ok_pend or int(Game.save.get("rated", 0)) != 4 or Main.overlay_root().find_child("KotakBintang", true, false) != null:
+		_fail("a 4-star rating should be kept to send and the box closed, got %s" % str(pend))
+		return false
+	Game.write_json_user(Backend.RATINGS_PENDING, [])
+	await wait(0.3)
+	await shot("r5_hud_bintang_emas")
+	print("ronda5: kotak bintang ok")
 	# Mula semula: two choices
 	var sp: Node = Main.open_settings()
 	await wait(0.3)

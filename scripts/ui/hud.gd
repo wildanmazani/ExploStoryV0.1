@@ -5,6 +5,7 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const BegPanel = preload("res://scripts/ui/beg_panel.gd")
+const KotakBintang = preload("res://scripts/ui/kotak_bintang.gd")
 
 var location_title: String = ""
 var location_sub: String = ""
@@ -26,6 +27,8 @@ var _catcher: Control       ## full-screen, closes the menu when tapping outside
 
 
 var _card: Control
+var _rate: Button            ## the star left of the card: rate the game
+var _rate_star: Control
 
 
 func _ready() -> void:
@@ -116,6 +119,23 @@ func _ready() -> void:
 	card.add_child(row)
 	_pass_clicks(row)
 	add_child(card)
+	# left of the card: a small star to rate the game (optional, kotak_bintang.gd)
+	_rate = UI.button("")
+	_rate.name = "BintangHUD"
+	_rate.custom_minimum_size = Vector2(56, 56)
+	_rate.size = Vector2(56, 56)
+	_rate.tooltip_text = tr("Nilai ExploStory")
+	_rate_star = KotakBintang.Star.new()
+	UI.full(_rate_star)
+	_rate_star.offset_left = 10
+	_rate_star.offset_top = 10
+	_rate_star.offset_right = -10
+	_rate_star.offset_bottom = -10
+	_rate_star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_rate.add_child(_rate_star)
+	_rate.pressed.connect(open_rating)
+	add_child(_rate)
+	_place_card()
 	Game.stats_changed.connect(_refresh)
 	Game.skin_changed.connect(_refresh)
 	Game.settings_changed.connect(_refresh)  # language switch
@@ -124,6 +144,19 @@ func _ready() -> void:
 
 func _place_card() -> void:
 	_card.position = Vector2(Game.screen_w() - 16 - 360, 14)
+	if _rate:
+		_rate.position = Vector2(_card.position.x - 10 - 56, 14)
+
+
+func open_rating() -> Control:
+	if Game.is_locked():
+		return null
+	set_menu_open(false)
+	var k := KotakBintang.new()
+	k.anchor = _rate.position + _rate.size
+	k.closed.connect(func(): _refresh())
+	Game.main.overlay_root().add_child(k)
+	return k
 
 
 func _pass_clicks(n: Node) -> void:
@@ -151,6 +184,8 @@ func _refresh() -> void:
 	_exp.max_value = lp[1]
 	_exp.value = lp[0]
 	_coins.text = tr("SYILING: %d") % int(Game.save["coins"])
+	_rate_star.on = int(Game.save.get("rated", 0)) > 0  # gold once rated
+	_rate_star.queue_redraw()
 
 
 # ------------------------------------------------------------------ menu

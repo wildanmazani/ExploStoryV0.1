@@ -18,7 +18,14 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PRESETS = ROOT / "export_presets.cfg"
 FRAMES = [ROOT / f"assets/characters32/alif_walk/alif_walk_east_{i}.png" for i in range(6)]
 PAU = ROOT / "assets/characters32/pau/pau_small.png"
+LOGO = ROOT / "assets/ui/logo_explostory.png"  # tools/gen_logo.py, from the app icon
 SCALE = 3  # 36 px frames -> 108 px on screen
+
+
+def logo_uri() -> str:
+    buf = io.BytesIO()
+    Image.open(LOGO).convert("RGBA").save(buf, "WEBP", quality=88, method=6)
+    return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
 def data_uri(img: Image.Image) -> str:
@@ -39,6 +46,7 @@ def sheet() -> tuple[str, int, int]:
 def block() -> str:
     alif, fw, fh = sheet()
     pau = data_uri(Image.open(PAU).convert("RGBA"))
+    logo = logo_uri()
     n = len(FRAMES)
     aw, ah = fw * SCALE, fh * SCALE
     css = f"""
@@ -46,7 +54,8 @@ def block() -> str:
 #status-progress,#status-splash{{display:none!important}}
 #muat{{position:fixed;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 40%,#2c3550 0%,#1b2030 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Trebuchet MS',Verdana,sans-serif;color:#f5e6c8;transition:opacity .7s ease;pointer-events:none}}
 #muat.habis{{opacity:0}}
-#muat .logo{{font:900 clamp(34px,7vw,72px)/1 'Trebuchet MS',Verdana,sans-serif;letter-spacing:4px;color:#f3c64b;text-shadow:0 4px 0 #8a5a2e,0 8px 18px rgba(0,0,0,.5);margin-bottom:clamp(40px,9vh,90px)}}
+#muat .logo{{width:min(620px,86vw);aspect-ratio:720/224;background:url({logo}) center/contain no-repeat;filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));margin-bottom:clamp(30px,7vh,70px);animation:timbul 2.4s ease-in-out infinite alternate}}
+@keyframes timbul{{from{{transform:translateY(0)}}to{{transform:translateY(-8px)}}}}
 #muat .jalan{{position:relative;width:min(640px,80vw);height:{ah + 30}px}}
 #muat .rel{{position:absolute;left:0;right:0;bottom:0;height:18px;border-radius:10px;background:#3a2a1c;border:3px solid #c99a4a;box-shadow:inset 0 3px 0 rgba(0,0,0,.35);overflow:hidden}}
 #muat .isi{{height:100%;width:0;background:repeating-linear-gradient(-45deg,#f3c64b 0 14px,#e8a93a 14px 28px);background-size:40px 100%;animation:jalur .8s linear infinite}}
@@ -60,7 +69,7 @@ def block() -> str:
 """
     js = """
 (function(){var TIPS=['Alif tengah kejar Pau...','Tip: Klik Pau bila buntu, dia bagi petunjuk.','Tip: Jawab betul cubaan pertama, dapat lebih EXP.','Tip: Buka Beg Alif untuk Jalan Pintas.','Tip: Gelanggang: jawab cepat, serang kuat!'];
-function go(){var d=document,m=d.createElement('div');m.id='muat';m.innerHTML='<div class="logo">EXPLO-STORY</div><div class="jalan"><div class="rel"><div class="isi"></div></div><div class="alif"></div><div class="pau"></div></div><div class="peratus">0%</div><div class="tip"></div>';d.body.appendChild(m);
+function go(){var d=document,m=d.createElement('div');m.id='muat';m.innerHTML='<div class="logo" role="img" aria-label="EXPLO-STORY"></div><div class="jalan"><div class="rel"><div class="isi"></div></div><div class="alif"></div><div class="pau"></div></div><div class="peratus">0%</div><div class="tip"></div>';d.body.appendChild(m);
 var isi=m.querySelector('.isi'),alif=m.querySelector('.alif'),pau=m.querySelector('.pau'),per=m.querySelector('.peratus'),tip=m.querySelector('.tip'),t=0,shown=0,cur=0,fake=0,done=0;
 tip.textContent=TIPS[0];setInterval(function(){tip.style.opacity=0;setTimeout(function(){t=(t+1)%TIPS.length;tip.textContent=TIPS[t];tip.style.opacity=.85},400)},2800);
 var timer=setInterval(function(){var s=d.getElementById('status'),p=d.getElementById('status-progress');

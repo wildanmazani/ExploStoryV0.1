@@ -116,6 +116,9 @@ func _run(flag1: TextureRect, flag2: TextureRect, pau: TextureRect) -> void:
 	await nota_panel.closed
 	# gentle wellbeing card
 	await _card("Satu nota kecil", "Jika rasa tertekan menjelang peperiksaan, bercakaplah dengan guru, kaunselor atau keluarga. Kau tidak keseorangan.", "res://assets/icons/rakan.png")
+	# Bab 1 done: a quick, optional star rating
+	if _ch == 1:
+		await preload("res://scripts/ui/kotak_bintang.gd").ask_once("bab_1", "Tahniah, Bab 1 tamat! Nilai ExploStory?")
 	# teaser for the next Bab
 	banner.queue_free()
 	await _teaser()

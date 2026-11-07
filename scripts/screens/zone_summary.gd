@@ -4,10 +4,12 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const BegPanel = preload("res://scripts/ui/beg_panel.gd")
+const KotakBintang = preload("res://scripts/ui/kotak_bintang.gd")
 
 var params: Dictionary = {}
 var _exp_bar: ProgressBar
 var _coin_label: Label
+var _leaving := false
 
 
 func _ready() -> void:
@@ -147,7 +149,13 @@ func _bar(parent: VBoxContainer, text: String, v: int, mx: int, variation: Strin
 
 
 func _continue() -> void:
+	if _leaving:
+		return
+	_leaving = true
 	var zid: String = params.get("zone", "1_1")
+	if zid == "1_1" and params.get("first_time", true):
+		# the first mission done: a quick, optional star rating
+		await KotakBintang.ask_once("misi_1_1", "Seronok tak Misi 1.1? Bagi bintang!")
 	var ch := Game.chapter_of(zid)
 	if Game.is_last_zone(zid) and params.get("first_time", true) and not Game.chapter_done(ch):
 		# the chapter's final test stands between Alif and the next map
