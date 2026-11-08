@@ -57,5 +57,29 @@ def main(src: str) -> None:
     print("logo:", OUT, im.size)
 
 
+CAVAN_OUT = ROOT / "assets/ui/logo_cavan_tech.png"
+
+
+def cavan(src: str) -> None:
+    """The studio logo for the title screen: cropped to the mark, on a small
+    white card with round corners (the logo is drawn for a white page)."""
+    from PIL import ImageDraw, ImageOps
+    im = Image.open(src).convert("RGB")
+    ink = ImageOps.invert(im.convert("L")).point(lambda v: 255 if v > 18 else 0)
+    x0, y0, x1, y1 = ink.getbbox()
+    pad = 60
+    im = im.crop((max(0, x0 - pad), max(0, y0 - pad), min(im.width, x1 + pad), min(im.height, y1 + pad)))
+    h = 160
+    im = im.resize((round(im.width * h / im.height), h), Image.LANCZOS).convert("RGBA")
+    mask = Image.new("L", im.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, im.width - 1, im.height - 1), radius=18, fill=235)
+    im.putalpha(mask)
+    im.save(CAVAN_OUT, optimize=True)
+    print("cavan:", CAVAN_OUT, im.size)
+
+
 if __name__ == "__main__":
+    # python tools/gen_logo.py <EXPLO-STORY ICON APP.png> [<CAVAN TECH LOGO.png>]
     main(sys.argv[1])
+    if len(sys.argv) > 2:
+        cavan(sys.argv[2])
