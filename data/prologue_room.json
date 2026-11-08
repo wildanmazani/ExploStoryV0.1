@@ -15,7 +15,7 @@
   },
   "caption": "11:52 malam. 3 hari sebelum SPM Sejarah.",
   "room": [
-    {"id": "kalendar", "label": "Kalendar", "rect": [0, 36, 200, 256], "zoom": 1.2, "say": "pro_obj_kalendar"},
+    {"id": "kalendar", "label": "Jadual SPM", "rect": [0, 36, 200, 256], "zoom": 1.2, "say": "pro_obj_kalendar"},
     {"id": "kertas", "label": "Kertas Percubaan", "rect": [812, 516, 168, 96], "say": "pro_obj_kertas"},
     {"id": "telefon", "label": "Telefon", "rect": [330, 530, 130, 76], "say": "pro_obj_telefon"},
     {"id": "tingkap", "label": "Tingkap", "rect": [440, 30, 420, 370], "zoom": 1.2, "say": "pro_obj_tingkap"},
