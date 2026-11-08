@@ -10,6 +10,7 @@ var _tab: int = 0
 var _body: VBoxContainer
 var _tab_row: HBoxContainer
 var _coins: Label
+var _exp: Label
 var _preview: TextureRect
 var _preview_frames: Array[Texture2D] = []
 var _t: float = 0.0
@@ -29,6 +30,12 @@ func _build() -> void:
 		_tab_row.add_child(b)
 	top.add_child(_tab_row)
 	top.add_child(UI.spacer())
+	var exp_tag := UI.label("EXP", "Heading")  # the player's EXP, next to the coins
+	exp_tag.add_theme_color_override("font_color", Color("7cc4ff"))
+	top.add_child(exp_tag)
+	_exp = UI.label("", "Heading")
+	top.add_child(_exp)
+	top.add_child(UI.margin(Control.new(), 12, 0, 0, 0))
 	top.add_child(UI.icon("res://assets/icons/syiling.png", 32))
 	_coins = UI.label("", "Heading")
 	top.add_child(_coins)
@@ -44,6 +51,8 @@ func _build() -> void:
 func _refresh_coins() -> void:
 	if is_instance_valid(_coins):
 		_coins.text = str(int(Game.save["coins"]))
+	if is_instance_valid(_exp):
+		_exp.text = str(int(Game.save["exp"]))
 
 
 func _process(delta: float) -> void:
