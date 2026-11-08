@@ -1506,6 +1506,25 @@ func _check_ronda5() -> bool:
 	await wait(0.3)
 	await shot("r5_hud_bintang_emas")
 	print("ronda5: kotak bintang ok")
+	# holding run (Shift / X) plays Alif's PixelLab run cycle, not a fast walk
+	var pl: Player = scene().player
+	Input.action_press("run")
+	var ran := ""
+	for a in ["move_down", "move_up", "move_left", "move_right"]:
+		Input.action_press(a)
+		await wait(0.35)
+		if str(pl.sprite.animation).begins_with("run_"):
+			ran = str(pl.sprite.animation)
+			await shot("r5_lari")
+		Input.action_release(a)
+		await wait(0.4)
+		if ran != "":
+			break
+	Input.action_release("run")
+	if ran == "":
+		_fail("holding run should play the run animation, got %s" % pl.sprite.animation)
+		return false
+	print("ronda5: lari ok (%s)" % ran)
 	# Mula semula: two choices
 	var sp: Node = Main.open_settings()
 	await wait(0.3)

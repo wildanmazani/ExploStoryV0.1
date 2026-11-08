@@ -222,8 +222,14 @@ func _try_step(v: Vector2i) -> void:
 	var from := cell
 	cell = target
 	moving = true
-	sprite.play("walk_" + dir)
-	sprite.speed_scale = WALK_TIME / t * (1.4 if v.x != 0 and v.y != 0 else 1.0)
+	if running and sprite.sprite_frames.has_animation("run_" + dir):
+		# the run cycle: one full cycle every two steps, whatever its length
+		sprite.play("run_" + dir)
+		var n := sprite.sprite_frames.get_frame_count("run_" + dir)
+		sprite.speed_scale = n / (2.0 * t) / sprite.sprite_frames.get_animation_speed("run_" + dir)
+	else:
+		sprite.play("walk_" + dir)
+		sprite.speed_scale = WALK_TIME / t * (1.4 if v.x != 0 and v.y != 0 else 1.0)
 	step_started.emit(from, target, t)
 	var tween := create_tween()
 	tween.tween_property(self, "position", cell_to_pos(target), t)
