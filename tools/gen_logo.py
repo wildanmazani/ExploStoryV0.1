@@ -78,8 +78,25 @@ def cavan(src: str) -> None:
     print("cavan:", CAVAN_OUT, im.size)
 
 
+PARTNERS = {"kpt": ROOT / "assets/ui/logo_kpt.png", "dice": ROOT / "assets/ui/logo_dice.png"}
+
+
+def partner(src: str, key: str) -> None:
+    """KPT and DICE 4.0 logos (transparent, black text): cropped to the mark
+    and scaled to 240 px high. They are shown on white."""
+    im = Image.open(src).convert("RGBA")
+    im = im.crop(im.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox())
+    h = 240
+    im = im.resize((round(im.width * h / im.height), h), Image.LANCZOS)
+    im.save(PARTNERS[key], optimize=True)
+    print(key + ":", PARTNERS[key], im.size)
+
+
 if __name__ == "__main__":
-    # python tools/gen_logo.py <EXPLO-STORY ICON APP.png> [<CAVAN TECH LOGO.png>]
+    # python tools/gen_logo.py <EXPLO-STORY ICON APP.png> [<CAVAN TECH LOGO.png> <KPT.png> <DICE.png>]
     main(sys.argv[1])
     if len(sys.argv) > 2:
         cavan(sys.argv[2])
+    if len(sys.argv) > 4:
+        partner(sys.argv[3], "kpt")
+        partner(sys.argv[4], "dice")

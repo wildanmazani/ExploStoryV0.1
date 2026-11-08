@@ -19,12 +19,17 @@ PRESETS = ROOT / "export_presets.cfg"
 FRAMES = [ROOT / f"assets/characters32/alif_walk/alif_walk_east_{i}.png" for i in range(6)]
 PAU = ROOT / "assets/characters32/pau/pau_small.png"
 LOGO = ROOT / "assets/ui/logo_explostory.png"  # tools/gen_logo.py, from the app icon
+# KPT, DICE 4.0 and Cavan Tech, in that order, on a white strip at the bottom
+PARTNERS = [ROOT / f"assets/ui/logo_{k}.png" for k in ("kpt", "dice", "cavan_tech")]
 SCALE = 3  # 36 px frames -> 108 px on screen
 
 
-def logo_uri() -> str:
+def logo_uri(path: pathlib.Path = LOGO, height: int = 0) -> str:
+    im = Image.open(path).convert("RGBA")
+    if height:
+        im = im.resize((round(im.width * height / im.height), height), Image.LANCZOS)
     buf = io.BytesIO()
-    Image.open(LOGO).convert("RGBA").save(buf, "WEBP", quality=88, method=6)
+    im.save(buf, "WEBP", quality=88, method=6)
     return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
@@ -47,6 +52,7 @@ def block() -> str:
     alif, fw, fh = sheet()
     pau = data_uri(Image.open(PAU).convert("RGBA"))
     logo = logo_uri()
+    rakan = "".join(f'<img src="{logo_uri(p, 112)}" alt="">' for p in PARTNERS)
     n = len(FRAMES)
     aw, ah = fw * SCALE, fh * SCALE
     css = f"""
@@ -65,11 +71,13 @@ def block() -> str:
 #muat .pau{{position:absolute;left:0;bottom:22px;width:48px;height:48px;margin-left:{aw // 2}px;background:url({pau}) 0 0/48px 48px;image-rendering:pixelated;animation:lompat .45s ease-in-out infinite alternate}}
 @keyframes lompat{{from{{transform:translateY(0) scale(1.08,.92)}}to{{transform:translateY(-34px) scale(.95,1.05)}}}}
 #muat .peratus{{margin-top:14px;font-weight:700;font-size:18px;color:#f3c64b}}
+#muat .rakan{{position:absolute;bottom:clamp(12px,3vh,28px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:clamp(14px,3vw,34px);background:#fff;border-radius:14px;padding:8px clamp(12px,2.5vw,26px);box-shadow:0 6px 18px rgba(0,0,0,.35)}}
+#muat .rakan img{{height:clamp(34px,7vh,56px);width:auto;display:block}}
 #muat .tip{{margin-top:10px;font-size:clamp(14px,2.2vw,18px);opacity:.85;min-height:1.4em;transition:opacity .4s;text-align:center;padding:0 16px}}
 """
     js = """
-(function(){var TIPS=['Alif tengah kejar Pau...','Tip: Klik Pau bila buntu, dia bagi petunjuk.','Tip: Jawab betul cubaan pertama, dapat lebih EXP.','Tip: Buka Beg Alif untuk Jalan Pintas.','Tip: Gelanggang: jawab cepat, serang kuat!'];
-function go(){var d=document,m=d.createElement('div');m.id='muat';m.innerHTML='<div class="logo" role="img" aria-label="EXPLO-STORY"></div><div class="jalan"><div class="rel"><div class="isi"></div></div><div class="alif"></div><div class="pau"></div></div><div class="peratus">0%</div><div class="tip"></div>';d.body.appendChild(m);
+(function(){var RAKAN='__RAKAN__';var TIPS=['Alif tengah kejar Pau...','Tip: Klik Pau bila buntu, dia bagi petunjuk.','Tip: Jawab betul cubaan pertama, dapat lebih EXP.','Tip: Buka Beg Alif untuk Jalan Pintas.','Tip: Gelanggang: jawab cepat, serang kuat!'];
+function go(){var d=document,m=d.createElement('div');m.id='muat';m.innerHTML='<div class="logo" role="img" aria-label="EXPLO-STORY"></div><div class="jalan"><div class="rel"><div class="isi"></div></div><div class="alif"></div><div class="pau"></div></div><div class="peratus">0%</div><div class="tip"></div><div class="rakan">' + RAKAN + '</div>';d.body.appendChild(m);
 var isi=m.querySelector('.isi'),alif=m.querySelector('.alif'),pau=m.querySelector('.pau'),per=m.querySelector('.peratus'),tip=m.querySelector('.tip'),t=0,shown=0,cur=0,fake=0,done=0;
 tip.textContent=TIPS[0];setInterval(function(){tip.style.opacity=0;setTimeout(function(){t=(t+1)%TIPS.length;tip.textContent=TIPS[t];tip.style.opacity=.85},400)},2800);
 var timer=setInterval(function(){var s=d.getElementById('status'),p=d.getElementById('status-progress');
@@ -81,7 +89,7 @@ function draw(){cur+=(shown-cur)*0.12;if(shown-cur<0.2)cur=shown;var w=cur.toFix
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
 """
     css = " ".join(line.strip() for line in css.strip().splitlines())
-    js = "".join(line.strip() for line in js.strip().splitlines())
+    js = "".join(line.strip() for line in js.strip().splitlines()).replace("__RAKAN__", rakan)  # no ' in it: safe in a '...' string
     return f"<!--muat--><style>{css}</style><script>{js}</script><!--/muat-->"
 
 

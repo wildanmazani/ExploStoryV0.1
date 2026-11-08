@@ -8,6 +8,8 @@ const STUDIO := "res://assets/ui/logo_cavan_tech.png"
 
 var _t := 0.0
 var _leaving := false
+static var _splash_seen := false  ## the partner logos show once per visit
+var _splash: Control = null
 
 @onready var start_label: Label = $StartLabel
 
@@ -37,6 +39,65 @@ func _ready() -> void:
 	ver.theme_type_variation = "Small"
 	ver.position = Vector2(20, 684)
 	add_child(ver)
+	_partners_splash()
+
+
+## Right after the game loads (once per visit): KPT, DICE 4.0 and Cavan Tech
+## on white, then the title. A click skips it. Not during the autotest.
+func _partners_splash() -> void:
+	if _splash_seen or "--autotest" in OS.get_cmdline_user_args():
+		return
+	_splash_seen = true
+	var s := Control.new()
+	s.name = "Rakan"
+	s.set_anchors_preset(Control.PRESET_FULL_RECT)
+	s.mouse_filter = Control.MOUSE_FILTER_STOP
+	var bg := ColorRect.new()
+	bg.color = Color.WHITE
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	s.add_child(bg)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 80)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	for pair in [["kpt", 130.0], ["dice", 170.0], ["cavan_tech", 160.0]]:
+		var path := "res://assets/ui/logo_%s.png" % pair[0]
+		if not ResourceLoader.exists(path):
+			continue
+		var t: Texture2D = load(path)
+		var r := TextureRect.new()
+		r.texture = t
+		r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		r.custom_minimum_size = Vector2(pair[1] * t.get_width() / t.get_height(), pair[1])
+		r.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(r)
+	var cc := CenterContainer.new()
+	cc.set_anchors_preset(Control.PRESET_FULL_RECT)
+	cc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cc.add_child(row)
+	s.add_child(cc)
+	add_child(s)
+	_splash = s
+	row.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(row, "modulate:a", 1.0, 0.6)
+	tw.tween_interval(2.4)
+	tw.tween_property(s, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(_end_splash)
+	s.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed or e is InputEventScreenTouch and e.pressed:
+			tw.kill()
+			var out := create_tween()
+			out.tween_property(s, "modulate:a", 0.0, 0.25)
+			out.tween_callback(_end_splash))
+
+
+func _end_splash() -> void:
+	if is_instance_valid(_splash):
+		_splash.queue_free()
+	_splash = null
 
 
 ## the EXPLO-STORY wordmark in place of the plain title, and the Cavan Tech
@@ -91,6 +152,11 @@ func _place_gear() -> void:
 
 func _input(event: InputEvent) -> void:
 	if _leaving or Game.is_locked():
+		return
+	if _splash != null:
+		if event is InputEventKey and event.pressed and not event.echo:
+			_end_splash()  # a key skips the logos too
+			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseButton and event.position.x > Game.screen_w() - 100 and event.position.y < 90:
 		return  # the settings gear
