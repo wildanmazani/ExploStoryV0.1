@@ -317,6 +317,23 @@ func _run() -> void:
 			print("AUTOTEST PASS (portal only) in %d s" % int(_t))
 			get_tree().quit(0)
 		return
+	if "--only=demo" in OS.get_cmdline_user_args():
+		# a clip for social media: Alif (autopilot) vs a bot in the Gelanggang,
+		# recorded with Godot's Movie Maker (--write-movie <file>.avi)
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.save["seen"].append("gelanggang_cara")
+		Game.goto("gelanggang", {"format": "1v1", "level": "sukar", "autopilot": true})
+		await wait_screen("gelanggang")
+		var dm: BrawlMatch = hosted().match_node
+		var dt := 0.0
+		while dm.phase != "tamat" and dt < 150.0:
+			await wait(0.1)
+			dt += 0.1
+		await wait(4.0)
+		print("AUTOTEST PASS (demo) %d s" % int(dt))
+		get_tree().quit(0)
+		return
 	if "--only=lupa" in OS.get_cmdline_user_args():
 		await wait_screen("title")
 		if await _check_lupa():
