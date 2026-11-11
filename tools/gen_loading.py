@@ -3,7 +3,8 @@
 Godot's web page shows a plain bar while the game downloads. This writes a
 small block (CSS + JS + the sprites as data URIs) into html/head_include in
 export_presets.cfg, between <!--muat--> and <!--/muat-->, so rerunning it
-replaces the old block and keeps everything else (the fullscreen button).
+replaces the old block and keeps everything else (the fullscreen button, the
+Google Tag Manager block <!--gtm-->...<!--/gtm--> for GTM-NVC3R6MK).
 
     python tools/gen_loading.py
 """
