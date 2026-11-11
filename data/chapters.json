@@ -23,7 +23,28 @@
       "id": "t5",
       "name": "Sejarah Tingkatan 5",
       "open": false,
-      "chapters": []
+      "chapters": [
+        {"no": 1, "title": "Kedaulatan Negara", "icon": "mahkota", "open": false,
+         "subtopik": ["1.1 Konsep Kedaulatan", "1.2 Ciri Negara yang Berdaulat", "1.3 Kepentingan Mewujudkan Negara Berdaulat", "1.4 Langkah Mempertahankan Kedaulatan"]},
+        {"no": 2, "title": "Perlembagaan Persekutuan", "icon": "kitab", "open": false,
+         "subtopik": ["2.1 Latar Belakang Sejarah", "2.2 Sejarah Penggubalan Perlembagaan Persekutuan", "2.3 Ciri Utama Perlembagaan Persekutuan", "2.4 Pindaan Perlembagaan Persekutuan 1963 dan 1965"]},
+        {"no": 3, "title": "Raja Berperlembagaan dan Demokrasi Berparlimen", "icon": "regalia", "open": false,
+         "subtopik": ["3.1 Latar Belakang Pemerintahan Beraja dan Demokrasi Berparlimen", "3.2 Sejarah dan Kedudukan Institusi Majlis Raja-Raja", "3.3 Yang di-Pertuan Agong dan Raja dalam Perlembagaan Persekutuan", "3.4 Amalan Demokrasi dan Pengasingan Kuasa", "3.5 Keunikan Amalan Demokrasi Berparlimen di Negara Kita"]},
+        {"no": 4, "title": "Sistem Persekutuan", "icon": "timbangan", "open": false,
+         "subtopik": ["4.1 Latar Belakang Sistem Persekutuan di Negara Kita", "4.2 Kuasa Kerajaan Persekutuan dan Kerajaan Negeri", "4.3 Kerjasama Kerajaan Persekutuan dan Kerajaan Negeri", "4.4 Faktor yang Mengukuhkan Sistem Persekutuan"]},
+        {"no": 5, "title": "Pembentukan Malaysia", "icon": "bendera", "open": false,
+         "subtopik": ["5.1 Konsep Gagasan Malaysia", "5.2 Perkembangan Idea dan Usaha Pembentukan Malaysia", "5.3 Reaksi Tempatan dan Negara Jiran terhadap Pembentukan Malaysia", "5.4 Langkah Pembentukan Malaysia", "5.5 Perjanjian Julai 1963 dan Peristiwa Pengisytiharan Malaysia", "5.6 Konfrontasi dan Usaha Menangani"]},
+        {"no": 6, "title": "Cabaran Selepas Pembentukan Malaysia", "icon": "pedang", "open": false,
+         "subtopik": ["6.1 Cabaran Dalaman Malaysia", "6.2 Pemisahan Singapura", "6.3 Menangani Ancaman Komunis", "6.4 Isu Pembangunan dan Ekonomi", "6.5 Tragedi Hubungan antara Kaum"]},
+        {"no": 7, "title": "Membina Kesejahteraan Negara", "icon": "kumpulan", "open": false,
+         "subtopik": ["7.1 Perpaduan dan Integrasi Nasional", "7.2 Dasar Pendidikan Kebangsaan", "7.3 Bahasa Melayu sebagai Bahasa Ilmu dan Bahasa Perpaduan", "7.4 Dasar Kebudayaan Kebangsaan", "7.5 Sukan sebagai Alat Perpaduan", "7.6 Rukun Negara sebagai Tonggak Kesejahteraan Negara"]},
+        {"no": 8, "title": "Membina Kemakmuran Negara", "icon": "syiling", "open": false,
+         "subtopik": ["8.1 Pembentukan Dasar Ekonomi Baru (DEB)", "8.2 Pelaksanaan Dasar Ekonomi Baru (DEB)", "8.3 Pembentukan Dasar Pembangunan Nasional (DPN)", "8.4 Pelaksanaan Dasar Pembangunan Nasional (DPN)", "8.5 Pencapaian Dasar Ekonomi Baru (DEB) dan Dasar Pembangunan Nasional (DPN)"]},
+        {"no": 9, "title": "Dasar Luar Malaysia", "icon": "kapal", "open": false,
+         "subtopik": ["9.1 Latar Belakang Dasar Luar", "9.2 Asas Penggubalan Dasar Luar", "9.3 Malaysia dalam Pertubuhan Bangsa-Bangsa Bersatu (PBB)", "9.4 Malaysia dalam Komanwel", "9.5 Cabaran Mengukuhkan Dasar Luar", "9.6 Malaysia dalam Persatuan Negara-negara Asia Tenggara (ASEAN)", "9.7 Malaysia dalam Pergerakan Negara-negara Tanpa Pihak (NAM)", "9.8 Malaysia dalam Pertubuhan Kerjasama Islam (OIC)"]},
+        {"no": 10, "title": "Kecemerlangan Malaysia di Persada Dunia", "icon": "bintang", "open": false,
+         "subtopik": ["10.1 Malaysia dalam Isu Global Kontemporari", "10.2 Peranan Malaysia dalam Hubungan Ekonomi Antarabangsa", "10.3 Pelibatan Rakyat dalam Isu Kemanusiaan dan Keamanan", "10.4 Usaha Mengekalkan Kelestarian Global", "10.5 Wawasan Malaysia Menuju Masa Hadapan"]}
+      ]
     }
   ]
 }

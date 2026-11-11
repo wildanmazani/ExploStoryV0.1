@@ -81,8 +81,13 @@ func _show_arc(i: int) -> void:
 	var arc: Dictionary = Game.chapters["arcs"][i]
 	if not arc.get("open", false):
 		_info.text = tr("%s belum dibuka. Habiskan Tingkatan 4 dulu.") % str(arc["name"])
+		var coming: Array = arc.get("chapters", [])
+		if not coming.is_empty():
+			_info.text = tr("%s akan datang. Klik Zon untuk lihat subtopik.") % str(arc["name"])
 		for n in 10:
-			_grid.add_child(_card({"no": n + 1, "title": "???", "icon": "kunci"}, false))
+			# chapters still to come show their title (click: the subtopik list)
+			var ch: Dictionary = coming[n] if n < coming.size() else {"no": n + 1, "title": "???", "icon": "kunci"}
+			_grid.add_child(_card(ch, false))
 		Sfx.play("bump", -6.0)
 		return
 	_info.text = tr("Klik Zon yang terbuka untuk masuk ke dunianya.")
@@ -149,6 +154,9 @@ func _card(ch: Dictionary, open: bool) -> Control:
 		col.add_child(bar)
 		status.text = tr("SIAP") if finished else tr("%d / %d misi") % [p.x, p.y]
 		status.add_theme_color_override("font_color", Color("8fe08a") if finished else UI.GOLD)
+	elif ch.has("subtopik"):
+		status.text = tr("AKAN DATANG")
+		status.add_theme_color_override("font_color", UI.GOLD)
 	else:
 		status.text = tr("BERKUNCI")
 		status.add_theme_color_override("font_color", UI.GREY)
@@ -161,6 +169,10 @@ func _card(ch: Dictionary, open: bool) -> Control:
 
 
 func _enter(ch: Dictionary, open: bool) -> void:
+	if not open and ch.has("subtopik"):
+		Sfx.play("select", -6.0)
+		_show_subtopik(ch)
+		return
 	if not open:
 		Sfx.play("bump", -4.0)
 		_info.text = tr("Belum lagi. Zon %d akan terbuka lepas kita habiskan bab sebelumnya.") % int(ch["no"])
@@ -177,3 +189,34 @@ func _enter(ch: Dictionary, open: bool) -> void:
 	elif int(ch["no"]) == 1 and in_lembah and ent is Dictionary:
 		GameState.spawn_cell = Vector2i(11, 27)
 	Game.goto("world" if bool(Game.save.get("prolog_done", false)) else "prolog")
+
+
+## a chapter still to come: its subtopik in a small card over the grid
+## (click outside or Tutup to close)
+func _show_subtopik(ch: Dictionary) -> void:
+	var layer := Control.new()
+	layer.name = "Subtopik"
+	UI.full(layer)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	var shade := UI.dim(0.5)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(shade)
+	var box := UI.panel()
+	box.custom_minimum_size = Vector2(780, 0)
+	var col := UI.vbox(8)
+	col.add_child(UI.label(tr("ZON %d") % int(ch["no"]) + " · " + tr("AKAN DATANG"), "Small"))
+	var head := UI.label(tr(str(ch.get("title", ""))), "Heading", true)
+	head.add_theme_color_override("font_color", UI.GOLD)
+	col.add_child(head)
+	for s in ch.get("subtopik", []):
+		col.add_child(UI.label(str(s), "", true))
+	var tutup := UI.button("Tutup", "", 180)
+	tutup.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	tutup.pressed.connect(layer.queue_free)
+	col.add_child(tutup)
+	box.add_child(col)
+	layer.add_child(UI.center(box))
+	layer.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed:
+			layer.queue_free())
+	add_child(layer)

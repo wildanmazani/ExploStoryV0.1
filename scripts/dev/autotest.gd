@@ -317,6 +317,18 @@ func _run() -> void:
 			print("AUTOTEST PASS (portal only) in %d s" % int(_t))
 			get_tree().quit(0)
 		return
+	if "--only=arka" in OS.get_cmdline_user_args():
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.goto("arka")
+		await wait_screen("arka")
+		hosted()._show_arc(1)
+		await wait(0.3)
+		await shot("arka_t5_locked")
+		if await _check_t5_subtopik():
+			print("AUTOTEST PASS (arka only)")
+			get_tree().quit(0)
+		return
 	if "--only=ronda3" in OS.get_cmdline_user_args():
 		await _check_ronda3()
 		return
@@ -464,6 +476,8 @@ func _run() -> void:
 	hosted()._show_arc(1)
 	await wait(0.3)
 	await shot("arka_t5_locked")
+	if not await _check_t5_subtopik():
+		return
 	Game.goto("lobby")
 	await wait_screen("lobby")
 	await shot("lobby")
@@ -1725,3 +1739,23 @@ func _check_ronda3() -> void:
 		return
 	print("AUTOTEST PASS (ronda3)")
 	get_tree().quit(0)
+
+
+## Tingkatan 5 (still to come): ten zone cards with titles; a click opens the
+## subtopik list, and Tutup closes it
+func _check_t5_subtopik() -> bool:
+	var t5: Array = Game.chapters["arcs"][1].get("chapters", [])
+	if t5.size() != 10:
+		_fail("Tingkatan 5 should list its 10 chapters, got %d" % t5.size())
+		return false
+	hosted()._enter(t5[8], false)
+	await wait(0.3)
+	var pop: Node = hosted().get_node_or_null("Subtopik")
+	if pop == null:
+		_fail("a Tingkatan 5 zone card should open its subtopik list")
+		return false
+	await shot("arka_t5_subtopik")
+	pop.queue_free()
+	await wait(0.1)
+	print("arka: T5 subtopik ok")
+	return true
