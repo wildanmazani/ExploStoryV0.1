@@ -10,23 +10,22 @@
     "variants": [
       [
         {"who": "alif", "text": "SPM Sejarah. Tiga hari lagi.", "e": "worried"},
-        {"who": "alif", "text": "Tiga hari untuk sepuluh bab. Jangan panik. ...jangan panik alif.", "e": "worried"}
+        {"who": "alif", "text": "Sepuluh bab. ...Jangan panik, Alif.", "e": "worried"}
       ]
     ]
   },
   "pro_obj_kertas": {
     "variants": [
       [
-        {"who": "alif", "text": "Kertas Percubaan: 38 markah. Cikgu catat dekat kertas, \"Tahu fakta, tapi tak boleh kaitkan fakta, KBAT lemah.\"", "e": "confused"},
-        {"who": "alif", "text": "Apa guna aku belajar ni? Aku hafal semua. Lepas tu semua hilang.", "e": "worried"}
+        {"who": "alif", "text": "Percubaan: 38 markah. Cikgu tulis, \"Tahu fakta, tapi tak boleh kaitkan.\"", "e": "confused"},
+        {"who": "alif", "text": "Aku dah hafal semua. Lepas tu semua hilang.", "e": "worried"}
       ]
     ]
   },
   "pro_obj_telefon": {
     "variants": [
       [
-        {"who": "mak", "text": "Lif, jangan tidur lewat sangat."},
-        {"who": "mak", "text": "Jangan lupa makan pau kegemaran kamu tu ye. Mak tidur dulu ye, selamat malam sayangku."},
+        {"who": "mak", "text": "Lif, jangan tidur lewat sangat. Pau atas meja tu, makan tau."},
         {"who": "alif", "text": "...Okey, Mak. Lepas satu bab.", "e": "happy"}
       ]
     ]
@@ -34,16 +33,15 @@
   "pro_obj_tingkap": {
     "variants": [
       [
-        {"who": "alif", "text": "Dulu Tok selalu cerita pasal Hang Tuah, pasal kapal dagang di Melaka. Best je dengar.", "e": "happy"},
-        {"who": "alif", "text": "Kenapa bila baca buku teks, jadi macam tak best pulak", "e": "confused"}
+        {"who": "alif", "text": "Dulu Tok selalu cerita pasal Hang Tuah. Best je dengar.", "e": "happy"},
+        {"who": "alif", "text": "Kenapa bila baca buku teks, tak best pulak?", "e": "confused"}
       ]
     ]
   },
   "pro_obj_pau": {
     "variants": [
       [
-        {"who": "alif", "text": "Pau kegemaran aku. Terima kasih mak", "e": "happy"},
-        {"who": "alif", "text": "Lepas habis bab ni, aku makan.", "e": "worried"}
+        {"who": "alif", "text": "Pau Mak. Habis bab ni baru makan.", "e": "happy"}
       ]
     ]
   },
@@ -71,96 +69,93 @@
   "pro_read_fikir_2": {
     "variants": [
       [
-        {"who": "alif", "text": "Banyaknya fakta ni. Tadi dah baca tapi macam masuk telinga kanan, keluar telinga kiri huhu.", "e": "worried"}
+        {"who": "alif", "text": "Banyaknya fakta. Masuk telinga kanan, keluar telinga kiri.", "e": "worried"}
       ]
     ]
   },
   "pro_scramble": {
     "variants": [
       [
-        {"who": "alif", "text": "...Kejap. Tadi ayat ni lain. Kenapa satu pun tak melekat ni?", "e": "worried"},
-        {"who": "alif", "text": "Apa kaitan semua ni dengan aku? Macam tak function je belajar sejarah ni", "e": "worried"}
+        {"who": "alif", "text": "...Kejap. Tadi ayat ni lain. Kenapa satu pun tak melekat?", "e": "worried"},
+        {"who": "alif", "text": "Apa kaitan semua ni dengan aku pun?", "e": "worried"}
       ]
     ]
   },
   "pro_pau": {
     "variants": [
       [
-        {"who": "alif", "text": "...Arghh sakit kepala aku. Bagi aku rehat lima minit. Lima minit je.", "e": "worried"}
+        {"who": "alif", "text": "Arghh, pening. Rehat lima minit. Lima minit je.", "e": "worried"}
       ]
     ]
   },
   "pro_friends_1": {
     "variants": [
       [
-        {"who": "alif", "text": "Eh? Tu Aisyah? Ravi? Mei Ling? Daniel? Korang buat apa kat sini?", "e": "confused"},
-        {"who": "narator", "text": "Setiap seorang terperangkap di rumah atas air yang berlainan. Tiada jambatan, tiada sampan."},
-        {"who": "aisyah", "text": "Pintu belakang ni berkunci! Macam mana nak keluar ni?!"},
-        {"who": "ravi", "text": "Helo?! Ada sesiapa tak?! Tolong!"},
-        {"who": "meiling", "text": "Kenapa semua rumah ni atas air... Mana jalan balik?"},
-        {"who": "daniel", "text": "Takkan nak terjun pula. Dalam ke air ni?"}
+        {"who": "alif", "text": "Eh? Aisyah? Ravi? Mei Ling? Daniel?", "e": "confused"},
+        {"who": "narator", "text": "Setiap seorang terperangkap di rumah atas air. Tiada jambatan, tiada sampan."},
+        {"who": "aisyah", "text": "Pintu ni berkunci!"},
+        {"who": "ravi", "text": "Tolong! Ada orang tak?!"},
+        {"who": "meiling", "text": "Mana jalan balik ni?"},
+        {"who": "daniel", "text": "Takkan nak terjun pula?"}
       ]
     ]
   },
   "pro_friends_2": {
     "variants": [
       [
-        {"who": "narator", "text": "Kabus putih naik dari laut, tebal macam asap, menyelubungi rumah-rumah itu. Semakin tebal kabus, semakin kabur ingatan mereka."},
-        {"who": "aisyah", "text": "Eh, kau siapa?! Kenapa tengok-tengok rumah aku?"},
-        {"who": "ravi", "text": "Rumah kau? Ni kampung aku la! Dasar orang luar, jangan kacau aku lah!"}
+        {"who": "narator", "text": "Kabus putih naik dari laut. Makin tebal kabus, makin kabur ingatan mereka."},
+        {"who": "aisyah", "text": "Eh, kau siapa? Apa tengok-tengok rumah aku?"},
+        {"who": "ravi", "text": "Rumah kau? Ni kampung aku la!"}
       ]
     ]
   },
   "pro_friends_3": {
     "variants": [
       [
-        {"who": "meiling", "text": "Kau pun bukan orang sini! Bising je dari tadi!"},
-        {"who": "daniel", "text": "Diamlah! Ikut suka hati aku lah!"},
-        {"who": "alif", "text": "Weh! Kenapa kawan-kawan aku bergaduh tak tentu hala ni? Kenapa semua macam tak kenal masing-masing ni? Apa dah jadi? Aku kat mana ni?", "e": "worried"}
+        {"who": "meiling", "text": "Bisinglah korang!"},
+        {"who": "daniel", "text": "Diamlah!"},
+        {"who": "alif", "text": "Weh, kenapa korang gaduh? Korang dah tak kenal satu sama lain ke?", "e": "worried"}
       ]
     ]
   },
   "pro_huru": {
     "variants": [
       [
-        {"who": "narator", "text": "Kabus itu tidak berhenti di rumah mereka. Ia merayap atas air dan terus ke tebing menghala Ke arah Alif."},
-        {"who": "alif", "text": "Kalau kabus ni kena aku... aku pun boleh jadi lupa macam semua orang ni?", "e": "worried"},
-        {"who": "alif", "text": "Tak boleh jadi. AKU KENA LARI!", "e": "worried"}
+        {"who": "narator", "text": "Kabus itu merayap atas air, terus ke arah Alif."},
+        {"who": "alif", "text": "Kalau kabus ni kena aku, aku pun lupa jugak. LARI!", "e": "worried"}
       ]
     ]
   },
   "pro_lari": {
     "variants": [
       [
-        {"who": "narator", "text": "Alif berlari sepanjang tebing. Setiap kali dia toleh, kabus itu makin dekat."},
-        {"who": "alif", "text": "Ada Gua! Masuk situ lif!", "e": "worried"}
+        {"who": "narator", "text": "Alif lari sepanjang tebing. Kabus makin dekat."},
+        {"who": "alif", "text": "Gua! Masuk situ!", "e": "worried"}
       ]
     ]
   },
   "pro_gua_1": {
     "variants": [
       [
-        {"who": "narator", "text": "Alif sampai dalam gua batu kapur, tercungap-cungap. Di tengah gua ada batu bersurat yang besar."},
-        {"who": "alif", "text": "Inskripsi Telaga Batu... Macam dalam buku teks.", "e": "confused"}
+        {"who": "narator", "text": "Di tengah gua ada sebuah batu bersurat yang besar."},
+        {"who": "alif", "text": "Inskripsi Telaga Batu? Macam dalam buku teks...", "e": "confused"}
       ]
     ]
   },
   "pro_gua_2": {
     "variants": [
       [
-        {"who": "nirbana", "text": "Oh ada yang terlepas ya. HEHEHE, apa kata biar aku yang uji kau."},
-        {"who": "nirbana", "text": "Aku dah buat kawan-kawan kau lupa antara satu sama lain dan mereka bergaduh dan HILANG dari dunia ni!"},
-        {"who": "nirbana", "text": "Apa kata, kau cuba selamatkan kawan-kawan kau, aku nak uji sejauh mana persahabatan kau"}
+        {"who": "nirbana", "text": "Hehehe... ada yang terlepas rupanya."},
+        {"who": "nirbana", "text": "Kawan-kawan kau dah lupa antara satu sama lain. Sekejap lagi, mereka HILANG dari dunia ni."}
       ]
     ]
   },
   "pro_gua_3": {
     "variants": [
       [
-        {"who": "nirbana", "text": "Cari keempat-empat serpihan tu dalam Kampung Jejak dan kau akan berjumpa dengan kawan kau BWAHAHAHA!"},
-        {"who": "nirbana", "text": "Tapi aku yakin kau lemah! Daya ingatan kau tak hebat sebanding aku"},
-        {"who": "alif", "text": "Ini bukan lagi hafal buku teks, tapi ni adalah tentang kawan-kawan aku.", "e": "confused"},
-        {"who": "alif", "text": "AKU AKAN SELAMATKAN MEREKA!!!!", "e": "confident"}
+        {"who": "nirbana", "text": "Nak selamatkan mereka? Cari empat serpihan batu ni di Kampung Jejak. BWAHAHAHA!"},
+        {"who": "nirbana", "text": "Tapi budak yang tak boleh ingat fakta macam kau? Mustahil."},
+        {"who": "alif", "text": "Ni bukan pasal exam lagi. Ni kawan-kawan aku. Aku akan selamatkan mereka!", "e": "confident"}
       ]
     ]
   },
@@ -177,9 +172,8 @@
     "variants": [
       [
         {"who": "alif", "text": "Pau?! Kau... BERCAKAP?", "e": "confused"},
-        {"who": "pau", "text": "Mestilah! Kat sini aku boleh cakap. Selamat datang ke Dunia Explo-Story!", "e": "happy"},
-        {"who": "alif", "text": "Tapi ni bilik aku. Katil aku, kipas aku... cuma lain macam sikit.", "e": "confused"},
-        {"who": "pau", "text": "Ni bilik kau dalam dunia ni. Kat sini sejarah tak duduk diam dalam buku. Dia hidup."},
+        {"who": "pau", "text": "Kat sini boleh! Selamat datang ke dunia Explo-Story!", "e": "happy"},
+        {"who": "pau", "text": "Ni bilik kau dalam dunia ni. Kat sini, sejarah tak duduk diam dalam buku. Dia hidup."},
         {"who": "alif", "text": "Pau, kawan-kawan aku dalam mimpi tadi... diorang dah tak kenal satu sama lain.", "e": "worried"}
       ]
     ]
@@ -187,10 +181,9 @@
   "bilik_artifak": {
     "variants": [
       [
-        {"who": "pau", "text": "Tu kerja Nirbana, Penghulu Kabus Lupa. Dia pecahkan Inskripsi Telaga Batu jadi empat serpihan.", "e": "scared"},
-        {"who": "pau", "text": "Serpihan tu artifak. Setiap satu simpan satu cerita penting Bab 1: sumpah setia rakyat, Cap Mohor, Hukum Kanun dan Waadat."},
+        {"who": "pau", "text": "Tu kerja Nirbana. Dia pecahkan Inskripsi Telaga Batu jadi empat serpihan.", "e": "scared"},
         {"who": "pau", "text": "Selagi serpihan bersepah, Kabus Lupa makin tebal. Sebab tu semua orang lupa."},
-        {"who": "alif", "text": "Jadi kalau kita kumpul balik, ingatan diorang pulih?"},
+        {"who": "alif", "text": "Jadi kalau kita kumpul balik, diorang ingat balik?"},
         {"who": "pau", "text": "Tepat!", "e": "happy"}
       ]
     ]
@@ -198,20 +191,17 @@
   "bilik_misi": {
     "variants": [
       [
-        {"who": "pau", "text": "Satu serpihan, satu misi. Ada empat misi, Misi 1.1 sampai 1.4. Setiap misi satu subtopik Bab 1."},
-        {"who": "pau", "text": "Dalam misi, kau borak dengan orang, selesaikan teka-teki dan kumpul kata kunci."},
-        {"who": "alif", "text": "Macam ulang kaji, tapi berjalan.", "e": "confident"},
-        {"who": "pau", "text": "Lepas empat serpihan, ada Ujian Bab. Lulus, baru Bab 1 selesai dan bendera pertama berkibar."}
+        {"who": "pau", "text": "Satu serpihan, satu misi. Misi 1.1 sampai 1.4."},
+        {"who": "pau", "text": "Cukup empat, kita lawan penjaga pintu. Menang, Bab 1 selesai."}
       ]
     ]
   },
   "bilik_tujuan": {
     "variants": [
       [
-        {"who": "pau", "text": "Itu tujuan kita: kumpul serpihan, halau Kabus Lupa, bawa balik ingatan semua orang."},
         {"who": "alif", "text": "Tapi aku lembab bab baca ni. Kau tahu kan.", "e": "worried"},
-        {"who": "pau", "text": "Kau bukan tak pandai, Alif. Kau cuma belajar dengan cara berbeza. Kat sini, faham dulu. Hafal datang sendiri."},
-        {"who": "alif", "text": "Faham, bukan hafal. Dan kalau aku faham, esok aku boleh ajar Ravi dengan yang lain jugak.", "e": "confident"}
+        {"who": "pau", "text": "Kau bukan tak pandai, Alif. Kat sini, faham dulu. Hafal datang sendiri."},
+        {"who": "alif", "text": "Faham, bukan hafal. Okey, jom.", "e": "confident"}
       ]
     ]
   },

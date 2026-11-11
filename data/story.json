@@ -1,8 +1,7 @@
 {
   "_nota": "Semua dialog Bab 1 dan Bab 2. 's' = penutur (lihat characters.json), 'e' = ekspresi, 't' = teks. Dialog tokoh sejarah yang direka ditanda 'rekaan': true.",
   "peta_first": [
-    {"s": "pau", "t": "Nirbana pecahkan Inskripsi Telaga Batu jadi empat serpihan. Satu serpihan, satu misi."},
-    {"s": "pau", "t": "Pergi ke bangunan yang ada tanda seru. Bila cukup empat, kita boleh lawan penjaga pintu."},
+    {"s": "pau", "t": "Pergi ke bangunan yang ada tanda seru. Satu bangunan, satu serpihan."},
     {"s": "pau", "t": "Guna WASD atau anak panah untuk berjalan. Atau klik je ke mana kau nak pergi."}
   ],
   "flag_locked": [
@@ -18,10 +17,10 @@
     {"s": "pau", "t": "Misi ini masih berkunci. Selesaikan misi sebelumnya dulu, ya."}
   ],
   "t5_locked": [
-    {"s": "pau", "t": "Itu laluan ke Sejarah Tingkatan 5. Masih berkunci. Satu langkah demi satu langkah."}
+    {"s": "pau", "t": "Itu laluan ke Sejarah Tingkatan 5. Masih berkunci."}
   ],
   "arena_locked": [
-    {"s": "pemain_arena", "t": "Arena ini hanya untuk orang yang dah kumpul artifak pertama. Dapatkan satu artifak dulu, baru datang sini."}
+    {"s": "pemain_arena", "t": "Arena ni untuk yang dah dapat artifak pertama. Cari satu dulu, baru datang."}
   ],
   "intro_jerit_1": [
     {"s": "narator", "t": "BUKK! Ada sesuatu jatuh dari langit, betul-betul depan rumah."},
@@ -46,29 +45,26 @@
     {"s": "alif", "e": "worried", "t": "Aisyah, tunggu!"}
   ],
   "intro_tahan": [
-    {"s": "makcik", "t": "Hei budak kechil, jangan kau cuba mengganggu anak dara ini!"},
-    {"s": "makcik", "t": "Guru Jalal! Tolong! Ada budak kejar anak dara orang ni!"}
+    {"s": "makcik", "t": "Hei budak! Jangan kacau anak dara orang!"},
+    {"s": "makcik", "t": "Guru Jalal! Tolong!"}
   ],
   "intro_guru": [
-    {"s": "guru_silat", "t": "Apa kehendak mu anak muda mengejar anak itu?"},
-    {"s": "alif", "e": "worried", "t": "Itu kawan saya, Aisyah. Saya cuba nak selamatkan dia, tapi dia dah lupa saya siapa."},
-    {"s": "alif", "e": "worried", "t": "Nirbana kata kalau nak selamatkan kawan-kawan saya, saya perlu kumpul artifak Inskripsi Telaga Batu dan kalahkan Panglima Derhaka."},
-    {"s": "guru_silat", "t": "APA? NIRBANA? Kau benar-benar telah bermain dengan api wahai anak muda!"},
-    {"s": "guru_silat", "t": "Nirbana adalah susuk tubuh ahli sihir yang sentiasa menyajikan kesenangan yang sementara dan tempat bersandar yang paling licik, untuk membuatkan kamu jauh dan sentiasa terlupa dari tujuan asal mu."},
-    {"s": "guru_silat", "t": "Nirbana bukan perkara yang kau boleh bermain-main. Ianya adalah mimpi ngeri kampung ini. Jikalau kau benar dalam soal ini, biarlah aku bantu kau dalam menempuh perjalanan mu."},
-    {"s": "guru_silat", "t": "Marilah ke arena silat ini untuk menguji daya ingatan mu, supaya menjadi bekalan untuk menyelamatkan sahabat-sahabat mu."},
-    {"s": "guru_silat", "t": "Setiap kali kau dapat mengutip satu artifak, maka datanglah kemari untuk menguji daya ingatan bersama-sama murid ku."}
+    {"s": "guru_silat", "t": "Apa hal kau kejar budak perempuan tu, anak muda?"},
+    {"s": "alif", "e": "worried", "t": "Tu kawan saya, Aisyah. Dia dah lupa siapa saya. Ni semua kerja Nirbana."},
+    {"s": "guru_silat", "t": "Nirbana? Dia mimpi ngeri kampung ni. Dia buat orang lupa asal-usul dan tujuan sendiri."},
+    {"s": "guru_silat", "t": "Kalau betul kau nak lawan dia, aku tolong."},
+    {"s": "guru_silat", "t": "Setiap kali kau dapat satu artifak, datang ke arena silat aku. Kita uji ingatan kau."}
   ],
   "intro_mak_som": [
-    {"s": "makcik", "t": "Jikalau kamu benar wahai anak, maafkanlah makcik atas salah faham terhadap kamu."},
-    {"s": "makcik", "t": "Izinkan Mak Som membantu kamu mencari artifak. Ambil peta lama ni."}
+    {"s": "makcik", "t": "Maafkan Mak Som, nak. Mak Som salah faham."},
+    {"s": "makcik", "t": "Ambil peta lama ni. Boleh tolong kamu cari artifak."}
   ],
   "intro_lepas_peta": [
-    {"s": "makcik", "t": "Yang gelap tu tempat Mak Som sendiri tak pernah sampai. Petanya bukan pada Mak Som."},
-    {"s": "alif", "e": "confident", "t": "Terima kasih Mak Som, saya akan gunakan peta yang Mak Cik bagi untuk selamatkan kawan-kawan saya."}
+    {"s": "makcik", "t": "Yang gelap tu, Mak Som sendiri tak pernah sampai."},
+    {"s": "alif", "e": "confident", "t": "Terima kasih, Mak Som."}
   ],
   "arena_dibuka": [
-    {"s": "pau", "e": "happy", "t": "Arena Quiz telah dibuka, uji daya ingatan kau dengan kawan-kawan."}
+    {"s": "pau", "e": "happy", "t": "Arena Kuiz dah buka! Jom uji ingatan kau dengan pemain lain."}
   ],
   "z11_intro": [
     {"s": "pau", "e": "scared", "t": "Gerbang-gerbang ni bersepah. Seram sikit..."},
@@ -76,7 +72,6 @@
   ],
   "z11_a_before": [
     {"s": "penjaga", "t": "Benang warisan yang menyambung gerbang-gerbang ini telah putus.", "rekaan": true},
-    {"s": "penjaga", "t": "Hanya orang yang faham asal-usul negara bangsa boleh menyambungnya semula.", "rekaan": true},
     {"s": "penjaga", "t": "Susun lima gerbang ini ikut urutan masa.", "rekaan": true}
   ],
   "z11_a_after": [
@@ -96,9 +91,8 @@
   ],
   "z12_intro": [
     {"s": "pau", "e": "happy", "t": "Wah, Melaka abad ke-15! Bau rempah. Aku lapar lagi."},
-    {"s": "syahbandar", "t": "Cepat, cepat! Kapal utusan sedang datang!", "rekaan": true},
-    {"s": "syahbandar", "t": "Melaka mesti buktikan dirinya negara bangsa yang lengkap. Naikkan keenam-enam panji!", "rekaan": true},
-    {"s": "pau", "t": "Ada enam tiang panji. Pergi ke setiap satu. Ikut mana-mana urutan pun boleh."}
+    {"s": "syahbandar", "t": "Cepat! Kapal utusan nak sampai. Naikkan keenam-enam panji, tunjuk Melaka negara bangsa yang lengkap!", "rekaan": true},
+    {"s": "pau", "t": "Enam tiang panji. Ikut mana-mana urutan pun boleh."}
   ],
   "z12_kerajaan_before": [
     {"s": "syahbandar", "t": "Panji Kerajaan! Susun pemerintah dan pembesar ikut lapisan.", "rekaan": true}
@@ -389,10 +383,9 @@
   ],
   "z28_b_before": [
     {"s": "narator", "t": "GABENOR SEKATAN 1941 muncul di pintu menara."},
-    {"s": "gabenor", "t": "Berhenti! Menara ni kawasan larangan. Orang tempatan tak perlu tahu urusan pentadbiran.", "rekaan": true},
-    {"s": "gabenor", "t": "Nak masuk? Jawab soalan saya dulu. Salah sikit, balik rumah!", "rekaan": true},
-    {"s": "ibu_zain", "t": "Dia akan cuba keliru kan kau dengan nombor. Ingat fakta betul-betul!"},
-    {"s": "pau", "t": "Kita boleh, Alif! Satu soalan, satu tumbukan!", "e": "happy"}
+    {"s": "gabenor", "t": "Berhenti! Orang tempatan tak perlu tahu urusan pentadbiran. Nak masuk? Jawab soalan saya dulu!", "rekaan": true},
+    {"s": "ibu_zain", "t": "Dia akan cuba kelirukan kau dengan nombor. Ingat fakta betul-betul!"},
+    {"s": "pau", "e": "happy", "t": "Kita boleh, Alif!"}
   ],
   "z28_b_after": [
     {"s": "narator", "t": "Gabenor Sekatan 1941 lenyap bersama Kabus Lupa. Seluruh lembah kembali berwarna."},
@@ -426,14 +419,11 @@
     {"s": "alif", "e": "worried", "t": "Aku tak nampak muka dia. Jauh sangat."}
   ],
   "lembah_pakcik": [
-    {"s": "pakcik_lembah", "t": "Nak, sabar. Jangan kejar dalam kabus tu. Nanti kamu pun sesat."},
-    {"s": "alif", "e": "worried", "t": "Pakcik nampak tak tadi? Perempuan yang kena tarik tu?"},
-    {"s": "pakcik_lembah", "t": "Pakcik terserempak dengan dia kat simpang depan tadi. Seorang perempuan berpakaian putih, ditarik oleh seorang lelaki. Orang putih, pakai seragam tentera."},
-    {"s": "pakcik_lembah", "t": "Muka budak tu pakcik tak sempat tengok, kabus tebal sangat. Tapi dia menangis, panggil nama seseorang."},
-    {"s": "alif", "e": "worried", "t": "Kawan saya, Aisyah, hilang, pakcik. Kalau betul tu dia..."},
-    {"s": "pakcik_lembah", "t": "Lembah ni masih ramai orang yang ingat, walaupun kabus dah tebal. Tanya-tanya. Mesti ada yang nampak sesuatu."},
-    {"s": "pau", "t": "Kita kumpul klu, Alif. Tudung dia, baju dia, kain dia, muka dia. Baru kita tahu betul ke tu Aisyah."},
-    {"s": "alif", "e": "confident", "t": "Okey. Sambil tu kita tolong orang lembah ni ingat balik. Jom ke dewan tu dulu, ada tanda seru."}
+    {"s": "pakcik_lembah", "t": "Nak, jangan kejar dalam kabus tu. Nanti kamu pun sesat."},
+    {"s": "alif", "e": "worried", "t": "Pakcik nampak tak perempuan yang kena tarik tadi?"},
+    {"s": "pakcik_lembah", "t": "Nampak, kat simpang depan. Berbaju putih, ditarik askar orang putih. Muka dia tak nampak, kabus tebal sangat."},
+    {"s": "pau", "t": "Kita kumpul klu, Alif. Tudung, baju, kain, muka. Baru tahu betul ke tu Aisyah."},
+    {"s": "alif", "e": "confident", "t": "Sambil tu kita tolong orang lembah ni ingat balik. Jom ke dewan yang ada tanda seru."}
   ],
   "pakcik_lembah": [
     {"s": "pakcik_lembah", "t": "Perempuan berbaju putih tu... pakcik doakan kamu jumpa dia, nak. Tanya orang sekeliling, cari yang bersinar."}
@@ -473,8 +463,7 @@
   "selamat_aisyah": [
     {"s": "aisyah", "t": "Alif...? Alif! Aku ingat dah. Kau yang selalu pinjam pemadam aku dalam kelas."},
     {"s": "alif", "e": "happy", "t": "Aisyah! Kau ingat aku!"},
-    {"s": "aisyah", "t": "Maaf aku lari hari tu. Semua orang nampak macam orang asing. Aku takut sangat."},
-    {"s": "aisyah", "t": "Lepas tu kabus tu bawa aku ke sini, dan pegawai tu tarik aku entah ke mana. Tapi dalam kabus, aku dengar kau panggil nama aku."},
+    {"s": "aisyah", "t": "Maaf aku lari hari tu. Semua orang nampak macam orang asing. Tapi dalam kabus, aku dengar kau panggil nama aku."},
     {"s": "pau", "e": "happy", "t": "Satu kawan dah balik. Tinggal Ravi, Mei Ling dengan Daniel."},
     {"s": "aisyah", "t": "Lepas ni aku ikut kau. Kalau nak bertarung kat Arena, panggil je aku."}
   ],
@@ -484,25 +473,22 @@
     {"s": "pau", "t": "Sabar! Bab 3 akan datang. Kita rehat dulu.", "e": "happy"}
   ],
   "ujian_1_before": [
-    {"s": "narator", "t": "Pintu Kabus bergegar. Seorang lelaki kampung yang lalu di situ tiba-tiba berhenti. Badannya kaku, matanya bertukar merah."},
-    {"s": "pau", "e": "scared", "t": "Alif... mata pakcik tu! Nirbana rasuk dia!"},
-    {"s": "orang_awam_nirbana", "t": "Tahniah, Alif. Empat serpihan dah ada dalam tangan kau."},
-    {"s": "orang_awam_nirbana", "t": "Tapi minggu depan, semua tu hilang jugak. Raja, Waadat, Hukum Kanun... buat apa susah-susah nak ingat?"},
-    {"s": "alif", "e": "confident", "t": "Sebab tu sejarah bangsa aku. Bukan untuk exam je."},
-    {"s": "orang_awam_nirbana", "t": "Kita tengok. Panglima Derhaka, uji budak ni!"},
+    {"s": "narator", "t": "Pintu Kabus bergegar. Seorang pakcik yang lalu tiba-tiba kaku. Matanya merah."},
+    {"s": "pau", "e": "scared", "t": "Alif... Nirbana rasuk dia!"},
+    {"s": "orang_awam_nirbana", "t": "Empat serpihan. Hebat. Tapi minggu depan, semua tu hilang jugak dari kepala kau."},
+    {"s": "alif", "e": "confident", "t": "Ni sejarah bangsa aku. Bukan untuk exam je."},
     {"s": "panglima", "t": "Jawab soalan aku. Salah tiga kali, kau patah balik ke kampung!"},
-    {"s": "pau", "t": "Tak ada had masa, Alif. Baca elok-elok. Aku ada kat sebelah kau."}
+    {"s": "pau", "t": "Tak ada had masa, Alif. Baca elok-elok."}
   ],
   "ujian_1_npc": [
     {"s": "panglima", "t": "Kau lagi. Dah sedia nak cuba sekali lagi?"},
     {"s": "pau", "e": "happy", "t": "Jom, Alif. Kali ni kita lebih bersedia."}
   ],
   "ujian_1_win": [
-    {"s": "narator", "t": "Panglima Derhaka hancur jadi cahaya keemasan. Empat serpihan bercantum semula menjadi Inskripsi Telaga Batu."},
-    {"s": "orang_awam_nirbana", "t": "Hmph. Kali ni kau menang. Tapi Kabus Lupa tak hilang semudah tu."},
-    {"s": "orang_awam_nirbana", "t": "Di sebalik pintu ni ada satu lembah yang dah kelabu. Orang kat situ dah lupa kenapa bangsa mereka bangkit."},
-    {"s": "narator", "t": "Mata lelaki itu kembali biasa. Dia terpinga-pinga, kemudian berjalan pergi tanpa ingat apa-apa. Pintu Kabus mula bercahaya."},
-    {"s": "pau", "e": "happy", "t": "Nirbana dah pergi! Alif, kau buat!"},
+    {"s": "narator", "t": "Panglima Derhaka hancur jadi cahaya. Empat serpihan bercantum semula menjadi Inskripsi Telaga Batu."},
+    {"s": "orang_awam_nirbana", "t": "Kali ni kau menang. Tapi di sebalik pintu ni, ada lembah yang dah lupa kenapa bangsanya bangkit."},
+    {"s": "narator", "t": "Mata pakcik itu kembali biasa. Pintu Kabus mula bercahaya."},
+    {"s": "pau", "e": "happy", "t": "Alif, kau buat!"},
     {"s": "alif", "e": "happy", "t": "Kita buat. Jom, Pau."}
   ],
   "ujian_fail": [
@@ -516,10 +502,9 @@
   ],
   "ujian_2_before": [
     {"s": "pau", "e": "scared", "t": "Gua apa ni? Sejuknya... aku tak suka tempat ni, Alif."},
-    {"s": "kapten_john", "t": "Selamat datang ke Gua Kabus. Lembah tadi dah berwarna balik, kan? Tapi dalam kepala kau, berapa lama boleh tahan?"},
-    {"s": "kapten_john", "t": "Hans Kohn, Al-Imam, KMM, SITC... nama-nama tu macam pasir. Lama-lama hilang dibawa angin."},
+    {"s": "kapten_john", "t": "Lembah tu dah berwarna balik. Tapi dalam kepala kau? Hans Kohn, Al-Imam, KMM... lama-lama hilang macam pasir."},
     {"s": "alif", "e": "confident", "t": "Kau bukan Kapten John. Kau Nirbana, guna badan dia. Lepaskan dia, dan lepaskan Aisyah!"},
-    {"s": "kapten_john", "t": "Kalau nak, ambillah sendiri. Kita lawan di gelanggang, cara kau suka."},
+    {"s": "kapten_john", "t": "Kalau nak, ambillah sendiri. Kita lawan di gelanggang."},
     {"s": "pau", "e": "happy", "t": "Jawab soalan untuk dapat Semangat, Alif. Lagi banyak betul, lagi kuat pukulan kau!"}
   ],
   "ujian_2_npc": [
@@ -536,10 +521,9 @@
     {"s": "kapten_john", "t": "Hmph. Ingatan kau lebih degil dari yang aku sangka. Tapi dia tetap milik kabus aku, selagi aku belum tumbang."}
   ],
   "ujian_2_win": [
-    {"s": "narator", "t": "Kapten John jatuh berlutut. Warna merah di matanya pudar, dan kabus terakhir di Lembah Kebangkitan hilang."},
-    {"s": "kapten_john_sedar", "t": "Where am I...? Saya... apa yang saya buat? Saya ingat kabus, kemudian tak ingat apa-apa."},
-    {"s": "kapten_john_sedar", "t": "Gadis ini... saya yang tarik dia? Maafkan saya. Pergilah, kamu berdua bebas."},
-    {"s": "pau", "e": "scared", "t": "Nirbana tinggalkan badan dia. Tapi dia boleh rasuk sesiapa je yang dekat dengan kita, kan?"},
+    {"s": "narator", "t": "Kapten John jatuh berlutut. Merah di matanya pudar, dan kabus terakhir di lembah hilang."},
+    {"s": "kapten_john_sedar", "t": "Where am I...? Gadis ni... saya yang tarik dia? Maafkan saya. Pergilah, kamu bebas."},
+    {"s": "pau", "e": "scared", "t": "Nirbana dah keluar dari badan dia. Tapi dia boleh rasuk sesiapa je, kan?"},
     {"s": "alif", "e": "confident", "t": "Biar dia cuba. Selagi kita ingat, dia tak boleh menang."}
   ],
   "nirbana_1_2": [
