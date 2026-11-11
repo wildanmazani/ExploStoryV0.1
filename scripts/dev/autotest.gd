@@ -317,6 +317,12 @@ func _run() -> void:
 			print("AUTOTEST PASS (portal only) in %d s" % int(_t))
 			get_tree().quit(0)
 		return
+	if "--only=lupa" in OS.get_cmdline_user_args():
+		await wait_screen("title")
+		if await _check_lupa():
+			print("AUTOTEST PASS (lupa only)")
+			get_tree().quit(0)
+		return
 	if "--only=arka" in OS.get_cmdline_user_args():
 		await wait_screen("title")
 		Game.load_profile("Tetamu", "guest")
@@ -337,6 +343,8 @@ func _run() -> void:
 	Game.goto("login")
 	await wait_screen("login")
 	await shot("login")
+	if not await _check_lupa():
+		return
 	Game.goto("register")
 	await wait_screen("register")
 	await shot("register")
@@ -565,6 +573,14 @@ func _run() -> void:
 	if Game.save["artifacts"].size() < 12:
 		_fail("artifacts missing: %s" % str(Game.save["artifacts"]))
 		return
+	# --dump-save=<file>: keep this finished save (Bab 1 and 2 done), e.g. for
+	# a demo account with everything done
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--dump-save="):
+			var f := FileAccess.open(a.trim_prefix("--dump-save="), FileAccess.WRITE)
+			if f:
+				f.store_string(JSON.stringify(Game.save, "  "))
+				f.close()
 	print("AUTOTEST PASS level=%d exp=%d coins=%d figures=%s" % [Game.save["level"], Game.save["exp"], Game.save["coins"], str(Game.save["figures"])])
 	get_tree().quit(0)
 
@@ -1758,4 +1774,44 @@ func _check_t5_subtopik() -> bool:
 	pop.queue_free()
 	await wait(0.1)
 	print("arka: T5 subtopik ok")
+	return true
+
+
+## Lupa kata laluan: the page opened from the reset e-mail asks for the new
+## password on the login screen (two fields that must match, 6+ characters)
+func _check_lupa() -> bool:
+	Backend.recovery = {"token": "ujian", "email": "alif@contoh.my"}
+	Game.goto("login")
+	await wait_screen("login")
+	await wait(0.3)
+	var pop: Node = hosted().get_node_or_null("KataLaluanBaharu")
+	if pop == null:
+		_fail("the reset link should open the new-password box on the login screen")
+		return false
+	if hosted()._user.text != "alif@contoh.my":
+		_fail("the e-mail from the reset link should be filled in")
+		return false
+	var fields := pop.find_children("*", "LineEdit", true, false)
+	(fields[0] as LineEdit).text = "rahsia123"
+	(fields[1] as LineEdit).text = "rahsia124"
+	for b in pop.find_children("*", "Button", true, false):
+		if (b as Button).text == "TUKAR KATA LALUAN":
+			(b as Button).pressed.emit()
+	await wait(0.2)
+	var said := false
+	for l in pop.find_children("*", "Label", true, false):
+		if (l as Label).text.contains("tidak sama"):
+			said = true
+	if not said:
+		_fail("two different passwords should be refused")
+		return false
+	await shot("lupa_kata_laluan")
+	for b in pop.find_children("*", "Button", true, false):
+		if (b as Button).text == "Batal":
+			(b as Button).pressed.emit()
+	await wait(0.2)
+	if not Backend.recovery.is_empty() or is_instance_valid(pop) and not pop.is_queued_for_deletion():
+		_fail("Batal should close the new-password box")
+		return false
+	print("login: lupa kata laluan ok")
 	return true

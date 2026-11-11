@@ -91,6 +91,84 @@ func _ready() -> void:
 	add_child(logo)
 	if not DisplayServer.is_touchscreen_available():  # a phone opens its keyboard only on a tap
 		_user.grab_focus()
+	if not Backend.recovery.is_empty():
+		_show_recovery()
+
+
+## opened from the "Lupa kata laluan" e-mail: type the new password here
+func _show_recovery() -> void:
+	var rec: Dictionary = Backend.recovery
+	if rec.has("error"):
+		_status.theme_type_variation = "Bad"
+		_status.text = str(rec["error"])
+		Backend.recovery = {}
+		return
+	_user.text = str(rec.get("email", ""))
+	var layer := Control.new()
+	layer.name = "KataLaluanBaharu"
+	UI.full(layer)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	layer.add_child(UI.dim(0.6))
+	var box := UI.panel()
+	box.custom_minimum_size = Vector2(520, 0)
+	var col := UI.vbox(12)
+	var title := UI.label("KATA LALUAN BAHARU", "Heading")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(title)
+	if str(rec.get("email", "")) != "":
+		var who := UI.label(str(rec["email"]), "Small")
+		who.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(who)
+	var p1 := _secret_field("Kata laluan baharu")
+	var p2 := _secret_field("Taip sekali lagi")
+	col.add_child(p1)
+	col.add_child(p2)
+	var msg := UI.label("", "Small", true)
+	msg.custom_minimum_size.x = 480
+	col.add_child(msg)
+	var save := UI.button("TUKAR KATA LALUAN", "Primary")
+	col.add_child(save)
+	var cancel := UI.button("Batal", "Flat")
+	cancel.pressed.connect(func():
+		Backend.recovery = {}
+		layer.queue_free())
+	col.add_child(cancel)
+	box.add_child(col)
+	layer.add_child(UI.center(box))
+	add_child(layer)
+	save.pressed.connect(func():
+		msg.theme_type_variation = "Bad"
+		if p1.text.length() < 6:
+			msg.text = "Kata laluan terlalu pendek. Guna sekurang-kurangnya 6 aksara."
+			return
+		if p1.text != p2.text:
+			msg.text = "Kedua-dua kata laluan tidak sama."
+			return
+		save.disabled = true
+		msg.theme_type_variation = "Small"
+		msg.text = "Sedang menukar..."
+		var err: String = await Backend.set_new_password(str(rec["token"]), p1.text)
+		if err != "":
+			msg.theme_type_variation = "Bad"
+			msg.text = err
+			save.disabled = false
+			return
+		layer.queue_free()
+		_pass.text = ""
+		_status.theme_type_variation = "Small"
+		_status.text = "Kata laluan ditukar. Log masuk dengan kata laluan baharu."
+		_pass.grab_focus())
+	p1.grab_focus()
+
+
+func _secret_field(hint: String) -> LineEdit:
+	var e := LineEdit.new()
+	e.secret = true
+	e.secret_character = "*"
+	e.placeholder_text = hint
+	e.set_meta("typing_label", hint)
+	e.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_PASSWORD
+	return e
 
 
 ## "Teruskan sebagai ...": back into the account kept on this device

@@ -22,6 +22,9 @@ var _push_timer: Timer
 var _refresh_timer: Timer
 var synced := true  ## the last progress push reached the cloud
 var _session_epoch := 0  ## goes up on sign-out: late token replies are dropped
+## opened from the "Lupa kata laluan" e-mail: {"token", "email"} or {"error"}
+## ({} otherwise); the login screen asks for the new password
+var recovery: Dictionary = {}
 
 
 func _ready() -> void:
@@ -40,6 +43,7 @@ func _ready() -> void:
 	_refresh_timer.timeout.connect(_refresh)
 	add_child(_refresh_timer)
 	flush_ratings.call_deferred()
+	recovery = _read_recovery_link()
 
 
 func is_online() -> bool:
@@ -121,6 +125,8 @@ func _err_text(r: Dictionary, fallback: String) -> String:
 			return "E-mel ini sudah didaftarkan."
 		if m.to_lower().contains("rate limit"):
 			return "Terlalu banyak cubaan dalam masa singkat. Cuba lagi selepas sejam."
+		if m.to_lower().contains("should be different"):
+			return "Kata laluan baharu mesti lain daripada yang lama."
 		if m.to_lower().contains("password should be"):
 			return "Kata laluan terlalu pendek. Guna sekurang-kurangnya 6 aksara."
 		if m.to_lower().contains("invalid") and m.to_lower().contains("email"):
@@ -182,10 +188,74 @@ func sign_in(login_id: String, password: String) -> Dictionary:
 func reset_password(email: String) -> String:
 	if not is_online():
 		return "Mod luar talian: kata laluan tidak boleh ditetapkan semula. Daftar akaun baharu atau main sebagai tetamu."
-	var r := await _request("/auth/v1/recover", HTTPClient.METHOD_POST, {"email": email})
+	# the e-mail link comes back to this page (Supabase: Auth > URL
+	# Configuration must allow it), where _read_recovery_link picks it up
+	var r := await _request("/auth/v1/recover?redirect_to=" + _site().uri_encode(), HTTPClient.METHOD_POST, {"email": email})
 	if r["ok"]:
-		return "Pautan tetapan semula telah dihantar ke e-mel anda."
+		return "Pautan tetapan semula telah dihantar ke e-mel anda. Semak juga folder Spam."
 	return _err_text(r, "Tidak dapat menghantar e-mel.")
+
+
+## where the game is served (the reset e-mail links back here)
+func _site() -> String:
+	if OS.has_feature("web"):
+		return str(JavaScriptBridge.eval("location.origin + location.pathname"))
+	return "https://explostory.com/"
+
+
+## The reset link opens the page as ...#access_token=...&type=recovery (or
+## #error=... when it has expired). Read it once and clear it from the
+## address bar, so a reload does not ask again.
+func _read_recovery_link() -> Dictionary:
+	if not OS.has_feature("web"):
+		return {}
+	var h := str(JavaScriptBridge.eval("location.hash"))
+	if not (h.contains("type=recovery") or h.contains("error")):
+		return {}
+	JavaScriptBridge.eval("history.replaceState(null, '', location.pathname + location.search)")
+	var p := {}
+	for part in h.trim_prefix("#").split("&"):
+		var kv := part.split("=", true, 1)
+		if kv.size() == 2:
+			p[kv[0]] = kv[1].uri_decode()
+	if str(p.get("type", "")) == "recovery" and p.has("access_token"):
+		return {"token": str(p["access_token"]), "email": _token_email(str(p["access_token"]))}
+	return {"error": "Pautan tetapan semula sudah tamat atau tidak sah. Minta pautan baharu."}
+
+
+## the e-mail inside a Supabase access token (a JWT), to fill in the login
+func _token_email(jwt: String) -> String:
+	var parts := jwt.split(".")
+	if parts.size() < 2:
+		return ""
+	var b := parts[1].replace("-", "+").replace("_", "/")
+	while b.length() % 4 != 0:
+		b += "="
+	var d = JSON.parse_string(Marshalls.base64_to_raw(b).get_string_from_utf8())
+	return str(d.get("email", "")) if d is Dictionary else ""
+
+
+## the new password, with the token from the reset link. "" when it worked.
+func set_new_password(token: String, password: String) -> String:
+	var h := PackedStringArray(["Content-Type: application/json", "apikey: " + anon_key, "Authorization: Bearer " + token])
+	var http := HTTPRequest.new()
+	http.timeout = 15.0
+	http.accept_gzip = false
+	add_child(http)
+	if http.request(url + "/auth/v1/user", h, HTTPClient.METHOD_PUT, JSON.stringify({"password": password})) != OK:
+		http.queue_free()
+		return "Tiada sambungan internet. Cuba lagi."
+	var res: Array = await http.request_completed
+	http.queue_free()
+	var code: int = res[1]
+	if res[0] == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300:
+		recovery = {}
+		return ""
+	var text := (res[3] as PackedByteArray).get_string_from_utf8()
+	var r := {"code": code, "data": JSON.parse_string(text) if text != "" else null}
+	if code == 401 or code == 403:
+		return "Pautan tetapan semula sudah tamat. Minta pautan baharu."
+	return _err_text(r, "Tidak dapat menukar kata laluan.")
 
 
 ## Log keluar. The last progress goes up first, then the session is ended on
