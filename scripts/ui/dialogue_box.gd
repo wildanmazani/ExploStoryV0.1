@@ -45,6 +45,21 @@ var _tag: Label
 var _who := ""
 var _last_who := ""
 var _blip_at := 0
+var _last_narr := ""
+## the narrator's card: deep night blue, gold frame, soft shadow
+static var NARRATOR_PANEL: StyleBoxFlat = _narrator_panel()
+
+
+static func _narrator_panel() -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = Color(0.06, 0.07, 0.13, 0.95)
+	s.border_color = Color("d9a93a")
+	s.set_border_width_all(3)
+	s.set_corner_radius_all(14)
+	s.set_content_margin_all(22)
+	s.shadow_color = Color(0, 0, 0, 0.45)
+	s.shadow_size = 10
+	return s
 
 
 func _ready() -> void:
@@ -119,6 +134,7 @@ func _on_skin() -> void:
 func play(lines_arr: Array) -> void:
 	_lines = lines_arr
 	_i = 0
+	_last_narr = ""
 	visible = true
 	_show_line()
 	await finished
@@ -146,11 +162,24 @@ func _show_line() -> void:
 	_last_who = who
 	_text.text = str(line.get("t", ""))
 	if who == "narator":
-		_text.theme_type_variation = "InkSmall"
+		# the story voice: a dark storybook card with a gold frame, big
+		# centred text and a CERITA plate, not a speaker's cream paper
+		_panel.add_theme_stylebox_override("panel", NARRATOR_PANEL)
+		_name.text = tr("CERITA")
+		_plate.visible = true
+		_plate.add_theme_stylebox_override("panel", UI.sb(Color("7a5a1e"), UI.GOLD, 2, 6, 4))
+		_text.theme_type_variation = "Narrator"
 		_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		if who != _last_narr:
+			_panel.modulate.a = 0.0
+			create_tween().tween_property(_panel, "modulate:a", 1.0, 0.25)
 	else:
+		_panel.remove_theme_stylebox_override("panel")
 		_text.theme_type_variation = "Ink"
 		_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		_text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_last_narr = who
 	var spd := Game.type_speed()
 	if spd <= 0.0:
 		_text.visible_characters = -1

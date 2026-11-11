@@ -334,6 +334,24 @@ func _run() -> void:
 		print("AUTOTEST PASS (demo) %d s" % int(dt))
 		get_tree().quit(0)
 		return
+	if "--only=narator" in OS.get_cmdline_user_args():
+		# the dialogue box: a narrator line, then a speaker after it
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.save["prolog_done"] = true
+		Game.goto("world")
+		await wait_screen("world")
+		await wait_idle(240)
+		Game.say([{"s": "narator", "t": "Seorang budak perempuan terbaring di tengah jalan, berselubung debu."},
+			{"s": "aisyah", "t": "Aduh... sakitnya badan aku..."}])
+		await wait(2.5)  # run with --watch, or the autotest clicks it away
+		await shot("dialog_narator")
+		Main.dialog_box._advance()
+		await wait(2.5)
+		await shot("dialog_aisyah")
+		print("AUTOTEST PASS (narator)")
+		get_tree().quit(0)
+		return
 	if "--only=lupa" in OS.get_cmdline_user_args():
 		await wait_screen("title")
 		if await _check_lupa():
@@ -1829,6 +1847,12 @@ func _check_lupa() -> bool:
 	await wait(0.2)
 	if not Backend.recovery.is_empty() or is_instance_valid(pop) and not pop.is_queued_for_deletion():
 		_fail("Batal should close the new-password box")
+		return false
+	# an account opened on a new device: the empty save must lose to the cloud
+	# copy (it once got saved_at = now and was pushed over the real progress)
+	Game.load_profile("akaun_baru_ujian", "local")
+	if float(Game.save.get("saved_at", -1)) != 0.0:
+		_fail("a new device's empty save should have saved_at 0, got %s" % str(Game.save.get("saved_at")))
 		return false
 	print("login: lupa kata laluan ok")
 	return true

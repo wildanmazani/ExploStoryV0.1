@@ -160,6 +160,12 @@ static func build_theme(settings: Dictionary) -> Theme:
 	t.set_color("font_color", "Ink", INK)
 	t.set_type_variation("InkSmall", "Label")
 	t.set_color("font_color", "InkSmall", Color(0.3, 0.26, 0.22))
+	t.set_type_variation("Narrator", "Label")  # the story voice: cream on the dark panel
+	t.set_color("font_color", "Narrator", Color("f6ecd2"))
+	t.set_color("font_shadow_color", "Narrator", Color(0, 0, 0, 0.55))
+	t.set_constant("shadow_offset_x", "Narrator", 0)
+	t.set_constant("shadow_offset_y", "Narrator", 2)
+	t.set_constant("line_spacing", "Narrator", 6)
 	t.set_type_variation("InkHeading", "Label")
 	t.set_color("font_color", "InkHeading", WOOD_D)
 	t.set_type_variation("Small", "Label")
@@ -208,6 +214,8 @@ static func apply_settings(t: Theme, settings: Dictionary) -> void:
 	t.set_font_size("font_size", "InkHeading", int(base * 1.25))
 	t.set_font_size("font_size", "Small", int(base * 0.8))
 	t.set_font_size("font_size", "InkSmall", int(base * 0.8))
+	t.set_font("font", "Narrator", bold)
+	t.set_font_size("font_size", "Narrator", int(base * 1.2))
 	t.set_font("font", "Good", bold)
 	t.set_font("font", "Bad", bold)
 

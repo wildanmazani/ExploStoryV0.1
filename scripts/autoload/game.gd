@@ -273,6 +273,13 @@ func load_profile(username: String, mode: String, role: String = "student", avat
 			save["profile"]["email"] = email
 	else:
 		new_save(username, mode, role, avatar, email)
+		_ensure_fields()
+		# nothing played on this device yet: this empty save must never look
+		# newer than the account's cloud copy (login.gd _finish compares
+		# saved_at), and must not be pushed over it
+		save["saved_at"] = 0.0
+		write_json_user(save_path_for(username), save)
+		return
 	_ensure_fields()
 	persist()
 
