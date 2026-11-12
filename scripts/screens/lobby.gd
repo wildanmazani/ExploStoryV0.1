@@ -247,46 +247,122 @@ func _show_stages() -> void:
 		_stage_row.add_child(b)
 
 
-## Pilih watak: Alif in each outfit owned, and the classmates whose memory
-## Alif has brought back (locked ones show which Bab frees them)
+## Pilih watak: one Alif card (a click drops down the outfits he owns) and
+## the classmates whose memory Alif has brought back (locked ones show which
+## Bab frees them)
 func _show_fighters() -> void:
 	for c in _fighter_row.get_children():
 		c.queue_free()
 	_fighter_row.add_child(UI.label(tr("Pilih watak:"), "Heading"))
 	var look := Game.battle_look()
+	var outfits: Array = []
+	var friends: Array = []
 	for f in Game.fighters():
-		var b := Button.new()
-		b.custom_minimum_size = Vector2(118, 80)
-		b.theme_type_variation = "Primary" if f["folder"] == look else ""
-		b.tooltip_text = str(f["name"]) if f["ok"] else str(f["why"])
-		var col := UI.vbox(0)
-		col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		col.alignment = BoxContainer.ALIGNMENT_CENTER
-		UI.full(col)
-		var head := UI.head_icon(str(f["folder"]), 50)
-		head.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		col.add_child(head)
-		var nm := UI.label(str(f["name"]).get_slice(" · ", 1) if str(f["name"]).contains(" · ") else str(f["name"]), "Small")
-		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		nm.clip_text = true
-		nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		col.add_child(nm)
-		b.add_child(col)
-		if not f["ok"]:
-			head.modulate = Color(0, 0, 0, 0.75)  # a silhouette until Alif frees them
-			var lock := UI.icon("res://assets/icons/kunci.png", 26)
-			lock.position = Vector2(88, 4)
-			b.add_child(lock)
+		(outfits if str(f["name"]).begins_with("Alif · ") else friends).append(f)
+	if not outfits.is_empty():
+		# the card shows the outfit picked last (or the one he wears in the world)
+		var alif: Dictionary = outfits[0]
+		for f in outfits:
+			if f["folder"] == look or (not _is_outfit(outfits, look) and f["folder"] == Game.skin_folder()):
+				alif = f
+		var b := _fighter_card(str(alif["folder"]), tr("Alif") + " ▾", _is_outfit(outfits, look), true, str(alif["name"]))
+		b.pressed.connect(func(): _outfit_menu(b, outfits, look))
+		_fighter_row.add_child(b)
+	for f in friends:
+		var b := _fighter_card(str(f["folder"]), str(f["name"]), f["folder"] == look, f["ok"], str(f["name"]) if f["ok"] else str(f["why"]))
 		b.pressed.connect(func():
 			if not f["ok"]:
 				Sfx.play("bump", -4.0)
 				Game.toast(str(f["why"]), Color("ff9a8a"))
 				return
-			Sfx.play("select")
-			Game.set_fighter(str(f["folder"]))
-			_show_fighters()
-			_show_faces())
+			_pick_fighter(str(f["folder"])))
 		_fighter_row.add_child(b)
+
+
+func _is_outfit(outfits: Array, folder: String) -> bool:
+	return outfits.any(func(f): return f["folder"] == folder)
+
+
+func _fighter_card(folder: String, label: String, picked: bool, ok: bool, tip: String) -> Button:
+	var b := Button.new()
+	b.custom_minimum_size = Vector2(118, 80)
+	b.theme_type_variation = "Primary" if picked else ""
+	b.tooltip_text = tip
+	var col := UI.vbox(0)
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	UI.full(col)
+	var head := UI.head_icon(folder, 50)
+	head.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	col.add_child(head)
+	var nm := UI.label(label, "Small")
+	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nm.clip_text = true
+	nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(nm)
+	b.add_child(col)
+	if not ok:
+		head.modulate = Color(0, 0, 0, 0.75)  # a silhouette until Alif frees them
+		var lock := UI.icon("res://assets/icons/kunci.png", 26)
+		lock.position = Vector2(88, 4)
+		b.add_child(lock)
+	return b
+
+
+func _pick_fighter(folder: String) -> void:
+	Sfx.play("select")
+	Game.set_fighter(folder)
+	_show_fighters()
+	_show_faces()
+
+
+## the outfits Alif owns, in a small list under his card (click outside closes)
+func _outfit_menu(card: Control, outfits: Array, look: String) -> void:
+	Sfx.play("select", -6.0)
+	var layer := Control.new()
+	layer.name = "PilihPakaian"
+	UI.full(layer)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	layer.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed:
+			layer.queue_free())
+	var box := UI.panel()
+	var col := UI.vbox(4)
+	col.add_child(UI.label(tr("Pakaian Alif"), "Small"))
+	for f in outfits:
+		var row := Button.new()
+		row.custom_minimum_size = Vector2(250, 52)
+		row.theme_type_variation = "Primary" if f["folder"] == look else ""
+		var h := UI.hbox(10)
+		h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		UI.full(h)
+		var hm := UI.margin(UI.head_icon(str(f["folder"]), 40), 8, 0, 0, 0)
+		hm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		h.add_child(hm)
+		var nm := UI.label(str(f["name"]).get_slice(" · ", 1), "")
+		nm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		nm.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		h.add_child(nm)
+		row.add_child(h)
+		var folder := str(f["folder"])
+		row.pressed.connect(func():
+			layer.queue_free()
+			_pick_fighter(folder))
+		col.add_child(row)
+	box.add_child(col)
+	layer.add_child(box)
+	add_child(layer)
+	# under the card, kept on screen
+	await get_tree().process_frame
+	if not is_instance_valid(box):
+		return
+	var r := card.get_global_rect()
+	var vp := get_viewport_rect().size
+	var pos := Vector2(r.position.x, r.end.y + 6)
+	if pos.y + box.size.y > vp.y - 8:
+		pos.y = r.position.y - box.size.y - 6
+	pos.x = clampf(pos.x, 8, vp.x - box.size.x - 8)
+	box.global_position = pos
 
 
 # ------------------------------------------------------------------ friends (online)

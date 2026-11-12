@@ -298,6 +298,48 @@ func _check_prologue() -> bool:
 	return true
 
 
+## Pilih watak: Alif is one card; a click lists his outfits, picking one sets it
+func _check_pakaian() -> bool:
+	var lobby := hosted()
+	var alifs := 0
+	var card: Button = null
+	for c in lobby._fighter_row.get_children():
+		if c is Button and str(c.tooltip_text).begins_with("Alif · "):
+			alifs += 1
+			card = c
+	if alifs != 1:
+		_fail("Pilih watak should show Alif once, found %d" % alifs)
+		return false
+	var owned: Array = Game.save["skins_owned"].duplicate()
+	var fighter_before := str(Game.save.get("fighter", ""))
+	Game.save["skins_owned"] = ["sekolah", "melayu"]
+	lobby._show_fighters()
+	await wait(0.2)
+	for c in lobby._fighter_row.get_children():
+		if c is Button and str(c.tooltip_text).begins_with("Alif · "):
+			card = c
+	card.pressed.emit()
+	await wait(0.3)
+	var menu := lobby.get_node_or_null("PilihPakaian")
+	if menu == null:
+		_fail("clicking Alif should open the outfit list")
+		return false
+	await shot("lobby_pakaian")
+	var melayu := find_button(menu, "")
+	for b in menu.find_children("*", "Button", true, false):
+		if (b as Button).get_child(0).get_child(1) is Label and str(((b as Button).get_child(0).get_child(1) as Label).text) == "Baju Melayu":
+			melayu = b
+	melayu.pressed.emit()
+	await wait(0.3)
+	if Game.battle_look() != "alif_melayu":
+		_fail("picking Baju Melayu should set the fighter, got %s" % Game.battle_look())
+		return false
+	Game.save["skins_owned"] = owned
+	Game.set_fighter(fighter_before)
+	lobby._show_fighters()
+	return true
+
+
 func _run() -> void:
 	if "--only=brawl" in OS.get_cmdline_user_args():
 		# quick loop while working on the Gelanggang
@@ -306,6 +348,8 @@ func _run() -> void:
 		Game.goto("lobby")
 		await wait_screen("lobby")
 		await shot("lobby")
+		if not await _check_pakaian():
+			return
 		await _check_brawl()
 		print("AUTOTEST PASS (brawl only)")
 		get_tree().quit(0)
@@ -524,6 +568,8 @@ func _run() -> void:
 	Game.goto("lobby")
 	await wait_screen("lobby")
 	await shot("lobby")
+	if not await _check_pakaian():
+		return
 	await _check_papan()
 	await _check_battle()
 	await _check_brawl()
