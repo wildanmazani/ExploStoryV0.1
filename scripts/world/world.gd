@@ -191,6 +191,9 @@ func _ready() -> void:
 	$HUD.move_child(arrow, 1)  # under the HUD panels and the mini map
 	prompt.pressed.connect(func(): _interact(player.facing_cell()))
 	prompt.theme = Game.theme
+	prompt.expand_icon = true
+	prompt.add_theme_constant_override("icon_max_width", 28)
+	add_to_group("pad_walk")
 
 	player.world = self
 	player.step_finished.connect(_on_step_finished)
@@ -912,7 +915,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_interact(player.facing_cell())
 	elif event.is_action_pressed("menu"):
 		get_viewport().set_input_as_handled()
-		Main.open_settings()
+		if Game.pad_mode() and event is InputEventJoypadButton:
+			hud.set_menu_open(true)  # Options: the whole menu, picked with the D-pad
+		else:
+			Main.open_settings()
 	elif event.is_action_pressed("map"):
 		get_viewport().set_input_as_handled()
 		open_map()
@@ -1212,6 +1218,7 @@ func _update_prompt() -> void:
 	prompt.visible = label != ""
 	if prompt.visible:
 		prompt.text = Game.interact_prompt(label)
+		prompt.icon = Game.pad_icon()
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
 		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, Game.screen_w() - 10 - prompt.size.x), clampf(screen.y + 8, 120, 640))

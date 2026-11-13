@@ -23,7 +23,10 @@ func _ready() -> void:
 	_card = UI.panel("Paper")
 	_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var row := UI.hbox(10)
-	if Game.controls_on_screen():
+	if Game.pad_mode():
+		row.add_child(UI.label(tr("Tekan"), "InkHeading"))
+		row.add_child(Game.main.Pad.glyph("cross", 40))
+	elif Game.controls_on_screen():
 		row.add_child(UI.label(tr("Klik"), "InkHeading"))
 	else:
 		row.add_child(UI.label(tr("Tekan"), "InkHeading"))

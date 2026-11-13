@@ -11,6 +11,7 @@ var location_title: String = ""
 var location_sub: String = ""
 var show_map_button: bool = false
 var _bag_item: Button
+var _pad_profile: Button
 var world: Node = null  ## overworld: adds the Peta (map) and Tenang (calm) buttons
 var exit_action: Callable  ## rooms: shows a Keluar button that calls this
 
@@ -214,7 +215,10 @@ func _build_menu(_left: Control) -> void:
 		col.add_child(_item(UI.tex("res://assets/portraits/pau_happy.png"), "Tenang dengan Pau", func(): Game.main.open_calm()))
 	col.add_child(_item(UI.tex("res://assets/icons/mahkota.png"), "Papan Markah", func(): Game.main.open_papan()))
 	col.add_child(_item(UI.tex("res://assets/icons/tetapan.png"), "Tetapan", func(): Game.main.open_settings()))
+	_pad_profile = _item(UI.tex("res://assets/icons/syiling.png"), "Profil & Kedai", func(): Game.main.open_profile())
+	col.add_child(_pad_profile)  # a controller cannot tap the player card
 	_menu.add_child(col)
+	_menu.add_to_group("pad_scope")
 	add_child(_menu)
 
 
@@ -241,6 +245,7 @@ func set_menu_open(on: bool) -> void:
 	_menu_btn.theme_type_variation = "Primary" if on else ""
 	if on:
 		_bag_item.visible = Game.save["seen"].has("beg_alif")
+		_pad_profile.visible = Game.pad_mode()
 		_bag_item.text = "  " + tr("Tanggal Beg" if Game.bag_worn() else "Galas Beg")
 		Sfx.play("pop", -8.0)
 		_menu.modulate.a = 0.0

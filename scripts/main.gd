@@ -15,6 +15,7 @@ const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
 const MapOverlay = preload("res://scripts/ui/map_overlay.gd")
 const ProfilePanel = preload("res://scripts/ui/profile_panel.gd")
 const PapanPanel = preload("res://scripts/ui/papan_panel.gd")
+const Pad = preload("res://scripts/ui/pad.gd")
 
 var dialog_layer: CanvasLayer
 var pau_layer: CanvasLayer
@@ -26,6 +27,7 @@ var bubble: PanelContainer
 var bubble_label: Label
 var toast_box: VBoxContainer
 var _bubble_timer: Timer
+var pad: Node  ## controller mode: focus ring, button prompts (ui/pad.gd)
 
 
 func _ready() -> void:
@@ -83,6 +85,8 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_on_screen_resized)
 	_on_screen_resized()
 	_build_rotate_note()
+	pad = Pad.new()
+	add_child(pad)
 	Game.settings_changed.connect(func():
 		get_tree().root.theme = Game.theme
 		_place_pau())
@@ -248,6 +252,7 @@ func ask(text: String, yes_text: String = "Ya", no_text: String = "Tak", warn :=
 	col.add_child(row)
 	card.add_child(col)
 	root.add_child(UI.center(card))
+	root.set_meta("pad_back", no)  # ◯ on a controller
 	overlay_root().add_child(root)
 	yes.grab_focus()
 	var pick := [false]

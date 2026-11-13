@@ -154,14 +154,15 @@ func _input(event: InputEvent) -> void:
 	if _leaving or Game.is_locked():
 		return
 	if _splash != null:
-		if event is InputEventKey and event.pressed and not event.echo:
+		if (event is InputEventKey and event.pressed and not event.echo) or (event is InputEventJoypadButton and event.pressed):
 			_end_splash()  # a key skips the logos too
 			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseButton and event.position.x > Game.screen_w() - 100 and event.position.y < 90:
 		return  # the settings gear
 	var pressed: bool = (event is InputEventMouseButton and event.pressed) \
-		or (event is InputEventKey and event.pressed and not event.echo)
+		or (event is InputEventKey and event.pressed and not event.echo) \
+		or (event is InputEventJoypadButton and event.pressed)
 	if pressed:
 		_leaving = true
 		Game.fullscreen_on_phone()

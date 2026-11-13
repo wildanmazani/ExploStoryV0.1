@@ -17,6 +17,7 @@ extends Control
 const UI = preload("res://scripts/ui/ui.gd")
 const TouchControls = preload("res://scripts/ui/touch_controls.gd")
 const BrawlGuide = preload("res://scripts/ui/brawl_guide.gd")
+var _pad_row: HBoxContainer
 const LETTERS := ["A", "B", "C", "D"]
 const BG := "res://assets/backgrounds/bg_gelanggang.png"
 const BG_FALLBACK := "res://assets/backgrounds/bg_zon1_3_balai_penghadapan.png"
@@ -59,6 +60,7 @@ func _ready() -> void:
 	# this screen keeps running while paused (for the Jeda menu); the match and
 	# the touch buttons stop
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("pad_free")  # a controller fights; only the cards below take its focus
 	Game.use_brawl_keys(true)
 	Game.lock_16_9(true)
 	tree_exited.connect(func(): Game.lock_16_9(false))
@@ -271,6 +273,12 @@ func _build_hud() -> void:
 	_hint.position = Vector2(20, 682)
 	_hint.size = Vector2(1100, 30)
 	add_child(_hint)
+	_pad_row = UI.hbox(16)  # controller: the fight buttons, drawn
+	_pad_row.position = Vector2(20, 678)
+	for h in BrawlGuide.PAD:
+		_pad_row.add_child(Game.main.Pad.hint(h[0], h[2]))
+	_pad_row.visible = false
+	add_child(_pad_row)
 	_big = UI.label("", "Title")
 	_big.add_theme_font_size_override("font_size", 96)
 	_big.add_theme_color_override("font_color", UI.GOLD)
@@ -379,6 +387,8 @@ func _set_pill(p: PanelContainer, kind: String) -> void:
 # ------------------------------------------------------------------ question card
 func _build_card() -> void:
 	_card = UI.panel("Paper")
+	_card.add_to_group("pad_scope")
+	_card.set_meta("pad_no_cancel", true)
 	_card.custom_minimum_size = Vector2(1100, 0)
 	var col := UI.vbox(10)
 	_q_timer = ProgressBar.new()
@@ -546,6 +556,7 @@ func _on_phase(p: String) -> void:
 			_hint.text = ""
 			_show_result()
 	_refresh()
+	_pad_row.visible = Game.pad_mode() and p == "aksi"
 
 
 func _flash_big(text: String, col := UI.GOLD, y := 250.0) -> void:
@@ -568,6 +579,8 @@ func _show_result() -> void:
 	MusicDirector.puzzle(false)
 	var won := match_node.me != null and match_node.winner_team == match_node.me.team
 	_result = Control.new()
+	_result.add_to_group("pad_scope")
+	_result.set_meta("pad_no_cancel", true)
 	UI.full(_result)
 	_result.add_child(UI.dim(0.55))
 	var card := UI.panel("Paper")
@@ -623,6 +636,8 @@ func _show_result() -> void:
 
 ## one line of controls under the arena while fighting
 func _controls_hint() -> String:
+	if Game.pad_mode():
+		return ""  # the buttons are drawn instead (_pad_hint)
 	if BrawlGuide.on_touch():
 		return tr("Guna butang di kanan bawah. Tekan Jeda untuk cara main.")
 	var k := func(a: String) -> String: return Game.brawl_key_names(a)
@@ -645,6 +660,7 @@ func _open_pause(first := false) -> void:
 		get_tree().paused = true  # pausing would freeze the screen fade-in)
 	Sfx.play("pop", -6.0)
 	_pause = Control.new()
+	_pause.add_to_group("pad_scope")
 	UI.full(_pause)
 	_pause.mouse_filter = Control.MOUSE_FILTER_STOP
 	_pause.add_child(UI.dim(0.6))

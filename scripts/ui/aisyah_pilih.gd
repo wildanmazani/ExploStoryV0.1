@@ -24,6 +24,8 @@ var _busy := false
 
 func _ready() -> void:
 	UI.full(self)
+	add_to_group("pad_scope")
+	set_meta("pad_no_cancel", true)
 	var fog := ColorRect.new()
 	fog.color = Color(0.85, 0.86, 0.9, 0.35)
 	UI.full(fog)
@@ -52,7 +54,7 @@ func _ready() -> void:
 		b.expand_icon = true
 		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		b.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		b.focus_mode = Control.FOCUS_NONE
+		b.focus_mode = Control.FOCUS_ALL if Game.pad_mode() else Control.FOCUS_NONE
 		b.set_meta("girl", i)
 		b.pressed.connect(_pick.bind(b))
 		b.pivot_offset = b.custom_minimum_size / 2.0

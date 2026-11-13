@@ -5,6 +5,7 @@ extends RefCounted
 ## Used by the pause menu, the first-match intro and the lobby.
 
 const UI = preload("res://scripts/ui/ui.gd")
+const Pad = preload("res://scripts/ui/pad.gd")
 
 ## [action, what it does]
 const MOVES := [
@@ -24,6 +25,17 @@ const TOUCH := [
 	["Ambil", "Butang hijau: ambil / baling"],
 	["Tangkis", "Butang kelabu (tahan)"],
 	["Jurus", "Butang ungu"],
+]
+## a controller: [button, what it does, the short name under the arena]
+const PAD := [
+	["square", "Tumbuk", "Tumbuk"],
+	["triangle", "Sepak", "Sepak"],
+	["cross", "Lompat", "Lompat"],
+	["circle", "Ambil / baling senjata", "Ambil"],
+	["l1", "Tangkis (tahan)", "Tangkis"],
+	["r1", "Jurus Kilat", "Jurus"],
+	["r2", "Lari (tahan)", "Lari"],
+	["options", "Jeda", "Jeda"],
 ]
 
 
@@ -57,7 +69,17 @@ static func build() -> Control:
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(l)
 	col.add_child(_heading("Kawalan"))
-	if on_touch():
+	if Game.pad_mode():
+		var grid := GridContainer.new()  # two columns: the list stays short
+		grid.columns = 2
+		grid.add_theme_constant_override("h_separation", 26)
+		grid.add_theme_constant_override("v_separation", 8)
+		grid.add_child(_pad_point("stick", "Bergerak"))
+		for m in PAD:
+			grid.add_child(_pad_point(m[0], m[1]))
+		grid.add_child(_pad_point("cross", "Jawab soalan (pilih dengan D-pad)"))
+		col.add_child(grid)
+	elif on_touch():
 		col.add_child(_point("Bergerak", "Joystick di kiri"))
 		for t in TOUCH:
 			col.add_child(_point(t[0], t[1]))
@@ -111,6 +133,23 @@ static func _point(key: String, what: String) -> Control:
 	return row
 
 
+## a controller button in the same dark chip, what it does on the right
+static func _pad_point(kind: String, what: String) -> Control:
+	var row := UI.hbox(12)
+	row.custom_minimum_size.x = 430
+	var chip := PanelContainer.new()
+	chip.add_theme_stylebox_override("panel", UI.sb(Color("3a2a1c"), Color("c99a4a"), 2, 6, 5))
+	chip.custom_minimum_size.x = 120
+	var cc := CenterContainer.new()
+	cc.add_child(Pad.glyph(kind, 30))
+	chip.add_child(cc)
+	row.add_child(chip)
+	var l := UI.label(_t(what), "Ink", true)
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(l)
+	return row
+
+
 ## a Paper card with the guide in a scroll box, a button named "Ok" for the
 ## caller to connect, and (on a keyboard) the layout switch. live = the fight
 ## keys are bound right now (in the Gelanggang), so a switch applies at once.
@@ -132,7 +171,7 @@ static func card(button_text: String, live := false) -> PanelContainer:
 	c.add_child(scroll)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	if not on_touch():
+	if not on_touch() and not Game.pad_mode():
 		row.add_child(UI.label(_t("Kekunci:"), "Ink"))
 		for s in [["wasd", "W A S D + J K L"], ["panah", "Anak panah + Z X C"]]:
 			var b := UI.button(s[1], "Primary" if Game.brawl_scheme() == s[0] else "", 230)

@@ -74,6 +74,16 @@ func _item_button(text: String, icon_path: String) -> Button:
 	return b
 
 
+## controller ◯: let go of the one picked on the left
+func pad_cancel() -> bool:
+	if _sel >= 0:
+		_sel = -1
+		for j in _left.size():
+			if not _done.has(j):
+				_left[j].theme_type_variation = ""
+	return true
+
+
 func _tap_left(i: int) -> void:
 	if _done.has(i):
 		return

@@ -61,6 +61,10 @@ class DragCard extends PanelContainer:
 		engine.select(self)
 		return {"card": self}
 
+	func pad_accept() -> void:
+		if not placed:
+			engine.select(self)
+
 	func _gui_input(event: InputEvent) -> void:
 		if placed:
 			return
@@ -176,6 +180,19 @@ func _build_puzzle() -> void:
 		pool.add_child(c)
 
 
+## controller: the ring starts on the first card, and ◯ lets go of a card
+func pad_first() -> Control:
+	return _first_unplaced()
+
+
+func pad_cancel() -> bool:
+	if selected and is_instance_valid(selected) and not selected.placed:
+		selected.theme_type_variation = "Card"
+		selected = null
+		say_try("Pilih satu kad dulu.")
+	return true
+
+
 func select(c: DragCard) -> void:
 	if selected and is_instance_valid(selected) and not selected.placed:
 		selected.theme_type_variation = "Card"
@@ -217,6 +234,7 @@ func _place(c: DragCard, t: DropTarget) -> void:
 	c.compact()
 	c.theme_type_variation = "CardGood"
 	c.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	c.focus_mode = Control.FOCUS_NONE
 	selected = null
 	t.set_state("SlotGood")
 	get_tree().create_timer(0.4).timeout.connect(func():

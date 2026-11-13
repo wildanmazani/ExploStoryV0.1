@@ -378,6 +378,13 @@ func _run() -> void:
 		print("AUTOTEST PASS (demo) %d s" % int(dt))
 		get_tree().quit(0)
 		return
+	if "--only=pad" in OS.get_cmdline_user_args():
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		if await _check_pad():
+			print("AUTOTEST PASS (pad only) in %d s" % int(_t))
+			get_tree().quit(0)
+		return
 	if "--only=narator" in OS.get_cmdline_user_args():
 		# the dialogue box: a narrator line, then a speaker after it
 		await wait_screen("title")
@@ -1901,4 +1908,176 @@ func _check_lupa() -> bool:
 		_fail("a new device's empty save should have saved_at 0, got %s" % str(Game.save.get("saved_at")))
 		return false
 	print("login: lupa kata laluan ok")
+	return true
+
+
+# ------------------------------------------------------------------ controller
+func _pad_press(button: int, hold := 0.12) -> void:
+	for down in [true, false]:
+		var e := InputEventJoypadButton.new()
+		e.button_index = button
+		e.pressed = down
+		Input.parse_input_event(e)
+		await wait(hold if down else 0.15)
+
+
+func _find_def(v: Variant, type: String) -> Dictionary:
+	if v is Dictionary:
+		if str(v.get("type", "")) == type and (v.has("items") or v.has("links")):
+			return v
+		for k in v:
+			var d := _find_def(v[k], type)
+			if not d.is_empty():
+				return d
+	elif v is Array:
+		for x in v:
+			var d := _find_def(x, type)
+			if not d.is_empty():
+				return d
+	return {}
+
+
+## Tetapan > Kawalan > Controller: nothing holds the focus while walking,
+## Options opens the menu with the ring in it, the D-pad moves it, ◯ closes;
+## then a card quiz and a board quiz are finished with the pad alone
+func _check_pad() -> bool:
+	Game.settings["controls"] = "controller"  # not saved: the test leaves no trace
+	Game.settings_changed.emit()
+	Game.save["prolog_done"] = true
+	Game.goto("world")
+	await wait_screen("world")
+	await wait_idle(240)
+	await wait(0.4)
+	var w := scene()
+	if get_viewport().gui_get_focus_owner() != null:
+		_fail("pad: a button holds the focus while Alif walks")
+		return false
+	await _pad_press(JOY_BUTTON_START)
+	if not w.hud.is_menu_open():
+		_fail("pad: Options should open the menu")
+		return false
+	await wait(0.3)
+	var f := get_viewport().gui_get_focus_owner()
+	if f == null or not w.hud._menu.is_ancestor_of(f):
+		_fail("pad: the ring should start inside the menu")
+		return false
+	await _pad_press(JOY_BUTTON_DPAD_DOWN)
+	var f2 := get_viewport().gui_get_focus_owner()
+	if f2 == f or f2 == null or not w.hud._menu.is_ancestor_of(f2):
+		_fail("pad: D-pad down should move to the next menu item")
+		return false
+	await shot("pad_menu")
+	await _pad_press(JOY_BUTTON_B)
+	if w.hud.is_menu_open():
+		_fail("pad: circle should close the menu")
+		return false
+	var sp: Control = Main.open_settings()
+	sp._show(2)
+	await wait(0.6)
+	f = get_viewport().gui_get_focus_owner()
+	if f == null or not sp.is_ancestor_of(f):
+		_fail("pad: the ring should be inside Tetapan")
+		return false
+	await shot("pad_tetapan")
+	await _pad_press(JOY_BUTTON_B)
+	await wait(0.2)
+	if is_instance_valid(sp):
+		_fail("pad: circle should close Tetapan")
+		return false
+	# the on-screen keyboard: cross types, square deletes, Options is Enter
+	var box := LineEdit.new()
+	box.position = Vector2(440, 150)
+	box.size = Vector2(400, 50)
+	var holder := Control.new()  # a form: the text box is inside it
+	UI.full(holder)
+	holder.add_child(box)
+	Main.overlay_root().add_child(holder)
+	var entered := [""]
+	box.text_submitted.connect(func(t: String): entered[0] = t)
+	await wait(0.5)
+	await _pad_press(JOY_BUTTON_A)
+	await wait(0.5)
+	var kb: Node = Main.overlay_root().get_child(Main.overlay_root().get_child_count() - 1)
+	if not kb.has_method("pad_hints"):
+		_fail("pad: cross on a text box should open the keyboard")
+		return false
+	await _pad_press(JOY_BUTTON_A)       # q
+	await _pad_press(JOY_BUTTON_Y)       # capitals
+	await _pad_press(JOY_BUTTON_DPAD_RIGHT)
+	await _pad_press(JOY_BUTTON_A)       # W
+	await _pad_press(JOY_BUTTON_A)
+	await _pad_press(JOY_BUTTON_X)       # delete one
+	await shot("pad_papan_kekunci")
+	if box.text != "qW":
+		_fail("pad: keyboard typed '%s', expected 'qW'" % box.text)
+		return false
+	await _pad_press(JOY_BUTTON_START)
+	await wait(0.3)
+	if is_instance_valid(kb) or entered[0] != "qW":
+		_fail("pad: Options should close the keyboard and enter the text")
+		return false
+	holder.queue_free()
+	await wait(0.3)
+	# a card quiz
+	var zone: Dictionary = Game.zone_data("1_2")
+	w.runner.run_puzzle(_find_def(zone, "drag_match"), "pad_test")
+	await wait(0.6)
+	var p: Node = Game.active_puzzle
+	f = get_viewport().gui_get_focus_owner()
+	if f == null or not f in p.cards:
+		_fail("pad: the ring should start on a card of the quiz")
+		return false
+	var up := 0  # up from the cards: a place to put one
+	while not (get_viewport().gui_get_focus_owner() in p.targets.values()) and up < 6:
+		await _pad_press(JOY_BUTTON_DPAD_UP)
+		up += 1
+	if up >= 6:
+		_fail("pad: D-pad up never reached a target of the quiz")
+		return false
+	await shot("pad_kuiz")
+	for c in p.cards.duplicate():
+		c.grab_focus()
+		await _pad_press(JOY_BUTTON_A)
+		if p.selected != c:
+			_fail("pad: cross should pick the card")
+			return false
+		(p.targets[str(c.item["target"])] as Control).grab_focus()
+		await _pad_press(JOY_BUTTON_A)
+		if not c.placed:
+			_fail("pad: cross on the target should place the card")
+			return false
+	await wait(1.6)
+	await shot("pad_syabas")
+	await _pad_press(JOY_BUTTON_A)  # Teruskan
+	await wait(0.4)
+	if Game.active_puzzle != null:
+		_fail("pad: cross on Teruskan should finish the quiz")
+		return false
+	# a board quiz
+	w.runner.run_puzzle(_find_def(Game.zone_data("1_3"), "board"), "pad_test2")
+	await wait(0.6)
+	p = Game.active_puzzle
+	for l in p.links:
+		for id in l:
+			(p.cards[id] as Control).grab_focus()
+			await _pad_press(JOY_BUTTON_A)
+	if p.made.size() != p.links.size():
+		_fail("pad: the board links were not all made (%d of %d)" % [p.made.size(), p.links.size()])
+		return false
+	await shot("pad_papan")
+	await wait(1.6)
+	await _pad_press(JOY_BUTTON_A)
+	await wait(0.4)
+	if Game.active_puzzle != null:
+		_fail("pad: the board quiz should be finished")
+		return false
+	var guide := UI.center(load("res://scripts/ui/brawl_guide.gd").card("Ok"))
+	Main.overlay_root().add_child(guide)
+	await wait(0.5)
+	await shot("pad_cara_main")
+	guide.queue_free()
+	await wait(0.3)
+	await shot("pad_dunia")
+	Game.settings["controls"] = "auto"
+	Game.settings_changed.emit()
 	return true

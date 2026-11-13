@@ -21,6 +21,7 @@ var _finished: bool = false
 func _ready() -> void:
 	UI.full(self)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	add_to_group("pad_scope")  # a controller stays inside the puzzle (ui/pad.gd)
 	if not def.has("stage"):
 		add_child(UI.dim(0.72))
 	_frame = UI.panel()
@@ -80,6 +81,11 @@ func _center_frame() -> void:
 	if def.has("stage"):
 		y = maxf(8.0, 720.0 - _frame.size.y - 8.0)
 	_frame.position = Vector2((Game.screen_w() - 1220.0) / 2.0, y)
+
+
+## ◯ on a controller: a puzzle never closes; engines put a picked card back
+func pad_cancel() -> bool:
+	return true
 
 
 func show_pau_hint(text: String) -> void:
@@ -146,6 +152,8 @@ func finish(done_text: String) -> void:
 	row.add_child(go)
 	c.add_child(row)
 	card.add_child(c)
+	card.add_to_group("pad_scope")
+	card.set_meta("pad_no_cancel", true)
 	add_child(UI.center(card))
 	card.scale = Vector2(0.8, 0.8)
 	card.pivot_offset = Vector2(360, 160)

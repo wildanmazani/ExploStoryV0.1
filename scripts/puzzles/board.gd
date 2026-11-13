@@ -38,6 +38,11 @@ class BoardCard extends PanelContainer:
 	func anchor() -> Vector2:
 		return get_global_rect().get_center()
 
+	## controller: pick this card, or link it to the one already picked
+	func pad_accept() -> void:
+		engine.card_down(self)
+		engine.dragging = false
+
 	func _gui_input(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
@@ -144,6 +149,11 @@ func _set_sel(c: BoardCard) -> void:
 	if c:
 		c.theme_type_variation = "CardSel"
 		say_try("Dipilih: \"%s\". Klik kad yang berkaitan." % c.data.get("text", ""))
+
+
+func pad_cancel() -> bool:
+	_set_sel(null)
+	return true
 
 
 func card_down(c: BoardCard) -> void:

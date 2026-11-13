@@ -16,6 +16,8 @@ var _t: float = 0.0
 func _ready() -> void:
 	UI.full(self)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	add_to_group("pad_scope")
+	set_meta("pad_no_cancel", true)
 	Game.lock_input()
 	Sfx.play("whoosh", -10.0)
 	var zid: String = params.get("zone", "1_1")

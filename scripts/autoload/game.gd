@@ -773,11 +773,18 @@ func fullscreen_on_phone() -> void:
 
 ## the prompt over something Alif can use: names the control this player has
 func interact_prompt(label: String) -> String:
+	if pad_mode():
+		return tr(label)  # the ✕ button is drawn next to it (pad.gd)
 	if controls_on_screen():
 		return tr("Tekan A: ") + tr(label)
 	if DisplayServer.is_touchscreen_available():
 		return tr("Klik: ") + tr(label)
 	return tr("E / Klik: ") + tr(label)
+
+
+## the ✕ button picture for prompts in controller mode (null otherwise)
+func pad_icon() -> Texture2D:
+	return main.Pad.tex("cross") if pad_mode() and main else null
 
 
 func toast(text: String, color: Color = UI.GOLD) -> void:
@@ -818,10 +825,33 @@ const BRAWL_KEYS := {
 }
 
 
+## PS4 controller (works with any pad: the names are the positions). An int is
+## a button, a Vector2i is (axis, direction). Bound next to the keys, so a pad
+## walks and talks in every Kawalan mode; "Controller" adds the focus ring and
+## the button prompts (scripts/ui/pad.gd).
+const PAD_MOVES := {
+	"move_left": [JOY_BUTTON_DPAD_LEFT, Vector2i(JOY_AXIS_LEFT_X, -1)],
+	"move_right": [JOY_BUTTON_DPAD_RIGHT, Vector2i(JOY_AXIS_LEFT_X, 1)],
+	"move_up": [JOY_BUTTON_DPAD_UP, Vector2i(JOY_AXIS_LEFT_Y, -1)],
+	"move_down": [JOY_BUTTON_DPAD_DOWN, Vector2i(JOY_AXIS_LEFT_Y, 1)],
+}
+const PAD_DEFAULT := {
+	"interact": [JOY_BUTTON_A], "run": [JOY_BUTTON_X, Vector2i(JOY_AXIS_TRIGGER_RIGHT, 1)],
+	"pau": [JOY_BUTTON_Y], "menu": [JOY_BUTTON_START], "map": [JOY_BUTTON_TOUCHPAD, JOY_BUTTON_BACK],
+}
+const PAD_BRAWL := {
+	"interact": [JOY_BUTTON_A], "jump": [JOY_BUTTON_A], "attack_punch": [JOY_BUTTON_X],
+	"attack_kick": [JOY_BUTTON_Y], "grab": [JOY_BUTTON_B], "block": [JOY_BUTTON_LEFT_SHOULDER],
+	"special": [JOY_BUTTON_RIGHT_SHOULDER], "run": [Vector2i(JOY_AXIS_TRIGGER_RIGHT, 1)],
+	"menu": [JOY_BUTTON_START],
+}
+var _brawl_on := false
+
+
 func _setup_input() -> void:
 	for action in DEFAULT_KEYS.keys():
 		if not InputMap.has_action(action):
-			InputMap.add_action(action)
+			InputMap.add_action(action, 0.4)
 		_bind(action, DEFAULT_KEYS[action])
 
 
@@ -831,6 +861,23 @@ func _bind(action: String, keys: Array) -> void:
 		var ev := InputEventKey.new()
 		ev.physical_keycode = k
 		InputMap.action_add_event(action, ev)
+	var pads: Array = PAD_MOVES.get(action, (PAD_BRAWL if _brawl_on else PAD_DEFAULT).get(action, []))
+	for p in pads:
+		if p is Vector2i:
+			var m := InputEventJoypadMotion.new()
+			m.axis = p.x
+			m.axis_value = float(p.y)
+			InputMap.action_add_event(action, m)
+		else:
+			var j := InputEventJoypadButton.new()
+			j.button_index = p
+			InputMap.action_add_event(action, j)
+
+
+## Tetapan > Kawalan > Controller: play with a PS4 pad (focus ring on menus
+## and quizzes, button prompts, no touch buttons)
+func pad_mode() -> bool:
+	return str(settings.get("controls", "auto")) == "controller"
 
 
 ## the Gelanggang layout picked in its pause menu ("wasd" or "panah")
@@ -841,9 +888,10 @@ func brawl_scheme() -> String:
 
 ## on = use the Gelanggang layout; off = back to the normal keys
 func use_brawl_keys(on: bool) -> void:
+	_brawl_on = on
 	var scheme: Dictionary = BRAWL_KEYS[brawl_scheme()]
-	for action in scheme:
-		_bind(action, scheme[action] if on else DEFAULT_KEYS[action])
+	for action in DEFAULT_KEYS:  # every action: the pad buttons change too
+		_bind(action, scheme[action] if on and scheme.has(action) else DEFAULT_KEYS[action])
 
 
 ## readable key names for an action in the current Gelanggang layout

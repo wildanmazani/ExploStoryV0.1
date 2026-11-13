@@ -79,6 +79,9 @@ func _ready() -> void:
 	hud.set_location(title.to_upper(), str(Game.zone_data(zone_id).get("subtopik", "")) if zone_id != "" else "")
 	prompt.theme = Game.theme
 	prompt.pressed.connect(func(): _interact(player.facing_cell()))
+	prompt.expand_icon = true
+	prompt.add_theme_constant_override("icon_max_width", 28)
+	add_to_group("pad_walk")
 
 	if not exit_cells.is_empty():
 		var arrow := ExitArrow.new()
@@ -205,6 +208,7 @@ func _process(_d: float) -> void:
 	prompt.visible = label != ""
 	if prompt.visible:
 		prompt.text = Game.interact_prompt(label)
+		prompt.icon = Game.pad_icon()
 		prompt.reset_size()
 		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
 		var y := screen.y + 8
@@ -285,7 +289,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_interact(player.facing_cell())
 	elif event.is_action_pressed("menu"):
 		get_viewport().set_input_as_handled()
-		Main.open_settings()
+		if Game.pad_mode() and event is InputEventJoypadButton:
+			hud.set_menu_open(true)  # Options: the whole menu, picked with the D-pad
+		else:
+			Main.open_settings()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
 		var tc := get_node_or_null("TouchControls")

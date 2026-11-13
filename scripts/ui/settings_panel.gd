@@ -4,6 +4,7 @@ extends "res://scripts/ui/modal.gd"
 ## controller for phones), Bahasa (menus in BM or English) and Akaun.
 
 const TABS := ["Paparan", "Audio", "Kawalan", "Bahasa", "Akaun"]
+const Pad = preload("res://scripts/ui/pad.gd")
 
 var _tab: int = 0
 var _body: VBoxContainer
@@ -84,7 +85,8 @@ func _audio() -> void:
 
 
 func _kawalan() -> void:
-	_body.add_child(UI.label("Kawalan skrin sentuh", "Heading"))
+	var pad := Game.pad_mode()
+	_body.add_child(UI.label("Kawalan controller" if pad else "Kawalan skrin sentuh", "Heading"))
 	var row := UI.hbox(20)
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -93,12 +95,19 @@ func _kawalan() -> void:
 	row.add_child(grid)
 	grid.add_child(UI.label("Jenis"))
 	var kinds := UI.vbox(6)
-	var r1 := _choice(["auto", "dpad"], ["Automatik", "D-pad"], "controls")
-	var r2 := _choice(["joystick", "tap"], ["Joystick", "Klik sahaja"], "controls")
+	var r1 := _choice(["auto", "dpad", "joystick"], ["Automatik", "D-pad", "Joystick"], "controls")
+	var r2 := _choice(["tap", "controller"], ["Klik sahaja", "Controller"], "controls")
 	_join_choices(r1, r2)
+	for b in r1.get_children() + r2.get_children():  # the tab changes with a controller
+		(b as Button).pressed.connect(func():
+			if Game.pad_mode() != pad:
+				_show.call_deferred(2))
 	kinds.add_child(r1)
 	kinds.add_child(r2)
 	grid.add_child(kinds)
+	if pad:
+		_kawalan_pad(row, grid)
+		return
 	grid.add_child(UI.label("Saiz butang"))
 	grid.add_child(_choice([0, 1, 2], ["Kecil", "Sederhana", "Besar"], "pad_size"))
 	grid.add_child(UI.label("Kelegapan"))
@@ -113,6 +122,45 @@ func _kawalan() -> void:
 	Game.settings_changed.connect(func():
 		if is_instance_valid(note):
 			note.text = tr(MODE_NOTES.get(str(Game.settings.get("controls", "auto")), "")))
+
+
+## Controller: the pad drawn on the right, then what every button does
+func _kawalan_pad(row: HBoxContainer, grid: GridContainer) -> void:
+	grid.add_child(UI.label("Status"))
+	var on: bool = Game.main.pad.connected()
+	var st := UI.label("Disambung" if on else "Tiada controller dikesan", "Good" if on else "Bad")
+	grid.add_child(st)
+	Input.joy_connection_changed.connect(func(_id: int, _c: bool):
+		if is_instance_valid(st):
+			var now: bool = Game.main.pad.connected()
+			st.text = tr("Disambung" if now else "Tiada controller dikesan")
+			st.theme_type_variation = "Good" if now else "Bad")
+	row.add_child(UI.spacer())
+	row.add_child(Pad.Diagram.new())
+	_body.add_child(row)
+	var lists := UI.hbox(14)
+	for part in [
+		["Meneroka", [["stick", "Jalan"], ["cross", "Cakap / pilih"], ["square", "Lari (tahan)"], ["circle", "Kembali"], ["triangle", "Pau"], ["options", "Menu"], ["touchpad", "Peta"]]],
+		["Gelanggang", [["square", "Tumbuk"], ["triangle", "Sepak"], ["cross", "Lompat"], ["circle", "Ambil"], ["l1", "Tangkis"], ["r1", "Jurus"], ["r2", "Lari"]]],
+	]:
+		var card := UI.panel("Slot")
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var col := UI.vbox(8)
+		var h := UI.label(part[0], "Small")
+		h.add_theme_color_override("font_color", UI.GOLD)
+		col.add_child(h)
+		var g := GridContainer.new()
+		g.columns = 2
+		g.add_theme_constant_override("h_separation", 18)
+		g.add_theme_constant_override("v_separation", 7)
+		for it in part[1]:
+			var hint := Pad.hint(it[0], it[1])
+			hint.custom_minimum_size.x = 170
+			g.add_child(hint)
+		col.add_child(g)
+		card.add_child(col)
+		lists.add_child(card)
+	_body.add_child(lists)
 
 
 const MODE_NOTES := {
