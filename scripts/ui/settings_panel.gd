@@ -203,7 +203,7 @@ func _reset_choices() -> void:
 ## a phone game needs the whole screen; iPhone browsers cannot do it for a page
 func _skrin_penuh() -> void:
 	if not Game.can_fullscreen():
-		_body.add_child(UI.label("Skrin penuh di iPhone: buka menu Kongsi dalam Safari, pilih Tambah ke Skrin Utama, kemudian main dari ikon itu.", "", true))
+		_body.add_child(UI.label("Skrin penuh di iPhone:\n1. Tekan butang Kongsi (Share) pada pelayar.\n2. Tekan Add to Home Screen (Tambah ke Skrin Utama).\n3. Tekan Add (Tambah).\n4. Buka game dari ikon Explo-Story di Skrin Utama.", "", true))
 		return
 	var b := UI.button("Keluar Skrin Penuh" if Game.is_fullscreen() else "Skrin Penuh", "Primary", 300)
 	b.pressed.connect(func():
