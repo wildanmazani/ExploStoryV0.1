@@ -205,7 +205,8 @@ func _teaser() -> void:
 	b.custom_minimum_size.x = 1100
 	b.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(b)
-	var c := UI.label(tr("Sudah dibuka!") if not Game.chapter_zones(_ch + 1).is_empty() else tr("Akan Datang"), "Small")
+	var soon := Game.chapter_zones(_ch + 1).is_empty()
+	var c := UI.label(tr("AKAN DATANG") if soon else tr("Sudah dibuka!"), "Heading" if soon else "Small")
 	c.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(c)
 	var cc := UI.center(col)

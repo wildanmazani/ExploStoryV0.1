@@ -92,7 +92,7 @@ func _show_arc(i: int) -> void:
 		return
 	_info.text = tr("Klik Zon yang terbuka untuk masuk ke dunianya.")
 	for ch in arc.get("chapters", []):
-		var open := bool(ch.get("open", false)) and int(ch["no"]) <= GameState.unlocked_chapters
+		var open := Game.chapter_open(ch) and int(ch["no"]) <= GameState.unlocked_chapters
 		_grid.add_child(_card(ch, open))
 	Sfx.play("select", -8.0)
 
@@ -154,7 +154,7 @@ func _card(ch: Dictionary, open: bool) -> Control:
 		col.add_child(bar)
 		status.text = tr("SIAP") if finished else tr("%d / %d misi") % [p.x, p.y]
 		status.add_theme_color_override("font_color", Color("8fe08a") if finished else UI.GOLD)
-	elif ch.has("subtopik"):
+	elif ch.has("subtopik") or ch.get("soon", false):
 		status.text = tr("AKAN DATANG")
 		status.add_theme_color_override("font_color", UI.GOLD)
 	else:
@@ -172,6 +172,11 @@ func _enter(ch: Dictionary, open: bool) -> void:
 	if not open and ch.has("subtopik"):
 		Sfx.play("select", -6.0)
 		_show_subtopik(ch)
+		return
+	if not open and ch.get("soon", false):
+		Sfx.play("select", -6.0)
+		_info.text = tr("Zon %d akan datang tak lama lagi. Tunggu ya!") % int(ch["no"])
+		_info.add_theme_color_override("font_color", UI.GOLD)
 		return
 	if not open:
 		Sfx.play("bump", -4.0)

@@ -95,8 +95,8 @@ func _ready() -> void:
 	_load_translations()
 	characters = load_json("res://data/characters.json")
 	chapters = load_json("res://data/chapters.json")
-	for ch in chapter_list():
-		ZONES.append_array(ch.get("zones", []))
+	all_chapters = "--bab2" in OS.get_cmdline_user_args() or "--autotest" in OS.get_cmdline_user_args()
+	build_zones()
 	story = load_json("res://data/story.json")
 	new_save("Tetamu", "guest")
 	apply_audio.call_deferred()
@@ -581,7 +581,7 @@ func arena_open() -> bool:
 ## For now it comes with finishing Bab 1; how he really gets it is still to be
 ## written, and this is the only place to change.
 func bab2_map_open() -> bool:
-	return chapter_done(1)
+	return chapter_done(1) and not chapter_zones(2).is_empty()
 
 
 ## every mission of the chapter is finished (its Ujian Bab may still be ahead)
@@ -639,8 +639,26 @@ func chapter_info(no: int) -> Dictionary:
 	return {}
 
 
+## A chapter with "open": false in data/chapters.json is held back ("Akan
+## Datang"): its missions are in the game but nobody can reach them, exactly
+## like a chapter that is not written yet. `-- --bab2` (and the autotest)
+## plays everything.
+var all_chapters := false
+
+
+func build_zones() -> void:
+	ZONES.clear()
+	for ch in chapter_list():
+		ZONES.append_array(chapter_zones(int(ch["no"])))
+
+
+func chapter_open(ch: Dictionary) -> bool:
+	return not ch.get("zones", []).is_empty() and (all_chapters or bool(ch.get("open", false)))
+
+
 func chapter_zones(no: int) -> Array:
-	return chapter_info(no).get("zones", [])
+	var ch := chapter_info(no)
+	return ch.get("zones", []) if chapter_open(ch) else []
 
 
 ## "2_5" -> 2

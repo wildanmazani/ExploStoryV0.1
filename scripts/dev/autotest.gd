@@ -385,6 +385,41 @@ func _run() -> void:
 			print("AUTOTEST PASS (pad only) in %d s" % int(_t))
 			get_tree().quit(0)
 		return
+	if "--only=akan" in OS.get_cmdline_user_args():
+		# Bab 2 held back: the Arka card and the mist gate say "Akan Datang"
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.all_chapters = false
+		Game.build_zones()
+		Game.save["prolog_done"] = true
+		for z in Game.chapter_zones(1):
+			Game.zone_state(z)["done"] = true
+		Game.save["chapters_done"] = [1]
+		Game.save["map_pos"] = [90, 27]  # an old save in Lembah goes back to Kampung Jejak
+		if not Game.chapter_zones(2).is_empty() or Game.next_zone() != "" or Game.bab2_map_open():
+			_fail("Bab 2 should be closed (Akan Datang)")
+			return
+		Game.goto("arka")
+		await wait_screen("arka")
+		await shot("akan_arka")
+		Game.goto("world")
+		await wait_screen("world")
+		await wait_idle(240)
+		var aw := scene()
+		if aw.player.cell.x >= aw.LEMBAH_X:
+			_fail("a save in Lembah should start in Kampung Jejak while Bab 2 is closed")
+			return
+		var soon := 0
+		for c in aw.interact:
+			if aw.interact[c]["id"] == "gate_akan_datang":
+				soon += 1
+		if soon == 0:
+			_fail("the Bab 2 gate should say Akan Datang once Bab 1 is done")
+			return
+		await shot("akan_dunia")
+		print("AUTOTEST PASS (akan only)")
+		get_tree().quit(0)
+		return
 	if "--only=narator" in OS.get_cmdline_user_args():
 		# the dialogue box: a narrator line, then a speaker after it
 		await wait_screen("title")

@@ -105,7 +105,7 @@ const AREA_ZONE := {"gerbang": "1_1", "pelabuhan": "1_2", "siguntang": "1_4"}
 const LABELS := {
 	"house": "Rumah", "rumah_alif": "Rumah Alif", "istana": "Istana Melaka",
 	"sign_start": "Papan tanda", "sign_sea": "Papan tanda", "t5": "Papan tanda",
-	"arena": "Arena Ulang Kaji", "gate_locked": "Gerbang berkunci", "gate_open_1": "Gerbang Bab 1",
+	"arena": "Arena Ulang Kaji", "gate_locked": "Gerbang berkunci", "gate_akan_datang": "Bab 2: Akan Datang", "gate_open_1": "Gerbang Bab 1",
 	"gate_open_2": "Pintu Kabus Bab 2", "portal_balik": "Pintu Kabus", "dewan": "Dewan Kedaulatan Rakyat",
 	"madrasah": "Madrasah", "sitc": "Maktab Perguruan Sultan Idris", "sign_lembah": "Papan tanda",
 	"arena_lembah": "Arena Ulang Kaji", "papan_markah": "Papan Markah", "patung_latihan": "Patung Latihan",
@@ -207,6 +207,8 @@ func _ready() -> void:
 	elif Game.save.get("map_pos", []).size() == 2:
 		spawn = Vector2i(Game.save["map_pos"][0], Game.save["map_pos"][1])
 	GameState.spawn_cell = null
+	if spawn.x >= LEMBAH_X and Game.chapter_zones(2).is_empty():  # a save from Lembah, Bab 2 held back
+		spawn = Vector2i(_ent["spawn"][0], _ent["spawn"][1])
 	if not is_walkable(spawn):  # an old save inside something built since (arena yards)
 		spawn = _nearest_walkable(spawn)
 	player.place_at(spawn, GameState.spawn_facing)
@@ -385,6 +387,8 @@ func _build_entities() -> void:
 		var open: bool = g["open"] or (not Game.chapter_zones(ch).is_empty() and Game.chapter_done(ch - 1))
 		g["open"] = open
 		var id := "gate_open_%d" % ch if open else "gate_locked"
+		if not open and Game.chapter_done(ch - 1) and Game.chapter_info(ch).get("soon", false):
+			id = "gate_akan_datang"  # the chapter before is done, this one is not out yet
 		for dx in 4:
 			interact[Vector2i(g["pos"][0] + dx, g["pos"][1])] = {"type": "talk", "id": id}
 		var s: Sprite2D = gate_sprites.get("L%d_%d" % [int(g["pos"][0]), int(g["pos"][1])])

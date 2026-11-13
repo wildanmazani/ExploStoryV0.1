@@ -96,6 +96,20 @@
       ]
     ]
   },
+  "gate_akan_datang": {
+    "variants": [
+      [
+        {
+          "who": "alif",
+          "text": "Bab 1 dah habis... tapi kabus ni tak nak buka pulak."
+        },
+        {
+          "who": "pau",
+          "text": "Bab 2 akan datang! Sabar sikit, ada benda besar tengah tunggu kat sebelah sana."
+        }
+      ]
+    ]
+  },
   "gate_locked": {
     "variants": [
       [

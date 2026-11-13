@@ -15,7 +15,7 @@ const CHASE_TO := Vector2i(94, 31)
 
 
 static func needed(w: Node) -> bool:
-	return Game.chapter_done(1) and not Game.save["seen"].has("lembah_intro") and w.player.cell.x >= w.LEMBAH_X
+	return Game.chapter_done(1) and not Game.chapter_zones(2).is_empty() and not Game.save["seen"].has("lembah_intro") and w.player.cell.x >= w.LEMBAH_X
 
 
 static func play(w: Node) -> void:
