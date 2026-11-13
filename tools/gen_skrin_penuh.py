@@ -63,7 +63,7 @@ var mana=chrome?'Ada di hujung kanan bar alamat Chrome.':(pad?'Ada di bahagian a
 var h='<div class="kad"><h2>Cara main di '+alat+'</h2><p class="sub">Letak game di Skrin Utama dulu. Buat sekali saja.</p>';
 if(!chrome&&!safari)h+='<div class="amaran">Pelayar ini tak boleh pasang game.<br>Salin pautan, buka <b>Safari</b>, tampal di situ, kemudian ikut langkah di bawah.<br><button id="pasang-salin">Salin pautan</button></div>';
 h+='<ol><li><span class="no">1</span><span class="ikon">__KONGSI__</span><span>Tekan butang <b>Kongsi</b> (Share).<small>'+mana+'</small></span></li>'
-+'<li><span class="no">2</span><span class="ikon">__TAMBAH__</span><span>Tatal ke bawah, tekan <b>Add to Home Screen</b>.<small>Dalam BM: Tambah ke Skrin Utama.</small></span></li>'
++'<li><span class="no">2</span><span class="ikon">__TAMBAH__</span><span>Scroll ke bawah, tekan <b>Add to Home Screen</b>.<small>Dalam BM: Tambah ke Skrin Utama.</small></span></li>'
 +'<li><span class="no">3</span><span class="ikon" style="font:bold 15px sans-serif">Add</span><span>Tekan <b>Add</b> (Tambah) di penjuru atas kanan.</span></li>'
 +'<li><span class="no">4</span><span class="ikon app">E</span><span>Tutup pelayar. Tekan ikon <b>Explo-Story</b> di Skrin Utama.<small>Game terus buka skrin penuh.</small></span></li></ol>'
 +'<p class="nota">Dah ada akaun? Log masuk semula, kemajuan kekal.</p></div><button id="pasang-tutup">\\u2715 Tutup</button>';
