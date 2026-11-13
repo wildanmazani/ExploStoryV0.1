@@ -150,6 +150,10 @@ func sign_up(username: String, email: String, password: String, role: String, av
 		if d.has("access_token"):
 			_take_session(d)
 			return {"ok": true, "error": "", "username": username, "role": role, "avatar": avatar, "email": email}
+		# with "Confirm email" on, Supabase answers an address that already has
+		# an account like a new one, but with no identities and sends no e-mail
+		if d.get("identities") is Array and (d["identities"] as Array).is_empty():
+			return {"ok": false, "error": "E-mel ini sudah didaftarkan. Sila log masuk, atau guna \"Lupa kata laluan?\"."}
 		return {"ok": true, "error": "", "username": username, "role": role, "avatar": avatar, "email": email,
 			"confirm": "Akaun dicipta. Sila sahkan e-mel anda, kemudian log masuk."}
 	var accts := _local_accounts()
