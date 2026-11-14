@@ -4,7 +4,6 @@ extends Control
 const UI = preload("res://scripts/ui/ui.gd")
 const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
 const Glass = preload("res://scripts/ui/glass.gd")
-const LOGO := "res://assets/ui/logo_explostory.png"
 
 var params: Dictionary = {}
 var _user: LineEdit
@@ -20,8 +19,8 @@ func _ready() -> void:
 	var bd := TitleBackdrop.new()
 	bd.tint = Color(0.86, 0.86, 0.86)
 	add_child(bd)
-	add_child(_shade())
-	_logo()
+	add_child(Glass.shade())
+	add_child(Glass.logo())
 	var frame := Glass.panel()
 	frame.custom_minimum_size = Vector2(470, 0)
 	var col := UI.vbox(10)
@@ -104,12 +103,7 @@ func _ready() -> void:
 	col.add_child(guest)
 	frame.add_child(col)
 	# the card on the right, the logo on the left (design "Kaca Senja")
-	var right := CenterContainer.new()
-	right.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
-	right.offset_left = -470 - 64 * 2
-	right.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	right.add_child(frame)
-	add_child(right)
+	add_child(Glass.right(frame, 470 + 64 * 2))
 	if not DisplayServer.is_touchscreen_available():  # a phone opens its keyboard only on a tap
 		_user.grab_focus()
 	if not Backend.recovery.is_empty():
@@ -120,49 +114,6 @@ func _lab(t: String) -> Label:
 	var l := UI.label(t, "Small")
 	Glass.text(l)
 	return l
-
-
-## darker towards the right so the glass card stands out
-func _shade() -> TextureRect:
-	var g := Gradient.new()
-	g.offsets = PackedFloat32Array([0.0, 0.35, 1.0])
-	g.colors = PackedColorArray([Color(0.08, 0.06, 0.04, 0), Color(0.08, 0.06, 0.04, 0), Color(0.08, 0.06, 0.04, 0.6)])
-	var gt := GradientTexture2D.new()
-	gt.gradient = g
-	gt.width = 256
-	gt.height = 4
-	var r := TextureRect.new()
-	r.texture = gt
-	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	r.stretch_mode = TextureRect.STRETCH_SCALE
-	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	return r
-
-
-## the EXPLO-STORY logo (same picture as the title screen) and the tagline
-func _logo() -> void:
-	var box := UI.vbox(6)
-	box.position = Vector2(56, 70)
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if ResourceLoader.exists(LOGO):
-		var logo := TextureRect.new()
-		logo.name = "Logo"
-		logo.texture = load(LOGO)
-		logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		logo.custom_minimum_size = Vector2(540, 540.0 * 224.0 / 720.0)
-		logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(logo)
-	else:
-		box.add_child(UI.label("EXPLO-STORY", "Logo"))
-	var tag := UI.label("Terokai Sejarah & Warisan Malaysia", "Heading")
-	Glass.text(tag)
-	tag.add_theme_constant_override("shadow_offset_y", 3)
-	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tag.custom_minimum_size.x = 540
-	box.add_child(tag)
-	add_child(box)
 
 
 ## opened from the "Lupa kata laluan" e-mail: type the new password here
@@ -260,8 +211,8 @@ func _validate_keep_status() -> void:
 
 func _validate() -> void:
 	_login.disabled = _user.text.strip_edges() == "" or _pass.text == ""
-	_user.theme_type_variation = ""
-	_pass.theme_type_variation = ""
+	Glass.mark(_user, false)
+	Glass.mark(_pass, false)
 	_status.text = ""
 
 
@@ -275,8 +226,8 @@ func _do_login() -> void:
 	if not r.get("ok", false):
 		_status.theme_type_variation = "Bad"
 		_status.text = str(r.get("error", "Log masuk gagal."))
-		_user.theme_type_variation = "Invalid"
-		_pass.theme_type_variation = "Invalid"
+		Glass.mark(_user, true)
+		Glass.mark(_pass, true)
 		_login.disabled = false
 		return
 	_finish(r)

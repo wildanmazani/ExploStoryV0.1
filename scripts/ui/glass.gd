@@ -3,6 +3,7 @@ extends RefCounted
 ## behind is blurred through it), white text, round gold buttons.
 
 const UI = preload("res://scripts/ui/ui.gd")
+const LOGO := "res://assets/ui/logo_explostory.png"
 
 const BLUR := """
 shader_type canvas_item;
@@ -53,14 +54,70 @@ static func text(l: Control) -> void:
 
 
 static func field(e: LineEdit) -> void:
-	var n := UI.sb(Color(1, 0.98, 0.94, 0.94), Color(0, 0, 0, 0), 0, 12, 10)
-	n.content_margin_left = 14
-	var f := n.duplicate() as StyleBoxFlat
-	f.border_color = UI.GOLD
-	f.set_border_width_all(3)
-	f.bg_color = Color.WHITE
-	e.add_theme_stylebox_override("normal", n)
+	mark(e, false)
+	var f := UI.sb(Color.WHITE, UI.GOLD, 3, 12, 10)
+	f.content_margin_left = 14
 	e.add_theme_stylebox_override("focus", f)
+
+
+## red edge for a field with a mistake in it (the theme's "Invalid" look)
+static func mark(e: LineEdit, bad: bool) -> void:
+	var n := UI.sb(Color(1, 0.98, 0.94, 0.94), UI.RED if bad else Color(0, 0, 0, 0), 3 if bad else 0, 12, 10)
+	n.content_margin_left = 14
+	e.add_theme_stylebox_override("normal", n)
+
+
+## darker towards the right so the glass card stands out
+static func shade() -> TextureRect:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.35, 1.0])
+	g.colors = PackedColorArray([Color(0.08, 0.06, 0.04, 0), Color(0.08, 0.06, 0.04, 0), Color(0.08, 0.06, 0.04, 0.6)])
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.width = 256
+	gt.height = 4
+	var r := TextureRect.new()
+	r.texture = gt
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_SCALE
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	return r
+
+
+## the EXPLO-STORY logo (same picture as the title screen) and the tagline, top left
+static func logo(width: float = 540.0) -> Control:
+	var box := UI.vbox(6)
+	box.position = Vector2(56, 70)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if ResourceLoader.exists(LOGO):
+		var l := TextureRect.new()
+		l.name = "Logo"
+		l.texture = load(LOGO)
+		l.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		l.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		l.custom_minimum_size = Vector2(width, width * 224.0 / 720.0)
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(l)
+	else:
+		box.add_child(UI.label("EXPLO-STORY", "Logo"))
+	var tag := UI.label("Terokai Sejarah & Warisan Malaysia", "Heading")
+	text(tag)
+	tag.add_theme_constant_override("shadow_offset_y", 3)
+	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tag.custom_minimum_size.x = width
+	box.add_child(tag)
+	return box
+
+
+## holds the card centred in a strip on the right
+static func right(card: Control, strip: float) -> CenterContainer:
+	var c := CenterContainer.new()
+	c.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	c.offset_left = -strip
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.add_child(card)
+	return c
 
 
 ## the round gold button (Log masuk, Teruskan)
