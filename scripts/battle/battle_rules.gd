@@ -13,7 +13,8 @@ const DAMAGE := 25
 const BONUS := 5
 const ROUND_TIME := 30.0     ## seconds to answer (generous: read-aloud is there)
 const REVEAL_TIME := 4.0     ## seconds showing the answer and the hits
-const REWARD_COINS := 20
+const COINS_BOTS := 15      ## a win against classmate bots on this device
+const COINS_FRIENDS := 40   ## a win in an online room with friends
 const REWARD_EXP := 30       ## everyone who plays gets this much EXP
 const MIN_FRIENDS := 2       ## room = you + 2 to 4 friends (or bots)
 const MAX_FRIENDS := 4

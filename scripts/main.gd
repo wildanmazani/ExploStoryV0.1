@@ -15,6 +15,7 @@ const CalmOverlay = preload("res://scripts/ui/calm_overlay.gd")
 const MapOverlay = preload("res://scripts/ui/map_overlay.gd")
 const ProfilePanel = preload("res://scripts/ui/profile_panel.gd")
 const PapanPanel = preload("res://scripts/ui/papan_panel.gd")
+const KempenPanel = preload("res://scripts/ui/kempen_panel.gd")
 const Pad = preload("res://scripts/ui/pad.gd")
 
 var dialog_layer: CanvasLayer
@@ -282,6 +283,13 @@ func open_beg(world: Node = null) -> Control:
 func open_profile(tab: int = 0) -> Control:
 	var p := ProfilePanel.new()
 	p.start_tab = tab
+	overlay_root().add_child(p)
+	return p
+
+
+## Kempen Syiling: feedback +150, share the link +100 (until 16 Nov).
+func open_kempen() -> Control:
+	var p := KempenPanel.new()
 	overlay_root().add_child(p)
 	return p
 

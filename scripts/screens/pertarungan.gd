@@ -381,6 +381,7 @@ func _hit(id: String, dmg: int, by_me: bool) -> void:
 
 func _show_result(s: Dictionary) -> void:
 	MusicDirector.puzzle(false)
+	Game.note_battle_played()  # Kempen Syiling: maklum balas needs one battle
 	var coop: bool = battle.has_method("is_coop") and battle.is_coop()
 	var won: bool = battle.i_won() if battle.has_method("i_won") else s["winner"] == battle.my_id
 	var winner := BattleRules.find(s["players"], str(s["winner"]))
@@ -397,7 +398,7 @@ func _show_result(s: Dictionary) -> void:
 	var t := UI.label(title, "InkHeading")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
-	var reward := "+%d EXP" % BattleRules.REWARD_EXP + (("   +%d " % BattleRules.REWARD_COINS) + tr("Syiling") if won else "")
+	var reward := "+%d EXP" % BattleRules.REWARD_EXP + (("   +%d " % _coins()) + tr("Syiling") if won else "")
 	var r := UI.label(reward, "Ink")
 	r.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(r)
@@ -418,7 +419,12 @@ func _show_result(s: Dictionary) -> void:
 	add_child(_result)
 	MusicDirector.stinger("st_levelup" if won else "st_zone")
 	if won:
-		Game.toast("+%d Syiling" % BattleRules.REWARD_COINS)
+		Game.toast("+%d Syiling" % _coins())
+
+
+## a win with friends online pays more than one against bots
+func _coins() -> int:
+	return BattleRules.COINS_FRIENDS if battle is OnlineBattle else BattleRules.COINS_BOTS
 
 
 func _leave() -> void:

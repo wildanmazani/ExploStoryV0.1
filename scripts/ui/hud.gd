@@ -213,6 +213,8 @@ func _build_menu(_left: Control) -> void:
 	col.add_child(_bag_item)
 	if world:
 		col.add_child(_item(UI.tex("res://assets/portraits/pau_happy.png"), "Tenang dengan Pau", func(): Game.main.open_calm()))
+	if Game.kempen_open():
+		col.add_child(_item(UI.tex("res://assets/icons/syiling.png"), "Kempen Syiling", func(): Game.main.open_kempen()))
 	col.add_child(_item(UI.tex("res://assets/icons/mahkota.png"), "Papan Markah", func(): Game.main.open_papan()))
 	col.add_child(_item(UI.tex("res://assets/icons/tetapan.png"), "Tetapan", func(): Game.main.open_settings()))
 	_pad_profile = _item(UI.tex("res://assets/icons/syiling.png"), "Profil & Kedai", func(): Game.main.open_profile())

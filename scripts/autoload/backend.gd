@@ -486,6 +486,26 @@ func db_call(fn: String, args: Dictionary = {}) -> Dictionary:
 	return await _request("/rest/v1/rpc/" + fn, HTTPClient.METHOD_POST, args, true)
 
 
+## Kempen Syiling (supabase/patch_kempen.sql): what this account already
+## claimed on the server (another device counts too). [] when offline.
+func kempen_status() -> Array:
+	var r := await db_call("kempen_status")
+	if r["ok"] and r["data"] is Dictionary:
+		var c = r["data"].get("claimed", [])
+		return c if c is Array else []
+	return []
+
+
+## 'ok', 'already', 'ended', 'unverified', 'short', 'signin' or 'error'
+func kempen_claim(kind: String, stars: int = 0, comment: String = "") -> String:
+	var args := {"p_kind": kind}
+	if kind == "feedback":
+		args["p_stars"] = stars
+		args["p_comment"] = comment
+	var r := await db_call("kempen_claim", args)
+	return str(r["data"]) if r["ok"] and r["data"] is String else "error"
+
+
 ## The server's Player ID replaces the local one so friends can find you.
 func sync_player_code() -> void:
 	var r := await db_call("ensure_player_code")

@@ -114,6 +114,6 @@ func _poll() -> void:
 		var won := i_won()
 		if won:
 			b["wins"] = int(b.get("wins", 0)) + 1
-		Game.add_reward(BattleRules.REWARD_EXP, BattleRules.REWARD_COINS if won else 0)
+		Game.add_reward(BattleRules.REWARD_EXP, BattleRules.COINS_FRIENDS if won else 0)
 		Game.persist()
 	state_changed.emit(state)

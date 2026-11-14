@@ -42,6 +42,7 @@ var answers := {}            ## fighter id -> {i, at}
 var results: Array = []      ## [{id, name, right, fastest}] for the banner
 var winner_team := -1
 var level_up := false
+var coins_won := 0  ## what this win paid (BrawlRules.coins_for)
 
 var stage: Node2D            ## y-sorted: fighters + items
 var fx: BrawlFx
@@ -341,7 +342,8 @@ func _reward() -> void:
 	if won:
 		b["wins"] = int(b.get("wins", 0)) + 1
 	if not no_reward:
-		level_up = Game.add_reward(BrawlRules.REWARD_EXP, BrawlRules.REWARD_COINS if won else 0)
+		coins_won = BrawlRules.coins_for(level, online) if won else 0
+		level_up = Game.add_reward(BrawlRules.REWARD_EXP, coins_won)
 	Game.persist()
 
 

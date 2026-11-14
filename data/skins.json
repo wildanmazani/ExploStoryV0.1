@@ -1,11 +1,11 @@
 {
-  "_info": "Pakaian (skin) Alif. folder = assets/characters32/<folder>/ (dijana PixelLab, tools/asset_manifest.json). price 0 = percuma.",
+  "_info": "Pakaian (skin) Alif. folder = assets/characters32/<folder>/ (dijana PixelLab, tools/asset_manifest.json). price 0 = percuma. tier: basic / elite / epic (kad kedai).",
   "skins": [
-    {"id": "sekolah", "name": "Baju Sekolah", "folder": "alif", "price": 0, "info": "Kemeja putih, seluar biru. Alif yang biasa."},
-    {"id": "melayu", "name": "Baju Melayu", "folder": "alif_melayu", "price": 0, "info": "Baju Melayu hijau, samping dan songkok."},
-    {"id": "pengakap", "name": "Pengakap", "folder": "alif_pengakap", "price": 120, "info": "Sedia selalu! Lengkap dengan skarf dan beret."},
-    {"id": "sukan", "name": "Baju Sukan", "folder": "alif_sukan", "price": 150, "info": "Jersi rumah sukan biru dan ikat kepala kuning."},
-    {"id": "bomba", "name": "Kadet Bomba", "folder": "alif_bomba", "price": 200, "info": "Pakaian kadet bomba dengan jalur pemantul."},
-    {"id": "pahlawan", "name": "Pahlawan Melaka", "folder": "alif_pahlawan", "price": 300, "info": "Tengkolok merah, samping songket dan keris kecil."}
+    {"id": "sekolah", "tier": "basic", "name": "Baju Sekolah", "folder": "alif", "price": 0, "info": "Kemeja putih, seluar biru. Alif yang biasa."},
+    {"id": "melayu", "tier": "basic", "name": "Baju Melayu", "folder": "alif_melayu", "price": 0, "info": "Baju Melayu hijau, samping dan songkok."},
+    {"id": "pengakap", "tier": "elite", "name": "Pengakap", "folder": "alif_pengakap", "price": 840, "info": "Sedia selalu! Lengkap dengan skarf dan beret."},
+    {"id": "sukan", "tier": "elite", "name": "Baju Sukan", "folder": "alif_sukan", "price": 1050, "info": "Jersi rumah sukan biru dan ikat kepala kuning."},
+    {"id": "bomba", "tier": "epic", "name": "Kadet Bomba", "folder": "alif_bomba", "price": 1400, "info": "Pakaian kadet bomba dengan jalur pemantul."},
+    {"id": "pahlawan", "tier": "epic", "name": "Pahlawan Melaka", "folder": "alif_pahlawan", "price": 2100, "info": "Tengkolok merah, samping songket dan keris kecil."}
   ]
 }

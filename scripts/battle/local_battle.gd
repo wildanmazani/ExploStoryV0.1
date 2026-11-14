@@ -177,5 +177,5 @@ func _reward() -> void:
 	var won: bool = state["winner"] == my_id
 	if won:
 		b["wins"] = int(b.get("wins", 0)) + 1
-	state["level_up"] = Game.add_reward(BattleRules.REWARD_EXP, BattleRules.REWARD_COINS if won else 0)
+	state["level_up"] = Game.add_reward(BattleRules.REWARD_EXP, BattleRules.COINS_BOTS if won else 0)
 	Game.persist()

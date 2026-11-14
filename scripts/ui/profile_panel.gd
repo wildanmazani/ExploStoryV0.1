@@ -5,6 +5,8 @@ extends "res://scripts/ui/modal.gd"
 ## outfits (data/skins.json), bought with syiling and worn in the world.
 ## Kawan: the friends list (online accounts), and adding a friend by Player ID.
 
+const SkinCard = preload("res://scripts/ui/skin_card.gd")
+
 var start_tab: int = 0
 var _tab: int = 0
 var _body: VBoxContainer
@@ -329,13 +331,16 @@ func _friend_row(f: Dictionary) -> Control:
 
 # ------------------------------------------------------------------ shop
 func _shop() -> void:
-	var hint := UI.label("Kumpul syiling dengan menyelesaikan misi dan menang pertarungan. Pakaian hanya untuk gaya, bukan kuasa.", "Small", true)
+	var hint := UI.label(tr("Kumpul syiling dari misi dan pertarungan (lawan kawan dapat paling banyak). Satu skin Elite untuk setiap Bab yang tamat. Slot Elite: %d.") % maxi(0, Game.elite_slots_left()), "Small", true)
 	_body.add_child(hint)
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 14)
 	grid.add_theme_constant_override("v_separation", 14)
-	for s in Game.skins():
+	var order := {"basic": 0, "elite": 1, "epic": 2}
+	var list: Array = Game.skins().duplicate()
+	list.sort_custom(func(a, b): return order[SkinCard.tier_of(a)] < order[SkinCard.tier_of(b)] 		or (order[SkinCard.tier_of(a)] == order[SkinCard.tier_of(b)] and int(a["price"]) < int(b["price"])))
+	for s in list:
 		grid.add_child(_skin_card(s))
 	var scroll := ScrollContainer.new()
 	TouchScroll.attach(scroll)
@@ -346,39 +351,28 @@ func _shop() -> void:
 
 func _skin_card(s: Dictionary) -> Control:
 	var id := str(s["id"])
-	var owned: bool = Game.save["skins_owned"].has(id)
-	var worn: bool = str(Game.save["skin"]) == id
-	var card := PanelContainer.new()
-	card.theme_type_variation = "SlotGood" if worn else ("Slot" if owned else "SlotHot")
-	card.custom_minimum_size = Vector2(366, 0)
-	var row := UI.hbox(10)
-	var pic := TextureRect.new()
-	pic.custom_minimum_size = Vector2(96, 110)
-	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	pic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var folder := str(s["folder"])
-	var path := "res://assets/characters32/%s/%s_south.png" % [folder, folder]
-	pic.texture = UI.tex(path) if ResourceLoader.exists(path) else UI.tex("res://assets/icons/kunci.png")
-	row.add_child(pic)
-	var col := UI.vbox(4)
-	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var nm := UI.label(str(s["name"]), "Heading", true)
-	nm.custom_minimum_size.x = 220
-	col.add_child(nm)
-	var info := UI.label(str(s.get("info", "")), "Small", true)
-	info.custom_minimum_size.x = 220
-	col.add_child(info)
+	var card := SkinCard.new()
+	card.skin = s
+	card.owned = Game.save["skins_owned"].has(id)
+	card.worn = str(Game.save["skin"]) == id
 	var btn: Button
-	if worn:
+	if card.worn:
 		btn = UI.button("Sedang dipakai")
 		btn.disabled = true
-	elif owned:
+	elif card.owned:
 		btn = UI.button("Pakai", "Primary")
 		btn.pressed.connect(func():
 			Game.equip_skin(id)
 			Sfx.play("pop")
 			_show(1))
+	elif SkinCard.tier_of(s) == "elite" and Game.elite_slots_left() <= 0:
+		# one Elite per Bab finished: say which Bab opens the next one
+		btn = UI.button(tr("Tamatkan Bab %d") % (Game.save["chapters_done"].size() + 1))
+		btn.icon = UI.tex("res://assets/icons/kunci.png")
+		btn.expand_icon = false
+		btn.pressed.connect(func():
+			Sfx.play("bump")
+			Game.toast(Game.elite_locked_text(), Color("ff9a8a")))
 	else:
 		var price := int(s["price"])
 		btn = UI.button(tr("Beli: %d syiling") % price, "Blue")
@@ -394,7 +388,5 @@ func _skin_card(s: Dictionary) -> Control:
 			Game.toast(tr("Dapat pakaian baharu: %s!") % str(s["name"]))
 			Game.equip_skin(id)
 			_show(1))
-	col.add_child(btn)
-	row.add_child(col)
-	card.add_child(row)
+	card.button = btn
 	return card

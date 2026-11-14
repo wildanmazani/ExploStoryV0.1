@@ -14,7 +14,9 @@ const MAX_ROUNDS := 8
 const SEMANGAT := 1.0
 const LEMAH := 0.3
 const BLOCK_TAKE := 0.2
-const REWARD_COINS := 20
+## syiling for a win: harder bots pay more, a match with friends (online) the most
+const COINS_BY_LEVEL := {"mudah": 10, "biasa": 20, "sukar": 30}
+const COINS_FRIENDS := 40
 const REWARD_EXP := 30
 const MAX_FLOOR_WEAPONS := 4
 
@@ -35,6 +37,10 @@ const SCREEN_FLOOR := Rect2(120, 515, 1040, 175)
 const FLOOR := Rect2(0, 0, 832, 140)
 const DEPTH_BAND := 28.0   ## how far apart in depth a hit still connects
 const SCALE := 4.0         ## sprites are drawn 4x
+
+static func coins_for(level: String, with_friends: bool) -> int:
+	return COINS_FRIENDS if with_friends else int(COINS_BY_LEVEL.get(level, 20))
+
 
 const MOVES_PATH := "res://data/brawl/moves.json"
 static var _data := {}

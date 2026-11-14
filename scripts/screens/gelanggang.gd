@@ -577,6 +577,7 @@ func _flash_big(text: String, col := UI.GOLD, y := 250.0) -> void:
 # ------------------------------------------------------------------ result
 func _show_result() -> void:
 	MusicDirector.puzzle(false)
+	Game.note_battle_played()  # Kempen Syiling: maklum balas needs one battle
 	var won := match_node.me != null and match_node.winner_team == match_node.me.team
 	_result = Control.new()
 	_result.add_to_group("pad_scope")
@@ -590,7 +591,7 @@ func _show_result() -> void:
 	var t := UI.label(tr("PASUKAN ANDA MENANG!") if won else tr("PASUKAN LAWAN MENANG"), "InkHeading")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	c.add_child(t)
-	var reward := "+%d EXP" % BrawlRules.REWARD_EXP + (("   +%d " % BrawlRules.REWARD_COINS) + tr("Syiling") if won else "")
+	var reward := "+%d EXP" % BrawlRules.REWARD_EXP + (("   +%d " % BrawlRules.coins_for(match_node.level, match_node.online)) + tr("Syiling") if won else "")
 	if match_node.no_reward:
 		reward = tr("Ulang kaji: tiada EXP.")
 	var r := UI.label(reward, "Ink")
@@ -630,7 +631,7 @@ func _show_result() -> void:
 	add_child(_result)
 	MusicDirector.stinger("st_levelup" if won else "st_zone")
 	if won:
-		Game.toast("+%d Syiling" % BrawlRules.REWARD_COINS)
+		Game.toast("+%d Syiling" % BrawlRules.coins_for(match_node.level, match_node.online))
 	_flash_big(tr("MENANG!") if won else tr("KALAH"))
 
 

@@ -58,6 +58,12 @@ func _ready() -> void:
 		battle.expand_icon = false
 	battle.pressed.connect(_open_battle)
 	bar.add_child(battle)
+	if Game.kempen_open():  # Kempen Syiling, until 16 Nov
+		var kempen := UI.button("Kempen +250", "Primary", 210)
+		kempen.icon = UI.tex("res://assets/icons/syiling.png")
+		kempen.expand_icon = false
+		kempen.pressed.connect(func(): Game.main.open_kempen())
+		bar.add_child(kempen)
 	var papan := UI.button("Papan Markah", "", 220)
 	papan.pressed.connect(func(): Game.main.open_papan())
 	bar.add_child(papan)

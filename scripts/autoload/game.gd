@@ -446,10 +446,25 @@ func spend(amount: int) -> bool:
 	return true
 
 
+## One Elite outfit may be bought for each Bab finished (Bab 1 done = 1).
+func elite_slots_left() -> int:
+	var owned := 0
+	for s in skins():
+		if str(s.get("tier", "")) == "elite" and save["skins_owned"].has(str(s["id"])):
+			owned += 1
+	return (save.get("chapters_done", []) as Array).size() - owned
+
+
+func elite_locked_text() -> String:
+	return tr("Satu skin Elite untuk setiap Bab. Tamatkan Bab %d untuk buka satu lagi.") % ((save.get("chapters_done", []) as Array).size() + 1)
+
+
 ## "" when bought, otherwise why not
 func buy_skin(id: String) -> String:
 	if save["skins_owned"].has(id):
 		return "Sudah dimiliki"
+	if str(skin_def(id).get("tier", "")) == "elite" and elite_slots_left() <= 0:
+		return elite_locked_text()
 	var price := int(skin_def(id)["price"])
 	if not spend(price):
 		return tr("Syiling tak cukup. Perlu %d lagi.") % (price - int(save["coins"]))
@@ -485,6 +500,46 @@ func level_progress(exp_total: int = -1) -> Array:
 	var e := int(save["exp"]) if exp_total < 0 else exp_total
 	var lv := level_for(e)
 	return [e - exp_at_level(lv), exp_at_level(lv + 1) - exp_at_level(lv)]
+
+
+# ------------------------------------------------------------------ Kempen Syiling
+## Until 16 Nov 2026, 12:00 tengah malam (MYT): feedback +150, sharing the
+## link +100, once per account (supabase/patch_kempen.sql checks it too).
+const KEMPEN_ENDS := 1794758400  ## 2026-11-16 00:00 +08:00
+const KEMPEN_COINS := {"feedback": 150, "share": 100}
+
+
+func kempen_open() -> bool:
+	return Time.get_unix_time_from_system() < KEMPEN_ENDS
+
+
+func kempen_claimed(kind: String) -> bool:
+	return (save.get("kempen", []) as Array).has(kind)
+
+
+## the server said yes (or it was claimed before): note it, and pay if asked
+func kempen_mark(kind: String, pay: bool) -> void:
+	if kempen_claimed(kind):
+		return
+	var k: Array = save.get("kempen", [])
+	k.append(kind)
+	save["kempen"] = k
+	if pay:
+		add_reward(0, int(KEMPEN_COINS[kind]))
+	persist()
+
+
+## has played a battle (Gelanggang or Bilik Pertarungan, friends or bots),
+## battles from before the campaign included
+func has_battled() -> bool:
+	return bool(save.get("battle_played", false)) or int((save.get("battle", {}) as Dictionary).get("played", 0)) > 0
+
+
+## played a battle in the Gelanggang or Bilik Pertarungan (with friends or bots)
+func note_battle_played() -> void:
+	if not bool(save.get("battle_played", false)):
+		save["battle_played"] = true
+		persist()
 
 
 func add_reward(exp_gain: int, coin_gain: int) -> bool:

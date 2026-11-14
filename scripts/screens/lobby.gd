@@ -34,7 +34,7 @@ func _ready() -> void:
 	add_child(UI.bg_image("res://assets/backgrounds/bg_zon1_3_balai_penghadapan.png", Color(0.6, 0.55, 0.58)))
 	var root := UI.vbox(12)
 	UI.full(root)
-	root.add_child(UI.header_bar("BILIK PERTARUNGAN", tr("Jawab betul, serang lawan. Yang terakhir berdiri menang %d syiling.") % BattleRules.REWARD_COINS))
+	root.add_child(UI.header_bar("BILIK PERTARUNGAN", tr("Jawab betul, serang lawan. Menang lawan bot %d syiling, lawan kawan %d syiling.") % [BattleRules.COINS_BOTS, BattleRules.COINS_FRIENDS]))
 	_fighter_row = UI.hbox(8)
 	_fighter_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	root.add_child(_fighter_row)

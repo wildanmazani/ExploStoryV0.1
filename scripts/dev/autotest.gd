@@ -420,6 +420,63 @@ func _run() -> void:
 		print("AUTOTEST PASS (akan only)")
 		get_tree().quit(0)
 		return
+	if "--only=kedai" in OS.get_cmdline_user_args():
+		# Kedai Skin: Basic / Elite / Epic cards, one worn, one owned, the rest for sale
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.save["prolog_done"] = true
+		Game.save["skins_owned"] = ["sekolah", "melayu", "sukan"]
+		Game.save["chapters_done"] = [1]  # its one Elite slot is used by Baju Sukan
+		Game.save["skin"] = "sukan"
+		Game.goto("world")
+		await wait_screen("world")
+		await wait_idle(240)
+		var kp: Node = Main.open_profile(1)
+		await wait(1.0)
+		await shot("kedai_skin")
+		var cards := kp.find_children("*", "PanelContainer", true, false).filter(func(c): return c.get_script() == load("res://scripts/ui/skin_card.gd"))
+		if cards.size() != Game.skins().size():
+			_fail("Kedai Skin should show one tier card per outfit (%d of %d)" % [cards.size(), Game.skins().size()])
+			return
+		var sc: ScrollContainer = kp.find_children("*", "ScrollContainer", true, false)[0]
+		sc.scroll_vertical = 10000
+		await wait(0.6)
+		await shot("kedai_skin_epic")
+		print("AUTOTEST PASS (kedai)")
+		get_tree().quit(0)
+		return
+	if "--only=kempen" in OS.get_cmdline_user_args():
+		# Kempen Syiling: the panel, its requirements, and paying once only
+		await wait_screen("title")
+		Game.load_profile("Tetamu", "guest")
+		Game.save["prolog_done"] = true
+		Game.goto("arka")
+		await wait_screen("arka")
+		await shot("kempen_arka")
+		if Game.kempen_open() and find_button(hosted(), "Kempen") == null:
+			_fail("the Arka should show the Kempen button while the campaign runs")
+			return
+		var kp: Node = Main.open_kempen()
+		await wait(0.6)
+		await shot("kempen_tetamu")
+		if not kp._send.disabled or not kp._share.disabled:
+			_fail("a guest should not be able to claim")
+			return
+		Game.note_battle_played()
+		var c0 := int(Game.save["coins"])
+		Game.kempen_mark("feedback", true)
+		Game.kempen_mark("feedback", true)  # a second claim pays nothing
+		Game.kempen_mark("share", false)    # claimed on another device: no coins
+		if int(Game.save["coins"]) != c0 + 150 or not Game.kempen_claimed("share"):
+			_fail("kempen should pay 150 once for feedback (coins %d -> %d)" % [c0, int(Game.save["coins"])])
+			return
+		kp.close()
+		kp = Main.open_kempen()
+		await wait(0.6)
+		await shot("kempen_dituntut")
+		print("AUTOTEST PASS (kempen)")
+		get_tree().quit(0)
+		return
 	if "--only=narator" in OS.get_cmdline_user_args():
 		# the dialogue box: a narrator line, then a speaker after it
 		await wait_screen("title")
@@ -1242,8 +1299,8 @@ func _check_battle() -> void:
 		_fail("battle not counted")
 		return
 	var won: bool = b.state["winner"] == b.my_id
-	if won and int(Game.save["coins"]) != coins + BattleRules.REWARD_COINS:
-		_fail("winner did not get %d syiling (%d -> %d)" % [BattleRules.REWARD_COINS, coins, int(Game.save["coins"])])
+	if won and int(Game.save["coins"]) != coins + BattleRules.COINS_BOTS:
+		_fail("winner did not get %d syiling (%d -> %d)" % [BattleRules.COINS_BOTS, coins, int(Game.save["coins"])])
 		return
 	print("battle: rounds=%d winner=%s won=%s" % [int(b.state["round"]), str(b.state["winner"]), str(won)])
 
@@ -1313,8 +1370,8 @@ func _check_brawl() -> void:
 			_fail("brawl %s: no full-power hits landed" % fmt)
 			return
 		var won := m.winner_team == 0
-		if won and int(Game.save["coins"]) != coins + BrawlRules.REWARD_COINS:
-			_fail("brawl %s: winners should get %d syiling" % [fmt, BrawlRules.REWARD_COINS])
+		if won and int(Game.save["coins"]) != coins + BrawlRules.coins_for(m.level, false):
+			_fail("brawl %s: winners should get %d syiling" % [fmt, BrawlRules.coins_for(m.level, false)])
 			return
 		print("brawl %s: rounds=%d won=%s hits full=%d weak=%d" % [fmt, m.round_no, str(won), hits["full"], hits["weak"]])
 	Game.goto("lobby")
@@ -1351,10 +1408,24 @@ func _check_shop() -> void:
 	await shot("profile")
 	pp._show(1)
 	await wait(0.3)
+	# one Elite outfit per Bab finished: none before Bab 1, one after it
+	var done_before: Array = Game.save["chapters_done"].duplicate()
+	Game.save["coins"] = before + 5000
+	Game.save["chapters_done"] = []
+	if Game.buy_skin("pengakap") == "":
+		_fail("an Elite skin should wait for Bab 1 to be finished")
+		return
+	Game.save["chapters_done"] = [1]
+	var price := int(Game.skin_def("pengakap")["price"])
 	var err := Game.buy_skin("pengakap")
-	if err != "" or int(Game.save["coins"]) != before - 120:
+	if err != "" or int(Game.save["coins"]) != before + 5000 - price:
 		_fail("buying a skin failed: %s (coins %d -> %d)" % [err, before, int(Game.save["coins"])])
 		return
+	if Game.buy_skin("sukan") == "":
+		_fail("only one Elite skin per Bab")
+		return
+	Game.save["chapters_done"] = done_before
+	Game.save["coins"] = before
 	Game.equip_skin("pengakap")
 	pp._show(1)
 	await wait(0.3)
