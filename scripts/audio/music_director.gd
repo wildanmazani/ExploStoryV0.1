@@ -1,10 +1,14 @@
 extends Node
 ## Autoload "MusicDirector": interactive music (tools/gen_music.py renders the
-## gamelan loops). Each area has two stems that loop in sync:
+## gamelan loops). Each area has two stems that loop together:
 ##   base   - always on
 ##   melody - rises while Alif explores, settles when he stands still
 ## Changing area crossfades on the next bar line. Puzzles add the "fokus"
 ## layer. Dialogue ducks everything. Stingers play on top.
+##
+## The two stems are two plain players started on the same frame (not an
+## AudioStreamSynchronized): on the web the browser can then play them
+## itself, so the music no longer stutters when the game is busy.
 
 const DIR := "res://assets/audio/music/"
 const BPM := {
@@ -24,8 +28,11 @@ const MELODY_ON := -3.0
 const MELODY_OFF := -22.0
 
 var current := ""
-var _a: AudioStreamPlayer
-var _b: AudioStreamPlayer
+var _a: AudioStreamPlayer   ## base stem of the track playing
+var _am: AudioStreamPlayer  ## its melody stem
+var _b: AudioStreamPlayer   ## the track fading out
+var _bm: AudioStreamPlayer
+var _deck_db := -80.0       ## base volume now; the melody sits _melody_db under it
 var _fokus: AudioStreamPlayer
 var _sting: AudioStreamPlayer
 var _melody_db := MELODY_ON
@@ -36,7 +43,9 @@ var _switch_id := 0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_a = _player()
+	_am = _player()
 	_b = _player()
+	_bm = _player()
 	_fokus = _player()
 	_sting = _player()
 	_sting.bus = "SFX" if AudioServer.get_bus_index("SFX") >= 0 else "Master"
@@ -59,15 +68,6 @@ func _loop(path: String) -> AudioStream:
 	return s
 
 
-func _track(name: String) -> AudioStream:
-	var sync := AudioStreamSynchronized.new()
-	sync.stream_count = 2
-	sync.set_sync_stream(0, _loop(DIR + name + "_base.ogg"))
-	sync.set_sync_stream(1, _loop(DIR + name + "_melody.ogg"))
-	sync.set_sync_stream_volume(1, _melody_db)
-	return sync
-
-
 ## Play a track ("tajuk", "bilik") or a world area id ("kampung", "balai").
 func play(name: String, fade := 1.6) -> void:
 	name = AREA_TRACK.get(name, name)
@@ -85,26 +85,35 @@ func play(name: String, fade := 1.6) -> void:
 			return
 	current = name
 	var old := _a
+	var old_m := _am
 	_a = _b
+	_am = _bm
 	_b = old
-	_a.stream = _track(name)
-	_a.volume_db = -40
+	_bm = old_m
+	_a.stream = _loop(DIR + name + "_base.ogg")
+	_am.stream = _loop(DIR + name + "_melody.ogg")
+	_deck_db = -40.0
+	_apply_deck()
 	_a.play()
+	_am.play()
 	var t := create_tween().set_parallel()
-	t.tween_property(_a, "volume_db", _target_db(), fade)
+	t.tween_method(_set_deck_db, -40.0, _target_db(), fade)
 	if old.playing:
 		t.tween_property(old, "volume_db", -60.0, fade)
-		t.chain().tween_callback(old.stop)
+		t.tween_property(old_m, "volume_db", -60.0, fade)
+		t.chain().tween_callback(func():
+			old.stop()
+			old_m.stop())
 
 
 func stop(fade := 1.2) -> void:
 	current = ""
 	var t := create_tween().set_parallel()
-	for p in [_a, _b, _fokus]:
+	for p in [_a, _am, _b, _bm, _fokus]:
 		if p.playing:
 			t.tween_property(p, "volume_db", -60.0, fade)
 	t.chain().tween_callback(func():
-		for p in [_a, _b, _fokus]:
+		for p in [_a, _am, _b, _bm, _fokus]:
 			p.stop())
 
 
@@ -119,9 +128,18 @@ func set_melody(on: bool) -> void:
 
 func _set_melody_db(v: float) -> void:
 	_melody_db = v
-	var s = _a.stream
-	if s is AudioStreamSynchronized:
-		s.set_sync_stream_volume(1, v)
+	_apply_deck()
+
+
+## the track's volume: base at _deck_db, melody _melody_db under it
+func _set_deck_db(v: float) -> void:
+	_deck_db = v
+	_apply_deck()
+
+
+func _apply_deck() -> void:
+	_a.volume_db = _deck_db
+	_am.volume_db = _deck_db + _melody_db
 
 
 ## puzzles: a quiet focused pulse joins the music
@@ -140,7 +158,7 @@ func puzzle(on: bool) -> void:
 func duck(on: bool) -> void:
 	_ducked = on
 	var t := create_tween()
-	t.tween_property(_a, "volume_db", _target_db(), 0.4)
+	t.tween_method(_set_deck_db, _deck_db, _target_db(), 0.4)
 
 
 func _target_db() -> float:
@@ -156,6 +174,6 @@ func stinger(name: String) -> void:
 	_sting.play()
 	# let the stinger breathe
 	var t := create_tween()
-	t.tween_property(_a, "volume_db", -14.0, 0.2)
+	t.tween_method(_set_deck_db, _deck_db, -14.0, 0.2)
 	t.tween_interval(maxf(s.get_length() - 1.5, 0.5))
-	t.tween_property(_a, "volume_db", _target_db(), 1.2)
+	t.tween_method(_set_deck_db, -14.0, _target_db(), 1.2)

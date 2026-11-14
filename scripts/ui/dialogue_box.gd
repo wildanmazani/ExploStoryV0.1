@@ -204,14 +204,44 @@ func _process(delta: float) -> void:
 		return
 	_shown += delta * Game.type_speed()
 	_text.visible_characters = int(_shown)
-	if VOICE.has(_who) and _text.visible_characters >= _blip_at + 3:
+	if _text.visible_characters >= _blip_at + 2:
 		_blip_at = _text.visible_characters
-		var ch := _text.text.substr(_text.visible_characters - 1, 1)
-		if ch.strip_edges() != "" and not bool(Game.settings.get("auto_read", false)):
-			Sfx.play("blip", -10.0, VOICE[_who] * randf_range(0.94, 1.06), "Voice")
+		_babble(_blip_at)
 	if _text.visible_characters >= _text.text.length():
 		_text.visible_characters = -1
 		_typing = false
+
+
+## Fast, unclear, cute "talking": one syllable for every two letters typed,
+## the vowel taken from the words themselves, at the speaker's pitch.
+## The narrator types instead (typewriter keys). Silent in read-aloud mode
+## (a real voice reads then).
+func _babble(at: int) -> void:
+	if bool(Game.settings.get("auto_read", false)):
+		return
+	var ch := _text.text.substr(at - 1, 1)
+	if _who == "" or _who == "narator":  # the narrator writes: typewriter keys
+		if ch == " ":
+			Sfx.voice("taip_space", -8.0, randf_range(0.95, 1.05))
+		elif ch.strip_edges() != "":
+			Sfx.voice("taip_%d" % randi_range(1, 4), -7.0, randf_range(0.92, 1.08))
+		return
+	if ch.strip_edges() == "" or ".,!?;:-\"'()".contains(ch):
+		return
+	var v := "a"
+	var rest := _text.text.substr(at - 1, 6).to_lower()
+	for c in rest:
+		if "aeiou".contains(c):
+			v = c
+			break
+	Sfx.voice("babble_" + v, -6.0, voice_pitch(_who) * randf_range(0.93, 1.08))
+
+
+## the speaker's voice: set ones in VOICE, any other a steady pitch from its name
+static func voice_pitch(who: String) -> float:
+	if VOICE.has(who):
+		return float(VOICE[who])
+	return 0.8 + float(abs(who.hash()) % 50) / 100.0
 
 
 func _advance() -> void:

@@ -201,10 +201,8 @@ func _scream() -> void:
 	busy = true
 	player.can_move = false
 	await get_tree().create_timer(0.5).timeout
-	Sfx.play("whoosh", -2.0, 0.6)  # something falls past the window...
-	await get_tree().create_timer(0.5).timeout
-	Sfx.play("bump", 0.0, 0.7)     # ...and hits the road outside
-	Main.shake(5.0, 0.5)
+	Sfx.play("gedebuk", 2.0)  # GEDEBUK! Aisyah drops onto the road outside
+	Main.shake(6.0, 0.5)
 	await Game.say("intro_jerit_1")
 	_show_emote("!")
 	pau.hop()

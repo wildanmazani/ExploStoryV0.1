@@ -304,7 +304,11 @@ func _slider(key: String, min_v := 0, width := 380) -> HBoxContainer:
 	s.value_changed.connect(func(v: float):
 		pct.text = "%d%%" % int(v)
 		Game.set_setting(key, v / 100.0))
-	s.drag_ended.connect(func(_c): Sfx.play("blip" if key == "voice" else "pop", 0.0, 1.2, "Voice" if key == "voice" else "SFX"))
+	s.drag_ended.connect(func(_c):
+		if key == "voice":
+			Sfx.voice("babble_a", 0.0, 1.2)
+		else:
+			Sfx.play("pop", 0.0, 1.2))
 	row.add_child(s)
 	row.add_child(pct)
 	return row
