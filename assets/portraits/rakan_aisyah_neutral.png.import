@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dy6ioxy2jdsta"
-path="res://.godot/imported/alif_bomba_confident.png-81b86957af9797af8093c095b2aee1bf.ctex"
+uid="uid://b50wfcbo25dfw"
+path="res://.godot/imported/rakan_aisyah_neutral.png-6278f3792e9aac425d60329b6fdb9d5c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/alif_bomba_confident.png"
-dest_files=["res://.godot/imported/alif_bomba_confident.png-81b86957af9797af8093c095b2aee1bf.ctex"]
+source_file="res://assets/portraits/rakan_aisyah_neutral.png"
+dest_files=["res://.godot/imported/rakan_aisyah_neutral.png-6278f3792e9aac425d60329b6fdb9d5c.ctex"]
 
 [params]
 

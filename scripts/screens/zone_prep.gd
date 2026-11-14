@@ -79,7 +79,7 @@ func _ready() -> void:
 		var card := UI.panel("CardSel" if here else ("Card" if met else "CardLocked"))
 		card.custom_minimum_size = Vector2(150 if ch_no == 1 else 128, 0)
 		var cc := UI.vbox(2)
-		var pic := UI.icon(Game.portrait_path(id), 64)  # 64 px portraits: 1:1, crisp
+		var pic := UI.icon(Game.portrait_path(id), 72)  # 24 px faces doubled: x3, crisp
 		if not met and not here:
 			pic.modulate = Color(0, 0, 0, 0.85)
 		cc.add_child(pic)

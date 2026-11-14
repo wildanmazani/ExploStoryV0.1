@@ -435,6 +435,11 @@ func _run() -> void:
 		Main.dialog_box._advance()
 		await wait(2.5)
 		await shot("dialog_aisyah")
+		for who in ["alif", "pau"]:  # the left side: Alif and Pau
+			Main.dialog_box._advance()
+			Game.say([{"s": who, "t": "Jom, kita cari artifak seterusnya!", "e": "happy"}])
+			await wait(2.5)
+			await shot("dialog_" + who)
 		print("AUTOTEST PASS (narator)")
 		get_tree().quit(0)
 		return
@@ -686,9 +691,14 @@ func _run() -> void:
 			return
 	var old_skin: String = Game.save["skin"]
 	Game.save["skin"] = "melayu"
-	if not Game.portrait_path("alif", "happy").ends_with("alif_melayu_happy.png"):
+	if not Game.portrait_path("alif", "happy").get_file().begins_with("alif_melayu_"):
 		_fail("Alif's dialogue portrait should follow the skin")
 		return
+	for who in ["alif", "pau", "aisyah"]:  # every feeling falls back to a face that exists
+		for e in ["", "neutral", "happy", "angry", "scared", "curious", "sad", "surprised", "confident", "worried", "confused"]:
+			if not ResourceLoader.exists(Game.portrait_path(who, e)):
+				_fail("no portrait for %s / %s" % [who, e])
+				return
 	Game.save["skin"] = old_skin
 	if not Game.save["seen"].has("area_kampung"):
 		_fail("area intro for Kampung Jejak never shown")

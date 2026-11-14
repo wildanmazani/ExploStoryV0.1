@@ -149,15 +149,20 @@ func portrait_path(id: String, expr: String = "") -> String:
 	if base == "":
 		return ""
 	if base.ends_with("_"):
-		var e := expr if expr != "" else str(c.get("default_expr", "neutral"))
-		if id == "alif" and not save.is_empty():  # Alif talks in the outfit he wears
-			var sk := "res://assets/portraits/alif_%s_%s.png" % [str(save.get("skin", "sekolah")), e]
-			if ResourceLoader.exists(sk):
-				return sk
-		var p := "res://assets/portraits/%s%s.png" % [base, e]
-		if ResourceLoader.exists(p):
-			return p
-		return "res://assets/portraits/%s%s.png" % [base, c.get("default_expr", "neutral")]
+		# a face for each feeling (tools/make_portraits.py); a feeling not
+		# drawn yet shows the calm face, never another outfit's
+		var calm := str(c.get("default_expr", "neutral"))
+		var e := expr if expr != "" else calm
+		var tries: Array = []
+		if id == "alif" and not save.is_empty() and str(save.get("skin", "sekolah")) != "sekolah":
+			var sk := "alif_%s_" % str(save.get("skin", "sekolah"))  # Alif talks in the outfit he wears
+			tries.append_array([sk + e, sk + calm])
+		tries.append_array([base + e, base + calm])
+		for t in tries:
+			var p := "res://assets/portraits/%s.png" % t
+			if ResourceLoader.exists(p):
+				return p
+		return "res://assets/portraits/%s%s.png" % [base, calm]
 	var own := "res://assets/portraits/%s.png" % base
 	if not ResourceLoader.exists(own) and c.has("stand_in"):  # new character, art not dropped in yet
 		return "res://assets/portraits/%s.png" % str(c["stand_in"].get("portrait", base))

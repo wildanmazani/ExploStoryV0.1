@@ -119,7 +119,7 @@ func _show(ch: int) -> void:
 		card.custom_minimum_size = Vector2(118 if not big else 140, 0)
 		card.tooltip_text = str(ch_def.get("lore", "")) if met else tr("Temui tokoh ini di Misi %s") % str(ch_def.get("zon", "")).replace("_", ".")
 		var cc := UI.vbox(2)
-		var pic := UI.icon(Game.portrait_path(id), 64)  # 64 px portraits: 1:1, crisp
+		var pic := UI.icon(Game.portrait_path(id), 72)  # 24 px faces doubled: x3, crisp
 		if not met:
 			pic.modulate = Color(0, 0, 0, 0.85)
 		cc.add_child(pic)

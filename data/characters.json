@@ -95,7 +95,7 @@
   },
   "aisyah": {
     "name": "Aisyah",
-    "portrait": "rakan_aisyah",
+    "portrait": "rakan_aisyah_", "default_expr": "neutral",
     "sprite": "rakan_aisyah",
     "tokoh": false
   },
