@@ -3,7 +3,7 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
-const Glass = preload("res://scripts/ui/glass.gd")
+const Auth = preload("res://scripts/ui/auth_layout.gd")
 
 var params: Dictionary = {}
 var _name: LineEdit
@@ -21,22 +21,17 @@ func _ready() -> void:
 	UI.full(self)
 	Game.main.set_pau_visible(false)
 	var bd := TitleBackdrop.new()
-	bd.tint = Color(0.86, 0.86, 0.86)
+	bd.tint = Color(0.8, 0.8, 0.82)
 	add_child(bd)
-	add_child(Glass.shade())
-	add_child(Glass.logo(500))
-	var frame := Glass.panel()
-	var col := UI.vbox(8)
-	var title := UI.label("Jom daftar!", "Heading")
-	Glass.text(title)
-	col.add_child(title)
-	var sub := UI.label("Buat akaun untuk simpan kembara kau.", "Small")
-	Glass.text(sub)
-	col.add_child(sub)
+	add_child(Auth.logo(500))
+	var frame := UI.panel()
+	frame.custom_minimum_size = Vector2(560, 0)
+	var col := UI.vbox(10)
+	Auth.heading(col, "DAFTAR AKAUN")
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 14)
-	grid.add_theme_constant_override("v_separation", 8)
+	grid.add_theme_constant_override("v_separation", 10)
 	_name = _field(grid, "NAMA PENGGUNA", "cth: Alif")
 	_email = _field(grid, "E-MEL", "cth: alif@sekolah.edu.my")
 	_pass = _field(grid, "KATA LALUAN", "sekurang-kurangnya 6 aksara")
@@ -45,68 +40,62 @@ func _ready() -> void:
 	_pass2 = _field(grid, "SAHKAN KATA LALUAN", "")
 	_pass2.secret = true
 	_pass2.secret_character = "*"
-	col.add_child(grid)
 
 	# the profile picture now comes from Alif's outfit; ask for the negeri
 	# instead (Papan Markah ranks by negeri too)
-	var neg_row := UI.hbox(10)
-	neg_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var neg := UI.label("NEGERI", "Small")
-	Glass.text(neg)
-	neg_row.add_child(neg)
+	grid.add_child(Auth.field_label("NEGERI"))
 	_negeri = OptionButton.new()
-	_negeri.custom_minimum_size = Vector2(300, 48)
+	_negeri.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_negeri.custom_minimum_size.y = 48
 	_negeri.add_item(tr("(Pilih negeri)"))
 	for n in Game.NEGERI:
 		_negeri.add_item(n)
-	neg_row.add_child(_negeri)
-	col.add_child(neg_row)
+	grid.add_child(_negeri)
 
-	var roles := UI.hbox(30)
-	roles.alignment = BoxContainer.ALIGNMENT_CENTER
+	grid.add_child(Auth.field_label("SAYA SEORANG"))
+	var roles := UI.hbox(12)
 	var g := ButtonGroup.new()
 	var s := CheckBox.new()
 	s.text = "PELAJAR"
 	s.button_group = g
 	s.button_pressed = true
+	s.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	s.pressed.connect(func(): _role = "student")
-	Glass.link(s)
 	roles.add_child(s)
 	var t := CheckBox.new()
 	t.text = "GURU"
 	t.button_group = g
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	t.pressed.connect(func(): _role = "teacher")
-	Glass.link(t)
 	roles.add_child(t)
-	col.add_child(roles)
+	grid.add_child(roles)
+	col.add_child(grid)
 
 	_status = UI.label("", "Bad", true)
-	_status.custom_minimum_size.x = 500
-	_status.add_theme_color_override("font_shadow_color", Glass.SHADOW)
-	_status.add_theme_constant_override("shadow_offset_y", 2)
+	_status.custom_minimum_size.x = 520
+	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_status)
 	var row := UI.hbox(12)
 	var back := UI.button("« KEMBALI")
+	back.custom_minimum_size.y = 52
 	back.pressed.connect(func(): Game.goto("login"))
-	Glass.outline(back)
 	row.add_child(back)
 	_go = UI.button("DAFTAR", "Primary")
+	_go.custom_minimum_size.y = 52
 	_go.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_go.disabled = true
 	_go.pressed.connect(_submit)
-	Glass.gold(_go)
 	row.add_child(_go)
 	col.add_child(row)
 	frame.add_child(col)
-	add_child(Glass.right(frame, 560 + 40 * 2))
+	# the logo on the left, the card on the right (same as the login screen)
+	add_child(Auth.right(frame, 560 + 40 * 2))
 	if not DisplayServer.is_touchscreen_available():
 		_name.grab_focus()
 
 
 func _field(grid: GridContainer, label_text: String, ph: String) -> LineEdit:
-	var l := UI.label(label_text, "Small")
-	Glass.text(l)
-	grid.add_child(l)
+	grid.add_child(Auth.field_label(label_text))
 	var e := LineEdit.new()
 	e.placeholder_text = ph
 	e.set_meta("typing_label", label_text.capitalize())
@@ -114,8 +103,8 @@ func _field(grid: GridContainer, label_text: String, ph: String) -> LineEdit:
 		e.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_EMAIL_ADDRESS
 	elif label_text.contains("KATA LALUAN"):
 		e.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_PASSWORD
-	e.custom_minimum_size.x = 300
-	Glass.field(e)
+	e.custom_minimum_size.x = 320
+	e.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	e.text_changed.connect(func(_t): _validate())
 	grid.add_child(e)
 	return e
@@ -135,13 +124,18 @@ func _errors() -> Dictionary:
 	return e
 
 
+## the message line takes room only when it has something to say
+func _process(_delta: float) -> void:
+	_status.visible = _status.text != ""
+
+
 func _validate() -> void:
 	var e := _errors()
 	_go.disabled = not e.is_empty()
-	Glass.mark(_name, e.has("name") and _name.text != "")
-	Glass.mark(_email, e.has("email") and _email.text != "")
-	Glass.mark(_pass, e.has("pass") and _pass.text != "")
-	Glass.mark(_pass2, e.has("pass2") and _pass2.text != "")
+	_name.theme_type_variation = "Invalid" if e.has("name") and _name.text != "" else ""
+	_email.theme_type_variation = "Invalid" if e.has("email") and _email.text != "" else ""
+	_pass.theme_type_variation = "Invalid" if e.has("pass") and _pass.text != "" else ""
+	_pass2.theme_type_variation = "Invalid" if e.has("pass2") and _pass2.text != "" else ""
 	var shown := ""
 	for k in ["name", "email", "pass", "pass2"]:
 		var le: LineEdit = {"name": _name, "email": _email, "pass": _pass, "pass2": _pass2}[k]

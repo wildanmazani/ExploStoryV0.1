@@ -3,7 +3,7 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
-const Glass = preload("res://scripts/ui/glass.gd")
+const Auth = preload("res://scripts/ui/auth_layout.gd")
 
 var params: Dictionary = {}
 var _user: LineEdit
@@ -17,52 +17,41 @@ func _ready() -> void:
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("tajuk")
 	var bd := TitleBackdrop.new()
-	bd.tint = Color(0.86, 0.86, 0.86)
+	bd.tint = Color(0.8, 0.8, 0.82)
 	add_child(bd)
-	add_child(Glass.shade())
-	add_child(Glass.logo())
-	var frame := Glass.panel()
-	frame.custom_minimum_size = Vector2(470, 0)
+	add_child(Auth.logo())
+	var frame := UI.panel()
+	frame.custom_minimum_size = Vector2(480, 0)
 	var col := UI.vbox(10)
-	var title := UI.label("Selamat kembali!", "Heading")
-	Glass.text(title)
-	col.add_child(title)
-	var sub := UI.label("Log masuk untuk sambung kembara kau.", "Small")
-	Glass.text(sub)
-	col.add_child(sub)
+	Auth.heading(col, "LOG MASUK")
 
 	# signed in on this device before: one tap to carry on, or type another account below
 	if Backend.has_saved_session():
 		var who := Backend.saved_session_email()
 		var cont := UI.button(tr("TERUSKAN SEBAGAI %s") % who if who != "" else tr("TERUSKAN AKAUN TADI"), "Primary")
-		Glass.gold(cont)
 		cont.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		cont.custom_minimum_size.y = 52
 		cont.pressed.connect(func():
 			cont.disabled = true
 			_resume())
 		col.add_child(cont)
-		var other := UI.label(tr("Atau log masuk dengan akaun lain:"), "Small", true)
-		Glass.text(other)
-		other.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		other.custom_minimum_size.x = 410
-		col.add_child(other)
+		col.add_child(Auth.or_line("atau akaun lain"))
 
-	col.add_child(_lab("E-MEL ATAU NAMA PENGGUNA"))
-	var r1 := UI.hbox(8)
-	r1.add_child(UI.icon("res://assets/icons/orang.png", 40))
+	col.add_child(Auth.field_label("E-MEL ATAU NAMA PENGGUNA"))
+	var r1 := UI.hbox(10)
+	r1.add_child(UI.icon("res://assets/icons/orang.png", 36))
 	_user = LineEdit.new()
 	_user.placeholder_text = "cth: alif@sekolah.edu.my"
 	_user.set_meta("typing_label", "E-mel atau nama pengguna")
 	_user.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_EMAIL_ADDRESS
 	_user.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_user.text_changed.connect(func(_t): _validate())
-	Glass.field(_user)
 	r1.add_child(_user)
 	col.add_child(r1)
 
-	col.add_child(_lab("KATA LALUAN"))
-	var r2 := UI.hbox(8)
-	r2.add_child(UI.icon("res://assets/icons/kunci.png", 40))
+	col.add_child(Auth.field_label("KATA LALUAN"))
+	var r2 := UI.hbox(10)
+	r2.add_child(UI.icon("res://assets/icons/kunci.png", 36))
 	_pass = LineEdit.new()
 	_pass.secret = true
 	_pass.secret_character = "*"
@@ -70,7 +59,6 @@ func _ready() -> void:
 	_pass.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_PASSWORD
 	_pass.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_pass.text_changed.connect(func(_t): _validate())
-	Glass.field(_pass)
 	_pass.text_submitted.connect(func(_t): _do_login())
 	r2.add_child(_pass)
 	col.add_child(r2)
@@ -79,41 +67,32 @@ func _ready() -> void:
 	forgot.text = "Lupa kata laluan?"
 	forgot.size_flags_horizontal = Control.SIZE_SHRINK_END
 	forgot.pressed.connect(_forgot)
-	Glass.link(forgot)
 	col.add_child(forgot)
 
 	_status = UI.label("", "Bad", true)
-	_status.custom_minimum_size.x = 410
-	_status.add_theme_color_override("font_shadow_color", Glass.SHADOW)
-	_status.add_theme_constant_override("shadow_offset_y", 2)
+	_status.custom_minimum_size.x = 440
+	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_status)
 
 	_login = UI.button("LOG MASUK", "Primary")
+	_login.custom_minimum_size.y = 52
 	_login.disabled = true
 	_login.pressed.connect(_do_login)
-	Glass.gold(_login)
 	col.add_child(_login)
+	col.add_child(Auth.or_line())
 	var reg := UI.button("DAFTAR AKAUN BAHARU")
 	reg.pressed.connect(func(): Game.goto("register"))
-	Glass.outline(reg)
 	col.add_child(reg)
 	var guest := UI.button("Main sebagai Tetamu", "Flat")
 	guest.pressed.connect(_guest)
-	Glass.link(guest)
 	col.add_child(guest)
 	frame.add_child(col)
-	# the card on the right, the logo on the left (design "Kaca Senja")
-	add_child(Glass.right(frame, 470 + 64 * 2))
+	# the logo on the left, the card on the right
+	add_child(Auth.right(frame, 480 + 56 * 2))
 	if not DisplayServer.is_touchscreen_available():  # a phone opens its keyboard only on a tap
 		_user.grab_focus()
 	if not Backend.recovery.is_empty():
 		_show_recovery()
-
-
-func _lab(t: String) -> Label:
-	var l := UI.label(t, "Small")
-	Glass.text(l)
-	return l
 
 
 ## opened from the "Lupa kata laluan" e-mail: type the new password here
@@ -209,10 +188,15 @@ func _validate_keep_status() -> void:
 	_login.disabled = _user.text.strip_edges() == "" or _pass.text == ""
 
 
+## the message line takes room only when it has something to say
+func _process(_delta: float) -> void:
+	_status.visible = _status.text != ""
+
+
 func _validate() -> void:
 	_login.disabled = _user.text.strip_edges() == "" or _pass.text == ""
-	Glass.mark(_user, false)
-	Glass.mark(_pass, false)
+	_user.theme_type_variation = ""
+	_pass.theme_type_variation = ""
 	_status.text = ""
 
 
@@ -226,8 +210,8 @@ func _do_login() -> void:
 	if not r.get("ok", false):
 		_status.theme_type_variation = "Bad"
 		_status.text = str(r.get("error", "Log masuk gagal."))
-		Glass.mark(_user, true)
-		Glass.mark(_pass, true)
+		_user.theme_type_variation = "Invalid"
+		_pass.theme_type_variation = "Invalid"
 		_login.disabled = false
 		return
 	_finish(r)
