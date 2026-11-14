@@ -66,7 +66,11 @@ func _ready() -> void:
 	t.text = "GURU"
 	t.button_group = g
 	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	t.pressed.connect(func(): _role = "teacher")
+	# teacher accounts (follow the class's progress) are not ready yet
+	t.pressed.connect(func():
+		s.button_pressed = true
+		_role = "student"
+		Main.toast(tr("Akaun Guru akan datang! Guru boleh pantau prestasi pelajar.")))
 	roles.add_child(t)
 	grid.add_child(roles)
 	col.add_child(grid)

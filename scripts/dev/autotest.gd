@@ -474,6 +474,15 @@ func _run() -> void:
 	Game.goto("register")
 	await wait_screen("register")
 	await shot("register")
+	# teacher accounts are "akan datang": the GURU box says so and stays on Pelajar
+	var guru := find_button(hosted(), "GURU")
+	guru.button_pressed = true
+	guru.pressed.emit()
+	await wait(0.5)
+	await shot("register_guru_akan_datang")
+	if guru.button_pressed or hosted()._role != "student":
+		_fail("GURU should stay unpicked while teacher accounts are coming soon")
+		return
 	Game.goto("login")
 	await wait_screen("login")
 	hosted()._start_guest()
