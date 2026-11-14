@@ -3,6 +3,8 @@ extends Control
 
 const UI = preload("res://scripts/ui/ui.gd")
 const TitleBackdrop = preload("res://scripts/ui/title_backdrop.gd")
+const Glass = preload("res://scripts/ui/glass.gd")
+const LOGO := "res://assets/ui/logo_explostory.png"
 
 var params: Dictionary = {}
 var _user: LineEdit
@@ -16,29 +18,37 @@ func _ready() -> void:
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("tajuk")
 	var bd := TitleBackdrop.new()
-	bd.tint = Color(0.75, 0.78, 0.8)
+	bd.tint = Color(0.86, 0.86, 0.86)
 	add_child(bd)
-	var frame := UI.panel()
-	frame.custom_minimum_size = Vector2(520, 0)
-	var col := UI.vbox(12)
-	var title := UI.label("LOG MASUK", "Heading")
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(_shade())
+	_logo()
+	var frame := Glass.panel()
+	frame.custom_minimum_size = Vector2(470, 0)
+	var col := UI.vbox(10)
+	var title := UI.label("Selamat kembali!", "Heading")
+	Glass.text(title)
 	col.add_child(title)
+	var sub := UI.label("Log masuk untuk sambung kembara kau.", "Small")
+	Glass.text(sub)
+	col.add_child(sub)
 
 	# signed in on this device before: one tap to carry on, or type another account below
 	if Backend.has_saved_session():
 		var who := Backend.saved_session_email()
 		var cont := UI.button(tr("TERUSKAN SEBAGAI %s") % who if who != "" else tr("TERUSKAN AKAUN TADI"), "Primary")
+		Glass.gold(cont)
+		cont.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		cont.pressed.connect(func():
 			cont.disabled = true
 			_resume())
 		col.add_child(cont)
 		var other := UI.label(tr("Atau log masuk dengan akaun lain:"), "Small", true)
+		Glass.text(other)
 		other.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		other.custom_minimum_size.x = 480
+		other.custom_minimum_size.x = 410
 		col.add_child(other)
 
-	col.add_child(UI.label("E-MEL ATAU NAMA PENGGUNA"))
+	col.add_child(_lab("E-MEL ATAU NAMA PENGGUNA"))
 	var r1 := UI.hbox(8)
 	r1.add_child(UI.icon("res://assets/icons/orang.png", 40))
 	_user = LineEdit.new()
@@ -47,10 +57,11 @@ func _ready() -> void:
 	_user.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_EMAIL_ADDRESS
 	_user.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_user.text_changed.connect(func(_t): _validate())
+	Glass.field(_user)
 	r1.add_child(_user)
 	col.add_child(r1)
 
-	col.add_child(UI.label("KATA LALUAN"))
+	col.add_child(_lab("KATA LALUAN"))
 	var r2 := UI.hbox(8)
 	r2.add_child(UI.icon("res://assets/icons/kunci.png", 40))
 	_pass = LineEdit.new()
@@ -60,6 +71,7 @@ func _ready() -> void:
 	_pass.virtual_keyboard_type = LineEdit.KEYBOARD_TYPE_PASSWORD
 	_pass.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_pass.text_changed.connect(func(_t): _validate())
+	Glass.field(_pass)
 	_pass.text_submitted.connect(func(_t): _do_login())
 	r2.add_child(_pass)
 	col.add_child(r2)
@@ -68,31 +80,89 @@ func _ready() -> void:
 	forgot.text = "Lupa kata laluan?"
 	forgot.size_flags_horizontal = Control.SIZE_SHRINK_END
 	forgot.pressed.connect(_forgot)
+	Glass.link(forgot)
 	col.add_child(forgot)
 
 	_status = UI.label("", "Bad", true)
-	_status.custom_minimum_size.x = 480
+	_status.custom_minimum_size.x = 410
+	_status.add_theme_color_override("font_shadow_color", Glass.SHADOW)
+	_status.add_theme_constant_override("shadow_offset_y", 2)
 	col.add_child(_status)
 
 	_login = UI.button("LOG MASUK", "Primary")
 	_login.disabled = true
 	_login.pressed.connect(_do_login)
+	Glass.gold(_login)
 	col.add_child(_login)
 	var reg := UI.button("DAFTAR AKAUN BAHARU")
 	reg.pressed.connect(func(): Game.goto("register"))
+	Glass.outline(reg)
 	col.add_child(reg)
 	var guest := UI.button("Main sebagai Tetamu", "Flat")
 	guest.pressed.connect(_guest)
+	Glass.link(guest)
 	col.add_child(guest)
 	frame.add_child(col)
-	add_child(UI.center(frame))
-	var logo := UI.label("EXPLO-STORY", "Logo")
-	logo.position = Vector2(30, 20)
-	add_child(logo)
+	# the card on the right, the logo on the left (design "Kaca Senja")
+	var right := CenterContainer.new()
+	right.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	right.offset_left = -470 - 64 * 2
+	right.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	right.add_child(frame)
+	add_child(right)
 	if not DisplayServer.is_touchscreen_available():  # a phone opens its keyboard only on a tap
 		_user.grab_focus()
 	if not Backend.recovery.is_empty():
 		_show_recovery()
+
+
+func _lab(t: String) -> Label:
+	var l := UI.label(t, "Small")
+	Glass.text(l)
+	return l
+
+
+## darker towards the right so the glass card stands out
+func _shade() -> TextureRect:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.35, 1.0])
+	g.colors = PackedColorArray([Color(0.08, 0.06, 0.04, 0), Color(0.08, 0.06, 0.04, 0), Color(0.08, 0.06, 0.04, 0.6)])
+	var gt := GradientTexture2D.new()
+	gt.gradient = g
+	gt.width = 256
+	gt.height = 4
+	var r := TextureRect.new()
+	r.texture = gt
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_SCALE
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	return r
+
+
+## the EXPLO-STORY logo (same picture as the title screen) and the tagline
+func _logo() -> void:
+	var box := UI.vbox(6)
+	box.position = Vector2(56, 70)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if ResourceLoader.exists(LOGO):
+		var logo := TextureRect.new()
+		logo.name = "Logo"
+		logo.texture = load(LOGO)
+		logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		logo.custom_minimum_size = Vector2(540, 540.0 * 224.0 / 720.0)
+		logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(logo)
+	else:
+		box.add_child(UI.label("EXPLO-STORY", "Logo"))
+	var tag := UI.label("Terokai Sejarah & Warisan Malaysia", "Heading")
+	Glass.text(tag)
+	tag.add_theme_constant_override("shadow_offset_y", 3)
+	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tag.custom_minimum_size.x = 540
+	box.add_child(tag)
+	add_child(box)
 
 
 ## opened from the "Lupa kata laluan" e-mail: type the new password here

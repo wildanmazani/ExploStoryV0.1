@@ -1,4 +1,5 @@
-"""Web loading screen: Alif runs along the loading bar after a bouncing Pau.
+"""Web loading screen: Alif runs along the loading bar, Pau hopping after him
+(as in the game, where Pau follows one tile behind).
 
 Godot's web page shows a plain bar while the game downloads. This writes a
 small block (CSS + JS + the sprites as data URIs) into html/head_include in
@@ -18,7 +19,7 @@ from PIL import Image
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PRESETS = ROOT / "export_presets.cfg"
 FRAMES = [ROOT / f"assets/characters32/alif_walk/alif_walk_east_{i}.png" for i in range(6)]
-PAU = ROOT / "assets/characters32/pau/pau_small.png"
+PAU = ROOT / "assets/characters32/pau/pau_kaki.png"  # the Pau that follows Alif in game
 LOGO = ROOT / "assets/ui/logo_explostory.png"  # tools/gen_logo.py, from the app icon
 # KPT, DICE 4.0 and Cavan Tech, in that order, on a white strip at the bottom
 PARTNERS = [ROOT / f"assets/ui/logo_{k}.png" for k in ("kpt", "dice", "cavan_tech")]
@@ -51,7 +52,9 @@ def sheet() -> tuple[str, int, int]:
 
 def block() -> str:
     alif, fw, fh = sheet()
-    pau = data_uri(Image.open(PAU).convert("RGBA"))
+    pau_img = Image.open(PAU).convert("RGBA")
+    pau = data_uri(pau_img)
+    pw = pau_img.width * SCALE  # same scale as Alif, so the sizes match the game
     logo = logo_uri()
     rakan = "".join(f'<img src="{logo_uri(p, 112)}" alt="">' for p in PARTNERS)
     n = len(FRAMES)
@@ -63,21 +66,21 @@ def block() -> str:
 #muat.habis{{opacity:0}}
 #muat .logo{{width:min(620px,86vw);aspect-ratio:720/224;background:url({logo}) center/contain no-repeat;filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));margin-bottom:clamp(30px,7vh,70px);animation:timbul 2.4s ease-in-out infinite alternate}}
 @keyframes timbul{{from{{transform:translateY(0)}}to{{transform:translateY(-8px)}}}}
-#muat .jalan{{position:relative;width:min(640px,80vw);height:{ah + 30}px}}
+#muat .jalan{{position:relative;width:min(560px,66vw);height:{ah + 30}px}}
 #muat .rel{{position:absolute;left:0;right:0;bottom:0;height:18px;border-radius:10px;background:#3a2a1c;border:3px solid #c99a4a;box-shadow:inset 0 3px 0 rgba(0,0,0,.35);overflow:hidden}}
 #muat .isi{{height:100%;width:0;background:repeating-linear-gradient(-45deg,#f3c64b 0 14px,#e8a93a 14px 28px);background-size:40px 100%;animation:jalur .8s linear infinite}}
 @keyframes jalur{{to{{background-position:40px 0}}}}
 #muat .alif{{position:absolute;left:0;bottom:14px;width:{aw}px;height:{ah}px;margin-left:-{aw // 2}px;background:url({alif}) 0 0/{aw * n}px {ah}px;image-rendering:pixelated;animation:lari .6s steps({n}) infinite}}
 @keyframes lari{{to{{background-position:-{aw * n}px 0}}}}
-#muat .pau{{position:absolute;left:0;bottom:22px;width:48px;height:48px;margin-left:{aw // 2}px;background:url({pau}) 0 0/48px 48px;image-rendering:pixelated;animation:lompat .45s ease-in-out infinite alternate}}
-@keyframes lompat{{from{{transform:translateY(0) scale(1.08,.92)}}to{{transform:translateY(-34px) scale(.95,1.05)}}}}
+#muat .pau{{position:absolute;left:0;bottom:16px;width:{pw}px;height:{pw}px;margin-left:-{aw // 2 + pw + 6}px;background:url({pau}) 0 0/{pw}px {pw}px;image-rendering:pixelated;transform-origin:50% 100%;animation:lompat .3s ease-in-out infinite alternate}}
+@keyframes lompat{{from{{transform:translateY(0) scale(1.12,.88)}}to{{transform:translateY(-16px) scale(.94,1.06)}}}}
 #muat .peratus{{margin-top:14px;font-weight:700;font-size:18px;color:#f3c64b}}
 #muat .rakan{{position:absolute;bottom:clamp(12px,3vh,28px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:clamp(14px,3vw,34px);background:#fff;border-radius:14px;padding:8px clamp(12px,2.5vw,26px);box-shadow:0 6px 18px rgba(0,0,0,.35)}}
 #muat .rakan img{{height:clamp(34px,7vh,56px);width:auto;display:block}}
 #muat .tip{{margin-top:10px;font-size:clamp(14px,2.2vw,18px);opacity:.85;min-height:1.4em;transition:opacity .4s;text-align:center;padding:0 16px}}
 """
     js = """
-(function(){var RAKAN='__RAKAN__';var TIPS=['Alif tengah kejar Pau...','Tip: Klik Pau bila buntu, dia bagi petunjuk.','Tip: Jawab betul cubaan pertama, dapat lebih EXP.','Tip: Buka Beg Alif untuk Jalan Pintas.','Tip: Gelanggang: jawab cepat, serang kuat!'];
+(function(){var RAKAN='__RAKAN__';var TIPS=['Pau tengah kejar Alif...','Tip: Klik Pau bila buntu, dia bagi petunjuk.','Tip: Jawab betul cubaan pertama, dapat lebih EXP.','Tip: Buka Beg Alif untuk Jalan Pintas.','Tip: Gelanggang: jawab cepat, serang kuat!'];
 function go(){var d=document,m=d.createElement('div');m.id='muat';m.innerHTML='<div class="logo" role="img" aria-label="EXPLO-STORY"></div><div class="jalan"><div class="rel"><div class="isi"></div></div><div class="alif"></div><div class="pau"></div></div><div class="peratus">0%</div><div class="tip"></div><div class="rakan">' + RAKAN + '</div>';d.body.appendChild(m);
 var isi=m.querySelector('.isi'),alif=m.querySelector('.alif'),pau=m.querySelector('.pau'),per=m.querySelector('.peratus'),tip=m.querySelector('.tip'),t=0,shown=0,cur=0,fake=0,done=0;
 tip.textContent=TIPS[0];setInterval(function(){tip.style.opacity=0;setTimeout(function(){t=(t+1)%TIPS.length;tip.textContent=TIPS[t];tip.style.opacity=.85},400)},2800);

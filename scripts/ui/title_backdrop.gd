@@ -1,5 +1,7 @@
 extends Control
-## The game's opening backdrop (title, login, register). With the PixelLab
+## The game's opening backdrop (title, login, register): the Balai
+## Penghadapan of the Melaka palace (picked by the team, 2026-11-14). The older
+## hill scene is kept below as a fallback. With the PixelLab
 ## layers in assets/backgrounds/tajuk/ it is a slow parallax scene: sky, far
 ## Melaka skyline, kampung hills, then the foreground (tree, Alif and Pau on
 ## the hill). Each layer is drawn at 4x with nearest filtering so the pixels
@@ -7,6 +9,7 @@ extends Control
 ## Without the layers it shows the one-piece PixelLab scene (tajuk_penuh.png),
 ## else the old picture. Warm pollen drifts in front either way.
 
+const BALAI := "res://assets/backgrounds/bg_zon1_3_balai_penghadapan.png"
 const OLD := "res://assets/backgrounds/bg_skrin_tajuk.png"
 const FULL := "res://assets/backgrounds/tajuk/tajuk_penuh.png"
 const LAYERS := [
@@ -37,9 +40,9 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	modulate = tint
 	_motes = Motes.new()
-	if not layered():
+	if ResourceLoader.exists(BALAI) or not layered():
 		var r := TextureRect.new()
-		r.texture = load(FULL if ResourceLoader.exists(FULL) else OLD)
+		r.texture = load(BALAI if ResourceLoader.exists(BALAI) else FULL if ResourceLoader.exists(FULL) else OLD)
 		r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
