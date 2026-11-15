@@ -192,6 +192,9 @@ func _sync(e: Dictionary) -> void:
 		# 2D offsets count down from the top, a Sprite3D's up from the bottom
 		card.offset = Vector2(src.offset.x, -src.offset.y - (0.0 if src.centered else float(tex.get_height())))
 	card.flip_h = src.flip_h
+	if src is Sprite2D:
+		card.region_enabled = src.region_enabled
+		card.region_rect = src.region_rect
 	card.pixel_size = K * src.scale.x
 	var ground: float = src.get_meta("ground_y", src.position.y)
 	var order: float = src.get_meta("order", 0.0)

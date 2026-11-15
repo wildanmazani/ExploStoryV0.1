@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bn4yrbyu6pj6q"
-path="res://.godot/imported/wau.png-8fb78703c58d40980a60209b892f5361.ctex"
+uid="uid://okvndctwi8ba"
+path="res://.godot/imported/dam.png-e9107a23c31a397dc43d404c40e06d46.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/warisan/wau.png"
-dest_files=["res://.godot/imported/wau.png-8fb78703c58d40980a60209b892f5361.ctex"]
+source_file="res://assets/warisan/dam.png"
+dest_files=["res://.godot/imported/dam.png-e9107a23c31a397dc43d404c40e06d46.ctex"]
 
 [params]
 

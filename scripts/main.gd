@@ -95,6 +95,8 @@ func _ready() -> void:
 		add_child(load("res://scripts/dev/autotest.gd").new())
 	if "--warisan-test" in OS.get_cmdline_user_args():
 		add_child(load("res://scripts/dev/warisan_test.gd").new())
+	if "--warisan-input" in OS.get_cmdline_user_args():
+		add_child(load("res://scripts/dev/warisan_input_test.gd").new())
 
 
 ## with on-screen controls (Tetapan > Kawalan) the bottom corners belong to

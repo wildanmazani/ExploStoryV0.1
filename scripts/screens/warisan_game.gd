@@ -23,8 +23,13 @@ func setup_game(background: Color) -> void:
 	_auto = bool(params.get("auto", false))
 	_questions = WarisanRules.questions()
 	_grass = background
+	# clicks on the playfield are the game's (_unhandled_input): nothing behind it may swallow them
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if get_parent() is Control:
+		(get_parent() as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_bg = ColorRect.new()
 	_bg.color = background
+	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	UI.full(_bg)
 	add_child(_bg)
 

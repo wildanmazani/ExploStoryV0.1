@@ -11,8 +11,8 @@ const GAMES := [
 		"desc": "Tarik Pau di atas upih pinang. Ikut rentak, jangan sampai dia tergolek!"},
 	{"id": "gasing", "icon": "gasing", "name": "Gasing",
 		"desc": "Lilit, lempar, dan biar gasing uri paling lama. Atau pangkah gasing lawan."},
-	{"id": "wau", "icon": "wau", "name": "Wau Bulan",
-		"desc": "Bina wau, kemudian kawal talinya ikut angin Pantai Timur."},
+	{"id": "dam", "icon": "dam", "name": "Dam Haji",
+		"desc": "Dam Melayu di papan lapan petak. Makan buah lawan, dan jadikan buah kau haji."},
 	{"id": "raga", "icon": "bola_raga", "name": "Sepak Raga",
 		"desc": "Timang bola rotan dalam bulatan. Berapa kali sebelum jatuh?"},
 ]

@@ -43,7 +43,8 @@ var _alif: AnimatedSprite2D
 var _pau: Sprite2D
 var _upih: Array = []       ## [back, front]: the rider sits between them
 var _r_puller: AnimatedSprite2D
-var _r_rider: AnimatedSprite2D
+var _r_rider: Sprite2D      ## the rival rider: seated, so only from the waist up (the scoop hides the rest)
+var _r_seated := Rect2()
 var _r_upih: Array = []
 var _crowd: Array[AnimatedSprite2D] = []
 var _hud: Control
@@ -72,7 +73,13 @@ func _ready() -> void:
 		x += 150.0 + 40.0 * ((n * 7) % 3)
 		n += 1
 	_r_upih = [_upih_sprite("belakang")]
-	_r_rider = _person("rakan_daniel", 3.0)
+	_r_rider = Sprite2D.new()
+	_r_rider.texture = CharacterFrames.build("rakan_daniel", false).get_frame_texture("idle_east", 0)
+	_r_rider.scale = Vector2(3, 3)
+	var body := _r_rider.texture.get_image().get_used_rect()
+	_r_seated = Rect2(body.position.x, body.position.y, body.size.x, roundf(body.size.y * 0.6))
+	_r_rider.region_rect = _r_seated
+	_track.add_child(_r_rider)
 	_r_upih.append(_upih_sprite("depan"))
 	_r_puller = _person("rakan_ravi", 3.4)
 	_upih = [_upih_sprite("belakang")]
@@ -395,17 +402,18 @@ func _place() -> void:
 	var fast: bool = me["boost"] > 0.0 and _alif.sprite_frames.has_animation("run_east")
 	_pose(_alif, _upih, Vector2(me["x"], LANE_ME), moving, me["fallen"] > 0.0, maxf(me["v"], 60.0) / 150.0, fast)
 	var seat: Vector2 = _upih[0].position + Vector2(-34, -2)   # the middle of the scoop
-	_pau.position = seat + Vector2(2, 4)
+	_pau.position = seat + Vector2(2, 12)   # low in the scoop: its near wall is drawn over him
 	_pau.rotation = sin(time * 15.0) * 0.45 * float(me["wobble"])
 	if me["fallen"] > 0.0:   # on his side on the track, behind the upih
 		_pau.position = seat + Vector2(-96, 12)
 		_pau.rotation = -PI / 2.0
 	var r_moving: bool = rival["fallen"] <= 0.0 and state == "main"
 	_pose(_r_puller, _r_upih, Vector2(rival["x"], LANE_RIVAL), r_moving, rival["fallen"] > 0.0, 1.0, false)
-	_r_rider.position = _r_upih[0].position + Vector2(-34, 16)
+	_r_rider.region_enabled = rival["fallen"] <= 0.0
+	_r_rider.position = _r_upih[0].position + Vector2(-32, 16.0 - _r_seated.size.y * 1.5)   # the waist under the near rim
 	_r_rider.rotation = 0.0
-	if rival["fallen"] > 0.0:
-		_r_rider.position = _r_upih[0].position + Vector2(-134, 4)
+	if rival["fallen"] > 0.0:   # rolled off: all of him, on his side behind the upih
+		_r_rider.position = _r_upih[0].position + Vector2(-134, -4)
 		_r_rider.rotation = -PI / 2.0
 
 

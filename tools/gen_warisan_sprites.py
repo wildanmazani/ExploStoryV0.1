@@ -83,21 +83,17 @@ def papan_pesta():
     return outline(im)
 
 
-def wau():
-    """Wau Bulan: the crescent under a rounded wing, tassels on the tail"""
+def dam():
+    """a draughts board from above, a few buah on it (Dam Haji)"""
     im, d = canvas(32, 32)
-    d.pieslice([3, 1, 28, 22], 180, 360, fill=RED)       # wings
-    d.polygon([(3, 11), (28, 11), (16, 17)], fill=RED)
-    d.pieslice([7, 4, 24, 18], 180, 360, fill=GOLD)
-    d.polygon([(9, 11), (22, 11), (16, 15)], fill=GOLD)
-    d.ellipse([13, 6, 18, 11], fill=RED_D)
-    d.pieslice([8, 13, 23, 28], 0, 180, fill=BLUE)        # the moon
-    d.pieslice([11, 12, 20, 23], 0, 180, fill=(0, 0, 0, 0))
-    d.rectangle([15, 2, 16, 26], fill=WOOD_D)             # spine
-    d.line([3, 11, 1, 14], fill=GREEN)
-    d.line([28, 11, 30, 14], fill=GREEN)
-    d.line([15, 27, 14, 31], fill=GOLD_D)
-    d.line([16, 27, 17, 31], fill=GOLD_D)
+    d.rectangle([1, 1, 30, 30], fill=WOOD_D)
+    for r in range(4):
+        for c in range(4):
+            dark = (r + c) % 2 == 1
+            d.rectangle([4 + c * 6, 4 + r * 6, 9 + c * 6, 9 + r * 6], fill=WOOD if dark else CREAM)
+    for (r, c, col, shade) in ((0, 1, RED, RED_D), (1, 2, RED, RED_D), (2, 1, GOLD, GOLD_D), (3, 2, GOLD, GOLD_D), (3, 0, GOLD, GOLD_D)):
+        d.ellipse([4 + c * 6, 4 + r * 6, 9 + c * 6, 9 + r * 6], fill=shade)
+        d.ellipse([5 + c * 6, 4 + r * 6, 8 + c * 6, 7 + r * 6], fill=col)
     return outline(im)
 
 
@@ -185,18 +181,6 @@ def upih():
     return im
 
 
-def awan_soalan():
-    """a little cloud with a question in it (Wau Bulan)"""
-    im, d = canvas(40, 26)
-    for box in ([2, 10, 18, 23], [10, 3, 28, 22], [20, 8, 37, 23], [6, 14, 34, 24]):
-        d.ellipse(box, fill=WHITE)
-    d.ellipse([8, 17, 32, 24], fill=(226, 236, 246, 255))
-    for x, y in ((17, 8), (18, 7), (19, 7), (20, 7), (21, 8), (21, 9), (20, 10), (19, 11), (19, 12), (19, 15)):
-        d.point((x, y), fill=BLUE_D)
-        d.point((x + 1, y), fill=BLUE_D)
-    return outline(im)
-
-
 def bola_bayang():
     """a soft round shadow (Sepak Raga)"""
     im, d = canvas(16, 8)
@@ -229,8 +213,8 @@ def hati():
 
 if __name__ == "__main__":
     save(papan_pesta(), "assets/objects/papan_pesta.png")
-    for name, fn in (("wau", wau), ("gasing", gasing), ("bola_raga", bola_raga), ("upih", upih),
+    for name, fn in (("dam", dam), ("gasing", gasing), ("bola_raga", bola_raga), ("upih", upih),
                      ("galah", galah), ("hati", hati),
                      ("upih_belakang", upih_belakang), ("upih_depan", upih_depan),
-                     ("awan_soalan", awan_soalan), ("bola_bayang", bola_bayang)):
+                     ("bola_bayang", bola_bayang)):
         save(fn(), "assets/warisan/%s.png" % name)

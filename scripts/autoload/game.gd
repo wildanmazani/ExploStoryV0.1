@@ -32,7 +32,7 @@ const SCREENS := {
 	"galah": "res://scripts/screens/galah_panjang.gd",
 	"upih": "res://scripts/screens/tarik_upih.gd",
 	"gasing": "res://scripts/screens/gasing.gd",
-	"wau": "res://scripts/screens/wau_bulan.gd",
+	"dam": "res://scripts/screens/dam_haji.gd",
 	"raga": "res://scripts/screens/sepak_raga.gd",
 }
 

@@ -59,6 +59,16 @@ func _run() -> void:
 				await _shot("teka_teki_%d" % n)
 			get_tree().quit(0)
 			return
+		if arg == "--warisan-shot=raga-jatuh":   # nobody kicks: the ball on the ground, twice
+			Game.goto("raga", {"level": 1})
+			await _wait(2.0)
+			var rg := _screen()
+			for want in [0.12, 0.45, 0.9]:
+				while not (rg.state == "jatuh" and rg.drop_t >= want):
+					await get_tree().process_frame
+				await _shot("jatuh")
+			get_tree().quit(0)
+			return
 		if arg.begins_with("--warisan-shot="):
 			Game.goto(arg.trim_prefix("--warisan-shot="), {"auto": true, "level": 1})
 			for i in 4:
@@ -154,28 +164,23 @@ func _run() -> void:
 		return _fail("Gasing was not counted")
 	result += " | gasing won=%s %d-%d" % [gs.won, gs.score[0], gs.score[1]]
 
-	Game.goto("wau", {"auto": true, "level": 0})
-	await _wait(2.0)
-	var wb := _screen()
-	if wb == null or wb.get("band") == null:
-		return _fail("Wau Bulan did not open")
+	Game.goto("dam", {"auto": true, "level": 0})
+	await _wait(2.5)
+	var dm := _screen()
+	if dm == null or dm.get("board") == null:
+		return _fail("Dam Haji did not open")
+	await _shot("dam_1")
 	t = 0.0
-	shown = 0
-	while wb.state != "tamat" and t < 120.0:
+	while dm.state != "tamat" and t < 120.0:
 		await _wait(0.5)
 		t += 0.5
-		if (shown == 0 and wb.time > 5.0) or (shown == 1 and wb.state == "soalan"):
-			shown += 1
-			await _shot("wau_%d" % shown)
-	if wb.state != "tamat":
-		return _fail("Wau Bulan did not end in 120 s (held=%.1f lives=%d)" % [wb.held, wb.lives])
+	if dm.state != "tamat":
+		return _fail("Dam Haji did not end in 120 s (%d-%d, %s)" % [dm.count(1), dm.count(-1), dm.state])
 	await _wait(0.5)
-	await _shot("wau_tamat")
-	if not wb.won:
-		return _fail("the bot lost Wau Bulan on Mudah (held %.1f s, %d lives)" % [wb.held, wb.lives])
-	if int(Game.save["warisan"]["wau"]["main"]) != 1:
-		return _fail("Wau Bulan was not counted")
-	result += " | wau won=%s time=%.1f right=%d" % [wb.won, wb.time, wb.right]
+	await _shot("dam_tamat")
+	if int(Game.save["warisan"]["dam"]["main"]) != 1:
+		return _fail("Dam Haji was not counted")
+	result += " | dam won=%s %d-%d" % [dm.won, dm.count(1), dm.count(-1)]
 
 	Game.goto("raga", {"auto": true, "level": 0})
 	await _wait(2.0)

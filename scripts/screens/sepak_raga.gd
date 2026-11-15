@@ -26,7 +26,9 @@ const ASK_EVERY := 5
 const TO_ALIF := 0.45               ## how often a classmate passes to Alif
 
 var level := 1
-var state := "pilih"      ## pilih, main, servis (a new ball is coming), soalan, tamat
+var state := "pilih"      ## pilih, main, servis (a new ball is coming), jatuh (the ball is on the ground), soalan, tamat
+var drop_t := 0.0         ## seconds since the ball hit the ground
+var drop_dir := Vector2.DOWN
 var ball := {}            ## {from, to, t, T}: a pass between two players
 var timang := 0
 var kicks := 0            ## Alif's own
@@ -214,7 +216,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	_field.queue_redraw()
 	_hud.queue_redraw()
-	_kick.visible = state in ["main", "servis"]
+	_kick.visible = state in ["main", "servis", "jatuh"]
 	_hearts.visible = state != "pilih"
 	for i in LIVES:
 		_hearts.get_child(i).modulate.a = 1.0 if i < lives else 0.2
@@ -233,14 +235,13 @@ func _process(delta: float) -> void:
 		if ball["to"] == 0:
 			if _auto and ball["T"] - ball["t"] <= 0.03:
 				kick()
-			elif ball["t"] > ball["T"] + WINDOW[level]:   # nobody kicked it
+			elif ball["t"] > ball["T"] + WINDOW[level]:   # nobody kicked it: it hits the ground
 				lives -= 1
+				state = "jatuh"
+				drop_t = 0.0
+				drop_dir = Vector2(randf_range(-0.8, 0.8), 1.0).normalized()
 				Sfx.play("gedebuk")
 				Game.toast(tr("Bola jatuh!"), Color("e0705f"))
-				if lives <= 0:
-					_finish(false)
-				else:
-					_serve(1.2)
 		elif ball["t"] >= ball["T"]:   # a classmate: to Alif, or on round the ring
 			var from: int = ball["to"]
 			var to := 0
@@ -249,11 +250,23 @@ func _process(delta: float) -> void:
 				others.erase(from)
 				to = others.pick_random()
 			_pass(from, to)
+	elif state == "jatuh":   # it bounces, rolls off, everybody looks; then a new ball
+		drop_t += delta
+		if drop_t > 1.5:
+			if lives <= 0:
+				_finish(false)
+			else:
+				_serve(0.6)
+	_field.position = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * 7.0 * maxf(0.0, 1.0 - drop_t / 0.3) if state == "jatuh" else Vector2.ZERO
+	_people[0].modulate = Color(1.0, 0.6, 0.55) if state == "jatuh" and drop_t < 0.5 else Color.WHITE
 	_place()
 
 
 ## where the ball is on the ground, and how high
 func ball_at() -> Array:
+	if state == "jatuh":   # smaller and smaller bounces, rolling away from Alif
+		var roll := 86.0 * (1.0 - exp(-2.4 * drop_t))
+		return [spot(0) + drop_dir * roll, 62.0 * exp(-2.6 * drop_t) * absf(sin(drop_t * 9.5))]
 	var u := clampf(float(ball["t"]) / float(ball["T"]), 0.0, 1.15)
 	var p: Vector2 = spot(ball["from"]).lerp(spot(ball["to"]), minf(u, 1.0))
 	var z := maxf(0.0, 4.0 * PEAK * u * (1.0 - u)) + 22.0 * (1.0 - clampf((u - 1.0) / 0.15, 0.0, 1.0))
@@ -272,10 +285,10 @@ func _place() -> void:
 	_shadow.position = at + Vector2(0, -4)
 	_ball.position = at + Vector2(0, -float(b[1]))
 	_ball.set_meta("ground_y", at.y + 2.0)
-	_ball.rotation = time * 7.0
+	_ball.rotation = time * 7.0 if state != "jatuh" else _ball.rotation + 9.0 * exp(-2.4 * drop_t) * get_process_delta_time()
 	var k := 2.6 + float(b[1]) / PEAK * (0.0 if stage else 1.4)   # nearer the eye when it is high (2D only)
 	_ball.scale = Vector2(k, k)
-	_ball.visible = state in ["main", "servis", "soalan"]
+	_ball.visible = state in ["main", "servis", "soalan", "jatuh"]
 	_shadow.visible = _ball.visible and stage == null
 
 
@@ -325,6 +338,19 @@ class Padang extends Node2D:
 			draw_arc(feet, 24.0, 0, TAU, 32, Color("58b84c") if good else Color(1, 1, 1, 0.8), 5.0, true)
 			if off > 0.0:
 				draw_arc(feet, 24.0 + off * 110.0, 0, TAU, 40, Color("ffd64d"), 4.0, true)
+		if game.state == "jatuh":   # dust where it landed, and a puff where it rolls
+			var hit: Vector2 = game.spot(0) + Vector2(0, -4)
+			var t: float = game.drop_t
+			if t < 0.7:
+				var k := t / 0.7
+				draw_arc(hit, 14.0 + 70.0 * k, 0, TAU, 40, Color(0.96, 0.9, 0.76, 0.85 * (1.0 - k)), 7.0 * (1.0 - k) + 1.0, true)
+				for i in 9:
+					var a := TAU * i / 9.0 + 0.4
+					draw_circle(hit + Vector2(cos(a), sin(a) * 0.7) * (16.0 + 62.0 * k), 9.0 * (1.0 - k) + 2.0, Color(0.93, 0.85, 0.68, 0.7 * (1.0 - k)))
+			var now: Array = game.ball_at()
+			if float(now[1]) < 6.0 and t > 0.25:
+				for i in 3:
+					draw_circle(now[0] + Vector2(-8.0 + i * 8.0, 3.0), 5.0, Color(0.93, 0.85, 0.68, 0.45))
 
 
 class Hud extends Control:
