@@ -185,6 +185,25 @@ def upih():
     return im
 
 
+def awan_soalan():
+    """a little cloud with a question in it (Wau Bulan)"""
+    im, d = canvas(40, 26)
+    for box in ([2, 10, 18, 23], [10, 3, 28, 22], [20, 8, 37, 23], [6, 14, 34, 24]):
+        d.ellipse(box, fill=WHITE)
+    d.ellipse([8, 17, 32, 24], fill=(226, 236, 246, 255))
+    for x, y in ((17, 8), (18, 7), (19, 7), (20, 7), (21, 8), (21, 9), (20, 10), (19, 11), (19, 12), (19, 15)):
+        d.point((x, y), fill=BLUE_D)
+        d.point((x + 1, y), fill=BLUE_D)
+    return outline(im)
+
+
+def bola_bayang():
+    """a soft round shadow (Sepak Raga)"""
+    im, d = canvas(16, 8)
+    d.ellipse([1, 1, 14, 6], fill=(0, 0, 0, 90))
+    return im
+
+
 def galah():
     """two bamboo poles crossed: the lines of the court"""
     im, d = canvas(32, 32)
@@ -212,5 +231,6 @@ if __name__ == "__main__":
     save(papan_pesta(), "assets/objects/papan_pesta.png")
     for name, fn in (("wau", wau), ("gasing", gasing), ("bola_raga", bola_raga), ("upih", upih),
                      ("galah", galah), ("hati", hati),
-                     ("upih_belakang", upih_belakang), ("upih_depan", upih_depan)):
+                     ("upih_belakang", upih_belakang), ("upih_depan", upih_depan),
+                     ("awan_soalan", awan_soalan), ("bola_bayang", bola_bayang)):
         save(fn(), "assets/warisan/%s.png" % name)

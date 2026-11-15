@@ -53,6 +53,7 @@ var _pointer := false
 var _dir := 1.0
 var _mood := 0.0
 var _chasing := false
+var _tops3: Array = []   ## HD-2D: the two tops as 3D things [Alif's, the rival's]
 
 
 func _ready() -> void:
@@ -70,6 +71,11 @@ func _ready() -> void:
 		s.position = CENTRE + Vector2(cos(a) * (R + 84.0), sin(a) * (R + 52.0) + 30.0)
 		s.play("idle_south" if sin(a) < -0.5 else ("idle_east" if cos(a) < 0.0 else "idle_west"))
 		_ring.add_child(s)
+	var painter := Ring.new()
+	painter.game = self
+	painter.ground = true
+	if make_stage(_ring, painter, Rect2(CENTRE - Vector2(R + 30.0, R + 30.0), Vector2(R + 30.0, R + 30.0) * 2.0)):
+		_dress_stage()
 	_hud = Hud.new()
 	_hud.game = self
 	UI.full(_hud)
@@ -100,6 +106,67 @@ func _ready() -> void:
 		_start(int(params["level"]))
 	else:
 		_level_card()
+
+
+## HD-2D: the kampung round the ring, and the tops as real tops
+func _dress_stage() -> void:
+	stage.cam_offset = Vector3(0, 20.0, 18.0)
+	stage.look_at_px(CENTRE + Vector2(0, 16), true)
+	for it in Ring.PROPS:
+		stage.prop(load("res://assets/objects/%s.png" % it[0]), Vector2(it[1] if it[1] >= 0.0 else Game.screen_w() + it[1], it[2]), 3.0)
+	_tops3 = [_top3(Color("cc3e34"), Color("ffd64d")), _top3(Color("4682c8"), Color("f6e8c4"))]
+
+
+## a top: a turned wooden body on its point, a painted head, two dots that show the spin
+func _top3(paint: Color, dots: Color) -> Node3D:
+	var r: float = TOP * Stage.K
+	var top := Node3D.new()
+	var part := func(mesh: Mesh, colour: Color, y: float) -> MeshInstance3D:
+		var m := MeshInstance3D.new()
+		m.mesh = mesh
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = colour
+		mat.roughness = 0.6
+		m.material_override = mat
+		m.position.y = y
+		top.add_child(m)
+		return m
+	var body := CylinderMesh.new()
+	body.top_radius = r
+	body.bottom_radius = r * 0.12
+	body.height = r * 1.3
+	part.call(body, Color("96623a"), r * 0.65)
+	var head := CylinderMesh.new()
+	head.top_radius = r * 0.92
+	head.bottom_radius = r
+	head.height = r * 0.3
+	part.call(head, paint, r * 1.45)
+	var stem := CylinderMesh.new()
+	stem.top_radius = r * 0.16
+	stem.bottom_radius = r * 0.2
+	stem.height = r * 0.6
+	part.call(stem, Color("5a381e"), r * 1.9)
+	for side in [-1.0, 1.0]:
+		var dot := CylinderMesh.new()
+		dot.top_radius = r * 0.24
+		dot.bottom_radius = r * 0.24
+		dot.height = r * 0.06
+		part.call(dot, dots, r * 1.62).position.x = side * r * 0.55
+	stage.add_child(top)
+	return top
+
+
+func _sync_tops3() -> void:
+	var both := [me, rival]
+	for i in 2:
+		var t: Dictionary = both[i]
+		var n: Node3D = _tops3[i]
+		n.visible = state in ["pusing", "rehat", "lilit", "soalan"]
+		n.position = stage.to3(CENTRE + t["p"])
+		var lean := 0.0
+		if state in ["pusing", "rehat"] and float(t["spin"]) < 0.25:   # nearly out of spin: it sways
+			lean = 0.45 * (1.0 - float(t["spin"]) / 0.25)
+		n.rotation = Vector3(lean * cos(t["angle"] * 0.5), -t["angle"], lean * sin(t["angle"] * 0.5))
 
 
 func _level_card() -> void:
@@ -203,7 +270,7 @@ func _steer() -> Vector2:
 	if Input.is_physical_key_pressed(KEY_S):
 		v.y += 1.0
 	if v == Vector2.ZERO and _pointer:
-		var to: Vector2 = _ring.get_local_mouse_position() - CENTRE - me["p"]
+		var to: Vector2 = pointer_on(_ring) - CENTRE - me["p"]
 		if to.length() > 8.0:
 			v = to / 60.0
 	return v.limit_length(1.0)
@@ -235,6 +302,8 @@ func _move(t: Dictionary, steer: Vector2, accel: float, top_speed: float, delta:
 
 func _process(delta: float) -> void:
 	_ring.queue_redraw()
+	if stage:
+		_sync_tops3()
 	_hud.queue_redraw()
 	_throw.visible = state == "lilit"
 	_info.text = "%s %d" % [tr("Pusingan"), mini(score[0] + score[1] + 1, WINS * 2 - 1)] if state != "pilih" else ""
@@ -282,7 +351,10 @@ func _process(delta: float) -> void:
 
 ## the gelanggang from above: packed earth, a lime line, grass, the two tops
 class Ring extends Node2D:
+	const PROPS := [["palm", 70.0, 250.0], ["rumah_merah", 150.0, 520.0], ["wakaf_padang", -150.0, 300.0], ["palm", -70.0, 560.0], ["tree_rambutan", -250.0, 190.0]]   ## [object, x (from the right edge when negative), y of its foot]
+
 	var game: Control
+	var ground := false   ## HD-2D: only what lies flat (the stage stands the rest up)
 	var _tex := {}
 
 	func _t(name: String) -> Texture2D:
@@ -301,15 +373,17 @@ class Ring extends Node2D:
 		var c: Vector2 = game.CENTRE
 		var r: float = game.R
 		var w := Game.screen_w()
-		for i in 22:   # tufts in the grass
-			var g := Vector2(fposmod(i * 197.0, w), 150.0 + fposmod(i * 131.0, 540.0))
-			if g.distance_to(c) > r + 40.0:
-				draw_line(g, g + Vector2(-5, -12), Color("3e7d3c"), 3.0)
-				draw_line(g + Vector2(4, 0), g + Vector2(8, -10), Color("3e7d3c"), 3.0)
-		for item in [["palm", 70.0, 250.0], ["rumah_merah", 150.0, 520.0], ["wakaf_padang", w - 150.0, 300.0], ["palm", w - 70.0, 560.0], ["tree_rambutan", w - 250.0, 190.0]]:
-			var tex := _t(item[0])
-			var sz := tex.get_size() * 3.0
-			draw_texture_rect(tex, Rect2(Vector2(item[1] - sz.x / 2.0, item[2] - sz.y), sz), false)
+		if not ground:
+			for i in 22:   # tufts in the grass
+				var g := Vector2(fposmod(i * 197.0, w), 150.0 + fposmod(i * 131.0, 540.0))
+				if g.distance_to(c) > r + 40.0:
+					draw_line(g, g + Vector2(-5, -12), Color("3e7d3c"), 3.0)
+					draw_line(g + Vector2(4, 0), g + Vector2(8, -10), Color("3e7d3c"), 3.0)
+			for item in PROPS:
+				var tex := _t(item[0])
+				var sz := tex.get_size() * 3.0
+				var x: float = item[1] if item[1] >= 0.0 else w + item[1]
+				draw_texture_rect(tex, Rect2(Vector2(x - sz.x / 2.0, item[2] - sz.y), sz), false)
 		_oval(c + Vector2(0, 6), r + 22.0, r + 22.0, Color("3e7d3c"))
 		_oval(c, r + 14.0, r + 14.0, Color("b98f58"))
 		_oval(c, r, r, Color("d9b47a"))
@@ -318,7 +392,7 @@ class Ring extends Node2D:
 		for i in 14:   # scuffs in the earth
 			var s := c + Vector2(cos(i * 2.1), sin(i * 2.1)) * (30.0 + fposmod(i * 47.0, r - 60.0))
 			draw_rect(Rect2(s, Vector2(9, 3)), Color("c9a268"))
-		if game.state in ["pusing", "rehat", "lilit", "soalan"]:
+		if not ground and game.state in ["pusing", "rehat", "lilit", "soalan"]:
 			_top(c + game.rival["p"], game.rival, [Color("4682c8"), Color("f6e8c4")])
 			_top(c + game.me["p"], game.me, [Color("cc3e34"), Color("ffd64d")])
 

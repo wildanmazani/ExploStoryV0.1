@@ -184,6 +184,7 @@
           "id": "melaka",
           "label": "Kesultanan Melayu Melaka",
           "icon": "res://assets/objects/gate_melaka.png",
+          "bg": "res://assets/puzzle_bg/kerajaan_melaka.png",
           "target": "t4",
           "fact": "Kesultanan Melayu Melaka: abad ke-15."
         },
@@ -191,6 +192,7 @@
           "id": "funan",
           "label": "Funan",
           "icon": "res://assets/objects/gate_funan.png",
+          "bg": "res://assets/puzzle_bg/kerajaan_funan.png",
           "target": "t1",
           "fact": "Funan: abad pertama."
         },
@@ -198,6 +200,7 @@
           "id": "johor",
           "label": "Kesultanan Johor-Riau",
           "icon": "res://assets/objects/gate_johor.png",
+          "bg": "res://assets/puzzle_bg/kerajaan_johor.png",
           "target": "t5",
           "fact": "Kesultanan Johor-Riau: abad ke-16."
         },
@@ -205,6 +208,7 @@
           "id": "srivijaya",
           "label": "Srivijaya",
           "icon": "res://assets/objects/gate_srivijaya.png",
+          "bg": "res://assets/puzzle_bg/kerajaan_srivijaya.png",
           "target": "t3",
           "fact": "Srivijaya: abad ke-7, berpusat di Palembang."
         },
@@ -212,6 +216,7 @@
           "id": "champa",
           "label": "Champa",
           "icon": "res://assets/objects/gate_champa.png",
+          "bg": "res://assets/puzzle_bg/kerajaan_champa.png",
           "target": "t2",
           "fact": "Champa: abad kedua."
         }

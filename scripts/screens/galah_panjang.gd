@@ -69,6 +69,10 @@ func _ready() -> void:
 		guards.append(g)
 	_alif = _sprite(Game.skin_folder())
 	_alif.play("idle_north")
+	var painter := Court.new()
+	painter.game = self
+	if make_stage(_court, painter, Rect2(-14, -14, W + 28, H + 28)):
+		_dress_stage()
 
 	var side := UI.panel()
 	side.position = Vector2(24, 110)
@@ -116,6 +120,23 @@ func _sprite(folder: String) -> AnimatedSprite2D:
 	s.scale = Vector2(2, 2)
 	_court.add_child(s)
 	return s
+
+
+## HD-2D: the kampung round the court, and the camera a little to the right of
+## it (the panel is on the left)
+func _dress_stage() -> void:
+	stage.cam_offset = Vector3(0, 19.0, 18.0)
+	stage.look_at_px(Vector2(W / 2.0 - 120.0, H / 2.0 - 10.0), true)
+	var obj := func(name: String) -> Texture2D: return load("res://assets/objects/%s.png" % name)
+	for it in [["rumah_merah", -150, -120], ["palm", 60, -150], ["wakaf_padang", 250, -140], ["tree_rambutan", 420, -170],
+			["rumah_hijau", 600, -110], ["palm", -230, 120], ["palm", 690, 230], ["tree_mempelam", -260, 380], ["gerai_buah", 640, 420]]:
+		stage.prop(obj.call(it[0]), Vector2(it[1], it[2]), 3.2)
+	for i in 12:
+		stage.prop(obj.call("pagar"), Vector2(-120.0 + i * 64.0, -40.0), 2.0)
+	var crowd := ["makcik", "pakcik_lembah", "nelayan", "penjaga", "pelatih", "makcik", "nelayan", "pakcik_lembah"]
+	for i in crowd.size():
+		var left := i % 2 == 0
+		stage.person(crowd[i], Vector2(-56.0 if left else W + 56.0, 70.0 + (i / 2) * 118.0), "east" if left else "west")
 
 
 # ---------------------------------------------------------------- cards
@@ -198,7 +219,7 @@ func _move_input() -> Vector2:
 	if Input.is_physical_key_pressed(KEY_S):
 		v.y += 1.0
 	if v == Vector2.ZERO and _pointer:
-		var to := _court.get_local_mouse_position() - pos
+		var to := pointer_on(_court) - pos
 		if to.length() > 6.0:
 			v = to
 	return v.limit_length(1.0) if v.length() > 1.0 else v

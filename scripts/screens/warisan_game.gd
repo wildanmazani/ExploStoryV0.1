@@ -5,11 +5,15 @@ extends Control
 ## card; {"auto": true} lets a bot play and answer (dev test).
 
 const UI = preload("res://scripts/ui/ui.gd")
+const Stage = preload("res://scripts/screens/warisan_stage.gd")
 
 var params: Dictionary = {}
 var _overlay: Control
 var _questions: Array = []
+var _grass := Color.BLACK
+var _bg: ColorRect
 var _auto := false
+var stage: Node3D   ## the HD-2D view (warisan_stage.gd) when "Dunia 3D" is on, else null: plain 2D
 
 
 func setup_game(background: Color) -> void:
@@ -18,10 +22,34 @@ func setup_game(background: Color) -> void:
 	MusicDirector.play("kampung")
 	_auto = bool(params.get("auto", false))
 	_questions = WarisanRules.questions()
-	var bg := ColorRect.new()
-	bg.color = background
-	UI.full(bg)
-	add_child(bg)
+	_grass = background
+	_bg = ColorRect.new()
+	_bg.color = background
+	UI.full(_bg)
+	add_child(_bg)
+
+
+## With "Dunia 3D" on: the play node goes to a 3D stage (see warisan_stage.gd).
+## `painter` is a second copy of the play node, for the ground picture; `ground`
+## the part of the play node it shows. Returns the stage, or null in 2D.
+func make_stage(play: Node2D, painter: Node2D, ground: Rect2) -> Node3D:
+	if not Hd2dView.enabled():
+		painter.free()
+		return null
+	_bg.visible = false   # the 3D stage shows through: nothing painted behind the game
+	var host_bg := get_parent().get_node_or_null("Background")
+	if host_bg:
+		host_bg.visible = false
+	stage = Stage.new()
+	add_child(stage)
+	move_child(stage, 0)
+	stage.setup(play, painter, ground, _grass)
+	return stage
+
+
+## where the mouse / finger is, in the play node's px
+func pointer_on(play: Node2D) -> Vector2:
+	return stage.mouse_px() if stage else play.get_local_mouse_position()
 
 
 ## a paper card in the middle of the screen, over everything; returns its column

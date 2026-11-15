@@ -1,7 +1,7 @@
 extends Node
 ## Dev test for Pesta Warisan.  Run:  godot --path . -- --warisan-test [--shots=/abs/dir] [--hd2d]
 ## As a guest: the festival board in Kampung Jejak, the fair's screen, then a
-## bot plays Galah Panjang, Tarik Upih and Gasing (Mudah) to the end. Prints WARISAN TEST PASS and
+## bot plays the five games (Mudah) to the end. Prints WARISAN TEST PASS and
 ## quits (exit 1 on a failure). It saves like a real game does: keep your own
 ## user://simpan_*.json out of the way first.
 
@@ -42,6 +42,30 @@ func _screen() -> Node:
 
 func _run() -> void:
 	await _wait(1.0)
+	for arg in OS.get_cmdline_user_args():   # --warisan-shot=galah: one game, a few pictures, no checks
+		if arg.begins_with("--puzzle-shot="):   # --puzzle-shot=1_1:susun_gerbang: a mission puzzle, solved card by card
+			var which := arg.trim_prefix("--puzzle-shot=").split(":")
+			Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])
+			Game.goto("world")
+			await _wait(3.5)
+			get_tree().current_scene.runner.run_puzzle(Game.zone_data(which[0])["puzzles"][which[1]], which[1])
+			await _wait(1.5)
+			var p: Node = Game.active_puzzle
+			var n := 0
+			for c in p.cards.duplicate():
+				p.try_place(c, p.targets[str(c.item["target"])])
+				n += 1
+				await _wait(1.2 if n < p.cards.size() else 0.75)
+				await _shot("teka_teki_%d" % n)
+			get_tree().quit(0)
+			return
+		if arg.begins_with("--warisan-shot="):
+			Game.goto(arg.trim_prefix("--warisan-shot="), {"auto": true, "level": 1})
+			for i in 4:
+				await _wait(2.5)
+				await _shot("lihat")
+			get_tree().quit(0)
+			return
 	Game.goto("pesta")
 	await _wait(2.0)
 	await _shot("pesta")
@@ -129,6 +153,52 @@ func _run() -> void:
 	if int(Game.save["warisan"]["gasing"]["main"]) != 1:
 		return _fail("Gasing was not counted")
 	result += " | gasing won=%s %d-%d" % [gs.won, gs.score[0], gs.score[1]]
+
+	Game.goto("wau", {"auto": true, "level": 0})
+	await _wait(2.0)
+	var wb := _screen()
+	if wb == null or wb.get("band") == null:
+		return _fail("Wau Bulan did not open")
+	t = 0.0
+	shown = 0
+	while wb.state != "tamat" and t < 120.0:
+		await _wait(0.5)
+		t += 0.5
+		if (shown == 0 and wb.time > 5.0) or (shown == 1 and wb.state == "soalan"):
+			shown += 1
+			await _shot("wau_%d" % shown)
+	if wb.state != "tamat":
+		return _fail("Wau Bulan did not end in 120 s (held=%.1f lives=%d)" % [wb.held, wb.lives])
+	await _wait(0.5)
+	await _shot("wau_tamat")
+	if not wb.won:
+		return _fail("the bot lost Wau Bulan on Mudah (held %.1f s, %d lives)" % [wb.held, wb.lives])
+	if int(Game.save["warisan"]["wau"]["main"]) != 1:
+		return _fail("Wau Bulan was not counted")
+	result += " | wau won=%s time=%.1f right=%d" % [wb.won, wb.time, wb.right]
+
+	Game.goto("raga", {"auto": true, "level": 0})
+	await _wait(2.0)
+	var sr := _screen()
+	if sr == null or sr.get("timang") == null:
+		return _fail("Sepak Raga did not open")
+	t = 0.0
+	shown = 0
+	while sr.state != "tamat" and t < 180.0:
+		await _wait(0.5)
+		t += 0.5
+		if (shown == 0 and sr.timang >= 3) or (shown == 1 and sr.state == "soalan"):
+			shown += 1
+			await _shot("raga_%d" % shown)
+	if sr.state != "tamat":
+		return _fail("Sepak Raga did not end in 180 s (timang=%d lives=%d)" % [sr.timang, sr.lives])
+	await _wait(0.5)
+	await _shot("raga_tamat")
+	if not sr.won:
+		return _fail("the bot lost Sepak Raga on Mudah (%d timang)" % sr.timang)
+	if int(Game.save["warisan"]["raga"]["main"]) != 1:
+		return _fail("Sepak Raga was not counted")
+	result += " | raga won=%s timang=%d right=%d" % [sr.won, sr.timang, sr.right]
 	# the board on the map: Alif stands under it
 	Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])
 	GameState.spawn_cell = Vector2i(31, 35)

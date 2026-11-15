@@ -2,7 +2,8 @@ extends "res://scripts/puzzles/puzzle_base.gd"
 ## Engine 1: Seret dan Padankan (drag and match).
 ## One engine covers ordering, sorting into bins and pairing: every item
 ## names its correct target in JSON. Drag a card onto a target, or tap the
-## card then tap the target.
+## card then tap the target. An item may carry "bg": a picture that appears
+## behind its target once the card is there (the kingdoms of Misi 1.1).
 
 const UIX = preload("res://scripts/ui/ui.gd")
 
@@ -78,6 +79,7 @@ class DropTarget extends PanelContainer:
 	var tid: String
 	var box: VBoxContainer
 	var _base_var: String = "Slot"
+	var _picture: TextureRect
 
 	func _init(e: Node, t: Dictionary, min_w: float) -> void:
 		engine = e
@@ -119,6 +121,29 @@ class DropTarget extends PanelContainer:
 		box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		col.add_child(box)
 		add_child(col)
+
+	## The picture of what has just been put here (an item's "bg"): it fades in
+	## behind the slot, under a dark veil so the words stay readable.
+	func show_picture(path: String) -> void:
+		if path == "" or not ResourceLoader.exists(path):
+			return
+		if _picture == null:
+			clip_contents = true
+			_picture = TextureRect.new()
+			_picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			_picture.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			_picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			add_child(_picture)
+			move_child(_picture, 0)
+			var veil := ColorRect.new()
+			veil.color = Color(0.06, 0.07, 0.14, 0.38)
+			veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_picture.add_child(veil)
+			veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_picture.texture = load(path)
+		_picture.modulate.a = 0.0
+		create_tween().tween_property(_picture, "modulate:a", 1.0, 0.7)
 
 	func set_state(v: String) -> void:
 		theme_type_variation = v
@@ -236,6 +261,7 @@ func _place(c: DragCard, t: DropTarget) -> void:
 	c.mouse_default_cursor_shape = Control.CURSOR_ARROW
 	c.focus_mode = Control.FOCUS_NONE
 	selected = null
+	t.show_picture(str(c.item.get("bg", "")))
 	t.set_state("SlotGood")
 	get_tree().create_timer(0.4).timeout.connect(func():
 		if is_instance_valid(t):

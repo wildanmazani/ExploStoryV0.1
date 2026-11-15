@@ -53,6 +53,7 @@ var _left: Button
 var _right: Button
 var _countdown := 0.0
 var _auto_in := 0.0
+var _gates3: Array = []   ## HD-2D: [board, label] of each question gate
 
 
 func _ready() -> void:
@@ -82,6 +83,11 @@ func _ready() -> void:
 	_track.add_child(_pau)
 	_upih.append(_upih_sprite("depan"))
 	_alif = _person(Game.skin_folder(), 3.4)
+	var painter := Track.new()
+	painter.game = self
+	painter.ground = true
+	if make_stage(_track, painter, Rect2(-420.0, 330.0, TRACK + 1380.0, 372.0)):
+		_dress_stage()
 
 	_hud = Hud.new()
 	_hud.game = self
@@ -135,6 +141,54 @@ func _upih_sprite(part: String) -> Sprite2D:
 	s.scale = Vector2(4, 4)
 	_track.add_child(s)
 	return s
+
+
+## HD-2D: the kampung stands behind the track, the gates are signs by Alif's lane
+func _dress_stage() -> void:
+	stage.cam_offset = Vector3(0, 17.0, 24.0)
+	stage.cam_look_up = 0.8
+	stage.look_at_px(Vector2(190.0, LANE_RIVAL + 30.0), true)
+	var step := 250.0
+	for i in range(-1, int((TRACK + 900.0) / step) + 1):
+		stage.prop(load("res://assets/objects/%s.png" % SCENERY[posmod(i, SCENERY.size())]), Vector2(i * step, SCENE_Y), 3.0)
+	var fence: Texture2D = load("res://assets/objects/pagar.png")
+	for i in range(-6, int((TRACK + 900.0) / 64.0)):
+		stage.prop(fence, Vector2(i * 64.0 + 32.0, SCENE_Y + 30.0), 2.0)
+	for who in _crowd:
+		who.set_meta("ground_y", CROWD_Y)
+	for g in gates.size():
+		var at: Vector3 = stage.to3(Vector2(GATES[g] * TRACK, LANE_ME - 76.0))
+		var post := MeshInstance3D.new()
+		var pm := BoxMesh.new()
+		pm.size = Vector3(0.22, 3.4, 0.22)
+		post.mesh = pm
+		var wood := StandardMaterial3D.new()
+		wood.albedo_color = Color("3f7a36")
+		post.material_override = wood
+		post.position = at + Vector3(0, 1.7, 0)
+		stage.add_child(post)
+		var board := MeshInstance3D.new()
+		var bm := BoxMesh.new()
+		bm.size = Vector3(2.2, 1.1, 0.14)
+		board.mesh = bm
+		board.material_override = StandardMaterial3D.new()
+		board.position = at + Vector3(0, 3.6, 0)
+		stage.add_child(board)
+		var mark := Label3D.new()
+		mark.font = Game.theme.default_font
+		mark.font_size = 120
+		mark.pixel_size = 0.0075
+		mark.modulate = Color("2b1c10")
+		mark.outline_size = 0
+		mark.position = at + Vector3(0, 3.6, 0.09)
+		stage.add_child(mark)
+		_gates3.append([board, mark])
+	for i in 2:   # what sits in or on an upih stands on the lane, drawn back to front
+		var lane: float = [LANE_ME, LANE_RIVAL][i]
+		var parts: Array = [[_upih[0], _pau, _upih[1], _alif], [_r_upih[0], _r_rider, _r_upih[1], _r_puller]][i]
+		for k in parts.size():
+			parts[k].set_meta("ground_y", lane)
+			parts[k].set_meta("order", float(k))
 
 
 ## the two big step buttons: a phone has no arrow keys
@@ -331,6 +385,12 @@ func _place() -> void:
 	for i in _crowd.size():   # they hop when a racer goes by
 		var near: bool = absf(_crowd[i].position.x - me["x"]) < 260.0 or absf(_crowd[i].position.x - rival["x"]) < 260.0
 		_crowd[i].position.y = CROWD_Y - (absf(sin(time * 7.0 + i * 1.3)) * 9.0 if near and state == "main" else 0.0)
+	if stage:
+		stage.look_at_px(Vector2(me["x"] + 190.0, LANE_RIVAL + 30.0))
+		for i in _gates3.size():
+			var st: String = gates[i]["state"]
+			_gates3[i][0].material_override.albedo_color = {"betul": Color("6fcf6a"), "salah": Color("b08a5a")}.get(st, Color("ffd64d"))
+			_gates3[i][1].text = {"betul": "+", "salah": "x"}.get(st, "?")
 	var moving: bool = me["v"] > 20.0 and me["fallen"] <= 0.0 and state == "main"
 	var fast: bool = me["boost"] > 0.0 and _alif.sprite_frames.has_animation("run_east")
 	_pose(_alif, _upih, Vector2(me["x"], LANE_ME), moving, me["fallen"] > 0.0, maxf(me["v"], 60.0) / 150.0, fast)
@@ -362,6 +422,7 @@ func _pose(puller: AnimatedSprite2D, upih: Array, feet: Vector2, moving: bool, f
 ## the track: two lanes of packed earth, the lines, the gates, the puddles
 class Track extends Node2D:
 	var game: Control
+	var ground := false   ## HD-2D: only what lies flat, the whole length (the stage stands the rest up)
 
 	var _tex := {}
 
@@ -373,17 +434,21 @@ class Track extends Node2D:
 	func _draw() -> void:
 		var x0 := -position.x - 40.0
 		var x1 := x0 + Game.screen_w() + 80.0
-		draw_rect(Rect2(x0, 0, x1 - x0, game.SCENE_Y - 6.0), Color("7cc4e8"))             # sky
-		draw_rect(Rect2(x0, game.SCENE_Y - 60.0, x1 - x0, 60.0), Color("4d9648"))        # far grass
-		# the kampung behind: houses, palms, fruit trees, stalls
-		var step := 250.0
-		for i in range(int(floorf((x0 - 400.0) / step)), int(x1 / step) + 1):
-			var tex := _t(game.SCENERY[posmod(i, game.SCENERY.size())])
-			var sz := tex.get_size() * 3.0
-			draw_texture_rect(tex, Rect2(Vector2(i * step - sz.x / 2.0, game.SCENE_Y - sz.y), sz), false)
-		var fence := _t("pagar")
-		for i in range(int(floorf(x0 / 64.0)), int(x1 / 64.0) + 1):
-			draw_texture_rect(fence, Rect2(i * 64.0, game.SCENE_Y - 34.0, 64, 64), false)
+		if ground:
+			x0 = -420.0
+			x1 = game.TRACK + 960.0
+		else:
+			draw_rect(Rect2(x0, 0, x1 - x0, game.SCENE_Y - 6.0), Color("7cc4e8"))             # sky
+			draw_rect(Rect2(x0, game.SCENE_Y - 60.0, x1 - x0, 60.0), Color("4d9648"))        # far grass
+			# the kampung behind: houses, palms, fruit trees, stalls
+			var step := 250.0
+			for i in range(int(floorf((x0 - 400.0) / step)), int(x1 / step) + 1):
+				var tex := _t(game.SCENERY[posmod(i, game.SCENERY.size())])
+				var sz := tex.get_size() * 3.0
+				draw_texture_rect(tex, Rect2(Vector2(i * step - sz.x / 2.0, game.SCENE_Y - sz.y), sz), false)
+			var fence := _t("pagar")
+			for i in range(int(floorf(x0 / 64.0)), int(x1 / 64.0) + 1):
+				draw_texture_rect(fence, Rect2(i * 64.0, game.SCENE_Y - 34.0, 64, 64), false)
 		for lane in [game.LANE_RIVAL, game.LANE_ME]:
 			draw_rect(Rect2(x0, lane - 70, x1 - x0, 100), Color("d9b47a"))
 			draw_rect(Rect2(x0, lane - 70, x1 - x0, 5), Color("b98f58"))
@@ -412,6 +477,8 @@ class Track extends Node2D:
 				mark = "x"
 				_puddle(Vector2(gx + 230.0, game.LANE_ME - 14.0))
 				_puddle(Vector2(gx + 420.0, game.LANE_ME - 20.0))
+			if ground:
+				continue
 			var y: float = game.LANE_ME - 158.0
 			draw_rect(Rect2(gx - 5, y, 10, 186), Color("3f7a36"))
 			draw_rect(Rect2(gx - 46, y - 34, 92, 44), Color("5a381e"))

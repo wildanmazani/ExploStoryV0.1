@@ -32,6 +32,8 @@ const SCREENS := {
 	"galah": "res://scripts/screens/galah_panjang.gd",
 	"upih": "res://scripts/screens/tarik_upih.gd",
 	"gasing": "res://scripts/screens/gasing.gd",
+	"wau": "res://scripts/screens/wau_bulan.gd",
+	"raga": "res://scripts/screens/sepak_raga.gd",
 }
 
 ## every zone of every open chapter, in play order (filled from data/chapters.json)
