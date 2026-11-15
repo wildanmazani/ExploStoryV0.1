@@ -123,6 +123,8 @@ Kandungan sejarah hanya di `data/*.json`; guru boleh ubah teks dan jawapan tanpa
 
 1. Pasang Godot **4.7.2** (standard), buka `project.godot`, tekan **F5**.
 2. Ujian automatik: `godot --path . -- --autotest --shots=C:/tmp/shots`
+   Paparan HD-2D (percubaan: dunia 3D, watak sprite 2D): `godot --path . -- --hd2d` (tambah `--day` untuk siang, kekunci N tukar siang / malam;
+   boleh digabung dengan `--autotest`). Kod: `scripts/world/hd2d_view.gd`; tanpa bendera ini permainan kekal 2D.
    (prolog sahaja, lebih cepat: tambah `--only=prologue`)
 
 ## Versi web

@@ -141,6 +141,7 @@ var _ujian_cells := {}  ## chapter -> cell where its Ujian Bab boss waits
 var _goal := {}         ## objective() of this frame (the maps and the arrow all ask)
 var _goal_frame := -1
 var _dummies := {}      ## cell -> training dummy sprite (Arena Ulang Kaji yards)
+var view3d: Hd2dView    ## the HD-2D view (hd2d_view.gd) when it is on, else null: plain 2D
 
 @onready var ground: TileMapLayer = $Ground
 @onready var decor: Node2D = $Decor
@@ -168,6 +169,10 @@ func _ready() -> void:
 	$Ambience.setup(self, _ent["gates"])
 	_spawn_critters()
 	_build_kabus()
+	if Hd2dView.enabled():
+		view3d = Hd2dView.new()
+		view3d.setup(self)
+		add_child(view3d)
 
 	camera.limit_right = terrain.width * TILE
 	camera.limit_bottom = terrain.height * TILE
@@ -279,6 +284,19 @@ func _arena_reveal() -> void:
 	Game.persist()
 
 
+## Where a spot of the world is on screen: world pixels, and how many pixels
+## above the ground (the HD-2D view has a real "up").
+func to_screen(world_px: Vector2, lift := 0.0) -> Vector2:
+	if view3d:
+		return view3d.to_screen(world_px, lift)
+	return get_viewport().get_canvas_transform() * (world_px + Vector2(0, -lift))
+
+
+## the spot of the world under the mouse / finger, in world pixels
+func mouse_world() -> Vector2:
+	return view3d.mouse_world() if view3d else get_global_mouse_position()
+
+
 ## bottom-right normally; under the player card with on-screen controls, or
 ## under the menu buttons for left-handed players (the pad is on the right)
 func _place_minimap() -> void:
@@ -302,7 +320,7 @@ func _process(_delta: float) -> void:
 			pau.hop()
 			Main.open_calm()
 	if emote.visible:  # keep the "!" / "z z" bubble above Alif's head on screen
-		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, -38))
+		var screen := to_screen(player.global_position, 38)
 		emote.position = screen - emote.size / 2.0
 	_update_prompt()
 	# the melody layer breathes with you: up while exploring, down when still
@@ -509,6 +527,8 @@ func _capture_map() -> void:
 	sub.render_target_update_mode = SubViewport.UPDATE_ONCE
 	sub.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	sub.canvas_cull_mask = 1  # characters live on layer 2 too: this camera skips them
+	if view3d:  # the HD-2D view keeps the 2D world on its own layers
+		sub.canvas_cull_mask = 1 | Hd2dView.L_WORLD | Hd2dView.L_OBJECTS
 	for n in [player, pau, $Ambience] + npcs.values() + runner.markers.values() + critters + ([_fog] if _fog else []):
 		_to_layer2(n)
 	var cam := Camera2D.new()
@@ -933,7 +953,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		if $TouchControls.owns(event.position):
 			return  # a thumb on the D-pad / joystick, not a tap on the map
-		var cell :=Vector2i((get_global_mouse_position() / TILE).floor())
+		var cell :=Vector2i((mouse_world() / TILE).floor())
 		var on_pau := cell == pau.cell or cell == pau.cell + Vector2i(0, -1)
 		if event.pressed and on_pau:
 			_pau_press = Time.get_ticks_msec() / 1000.0  # tap = talk, hold = calm
@@ -1224,7 +1244,7 @@ func _update_prompt() -> void:
 		prompt.text = Game.interact_prompt(label)
 		prompt.icon = Game.pad_icon()
 		prompt.reset_size()
-		var screen := get_viewport().get_canvas_transform() * (player.global_position + Vector2(0, 14))
+		var screen := to_screen(player.global_position, -14)
 		prompt.position = Vector2(clampf(screen.x - prompt.size.x / 2.0, 10, Game.screen_w() - 10 - prompt.size.x), clampf(screen.y + 8, 120, 640))
 
 

@@ -42,9 +42,8 @@ func _draw() -> void:
 	var steps := int(round(Vector2(world.player.cell).distance_to(goal["tile"])))
 	if steps <= MapView.ARRIVED:
 		return
-	var ct := get_viewport().get_canvas_transform()
-	var me: Vector2 = ct * world.player.global_position
-	var gp: Vector2 = ct * (goal["tile"] * 16.0)  # tiles -> world px
+	var me: Vector2 = world.to_screen(world.player.global_position)
+	var gp: Vector2 = world.to_screen(goal["tile"] * 16.0)  # tiles -> world px
 	var view := Rect2(Vector2.ZERO, get_viewport_rect().size)
 	var inner := view.grow(-MARGIN)
 	var bob := sin(_t * 5.0) * 4.0
