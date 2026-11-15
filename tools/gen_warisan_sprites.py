@@ -185,25 +185,6 @@ def upih():
     return im
 
 
-def congkak():
-    """the boat-shaped board from above: 7 + 7 houses and the two stores"""
-    im, d = canvas(64, 22)
-    d.rounded_rectangle([1, 3, 62, 18], radius=7, fill=WOOD)
-    d.rounded_rectangle([3, 4, 60, 9], radius=4, fill=WOOD_L)
-    d.rounded_rectangle([2, 15, 61, 18], radius=3, fill=WOOD_D)
-    for cx in (6, 57):                                     # rumah (stores)
-        d.ellipse([cx - 4, 7, cx + 4, 15], fill=WOOD_D)
-        d.ellipse([cx - 3, 8, cx + 3, 14], fill=(74, 44, 24, 255))
-    for i in range(7):                                     # kampung (houses)
-        cx = 14 + i * 6
-        for cy in (7, 14):
-            d.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=(74, 44, 24, 255))
-    for i, c in enumerate((BLUE, RED, GOLD, GREEN, CREAM, BLUE, RED)):  # a few guli
-        d.point((14 + i * 6, 7), fill=c)
-        d.point((14 + (6 - i) * 6, 14), fill=c)
-    return outline(im)
-
-
 def galah():
     """two bamboo poles crossed: the lines of the court"""
     im, d = canvas(32, 32)
@@ -230,6 +211,6 @@ def hati():
 if __name__ == "__main__":
     save(papan_pesta(), "assets/objects/papan_pesta.png")
     for name, fn in (("wau", wau), ("gasing", gasing), ("bola_raga", bola_raga), ("upih", upih),
-                     ("congkak", congkak), ("galah", galah), ("hati", hati),
+                     ("galah", galah), ("hati", hati),
                      ("upih_belakang", upih_belakang), ("upih_depan", upih_depan)):
         save(fn(), "assets/warisan/%s.png" % name)

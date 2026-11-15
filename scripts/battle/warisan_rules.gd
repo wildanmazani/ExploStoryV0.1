@@ -9,8 +9,6 @@ const GAMES := [
 		"desc": "Lepasi empat garisan yang dijaga rakan sekelas, sampai hujung, dan balik semula."},
 	{"id": "upih", "icon": "upih", "name": "Tarik Upih",
 		"desc": "Tarik Pau di atas upih pinang. Ikut rentak, jangan sampai dia tergolek!"},
-	{"id": "congkak", "icon": "congkak", "name": "Congkak",
-		"desc": "Agih biji dari kampung ke rumah. Siapa kumpul paling banyak, dia menang."},
 	{"id": "gasing", "icon": "gasing", "name": "Gasing",
 		"desc": "Lilit, lempar, dan biar gasing uri paling lama. Atau pangkah gasing lawan."},
 	{"id": "wau", "icon": "wau", "name": "Wau Bulan",
