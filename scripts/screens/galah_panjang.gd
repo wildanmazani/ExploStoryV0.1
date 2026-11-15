@@ -1,4 +1,4 @@
-extends Control
+extends "res://scripts/screens/warisan_game.gd"
 ## Galah Panjang (Pesta Warisan). Alif starts at the bottom of the court,
 ## must get past four lines, each guarded by a classmate who may only run
 ## along that line, reach the far end (PERGI) and come all the way back
@@ -10,7 +10,6 @@ extends Control
 ## Keys: WASD / arrows (or hold the mouse / a finger where Alif should go).
 ## params: {"level": 0..2} skips the level card; {"auto": true} lets a bot play (dev test).
 
-const UI = preload("res://scripts/ui/ui.gd")
 const W := 440.0          ## court, in screen px
 const GAP := 104.0        ## between two lines
 const H := GAP * 5.0
@@ -25,7 +24,6 @@ const GUARDS := ["rakan_aisyah", "rakan_ravi", "rakan_meiling", "rakan_daniel"]
 const LIVES := 3
 const JURUS := 3
 
-var params: Dictionary = {}
 var level := 1
 var state := "pilih"      ## pilih (level card), main, soalan, tamat
 var phase := "pergi"      ## pergi, balik
@@ -42,26 +40,15 @@ var _alif: AnimatedSprite2D
 var _facing := "north"
 var _safe_y := H - GAP / 2.0   ## middle of the last box Alif stood in
 var _shield := 0.0             ## seconds he cannot be caught (just sent back)
-var _questions: Array = []
 var _pointer := false
 var _info: Label
 var _hearts: HBoxContainer
 var _jurus_btn: Button
-var _overlay: Control
-var _auto := false
 var _auto_wait := 0.0
 
 
 func _ready() -> void:
-	UI.full(self)
-	Game.main.set_pau_visible(false)
-	MusicDirector.play("kampung")
-	_auto = bool(params.get("auto", false))
-	_questions = WarisanRules.questions()
-	var bg := ColorRect.new()
-	bg.color = Color("4f9a4a")
-	UI.full(bg)
-	add_child(bg)
+	setup_game(Color("4f9a4a"))
 
 	_court = Court.new()
 	_court.game = self
@@ -115,46 +102,14 @@ func _sprite(folder: String) -> AnimatedSprite2D:
 
 # ---------------------------------------------------------------- cards
 
-func _card(title: String, text: String) -> VBoxContainer:
-	if _overlay:
-		_overlay.queue_free()
-	_overlay = Control.new()
-	UI.full(_overlay)
-	_overlay.add_child(UI.dim(0.5))
-	var p := UI.panel("Paper")
-	p.custom_minimum_size = Vector2(640, 0)
-	var col := UI.vbox(12)
-	col.add_child(UI.label(title, "InkHeading"))
-	var l := UI.label(text, "Ink", true)
-	l.custom_minimum_size.x = 600
-	col.add_child(l)
-	p.add_child(col)
-	var c := UI.center(p)
-	UI.full(c)
-	_overlay.add_child(c)
-	add_child(_overlay)
-	return col
-
-
 func _level_card() -> void:
 	state = "pilih"
-	var col := _card("GALAH PANJANG", tr("Lepasi empat garisan, sampai ke hujung, kemudian balik ke tempat mula. Penjaga hanya boleh berlari di atas garisan mereka: tunggu mereka jauh, kemudian lintas!\n\nJurus Ingatan (Q): jawab soalan Sejarah dengan betul dan penjaga di depan terpaku seketika."))
-	var row := UI.hbox(12)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	for i in WarisanRules.LEVELS.size():
-		var b := UI.button(tr(WarisanRules.LEVELS[i]), "Primary" if i == 1 else "", 170)
-		b.pressed.connect(_start.bind(i))
-		row.add_child(b)
-		if i == 1:
-			b.grab_focus.call_deferred()
-	col.add_child(row)
+	level_card("GALAH PANJANG", tr("Lepasi empat garisan, sampai ke hujung, kemudian balik ke tempat mula. Penjaga hanya boleh berlari di atas garisan mereka: tunggu mereka jauh, kemudian lintas!\n\nJurus Ingatan (Q): jawab soalan Sejarah dengan betul dan penjaga di depan terpaku seketika."), _start)
 
 
 func _start(lv: int) -> void:
 	level = clampi(lv, 0, 2)
-	if _overlay:
-		_overlay.queue_free()
-		_overlay = null
+	close_card()
 	pos = Vector2(W / 2.0, H - GAP / 2.0)
 	_safe_y = pos.y
 	phase = "pergi"
@@ -176,48 +131,13 @@ func ask_question() -> void:
 	jurus -= 1
 	state = "soalan"
 	_pointer = false
-	var q: Dictionary = _questions.pop_front()
-	_questions.append(q)
-	var col := _card(tr("JURUS INGATAN"), str(q["q"]))
-	var feedback := UI.label("", "Ink", true)
-	feedback.custom_minimum_size.x = 600
-	var buttons: Array[Button] = []
-	var go := UI.button(tr("Teruskan"), "Primary")
-	go.visible = false
-	for i in q["options"].size():
-		var b := UI.button(str(q["options"][i]))
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		buttons.append(b)
-		col.add_child(b)
-		b.pressed.connect(func():
-			var ok: bool = i == int(q["answer"])
-			for other in buttons:
-				other.disabled = true
-			if ok:
-				right += 1
-				Sfx.play("chime")
-				feedback.text = tr("Betul! Penjaga di depan terpaku.")
-			else:
-				Sfx.play("bump", -4.0)
-				feedback.text = tr("Belum tepat. Jawapannya: %s. %s") % [str(q["options"][int(q["answer"])]), str(q.get("explain", ""))]
-			go.visible = true
-			go.grab_focus()
-			go.pressed.connect(func():
-				_overlay.queue_free()
-				_overlay = null
-				state = "main"
-				if ok:
-					_freeze_next()
-				_refresh_hud(), CONNECT_ONE_SHOT))
-	col.add_child(feedback)
-	col.add_child(go)
-	buttons[0].grab_focus.call_deferred()
 	_refresh_hud()
-	if _auto:  # the dev bot answers (right, mostly) and goes on
-		await get_tree().create_timer(0.4).timeout
-		buttons[int(q["answer"])].pressed.emit()
-		await get_tree().create_timer(0.4).timeout
-		go.pressed.emit()
+	question_card(tr("JURUS INGATAN"), tr("Betul! Penjaga di depan terpaku."), "", func(ok: bool):
+		state = "main"
+		if ok:
+			right += 1
+			_freeze_next()
+		_refresh_hud())
 
 
 ## the guard Alif meets next on his way stands still for a while
@@ -242,17 +162,7 @@ func _finish(victory: bool) -> void:
 		MusicDirector.stinger("st_levelup" if res["level_up"] else "st_correct")
 		text = tr("Kau sampai ke hujung dan balik dalam %.1f saat!%s\n\n+%d EXP   +%d Syiling (%d soalan betul)") % [
 			time, (" " + tr("Rekod baharu!")) if res["best"] else "", res["exp"], res["coins"], right]
-	var col := _card(tr("MENANG!") if victory else tr("TERTANGKAP!"), text)
-	var row := UI.hbox(12)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var again := UI.button(tr("Main Lagi"), "Primary", 200)
-	again.pressed.connect(_level_card)
-	row.add_child(again)
-	var back := UI.button(tr("Pesta Warisan"), "", 200)
-	back.pressed.connect(func(): Game.goto("pesta"))
-	row.add_child(back)
-	col.add_child(row)
-	again.grab_focus.call_deferred()
+	result_card(tr("MENANG!") if victory else tr("TERTANGKAP!"), text, _level_card)
 	print("galah: won=%s level=%d time=%.1f lives=%d right=%d" % [victory, level, time, lives, right])
 
 

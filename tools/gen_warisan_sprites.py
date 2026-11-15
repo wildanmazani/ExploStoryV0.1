@@ -131,16 +131,48 @@ def bola_raga():
     return outline(im)
 
 
+HULL = [(1, 4), (3, 2), (24, 3), (27, 5), (25, 9), (21, 11), (6, 11), (2, 9)]
+
+
+def upih_belakang():
+    """the sheath of a pinang frond from the side, open on top like a little
+    boat: the rider sits inside (upih_depan is drawn over his legs)"""
+    im, d = canvas(28, 13)
+    d.polygon(HULL, fill=PINANG_D)
+    d.polygon([(3, 4), (23, 4), (25, 5), (22, 7), (5, 7)], fill=PINANG_L)   # the pale inside
+    d.line([4, 3, 23, 3], fill=PINANG)                                       # the far rim
+    return outline(im)
+
+
+def upih_depan():
+    """the near wall of the sheath"""
+    im, d = canvas(28, 13)
+    d.polygon([(2, 7), (25, 7), (25, 9), (21, 11), (6, 11), (2, 9)], fill=PINANG)
+    d.line([2, 7, 25, 7], fill=PINANG_L)                                     # the near rim, curled
+    for x in range(6, 23, 4):                                                # the grain
+        d.line([x, 8, x - 1, 10], fill=PINANG_D)
+    d.line([6, 11, 21, 11], fill=PINANG_D)
+    im = outline(im)
+    px = im.load()
+    for x in range(28):                                                      # no outline along the top: it joins the back
+        for y in range(0, 7):
+            px[x, y] = (0, 0, 0, 0)
+    return im
+
+
 def upih():
-    """the pinang frond sheath: a long curled sled with its stalk as the handle"""
+    """the whole frond for the fair's card: the sheath and the stalk the puller holds"""
     im, d = canvas(40, 16)
-    d.polygon([(8, 5), (30, 4), (37, 7), (37, 10), (30, 13), (8, 12), (4, 9)], fill=PINANG)
-    d.polygon([(10, 6), (29, 5), (34, 8), (29, 8), (10, 8)], fill=PINANG_L)
-    d.polygon([(8, 11), (30, 11), (30, 13), (8, 12)], fill=PINANG_D)
-    for x in range(12, 30, 4):                             # the grain
-        d.line([x, 6, x + 1, 11], fill=PINANG_D)
-    d.line([0, 8, 6, 9], fill=GREEN_D)                     # the stalk you pull
-    d.line([0, 9, 5, 10], fill=GREEN)
+    d.polygon([(x, y + 3) for x, y in HULL], fill=PINANG_D)
+    d.polygon([(3, 7), (23, 7), (25, 8), (22, 10), (5, 10)], fill=PINANG_L)
+    d.polygon([(2, 10), (25, 10), (25, 12), (21, 14), (6, 14), (2, 12)], fill=PINANG)
+    for x in range(6, 23, 4):
+        d.line([x, 11, x - 1, 13], fill=PINANG_D)
+    d.line([26, 8, 38, 2], fill=GREEN_D, width=2)                            # the stalk
+    d.line([26, 7, 38, 1], fill=GREEN)
+    for x, y in ((31, 4), (35, 2)):                                          # stubs of the leaves cut off
+        d.line([x, y, x + 1, y - 2], fill=GREEN)
+        d.line([x, y + 1, x + 2, y + 3], fill=GREEN)
     return outline(im)
 
 
@@ -189,5 +221,6 @@ def hati():
 if __name__ == "__main__":
     save(papan_pesta(), "assets/objects/papan_pesta.png")
     for name, fn in (("wau", wau), ("gasing", gasing), ("bola_raga", bola_raga), ("upih", upih),
-                     ("congkak", congkak), ("galah", galah), ("hati", hati)):
+                     ("congkak", congkak), ("galah", galah), ("hati", hati),
+                     ("upih_belakang", upih_belakang), ("upih_depan", upih_depan)):
         save(fn(), "assets/warisan/%s.png" % name)

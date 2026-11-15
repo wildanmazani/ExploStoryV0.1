@@ -1,7 +1,7 @@
 extends Node
 ## Dev test for Pesta Warisan.  Run:  godot --path . -- --warisan-test [--shots=/abs/dir] [--hd2d]
 ## As a guest: the festival board in Kampung Jejak, the fair's screen, then a
-## bot plays Galah Panjang (Mudah) to the end. Prints WARISAN TEST PASS and
+## bot plays Galah Panjang and Tarik Upih (Mudah) to the end. Prints WARISAN TEST PASS and
 ## quits (exit 1 on a failure). It saves like a real game does: keep your own
 ## user://simpan_*.json out of the way first.
 
@@ -69,6 +69,30 @@ func _run() -> void:
 	if int(Game.save["warisan"]["galah"]["main"]) != 1:
 		return _fail("the game was not counted")
 	var result := "won=%s time=%.1f coins=%d" % [g.won, g.time, int(Game.save["coins"]) - coins]  # (the screen goes with the scene)
+
+	Game.goto("upih", {"auto": true, "level": 0})
+	await _wait(2.0)
+	var u := _screen()
+	if u == null or u.get("me") == null:
+		return _fail("Tarik Upih did not open")
+	await _shot("upih_sedia")
+	t = 0.0
+	shown = 0
+	while u.state != "tamat" and t < 120.0:
+		await _wait(0.5)
+		t += 0.5
+		if (shown == 0 and u.state == "main" and u.time > 4.0) or (shown == 1 and u.state == "soalan") or (shown == 2 and u.me["boost"] > 0.0 and u.state == "main"):
+			shown += 1
+			await _shot("upih_%d" % shown)
+	if u.state != "tamat":
+		return _fail("Tarik Upih did not end in 120 s (x=%.0f rival=%.0f)" % [u.me["x"], u.rival["x"]])
+	await _wait(0.5)
+	await _shot("upih_tamat")
+	if not u.won:
+		return _fail("the bot lost Tarik Upih on Mudah (%.1f s)" % u.time)
+	if int(Game.save["warisan"]["upih"]["main"]) != 1:
+		return _fail("Tarik Upih was not counted")
+	result += " | upih won=%s time=%.1f right=%d" % [u.won, u.time, u.right]
 	# the board on the map: Alif stands under it
 	Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])
 	GameState.spawn_cell = Vector2i(31, 35)
