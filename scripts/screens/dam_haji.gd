@@ -20,7 +20,8 @@ const CELL := 58.0
 const ORIGIN := Vector2(408, 126)
 const RIVAL := "rakan_meiling"
 const RIVAL_NAME := "Mei Ling"
-const DEPTH := [0, 2, 4]      ## how far the rival thinks ahead (0: any move)
+const DEPTH := [1, 2, 4]      ## how far the rival thinks ahead
+const CARELESS := [0.5, 0.0, 0.0]   ## how often it plays any move at all instead
 const LIFELINES := 3
 const STEP := 0.24            ## seconds a jump
 const MAX_PLIES := 160        ## a game that will not end goes to whoever has more
@@ -379,7 +380,7 @@ func _rival_turn() -> void:
 		await get_tree().create_timer(0.6).timeout
 		if not is_inside_tree():
 			return
-	_play(best_move(board, -1, DEPTH[level]), -1)
+	_play(best_move(board, -1, 0 if randf() < CARELESS[level] else DEPTH[level]), -1)
 
 
 func _finish(victory: bool, why: String) -> void:

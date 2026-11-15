@@ -47,6 +47,23 @@ class DragCard extends PanelContainer:
 		if _icon:
 			_icon.custom_minimum_size = Vector2(28, 28)
 
+	## one of several cards in the same slot: a single short line (the full
+	## name is in the tooltip), so the slot's picture is not buried under cards
+	func tight() -> void:
+		tooltip_text = _label.text
+		mouse_filter = Control.MOUSE_FILTER_PASS
+		_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		_label.clip_text = true
+		_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		_label.add_theme_font_size_override("font_size", 14)
+		if _icon:
+			_icon.custom_minimum_size = Vector2(20, 20)
+		var sb := get_theme_stylebox("panel").duplicate()
+		if sb is StyleBoxFlat:
+			sb.content_margin_top = 2
+			sb.content_margin_bottom = 2
+			add_theme_stylebox_override("panel", sb)
+
 	func _get_drag_data(_at: Vector2) -> Variant:
 		if placed:
 			return null
@@ -141,6 +158,24 @@ class DropTarget extends PanelContainer:
 			veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			_picture.add_child(veil)
 			veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			# darker still behind the slot's own label, whatever the picture's sky
+			var shade := TextureRect.new()
+			var ramp := Gradient.new()
+			ramp.set_color(0, Color(0.05, 0.06, 0.12, 0.8))
+			ramp.set_color(1, Color(0.05, 0.06, 0.12, 0.0))
+			var tex := GradientTexture2D.new()
+			tex.gradient = ramp
+			tex.fill_from = Vector2(0, 0)
+			tex.fill_to = Vector2(0, 1)
+			tex.width = 4
+			tex.height = 64
+			shade.texture = tex
+			shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			shade.stretch_mode = TextureRect.STRETCH_SCALE
+			shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_picture.add_child(shade)
+			shade.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+			shade.offset_bottom = 130.0
 		_picture.texture = load(path)
 		_picture.modulate.a = 0.0
 		create_tween().tween_property(_picture, "modulate:a", 1.0, 0.7)
@@ -258,6 +293,9 @@ func _place(c: DragCard, t: DropTarget) -> void:
 	t.box.add_child(c)
 	c.compact()
 	c.theme_type_variation = "CardGood"
+	if t.box.get_child_count() > 1:
+		for other in t.box.get_children():
+			other.tight()
 	c.mouse_default_cursor_shape = Control.CURSOR_ARROW
 	c.focus_mode = Control.FOCUS_NONE
 	selected = null

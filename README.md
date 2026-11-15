@@ -127,8 +127,14 @@ Kandungan sejarah hanya di `data/*.json`; guru boleh ubah teks dan jawapan tanpa
    atau paksa dengan `godot --path . -- --2d` / `-- --hd2d` (tambah `--day` untuk siang, kekunci N tukar siang / malam;
    boleh digabung dengan `--autotest`). Kod: `scripts/world/hd2d_view.gd`.
    Pesta Warisan (permainan tradisional; papan pesta di Kampung Jejak, barat jalan ke Arena): `godot --path . -- --warisan-test --shots=C:/tmp/w`
-   menguji papan, skrin pesta dan Galah Panjang (bot). Kod: `scripts/screens/pesta_warisan.gd`, `scripts/screens/galah_panjang.gd`,
-   `scripts/battle/warisan_rules.gd`; sprite dilukis oleh `tools/gen_warisan_sprites.py` (boleh diganti seni PixelLab sama saiz).
+   menguji papan, skrin pesta dan lima permainannya dengan bot: Galah Panjang, Tarik Upih, Gasing, Dam Haji, Sepak Raga.
+   `godot --path . -- --warisan-input` memainkannya melalui input sebenar (kekunci, klik tetikus, jawab soalan betul dan salah);
+   `-- --warisan-test --warisan-shot=gasing --shots=C:/tmp/w` mengambil gambar satu permainan sahaja. Tambah `--2d` untuk mod 2D.
+   Kod: `scripts/screens/pesta_warisan.gd` (skrin pesta), satu skrip setiap permainan dalam `scripts/screens/`, `warisan_game.gd`
+   (kad tahap, soalan dan keputusan yang dikongsi), `warisan_stage.gd` (pentas HD-2D: permainan kekal 2D, pentas memaparkannya
+   dalam 3D bila "Dunia 3D" hidup) dan `scripts/battle/warisan_rules.gd` (senarai permainan, soalan, ganjaran).
+   Sprite ringkas dilukis oleh `tools/gen_warisan_sprites.py`; upih dipotong daripada helaian pelukis oleh `tools/make_upih_sprites.py`.
+   Gambar di belakang petak teka-teki seret-dan-padan (`"bg"` pada kad, `assets/puzzle_bg/`): lihat `docs/teka_teki/arahan_codex_gambar.md`.
    (prolog sahaja, lebih cepat: tambah `--only=prologue`)
 
 ## Versi web

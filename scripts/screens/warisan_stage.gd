@@ -198,7 +198,10 @@ func _sync(e: Dictionary) -> void:
 	card.pixel_size = K * src.scale.x
 	var ground: float = src.get_meta("ground_y", src.position.y)
 	var order: float = src.get_meta("order", 0.0)
-	card.position = Vector3(src.position.x * K, (ground - src.position.y) * K + order * 0.004, ground * K + order * 0.012)
+	# every card that stands at the same spot lies in one leaning plane, whatever the height of
+	# its own origin: otherwise a rider drawn lower than his sled ends up behind it
+	var up: float = (ground - src.position.y) * K
+	card.position = Vector3(src.position.x * K, up + order * 0.004, ground * K - up * tan(LEAN) + order * 0.012)
 	card.rotation = Vector3(-LEAN, 0.0, -src.rotation)
 	card.modulate = src.modulate
 	card.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD if src.modulate.a > 0.97 else SpriteBase3D.ALPHA_CUT_DISABLED

@@ -70,7 +70,11 @@ func _run() -> void:
 			get_tree().quit(0)
 			return
 		if arg.begins_with("--warisan-shot="):
-			Game.goto(arg.trim_prefix("--warisan-shot="), {"auto": true, "level": 1})
+			var lv := 1
+			for other in OS.get_cmdline_user_args():   # --level=2: Sukar
+				if other.begins_with("--level="):
+					lv = int(other.trim_prefix("--level="))
+			Game.goto(arg.trim_prefix("--warisan-shot="), {"auto": true, "level": lv})
 			for i in 4:
 				await _wait(2.5)
 				await _shot("lihat")

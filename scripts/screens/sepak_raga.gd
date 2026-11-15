@@ -343,14 +343,18 @@ class Padang extends Node2D:
 			var t: float = game.drop_t
 			if t < 0.7:
 				var k := t / 0.7
-				draw_arc(hit, 14.0 + 70.0 * k, 0, TAU, 40, Color(0.96, 0.9, 0.76, 0.85 * (1.0 - k)), 7.0 * (1.0 - k) + 1.0, true)
-				for i in 9:
-					var a := TAU * i / 9.0 + 0.4
-					draw_circle(hit + Vector2(cos(a), sin(a) * 0.7) * (16.0 + 62.0 * k), 9.0 * (1.0 - k) + 2.0, Color(0.93, 0.85, 0.68, 0.7 * (1.0 - k)))
+				# darker than the earth, or it does not show on it
+				draw_arc(hit, 14.0 + 78.0 * k, 0, TAU, 40, Color(0.52, 0.36, 0.2, 0.9 * (1.0 - k)), 10.0 * (1.0 - k) + 2.0, true)
+				draw_arc(hit, 8.0 + 46.0 * k, 0, TAU, 32, Color(1.0, 0.97, 0.86, 0.9 * (1.0 - k)), 5.0 * (1.0 - k) + 1.0, true)
+				for i in 11:
+					var a := TAU * i / 11.0 + 0.4
+					var at := hit + Vector2(cos(a), sin(a) * 0.7) * (18.0 + 74.0 * k)
+					draw_circle(at, 13.0 * (1.0 - k) + 3.0, Color(0.6, 0.44, 0.26, 0.8 * (1.0 - k)))
+					draw_circle(at + Vector2(-2, -3), 8.0 * (1.0 - k) + 2.0, Color(0.9, 0.78, 0.56, 0.85 * (1.0 - k)))
 			var now: Array = game.ball_at()
 			if float(now[1]) < 6.0 and t > 0.25:
 				for i in 3:
-					draw_circle(now[0] + Vector2(-8.0 + i * 8.0, 3.0), 5.0, Color(0.93, 0.85, 0.68, 0.45))
+					draw_circle(now[0] + Vector2(-8.0 + i * 8.0, 3.0), 6.0, Color(0.6, 0.44, 0.26, 0.55))
 
 
 class Hud extends Control:

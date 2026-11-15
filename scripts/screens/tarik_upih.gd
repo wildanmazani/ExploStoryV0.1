@@ -145,7 +145,7 @@ func _person(folder: String, k: float) -> AnimatedSprite2D:
 func _upih_sprite(part: String) -> Sprite2D:
 	var s := Sprite2D.new()
 	s.texture = load("res://assets/warisan/upih_%s.png" % part)
-	s.scale = Vector2(4, 4)
+	s.scale = Vector2(3, 3)
 	_track.add_child(s)
 	return s
 
@@ -401,8 +401,8 @@ func _place() -> void:
 	var moving: bool = me["v"] > 20.0 and me["fallen"] <= 0.0 and state == "main"
 	var fast: bool = me["boost"] > 0.0 and _alif.sprite_frames.has_animation("run_east")
 	_pose(_alif, _upih, Vector2(me["x"], LANE_ME), moving, me["fallen"] > 0.0, maxf(me["v"], 60.0) / 150.0, fast)
-	var seat: Vector2 = _upih[0].position + Vector2(-34, -2)   # the middle of the scoop
-	_pau.position = seat + Vector2(2, 12)   # low in the scoop: its near wall is drawn over him
+	var seat: Vector2 = _upih[0].position + Vector2(-36, 2)   # the middle of the scoop
+	_pau.position = seat + Vector2(2, 8)   # low in the scoop: its near wall is drawn over him
 	_pau.rotation = sin(time * 15.0) * 0.45 * float(me["wobble"])
 	if me["fallen"] > 0.0:   # on his side on the track, behind the upih
 		_pau.position = seat + Vector2(-96, 12)
@@ -410,7 +410,7 @@ func _place() -> void:
 	var r_moving: bool = rival["fallen"] <= 0.0 and state == "main"
 	_pose(_r_puller, _r_upih, Vector2(rival["x"], LANE_RIVAL), r_moving, rival["fallen"] > 0.0, 1.0, false)
 	_r_rider.region_enabled = rival["fallen"] <= 0.0
-	_r_rider.position = _r_upih[0].position + Vector2(-32, 16.0 - _r_seated.size.y * 1.5)   # the waist under the near rim
+	_r_rider.position = _r_upih[0].position + Vector2(-36, 18.0 - _r_seated.size.y * 1.5)   # the waist under the near rim
 	_r_rider.rotation = 0.0
 	if rival["fallen"] > 0.0:   # rolled off: all of him, on his side behind the upih
 		_r_rider.position = _r_upih[0].position + Vector2(-134, -4)
@@ -420,7 +420,7 @@ func _place() -> void:
 func _pose(puller: AnimatedSprite2D, upih: Array, feet: Vector2, moving: bool, fallen: bool, speed: float, fast: bool) -> void:
 	puller.position = feet
 	for part in upih:
-		part.position = feet + Vector2(-102, -34)   # the tip of the stalk is in the puller's hands
+		part.position = feet + Vector2(-102, -38)   # the tip of the stalk is in the puller's hands
 	var anim := "idle_west" if fallen else (("run_east" if fast else "walk_east") if moving else "idle_east")
 	if puller.animation != anim:
 		puller.play(anim)
