@@ -334,7 +334,7 @@ func _place() -> void:
 	var moving: bool = me["v"] > 20.0 and me["fallen"] <= 0.0 and state == "main"
 	var fast: bool = me["boost"] > 0.0 and _alif.sprite_frames.has_animation("run_east")
 	_pose(_alif, _upih, Vector2(me["x"], LANE_ME), moving, me["fallen"] > 0.0, maxf(me["v"], 60.0) / 150.0, fast)
-	var seat: Vector2 = _upih[0].position
+	var seat: Vector2 = _upih[0].position + Vector2(-34, -2)   # the middle of the scoop
 	_pau.position = seat + Vector2(2, 4)
 	_pau.rotation = sin(time * 15.0) * 0.45 * float(me["wobble"])
 	if me["fallen"] > 0.0:   # on his side on the track, behind the upih
@@ -342,17 +342,17 @@ func _place() -> void:
 		_pau.rotation = -PI / 2.0
 	var r_moving: bool = rival["fallen"] <= 0.0 and state == "main"
 	_pose(_r_puller, _r_upih, Vector2(rival["x"], LANE_RIVAL), r_moving, rival["fallen"] > 0.0, 1.0, false)
-	_r_rider.position = _r_upih[0].position + Vector2(0, 18)
+	_r_rider.position = _r_upih[0].position + Vector2(-34, 16)
 	_r_rider.rotation = 0.0
 	if rival["fallen"] > 0.0:
-		_r_rider.position = _r_upih[0].position + Vector2(-100, 4)
+		_r_rider.position = _r_upih[0].position + Vector2(-134, 4)
 		_r_rider.rotation = -PI / 2.0
 
 
 func _pose(puller: AnimatedSprite2D, upih: Array, feet: Vector2, moving: bool, fallen: bool, speed: float, fast: bool) -> void:
 	puller.position = feet
 	for part in upih:
-		part.position = feet + Vector2(-152, -20)
+		part.position = feet + Vector2(-102, -34)   # the tip of the stalk is in the puller's hands
 	var anim := "idle_west" if fallen else (("run_east" if fast else "walk_east") if moving else "idle_east")
 	if puller.animation != anim:
 		puller.play(anim)
@@ -420,16 +420,8 @@ class Track extends Node2D:
 		_stalk(Vector2(game.rival["x"], game.LANE_RIVAL), game.rival["fallen"] <= 0.0 and game.state == "main")
 		_stalk(Vector2(game.me["x"], game.LANE_ME), game.me["v"] > 20.0 and game.me["fallen"] <= 0.0 and game.state == "main")
 
-	## the frond's stalk, from the sheath up to the puller's hands, and the dust behind
+	## the dust behind an upih on the move
 	func _stalk(feet: Vector2, moving: bool) -> void:
-		var a := feet + Vector2(-102, -30)
-		var b := feet + Vector2(-16, -64)
-		draw_line(a, b, Color("3f6e30"), 7.0)
-		draw_line(a + Vector2(0, -2), b + Vector2(0, -2), Color("7cb85a"), 2.0)
-		for k in [0.35, 0.6]:
-			var p: Vector2 = a.lerp(b, k)
-			draw_line(p, p + Vector2(-10, -12), Color("5a9a44"), 3.0)
-			draw_line(p, p + Vector2(-4, 12), Color("5a9a44"), 3.0)
 		if moving:
 			for i in 4:
 				var t := fposmod(game.time * 2.2 + i * 0.25, 1.0)

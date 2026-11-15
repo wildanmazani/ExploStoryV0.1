@@ -131,49 +131,58 @@ def bola_raga():
     return outline(im)
 
 
-HULL = [(1, 4), (3, 2), (24, 3), (27, 5), (25, 9), (21, 11), (6, 11), (2, 9)]
+# The upih, after the design sheet for it: a deep scoop with a curled rim that
+# narrows into one long stalk, warm orange-brown. Side view, pulled to the right.
+UPIH, UPIH_L, UPIH_D, UPIH_IN = (198, 122, 62, 255), (236, 176, 104, 255), (150, 86, 42, 255), (122, 66, 34, 255)
+UPIH_OUT = (62, 32, 16, 255)
+HULL = [(1, 6), (2, 3), (5, 2), (8, 4), (13, 7), (20, 8), (27, 8), (31, 7), (42, 2), (43, 3), (43, 4),
+        (32, 10), (28, 12), (23, 15), (13, 16), (7, 15), (3, 12)]
+NEAR = [(2, 8), (6, 10), (12, 12), (21, 12), (27, 11), (31, 9), (32, 10), (28, 12), (23, 15), (13, 16), (7, 15), (3, 12)]
+
+
+def upih_outline(im):
+    global OUT
+    keep, OUT = OUT, UPIH_OUT
+    im = outline(im)
+    OUT = keep
+    return im
 
 
 def upih_belakang():
-    """the sheath of a pinang frond from the side, open on top like a little
-    boat: the rider sits inside (upih_depan is drawn over his legs)"""
-    im, d = canvas(28, 13)
-    d.polygon(HULL, fill=PINANG_D)
-    d.polygon([(3, 4), (23, 4), (25, 5), (22, 7), (5, 7)], fill=PINANG_L)   # the pale inside
-    d.line([4, 3, 23, 3], fill=PINANG)                                       # the far rim
-    return outline(im)
+    """the far side and the inside of the scoop, and the stalk: the rider sits
+    in it and upih_depan is drawn over his legs"""
+    im, d = canvas(44, 18)
+    d.polygon(HULL, fill=UPIH)
+    d.polygon([(3, 5), (5, 4), (12, 8), (20, 9), (27, 9), (30, 9), (26, 11), (12, 12), (6, 10), (3, 8)], fill=UPIH_IN)  # the inside, in shade
+    d.line([6, 7, 13, 10, 24, 10], fill=UPIH_D)                    # the grain inside
+    d.line([2, 4, 5, 3, 8, 5, 13, 8], fill=UPIH_L)                 # the curled far rim
+    d.line([31, 7, 42, 2], fill=UPIH_L)                            # the stalk, lit from above
+    d.line([32, 9, 43, 4], fill=UPIH_D)
+    return upih_outline(im)
 
 
 def upih_depan():
-    """the near wall of the sheath"""
-    im, d = canvas(28, 13)
-    d.polygon([(2, 7), (25, 7), (25, 9), (21, 11), (6, 11), (2, 9)], fill=PINANG)
-    d.line([2, 7, 25, 7], fill=PINANG_L)                                     # the near rim, curled
-    for x in range(6, 23, 4):                                                # the grain
-        d.line([x, 8, x - 1, 10], fill=PINANG_D)
-    d.line([6, 11, 21, 11], fill=PINANG_D)
-    im = outline(im)
+    """the near wall of the scoop"""
+    im, d = canvas(44, 18)
+    d.polygon(NEAR, fill=UPIH)
+    d.line([2, 8, 6, 10, 12, 12, 21, 12, 27, 11, 31, 9], fill=UPIH_L)   # the near rim
+    d.line([5, 12, 11, 14, 22, 14, 28, 12], fill=UPIH_D)                # the grain
+    d.line([8, 15, 13, 16, 22, 15], fill=UPIH_D)
+    im = upih_outline(im)
     px = im.load()
-    for x in range(28):                                                      # no outline along the top: it joins the back
-        for y in range(0, 7):
-            px[x, y] = (0, 0, 0, 0)
+    for x in range(44):                                            # no outline above the rim: it joins the back
+        for y in range(18):
+            if px[x, y] == UPIH_OUT and y < 13 and not (x <= 2 or x >= 31):
+                if px[x, min(y + 1, 17)] != (0, 0, 0, 0) and px[x, y - 1] == (0, 0, 0, 0):
+                    px[x, y] = (0, 0, 0, 0)
     return im
 
 
 def upih():
-    """the whole frond for the fair's card: the sheath and the stalk the puller holds"""
-    im, d = canvas(40, 16)
-    d.polygon([(x, y + 3) for x, y in HULL], fill=PINANG_D)
-    d.polygon([(3, 7), (23, 7), (25, 8), (22, 10), (5, 10)], fill=PINANG_L)
-    d.polygon([(2, 10), (25, 10), (25, 12), (21, 14), (6, 14), (2, 12)], fill=PINANG)
-    for x in range(6, 23, 4):
-        d.line([x, 11, x - 1, 13], fill=PINANG_D)
-    d.line([26, 8, 38, 2], fill=GREEN_D, width=2)                            # the stalk
-    d.line([26, 7, 38, 1], fill=GREEN)
-    for x, y in ((31, 4), (35, 2)):                                          # stubs of the leaves cut off
-        d.line([x, y, x + 1, y - 2], fill=GREEN)
-        d.line([x, y + 1, x + 2, y + 3], fill=GREEN)
-    return outline(im)
+    """the whole upih, for the fair's card"""
+    im = upih_belakang()
+    im.alpha_composite(upih_depan())
+    return im
 
 
 def congkak():

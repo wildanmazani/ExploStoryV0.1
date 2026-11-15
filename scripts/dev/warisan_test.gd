@@ -70,6 +70,21 @@ func _run() -> void:
 		return _fail("the game was not counted")
 	var result := "won=%s time=%.1f coins=%d" % [g.won, g.time, int(Game.save["coins"]) - coins]  # (the screen goes with the scene)
 
+	# Sukar for a while: a guard catches the bot and asks his question
+	Game.goto("galah", {"auto": true, "level": 2})
+	await _wait(2.0)
+	g = _screen()
+	t = 0.0
+	shown = 0
+	while t < 40.0 and shown < 2 and g.state != "tamat":
+		await _wait(0.5)
+		t += 0.5
+		if (shown == 0 and t >= 3.0) or (shown == 1 and g.state == "soalan"):
+			shown += 1
+			await _shot("galah_sukar_%d" % shown)
+	if shown < 2:
+		return _fail("no question when caught on Sukar")
+
 	Game.goto("upih", {"auto": true, "level": 0})
 	await _wait(2.0)
 	var u := _screen()

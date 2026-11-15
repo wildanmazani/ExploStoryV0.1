@@ -2,11 +2,12 @@ extends "res://scripts/screens/warisan_game.gd"
 ## Galah Panjang (Pesta Warisan). Alif starts at the bottom of the court,
 ## must get past four lines, each guarded by a classmate who may only run
 ## along that line, reach the far end (PERGI) and come all the way back
-## (BALIK). A guard who touches him on the line costs one of three lives and
-## sends him back to the last box he stood in.
-## Jurus Ingatan (Q, three per game): a revision question; answer right and the
-## next guard on the way stands frozen for a few seconds. A wrong answer costs
-## nothing: history gives the edge, the feet win the game.
+## (BALIK).
+## A guard who touches Alif on a line asks a revision question: answer right
+## and Alif slips away while that guard stands frozen; answer wrong and it
+## costs one of three lives and sends him back to the last box he stood in.
+## Running (hold Shift, or the LARI button) makes Alif much faster for as long
+## as his stamina lasts: a burst to slip past a guard, not a way to cross the court.
 ## Keys: WASD / arrows (or hold the mouse / a finger where Alif should go).
 ## params: {"level": 0..2} skips the level card; {"auto": true} lets a bot play (dev test).
 
@@ -22,7 +23,10 @@ const REACH := 30.0       ## how far along the line a guard's arms go
 const ON_LINE := 16.0     ## how near the line counts as crossing it
 const GUARDS := ["rakan_aisyah", "rakan_ravi", "rakan_meiling", "rakan_daniel"]
 const LIVES := 3
-const JURUS := 3
+const SPRINT := 1.75      ## times SPEED while running
+const STAMINA_USE := 0.75 ## of the bar per second of running (full = about 1.3 s)
+const STAMINA_BACK := 0.28
+const STAMINA_READY := 0.3  ## an empty bar must fill this far before he can run again
 
 var level := 1
 var state := "pilih"      ## pilih (level card), main, soalan, tamat
@@ -30,9 +34,9 @@ var phase := "pergi"      ## pergi, balik
 var pos := Vector2(W / 2.0, H - GAP / 2.0)
 var guards: Array = []    ## {y, x, tx, look, frozen, sprite}
 var lives := LIVES
-var jurus := JURUS
 var right := 0
 var time := 0.0
+var stamina := 1.0
 var won := false
 
 var _court: Node2D
@@ -43,8 +47,11 @@ var _shield := 0.0             ## seconds he cannot be caught (just sent back)
 var _pointer := false
 var _info: Label
 var _hearts: HBoxContainer
-var _jurus_btn: Button
 var _auto_wait := 0.0
+var _tired := false
+var _running := false
+var _run_btn: Button
+var _stamina_bar: ProgressBar
 
 
 func _ready() -> void:
@@ -73,10 +80,21 @@ func _ready() -> void:
 	col.add_child(_info)
 	_hearts = UI.hbox(6)
 	col.add_child(_hearts)
-	_jurus_btn = UI.button("", "Blue")
-	_jurus_btn.pressed.connect(ask_question)
-	col.add_child(_jurus_btn)
-	var tip := UI.label(tr("Gerak: WASD / anak panah, atau tahan tetikus / jari. Penjaga hanya bergerak di atas garisan."), "Small", true)
+	col.add_child(UI.label(tr("Stamina"), "Small"))
+	_stamina_bar = ProgressBar.new()
+	_stamina_bar.max_value = 1.0
+	_stamina_bar.step = 0.01
+	_stamina_bar.show_percentage = false
+	_stamina_bar.custom_minimum_size = Vector2(270, 18)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color("f2c14e")
+	_stamina_bar.add_theme_stylebox_override("fill", fill)
+	col.add_child(_stamina_bar)
+	_run_btn = UI.button(tr("LARI (Shift)"), "Blue")
+	_run_btn.toggle_mode = true
+	_run_btn.focus_mode = Control.FOCUS_NONE
+	col.add_child(_run_btn)
+	var tip := UI.label(tr("Gerak: WASD / anak panah, atau tahan tetikus / jari. Tahan Shift untuk berlari selagi ada stamina. Kena tangkap? Jawab soalan untuk terlepas."), "Small", true)
 	tip.custom_minimum_size.x = 270
 	col.add_child(tip)
 	var out := UI.button("« Keluar")
@@ -104,7 +122,7 @@ func _sprite(folder: String) -> AnimatedSprite2D:
 
 func _level_card() -> void:
 	state = "pilih"
-	level_card("GALAH PANJANG", tr("Lepasi empat garisan, sampai ke hujung, kemudian balik ke tempat mula. Penjaga hanya boleh berlari di atas garisan mereka: tunggu mereka jauh, kemudian lintas!\n\nJurus Ingatan (Q): jawab soalan Sejarah dengan betul dan penjaga di depan terpaku seketika."), _start)
+	level_card("GALAH PANJANG", tr("Lepasi empat garisan, sampai ke hujung, kemudian balik ke tempat mula. Penjaga hanya boleh berlari di atas garisan mereka: tunggu mereka jauh, kemudian lintas!\n\nKena tangkap? Jawab soalan Sejarah: betul, kau terlepas dan penjaga itu terpaku; salah, hilang satu nyawa.\n\nTahan Shift (atau butang LARI) untuk berlari mengelak penjaga. Stamina cepat habis, guna bila perlu sahaja."), _start)
 
 
 func _start(lv: int) -> void:
@@ -114,7 +132,8 @@ func _start(lv: int) -> void:
 	_safe_y = pos.y
 	phase = "pergi"
 	lives = LIVES
-	jurus = JURUS
+	stamina = 1.0
+	_tired = false
 	right = 0
 	time = 0.0
 	_shield = 1.0
@@ -125,30 +144,23 @@ func _start(lv: int) -> void:
 	_refresh_hud()
 
 
-func ask_question() -> void:
-	if state != "main" or jurus <= 0 or _questions.is_empty():
-		return
-	jurus -= 1
+## a guard has Alif: a question decides whether he slips away
+func _caught(g: Dictionary) -> void:
 	state = "soalan"
 	_pointer = false
-	_refresh_hud()
-	question_card(tr("JURUS INGATAN"), tr("Betul! Penjaga di depan terpaku."), "", func(ok: bool):
+	Sfx.play("bump")
+	question_card(tr("KENA TANGKAP!"), tr("Betul! Kau terlepas, penjaga itu terpaku."), tr("Hilang satu nyawa, balik ke petak tadi."), func(ok: bool):
 		state = "main"
+		_shield = 1.4
 		if ok:
 			right += 1
-			_freeze_next()
+			g["frozen"] = FREEZE[level]
+		else:
+			lives -= 1
+			pos = Vector2(W / 2.0, _safe_y)
+			if lives <= 0:
+				_finish(false)
 		_refresh_hud())
-
-
-## the guard Alif meets next on his way stands still for a while
-func _freeze_next() -> void:
-	var best: Dictionary = {}
-	for g in guards:
-		var ahead: bool = g["y"] < pos.y if phase == "pergi" else g["y"] > pos.y
-		if ahead and (best.is_empty() or absf(g["y"] - pos.y) < absf(best["y"] - pos.y)):
-			best = g
-	if not best.is_empty():
-		best["frozen"] = FREEZE[level]
 
 
 func _finish(victory: bool) -> void:
@@ -171,8 +183,6 @@ func _finish(victory: bool) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		_pointer = event.pressed and state == "main"
-	elif event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_Q:
-		ask_question()
 
 
 func _move_input() -> Vector2:
@@ -202,7 +212,18 @@ func _process(delta: float) -> void:
 	time += delta
 	_shield = maxf(0.0, _shield - delta)
 	var v := _move_input()
-	pos += v * SPEED * delta
+	_running = v.length() > 0.1 and not _tired and not _auto and (Input.is_action_pressed("run") or _run_btn.button_pressed)
+	if _running:
+		stamina -= STAMINA_USE * delta
+		if stamina <= 0.0:   # out of breath
+			stamina = 0.0
+			_tired = true
+			_run_btn.button_pressed = false
+	else:
+		stamina = minf(1.0, stamina + STAMINA_BACK * delta)
+		if stamina >= STAMINA_READY:
+			_tired = false
+	pos += v * SPEED * (SPRINT if _running else 1.0) * delta
 	pos.x = clampf(pos.x, 16.0, W - 16.0)
 	pos.y = clampf(pos.y, 18.0, H - 10.0)
 	_animate(v)
@@ -229,7 +250,7 @@ func _process(delta: float) -> void:
 			if s.animation != anim:
 				s.play(anim)
 			if _shield <= 0.0 and absf(pos.y - g["y"]) < ON_LINE and absf(pos.x - g["x"]) < REACH:
-				_caught()
+				_caught(g)
 				return
 		s.position = Vector2(g["x"], g["y"])
 
@@ -248,21 +269,12 @@ func _animate(v: Vector2) -> void:
 	if v.length() > 0.1:
 		_facing = ("east" if v.x > 0.0 else "west") if absf(v.x) > absf(v.y) else ("south" if v.y > 0.0 else "north")
 	var anim := ("walk_" if v.length() > 0.1 else "idle_") + _facing
+	if _running and state == "main" and _alif.sprite_frames.has_animation("run_" + _facing):
+		anim = "run_" + _facing
 	if _alif.animation != anim:
 		_alif.play(anim)
 	_alif.position = pos
 	_alif.modulate.a = 0.45 if _shield > 0.0 and fmod(_shield, 0.2) < 0.1 else 1.0
-
-
-func _caught() -> void:
-	lives -= 1
-	Sfx.play("bump")
-	Game.toast(tr("Kena tangkap! Balik ke petak tadi."), Color("e0705f"))
-	pos = Vector2(W / 2.0, _safe_y)
-	_shield = 1.4
-	_refresh_hud()
-	if lives <= 0:
-		_finish(false)
 
 
 func _refresh_hud() -> void:
@@ -277,8 +289,9 @@ func _refresh_hud() -> void:
 		h.custom_minimum_size = Vector2(36, 33)
 		h.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_hearts.add_child(h)
-	_jurus_btn.text = tr("Jurus Ingatan (Q)  x%d") % jurus
-	_jurus_btn.disabled = jurus <= 0 or state != "main"
+	_stamina_bar.value = stamina
+	_stamina_bar.modulate = Color(1, 0.55, 0.5) if _tired else Color.WHITE
+	_run_btn.disabled = _tired or state != "main"
 
 
 ## dev bot: waits in the middle of a box until the next guard is far to one
@@ -297,9 +310,10 @@ func _auto_input() -> Vector2:
 	if next["frozen"] > 1.0 or absf(next["x"] - pos.x) > 150.0:
 		return Vector2(0, dir)               # the gap is open: go
 	_auto_wait += get_process_delta_time()
-	if _auto_wait > 6.0 and jurus > 0:       # stuck: use a Jurus Ingatan
-		_auto_wait = 0.0
-		ask_question.call_deferred()
+	if _auto_wait > 6.0:                     # stuck: just go (and answer the guard's question)
+		if _auto_wait > 7.0:
+			_auto_wait = 0.0
+		return Vector2(0, dir)
 	# draw the guard to one side, then double back
 	var away := 1.0 if fmod(time, 5.0) < 2.5 else -1.0
 	return Vector2(away, 0)
@@ -329,3 +343,7 @@ class Court extends Node2D:
 			var frozen: bool = g["frozen"] > 0.0
 			var c := Color(0.5, 0.8, 1.0, 0.35) if frozen else Color(0.8, 0.2, 0.15, 0.22)
 			draw_rect(Rect2(g["x"] - game.REACH, y - game.ON_LINE, game.REACH * 2.0, game.ON_LINE * 2.0), c)
+		if game.stamina < 1.0 and game.state == "main":   # the stamina, by Alif's feet
+			var at: Vector2 = game.pos + Vector2(-22, 8)
+			draw_rect(Rect2(at, Vector2(44, 6)), Color(0.1, 0.07, 0.04, 0.7))
+			draw_rect(Rect2(at + Vector2(1, 1), Vector2(42.0 * game.stamina, 4)), Color("e0705f") if game._tired else Color("f2c14e"))
