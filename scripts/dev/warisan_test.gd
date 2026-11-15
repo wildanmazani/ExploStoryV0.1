@@ -1,7 +1,7 @@
 extends Node
 ## Dev test for Pesta Warisan.  Run:  godot --path . -- --warisan-test [--shots=/abs/dir] [--hd2d]
 ## As a guest: the festival board in Kampung Jejak, the fair's screen, then a
-## bot plays Galah Panjang and Tarik Upih (Mudah) to the end. Prints WARISAN TEST PASS and
+## bot plays Galah Panjang, Tarik Upih and Gasing (Mudah) to the end. Prints WARISAN TEST PASS and
 ## quits (exit 1 on a failure). It saves like a real game does: keep your own
 ## user://simpan_*.json out of the way first.
 
@@ -108,6 +108,27 @@ func _run() -> void:
 	if int(Game.save["warisan"]["upih"]["main"]) != 1:
 		return _fail("Tarik Upih was not counted")
 	result += " | upih won=%s time=%.1f right=%d" % [u.won, u.time, u.right]
+
+	Game.goto("gasing", {"auto": true, "level": 0})
+	await _wait(2.0)
+	var gs := _screen()
+	if gs == null or gs.get("marker") == null:
+		return _fail("Gasing did not open")
+	t = 0.0
+	shown = 0
+	while gs.state != "tamat" and t < 240.0:
+		await _wait(0.25)
+		t += 0.25
+		if (shown == 0 and gs.state == "lilit") or (shown == 1 and gs.state == "pusing" and gs.me["spin"] < 0.9) or (shown == 2 and gs.state == "rehat"):
+			shown += 1
+			await _shot("gasing_%d" % shown)
+	if gs.state != "tamat":
+		return _fail("Gasing did not end in 240 s (%s, %d-%d)" % [gs.state, gs.score[0], gs.score[1]])
+	await _wait(0.5)
+	await _shot("gasing_tamat")
+	if int(Game.save["warisan"]["gasing"]["main"]) != 1:
+		return _fail("Gasing was not counted")
+	result += " | gasing won=%s %d-%d" % [gs.won, gs.score[0], gs.score[1]]
 	# the board on the map: Alif stands under it
 	Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])
 	GameState.spawn_cell = Vector2i(31, 35)

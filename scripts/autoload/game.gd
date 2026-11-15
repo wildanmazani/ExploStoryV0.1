@@ -31,6 +31,7 @@ const SCREENS := {
 	"pesta": "res://scripts/screens/pesta_warisan.gd",   # Pesta Warisan and its games (battle/warisan_rules.gd)
 	"galah": "res://scripts/screens/galah_panjang.gd",
 	"upih": "res://scripts/screens/tarik_upih.gd",
+	"gasing": "res://scripts/screens/gasing.gd",
 }
 
 ## every zone of every open chapter, in play order (filled from data/chapters.json)
