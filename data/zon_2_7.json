@@ -164,25 +164,29 @@
           "id": "khalsa",
           "label": "Khalsa Diwan Malaya, Taiping",
           "target": "y1902",
-          "fact": "Menjaga kepentingan masyarakat Sikh."
+          "fact": "Menjaga kepentingan masyarakat Sikh.",
+          "bg": "res://assets/puzzle_bg/garis_persatuan_khalsa.png"
         },
         {
           "id": "kms",
           "label": "Kesatuan Melayu Singapura (KMS)",
           "target": "y1926",
-          "fact": "Ditubuhkan oleh Mohammad Eunos Abdullah."
+          "fact": "Ditubuhkan oleh Mohammad Eunos Abdullah.",
+          "bg": "res://assets/puzzle_bg/garis_persatuan_kms.png"
         },
         {
           "id": "paspam",
           "label": "Persaudaraan Sahabat Pena (PASPAM)",
           "target": "y1934",
-          "fact": "Bermula di Pulau Pinang."
+          "fact": "Bermula di Pulau Pinang.",
+          "bg": "res://assets/puzzle_bg/garis_persatuan_paspam.png"
         },
         {
           "id": "kmm",
           "label": "Kesatuan Melayu Muda (KMM)",
           "target": "y1937",
-          "fact": "Ibrahim Haji Yaakob; gagasan Melayu Raya."
+          "fact": "Ibrahim Haji Yaakob; gagasan Melayu Raya.",
+          "bg": "res://assets/puzzle_bg/garis_persatuan_kmm.png"
         }
       ],
       "done_text": "1902, 1926, 1934, 1937: persatuan semakin berani."

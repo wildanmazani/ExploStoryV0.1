@@ -119,35 +119,40 @@
           "label": "Lanun mengganggu perairan Melaka",
           "icon": "res://assets/icons/kapal.png",
           "target": "laksamana",
-          "fact": "Laksamana bertanggungjawab terhadap keselamatan perairan."
+          "fact": "Laksamana bertanggungjawab terhadap keselamatan perairan.",
+          "bg": "res://assets/puzzle_bg/hari_sibuk_m_lanun.png"
         },
         {
           "id": "m_berangkat",
           "label": "Sultan berangkat. Siapa memangku?",
           "icon": "res://assets/icons/mahkota.png",
           "target": "bendahara",
-          "fact": "Bendahara memangku sultan apabila sultan berangkat."
+          "fact": "Bendahara memangku sultan apabila sultan berangkat.",
+          "bg": "res://assets/puzzle_bg/hari_sibuk_m_berangkat.png"
         },
         {
           "id": "m_cukai_kapal",
           "label": "Kapal asing belum membayar cukai",
           "icon": "res://assets/icons/syiling.png",
           "target": "syahbandar",
-          "fact": "Syahbandar mengurus pelabuhan dan cukai kapal asing."
+          "fact": "Syahbandar mengurus pelabuhan dan cukai kapal asing.",
+          "bg": "res://assets/puzzle_bg/hari_sibuk_m_cukai_kapal.png"
         },
         {
           "id": "m_curi",
           "label": "Kecurian di dalam kota Melaka",
           "icon": "res://assets/icons/kunci.png",
           "target": "temenggung",
-          "fact": "Temenggung menjaga keamanan dalam kota."
+          "fact": "Temenggung menjaga keamanan dalam kota.",
+          "bg": "res://assets/puzzle_bg/hari_sibuk_m_curi.png"
         },
         {
           "id": "m_perbendaharaan",
           "label": "Perbendaharaan perlu diurus dan cukai kawasan pegangan dikutip",
           "icon": "res://assets/icons/syiling.png",
           "target": "bendahari",
-          "fact": "Penghulu Bendahari mengurus perbendaharaan dan kutipan cukai."
+          "fact": "Penghulu Bendahari mengurus perbendaharaan dan kutipan cukai.",
+          "bg": "res://assets/puzzle_bg/hari_sibuk_m_perbendaharaan.png"
         }
       ],
       "done_text": "Setiap pembesar ada tugas yang jelas. Pentadbiran Melaka teratur."

@@ -195,32 +195,37 @@
           "id": "p8",
           "label": "Pembesar Berlapan",
           "target": "l3",
-          "fact": "Pembesar Berlapan di bawah Pembesar Berempat."
+          "fact": "Pembesar Berlapan di bawah Pembesar Berempat.",
+          "bg": "res://assets/puzzle_bg/kerajaan_p8.png"
         },
         {
           "id": "sultan",
           "label": "Sultan",
           "icon": "res://assets/icons/mahkota.png",
           "target": "l1",
-          "fact": "Raja ialah pemerintah tertinggi. Gelaran Sultan digunakan selepas kedatangan Islam."
+          "fact": "Raja ialah pemerintah tertinggi. Gelaran Sultan digunakan selepas kedatangan Islam.",
+          "bg": "res://assets/puzzle_bg/kerajaan_sultan.png"
         },
         {
           "id": "p32",
           "label": "Pembesar Tiga Puluh Dua",
           "target": "l5",
-          "fact": "Pembesar Tiga Puluh Dua di lapisan paling bawah."
+          "fact": "Pembesar Tiga Puluh Dua di lapisan paling bawah.",
+          "bg": "res://assets/puzzle_bg/kerajaan_p32.png"
         },
         {
           "id": "p4",
           "label": "Pembesar Berempat",
           "target": "l2",
-          "fact": "Pembesar Berempat: Bendahara, Penghulu Bendahari, Temenggung dan Laksamana."
+          "fact": "Pembesar Berempat: Bendahara, Penghulu Bendahari, Temenggung dan Laksamana.",
+          "bg": "res://assets/puzzle_bg/kerajaan_p4.png"
         },
         {
           "id": "p16",
           "label": "Pembesar Enam Belas",
           "target": "l4",
-          "fact": "Pembesar Enam Belas di bawah Pembesar Berlapan."
+          "fact": "Pembesar Enam Belas di bawah Pembesar Berlapan.",
+          "bg": "res://assets/puzzle_bg/kerajaan_p16.png"
         }
       ],
       "done_text": "Raja dibantu oleh Sistem Pembesar Empat Lipatan."

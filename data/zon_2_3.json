@@ -70,37 +70,43 @@
           "id": "satya",
           "label": "Satyagraha, Mahatma Gandhi",
           "target": "india",
-          "fact": "Berpegang teguh kepada kebenaran, tanpa keganasan."
+          "fact": "Berpegang teguh kepada kebenaran, tanpa keganasan.",
+          "bg": "res://assets/puzzle_bg/kapal_asia_satya.png"
         },
         {
           "id": "samaj",
           "label": "Brahmo Samaj dan Arya Samaj",
           "target": "india",
-          "fact": "Pertubuhan sosioagama yang menyemai cinta budaya tempatan."
+          "fact": "Pertubuhan sosioagama yang menyemai cinta budaya tempatan.",
+          "bg": "res://assets/puzzle_bg/kapal_asia_samaj.png"
         },
         {
           "id": "sanmin",
           "label": "Tiga Prinsip Rakyat (San Min Chu-i)",
           "target": "china",
-          "fact": "Dr. Sun Yat Sen: nasionalisme, demokrasi, kebajikan sosial."
+          "fact": "Dr. Sun Yat Sen: nasionalisme, demokrasi, kebajikan sosial.",
+          "bg": "res://assets/puzzle_bg/kapal_asia_sanmin.png"
         },
         {
           "id": "manchu",
           "label": "Revolusi 1911 menumbangkan Dinasti Manchu",
           "target": "china",
-          "fact": "Republik ditubuhkan di China."
+          "fact": "Republik ditubuhkan di China.",
+          "bg": "res://assets/puzzle_bg/kapal_asia_manchu.png"
         },
         {
           "id": "islah",
           "label": "Gerakan Islah, al-Afghani dan Muhammad Abduh",
           "target": "mesir",
-          "fact": "Kembali kepada al-Quran dan Hadis."
+          "fact": "Kembali kepada al-Quran dan Hadis.",
+          "bg": "res://assets/puzzle_bg/kapal_asia_islah.png"
         },
         {
           "id": "meiji",
           "label": "Pemulihan Meiji (1868) dan semangat Bushido",
           "target": "jepun",
-          "fact": "Jepun menjadi kuasa perindustrian dan tentera."
+          "fact": "Jepun menjadi kuasa perindustrian dan tentera.",
+          "bg": "res://assets/puzzle_bg/kapal_asia_meiji.png"
         }
       ],
       "done_text": "Setiap bangsa Asia bangkit dengan cara sendiri."

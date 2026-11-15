@@ -66,43 +66,50 @@
           "id": "dol",
           "label": "Penghulu Dol Said",
           "target": "semenanjung_barat",
-          "fact": "Naning menentang British."
+          "fact": "Naning menentang British.",
+          "bg": "res://assets/puzzle_bg/pahlawan_dol.png"
         },
         {
           "id": "lela",
           "label": "Dato' Maharaja Lela",
           "target": "semenanjung_barat",
-          "fact": "Perak menentang British."
+          "fact": "Perak menentang British.",
+          "bg": "res://assets/puzzle_bg/pahlawan_lela.png"
         },
         {
           "id": "bahaman",
           "label": "Dato' Bahaman",
           "target": "pantai_timur",
-          "fact": "Pahang."
+          "fact": "Pahang.",
+          "bg": "res://assets/puzzle_bg/pahlawan_bahaman.png"
         },
         {
           "id": "janggut",
           "label": "Tok Janggut (1915)",
           "target": "pantai_timur",
-          "fact": "Kelantan; dipengaruhi seruan Pan-Islamisme."
+          "fact": "Kelantan; dipengaruhi seruan Pan-Islamisme.",
+          "bg": "res://assets/puzzle_bg/pahlawan_janggut.png"
         },
         {
           "id": "limbong",
           "label": "Haji Abdul Rahman Limbong",
           "target": "pantai_timur",
-          "fact": "Terengganu."
+          "fact": "Terengganu.",
+          "bg": "res://assets/puzzle_bg/pahlawan_limbong.png"
         },
         {
           "id": "rentap",
           "label": "Rentap",
           "target": "borneo",
-          "fact": "Sarawak."
+          "fact": "Sarawak.",
+          "bg": "res://assets/puzzle_bg/pahlawan_rentap.png"
         },
         {
           "id": "salleh",
           "label": "Mat Salleh",
           "target": "borneo",
-          "fact": "Sabah."
+          "fact": "Sabah.",
+          "bg": "res://assets/puzzle_bg/pahlawan_salleh.png"
         }
       ],
       "done_text": "Penentangan bersenjata berlaku di seluruh negara kita."

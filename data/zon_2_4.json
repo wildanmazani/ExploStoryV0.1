@@ -75,37 +75,43 @@
           "id": "kat",
           "label": "Katipunan dan akhbar Kalayan",
           "target": "fil",
-          "fact": "Andres Bonifacio; Revolusi Filipina 1896."
+          "fact": "Andres Bonifacio; Revolusi Filipina 1896.",
+          "bg": "res://assets/puzzle_bg/perahu_serantau_kat.png"
         },
         {
           "id": "kasut",
           "label": "Isu Kasut, Persatuan Belia Buddha (1906)",
           "target": "bur",
-          "fact": "Orang British memakai kasut di dalam kuil Buddha."
+          "fact": "Orang British memakai kasut di dalam kuil Buddha.",
+          "bg": "res://assets/puzzle_bg/perahu_serantau_kasut.png"
         },
         {
           "id": "thakin",
           "label": "Golongan Thakin, Parti Do Bama Asiayone",
           "target": "bur",
-          "fact": "Thakin bermaksud 'tuan'."
+          "fact": "Thakin bermaksud 'tuan'.",
+          "bg": "res://assets/puzzle_bg/perahu_serantau_thakin.png"
         },
         {
           "id": "trib",
           "label": "Akhbar Tribune Indige dan Cloche Felee",
           "target": "vie",
-          "fact": "Mengkritik penindasan Perancis."
+          "fact": "Mengkritik penindasan Perancis.",
+          "bg": "res://assets/puzzle_bg/perahu_serantau_trib.png"
         },
         {
           "id": "sumpah",
           "label": "Sumpah Pemuda (1928)",
           "target": "ind",
-          "fact": "Satu tanah air, satu bangsa, satu bahasa."
+          "fact": "Satu tanah air, satu bangsa, satu bahasa.",
+          "bg": "res://assets/puzzle_bg/perahu_serantau_sumpah.png"
         },
         {
           "id": "mongkut",
           "label": "80 penasihat Barat, Raja Mongkut dan Chulalongkorn",
           "target": "sia",
-          "fact": "Diplomasi dan pemodenan birokrasi."
+          "fact": "Diplomasi dan pemodenan birokrasi.",
+          "bg": "res://assets/puzzle_bg/perahu_serantau_mongkut.png"
         }
       ],
       "done_text": "Lima negara, lima jalan perjuangan."

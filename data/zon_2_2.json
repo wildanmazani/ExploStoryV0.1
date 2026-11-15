@@ -89,19 +89,22 @@
           "id": "eng",
           "label": "Revolusi Keagungan, England (1688)",
           "target": "t1",
-          "fact": "Peralihan kuasa secara aman; lahir Bill of Rights."
+          "fact": "Peralihan kuasa secara aman; lahir Bill of Rights.",
+          "bg": "res://assets/puzzle_bg/tiga_revolusi_eng.png"
         },
         {
           "id": "ame",
           "label": "Revolusi Amerika (1776)",
           "target": "t2",
-          "fact": "Perisytiharan Kemerdekaan Amerika tulisan Thomas Jefferson, Julai 1776."
+          "fact": "Perisytiharan Kemerdekaan Amerika tulisan Thomas Jefferson, Julai 1776.",
+          "bg": "res://assets/puzzle_bg/tiga_revolusi_ame.png"
         },
         {
           "id": "fra",
           "label": "Revolusi Perancis (1789)",
           "target": "t3",
-          "fact": "Penjara Bastile digempur; tamat pemerintahan Raja Louis XVI."
+          "fact": "Penjara Bastile digempur; tamat pemerintahan Raja Louis XVI.",
+          "bg": "res://assets/puzzle_bg/tiga_revolusi_fra.png"
         }
       ],
       "done_text": "England 1688, Amerika 1776, Perancis 1789."

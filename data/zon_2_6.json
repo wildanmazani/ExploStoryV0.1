@@ -77,19 +77,22 @@
           "id": "attas",
           "label": "Madrasah al-Attas, Johor Bahru",
           "target": "y1914",
-          "fact": "Ditubuhkan pada 1914."
+          "fact": "Ditubuhkan pada 1914.",
+          "bg": "res://assets/puzzle_bg/madrasah_attas.png"
         },
         {
           "id": "masyhur",
           "label": "Madrasah al-Masyhur, Pulau Pinang",
           "target": "y1916",
-          "fact": "Ditubuhkan pada 1916."
+          "fact": "Ditubuhkan pada 1916.",
+          "bg": "res://assets/puzzle_bg/madrasah_masyhur.png"
         },
         {
           "id": "idrisiyah",
           "label": "Madrasah al-Idrisiyah, Kuala Kangsar",
           "target": "y1926",
-          "fact": "Ditubuhkan pada 1926."
+          "fact": "Ditubuhkan pada 1926.",
+          "bg": "res://assets/puzzle_bg/madrasah_idrisiyah.png"
         }
       ],
       "done_text": "Madrasah moden menyebarkan idea Islah dan kesedaran bangsa."
