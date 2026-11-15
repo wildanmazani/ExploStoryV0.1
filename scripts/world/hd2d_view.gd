@@ -1,8 +1,9 @@
 class_name Hd2dView
 extends Node3D
 ## The overworld shown in "HD-2D": a 3D world with the 2D pixel-art sprites
-## standing in it. On with  -- --hd2d  on the command line (add --day for
-## daylight) or "hd2d": true in the settings; N switches day / night.
+## standing in it. On by default: Tetapan > Paparan switches it off ("hd2d" in
+## the settings), and on the command line  -- --2d  forces it off, -- --hd2d
+## forces it on (add --day for daylight). N switches day / night.
 ##
 ## It is only a *view*. world.gd still runs the whole game on its 2D nodes
 ## (player, NPCs, missions, dialogue, portals); those nodes are taken off the
@@ -52,7 +53,10 @@ var _t := 0.0
 
 
 static func enabled() -> bool:
-	return "--hd2d" in OS.get_cmdline_user_args() or bool(Game.settings.get("hd2d", false))
+	var args := OS.get_cmdline_user_args()
+	if "--2d" in args:
+		return false
+	return "--hd2d" in args or bool(Game.settings.get("hd2d", true))
 
 
 func setup(w: Node2D) -> void:
@@ -86,6 +90,12 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if _old_mask != 0 and get_viewport():
 		get_viewport().canvas_cull_mask = _old_mask  # rooms and screens are 2D
+	if is_instance_valid(world) and not world.is_queued_for_deletion():  # switched off in Tetapan: plain 2D again
+		world.visibility_layer = 1
+		world.objects.visibility_layer = 1
+		world.get_node("Ambience").visibility_layer = 1
+		if world._fog:
+			world._fog.visibility_layer = 1
 
 
 # ---------------------------------------------------------------- world <-> screen

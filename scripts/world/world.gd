@@ -92,6 +92,7 @@ const OBJECTS := {
 	"Q": {"tex": "panji_turun", "foot": Vector2i(1, 1)},
 	"W": {"tex": "arena", "foot": Vector2i(6, 2)},
 	"Z": {"tex": "batu_renungan", "foot": Vector2i(2, 1)},
+	"K": {"tex": "papan_pesta", "foot": Vector2i(3, 1)},   # Pesta Warisan (screens/pesta_warisan.gd)
 }
 const KINGDOM := {"1": "funan", "2": "champa", "3": "srivijaya", "4": "melaka", "5": "johor"}
 ## buildings you can walk into as story / museum rooms:
@@ -109,7 +110,7 @@ const LABELS := {
 	"gate_open_2": "Pintu Kabus Bab 2", "portal_balik": "Pintu Kabus", "dewan": "Dewan Kedaulatan Rakyat",
 	"madrasah": "Madrasah", "sitc": "Maktab Perguruan Sultan Idris", "sign_lembah": "Papan tanda",
 	"arena_lembah": "Arena Ulang Kaji", "papan_markah": "Papan Markah", "patung_latihan": "Patung Latihan",
-	"pemain_arena": "Pemain lain",
+	"pemain_arena": "Pemain lain", "pesta_warisan": "Pesta Warisan",
 }
 
 var terrain := TerrainBuilder.new()
@@ -169,10 +170,8 @@ func _ready() -> void:
 	$Ambience.setup(self, _ent["gates"])
 	_spawn_critters()
 	_build_kabus()
-	if Hd2dView.enabled():
-		view3d = Hd2dView.new()
-		view3d.setup(self)
-		add_child(view3d)
+	_sync_view3d()
+	Game.settings_changed.connect(_sync_view3d)
 
 	camera.limit_right = terrain.width * TILE
 	camera.limit_bottom = terrain.height * TILE
@@ -293,7 +292,19 @@ func to_screen(world_px: Vector2, lift := 0.0) -> Vector2:
 
 
 ## the spot of the world under the mouse / finger, in world pixels
-func mouse_world() -> Vector2:
+## the HD-2D view on or off, as Tetapan says (also while the game runs)
+func _sync_view3d() -> void:
+	var on := Hd2dView.enabled()
+	if on and view3d == null:
+		view3d = Hd2dView.new()
+		view3d.setup(self)
+		add_child(view3d)
+	elif not on and view3d != null:
+		view3d.queue_free()
+		view3d = null
+
+
+func mouse_world()-> Vector2:
 	return view3d.mouse_world() if view3d else get_global_mouse_position()
 
 
@@ -1076,6 +1087,10 @@ func _talk_or_act(id: String) -> void:
 				Game.goto("lobby")
 		"papan_markah":
 			Game.main.open_papan()
+		"pesta_warisan":
+			if await Main.ask(tr("Pesta Warisan! Jom main permainan tradisional?"), "Jom!", "Nanti dulu"):
+				GameState.spawn_cell = player.cell
+				Game.goto("pesta")
 		"patung_latihan":
 			var near: Array = _dummies.keys()
 			near.sort_custom(func(x, y): return (x - player.cell).length() < (y - player.cell).length())

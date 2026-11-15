@@ -28,6 +28,8 @@ const SCREENS := {
 	"arka": "res://scripts/screens/arka.gd",
 	"gelanggang": "res://scripts/screens/gelanggang.gd",
 	"pertarungan": "res://scripts/screens/pertarungan.gd",
+	"pesta": "res://scripts/screens/pesta_warisan.gd",   # Pesta Warisan and its games (battle/warisan_rules.gd)
+	"galah": "res://scripts/screens/galah_panjang.gd",
 }
 
 ## every zone of every open chapter, in play order (filled from data/chapters.json)
@@ -61,6 +63,7 @@ const DEFAULT_SETTINGS := {
 	"font": "lexend", "text_size": 1, "text_speed": 1, "auto_read": false,
 	"muted": false, "music": 0.8, "sfx": 0.8, "voice": 0.8, "lang": "ms",
 	"controls": "auto", "pad_size": 1, "pad_alpha": 0.7, "left_handed": false,
+	"hd2d": true,  ## the overworld in HD-2D (scripts/world/hd2d_view.gd); false = plain 2D
 }
 const I18N_PATH := "res://data/i18n/en.json"  ## BM menu text -> English
 
@@ -242,7 +245,7 @@ func new_save(username: String, mode: String, role: String = "student", avatar: 
 func _ensure_fields() -> void:
 	var defaults := {
 		"player_id": "", "skins_owned": ["sekolah", "melayu"], "skin": "sekolah",
-		"battle": {"played": 0, "wins": 0}, "ujian": [],
+		"battle": {"played": 0, "wins": 0}, "ujian": [], "warisan": {},
 	}
 	for k in defaults:
 		if not save.has(k):

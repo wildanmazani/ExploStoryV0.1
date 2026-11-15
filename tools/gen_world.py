@@ -316,6 +316,10 @@ place("Y", 54, 11, force=True)
 spot("batu", place_near("Z", 58, 16), "Z")
 place("S", 69, 30, force=True)
 entities["signs"].append({"pos": [69, 30], "id": "t5"})
+# Pesta Warisan: the festival board west of the Arena road (screens/pesta_warisan.gd)
+FOOT["K"] = (3, 1)
+place("K", 30, 34, force=True)
+entities["signs"].append({"pos": [30, 34], "id": "pesta_warisan", "size": [3, 1]})
 entities["spots"]["pokok"] = {"pos": [54, 11], "size": [6, 2]}
 entities["spots"]["kapal"] = {"pos": [70, 49], "size": [6, 4]}
 place("X", 70, 49, force=True)

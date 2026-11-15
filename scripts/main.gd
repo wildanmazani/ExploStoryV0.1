@@ -93,6 +93,8 @@ func _ready() -> void:
 		_place_pau())
 	if "--autotest" in OS.get_cmdline_user_args():
 		add_child(load("res://scripts/dev/autotest.gd").new())
+	if "--warisan-test" in OS.get_cmdline_user_args():
+		add_child(load("res://scripts/dev/warisan_test.gd").new())
 
 
 ## with on-screen controls (Tetapan > Kawalan) the bottom corners belong to

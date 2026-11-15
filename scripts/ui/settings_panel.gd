@@ -56,6 +56,11 @@ func _grid() -> GridContainer:
 # ------------------------------------------------------------------ tabs
 func _paparan() -> void:
 	_skrin_penuh()
+	var view := UI.hbox(24)
+	view.add_child(UI.label("Dunia 3D (HD-2D)"))
+	view.add_child(_toggle("hd2d"))
+	view.add_child(UI.label("Tutup jika game perlahan.", "Small"))
+	_body.add_child(view)
 	_body.add_child(UI.label("Mod Mudah Baca", "Heading"))
 	var grid := _grid()
 	grid.add_child(UI.label("Fon"))
