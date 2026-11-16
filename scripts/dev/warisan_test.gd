@@ -60,6 +60,35 @@ func _screen() -> Node:
 func _run() -> void:
 	await _wait(1.0)
 	for arg in OS.get_cmdline_user_args():   # --warisan-shot=galah: one game, a few pictures, no checks
+		if arg == "--waktu-shot":   # Tetapan > Paparan, then N three times in the overworld
+			Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])
+			GameState.spawn_cell = Vector2i(31, 35)
+			Game.goto("world")
+			await _wait(4.0)
+			var was: String = Game.settings.get("waktu", "auto")
+			Game.main.open_settings()
+			await _wait(1.0)
+			await _shot("tetapan_paparan")
+			for n in Game.main.overlay_root().get_children():
+				if n.has_method("close"):
+					n.close()
+			await _wait(0.6)
+			var names: Array = []
+			for i in 3:
+				for down in [true, false]:
+					var ev := InputEventKey.new()
+					ev.physical_keycode = KEY_N
+					ev.keycode = KEY_N
+					ev.pressed = down
+					Input.parse_input_event(ev)
+					await get_tree().process_frame
+				await _wait(2.4)
+				names.append(str(Game.settings.get("waktu")))
+				await _shot("waktu_" + names[-1])
+			print("WAKTU after N x3: ", names, "  night=", Hd2dView.wants_night())
+			Game.set_setting("waktu", was)
+			get_tree().quit(0)
+			return
 		if arg == "--perf":   # frames a second, uncapped, in the overworld and in each game (add --2d to compare)
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 			Engine.max_fps = 0

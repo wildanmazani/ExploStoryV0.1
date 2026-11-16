@@ -124,7 +124,8 @@ Kandungan sejarah hanya di `data/*.json`; guru boleh ubah teks dan jawapan tanpa
 1. Pasang Godot **4.7.2** (standard), buka `project.godot`, tekan **F5**.
 2. Ujian automatik: `godot --path . -- --autotest --shots=C:/tmp/shots`
    Paparan HD-2D (dunia 3D, watak sprite 2D) ialah lalai untuk dunia luar; tutup di Tetapan > Paparan > "Dunia 3D (HD-2D)",
-   atau paksa dengan `godot --path . -- --2d` / `-- --hd2d` (tambah `--day` untuk siang, kekunci N tukar siang / malam;
+   atau paksa dengan `godot --path . -- --2d` / `-- --hd2d`. Siang atau malam ialah tetapan "Suasana" di tempat yang sama:
+   Automatik (ikut jam peranti, siang dari 7 hingga 19), Siang atau Malam; kekunci N menukarnya, `--day` memaksa siang (
    boleh digabung dengan `--autotest`). Kod: `scripts/world/hd2d_view.gd`.
    Pesta Warisan (permainan tradisional; papan pesta di Kampung Jejak, barat jalan ke Arena): `godot --path . -- --warisan-test --shots=C:/tmp/w`
    menguji papan, skrin pesta dan lima permainannya dengan bot: Galah Panjang, Tarik Upih, Gasing, Dam Haji, Sepak Raga.

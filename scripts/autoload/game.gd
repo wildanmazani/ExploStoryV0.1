@@ -68,6 +68,7 @@ const DEFAULT_SETTINGS := {
 	"muted": false, "music": 0.8, "sfx": 0.8, "voice": 0.8, "lang": "ms",
 	"controls": "auto", "pad_size": 1, "pad_alpha": 0.7, "left_handed": false,
 	"hd2d": true,  ## the overworld in HD-2D (scripts/world/hd2d_view.gd); false = plain 2D
+	"waktu": "auto",  ## HD-2D: "auto" (day or night by the device's clock), "siang", "malam"
 }
 const I18N_PATH := "res://data/i18n/en.json"  ## BM menu text -> English
 

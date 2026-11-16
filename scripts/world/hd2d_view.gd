@@ -3,7 +3,9 @@ extends Node3D
 ## The overworld shown in "HD-2D": a 3D world with the 2D pixel-art sprites
 ## standing in it. On by default: Tetapan > Paparan switches it off ("hd2d" in
 ## the settings), and on the command line  -- --2d  forces it off, -- --hd2d
-## forces it on (add --day for daylight). N switches day / night.
+## forces it on. Day or night is the "waktu" setting (Tetapan > Paparan):
+## "auto" follows the device's clock (day from 7 to 19 o'clock), "siang" and
+## "malam" keep one. N steps through the three; --day forces daylight.
 ##
 ## It is only a *view*. world.gd still runs the whole game on its 2D nodes
 ## (player, NPCs, missions, dialogue, portals); those nodes are taken off the
@@ -49,6 +51,9 @@ var _glow_tex: GradientTexture2D
 var _hero: OmniLight3D  ## a little light that walks with Alif, so he reads at night
 var _cards := {}       ## source node id -> {src, card, kind, entity, tex, fog} (card null = nothing to show)
 var _old_mask := 0
+var _night_to := -1.0
+var _time_tween: Tween
+var _clock_in := 0.0
 var _ground: Node3D        ## the patch of ground that wears the picture
 var _ground_cam: Camera2D  ## ... and the 2D camera that takes it
 var _region := REGION
@@ -69,8 +74,9 @@ func setup(w: Node2D) -> void:
 
 
 func _ready() -> void:
-	if "--day" in OS.get_cmdline_user_args():
-		night = 0.0
+	night = 1.0 if wants_night() else 0.0
+	_night_to = night
+	Game.settings_changed.connect(_retime)
 	_build_light()
 	_build_ground()
 	_build_lamps()
@@ -229,12 +235,44 @@ func _apply_time() -> void:
 		(_glows[i].material_override as StandardMaterial3D).albedo_color = Color(WARM, 0.75 * n)
 
 
+const WAKTU := ["auto", "siang", "malam"]
+const WAKTU_NAMES := {"auto": "Suasana: Automatik (ikut jam)", "siang": "Suasana: Siang", "malam": "Suasana: Malam"}
+const DAY_FROM := 7    ## o'clock: "auto" is day from here ...
+const DAY_UNTIL := 19  ## ... until here
+
+
+## night now? from the setting, or the device's clock
+static func wants_night() -> bool:
+	if "--day" in OS.get_cmdline_user_args():
+		return false
+	match str(Game.settings.get("waktu", "auto")):
+		"siang": return false
+		"malam": return true
+	var hour: int = Time.get_time_dict_from_system()["hour"]
+	return hour < DAY_FROM or hour >= DAY_UNTIL
+
+
+## glide to day or night when the setting (or, on "auto", the hour) has changed
+func _retime() -> void:
+	var to := 1.0 if wants_night() else 0.0
+	if is_equal_approx(to, _night_to):
+		return
+	_night_to = to
+	if _time_tween:
+		_time_tween.kill()
+	_time_tween = create_tween()
+	_time_tween.tween_method(func(v: float) -> void:
+		night = v
+		_apply_time(), night, to, 1.6)
+
+
+## N: Automatik -> Siang -> Malam -> Automatik (kept, like any setting)
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_N:
-		var tw := create_tween()
-		tw.tween_method(func(v: float) -> void:
-			night = v
-			_apply_time(), night, 0.0 if night > 0.5 else 1.0, 1.6)
+		var now := WAKTU.find(str(Game.settings.get("waktu", "auto")))
+		var next: String = WAKTU[(now + 1) % WAKTU.size()]
+		Game.set_setting("waktu", next)
+		Game.toast(tr(WAKTU_NAMES[next]))
 
 
 # ---------------------------------------------------------------- ground
@@ -315,6 +353,10 @@ func _follow_ground() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
+	_clock_in -= delta
+	if _clock_in <= 0.0:   # "auto": the sun sets while the game is open
+		_clock_in = 30.0
+		_retime()
 	_scan_in -= delta
 	var scanned := false
 	if _scan_in <= 0.0:  # new arrivals (NPCs, markers, clue glints), and who stands in the fog
