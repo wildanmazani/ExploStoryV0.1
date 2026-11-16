@@ -30,6 +30,23 @@ func _shot(name: String) -> void:
 	get_viewport().get_texture().get_image().save_png("%s/%02d_%s.png" % [shots_dir, _n, name])
 
 
+func _measure(what: String) -> void:
+	var frames := 0
+	var worst := 0.0
+	var start := Time.get_ticks_usec()
+	var last := start
+	while Time.get_ticks_usec() - start < 4000000:
+		await get_tree().process_frame
+		var now := Time.get_ticks_usec()
+		worst = maxf(worst, (now - last) / 1000.0)
+		last = now
+		frames += 1
+	var secs := (Time.get_ticks_usec() - start) / 1000000.0
+	print("PERF %-6s %6.0f fps   worst frame %5.1f ms   scripts %4.1f ms   draw calls %4d   objects %4d" % [what, frames / secs, worst,
+		Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
+		int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)), int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME))])
+
+
 func _fail(why: String) -> void:
 	print("WARISAN TEST FAIL: ", why)
 	get_tree().quit(1)
@@ -43,6 +60,20 @@ func _screen() -> Node:
 func _run() -> void:
 	await _wait(1.0)
 	for arg in OS.get_cmdline_user_args():   # --warisan-shot=galah: one game, a few pictures, no checks
+		if arg == "--perf":   # frames a second, uncapped, in the overworld and in each game (add --2d to compare)
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+			Engine.max_fps = 0
+			Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])
+			GameState.spawn_cell = Vector2i(31, 35)
+			Game.goto("world")
+			await _wait(4.0)
+			await _measure("world")
+			for game in ["galah", "upih", "gasing", "dam", "raga"]:
+				Game.goto(game, {"auto": true, "level": 1})
+				await _wait(4.5)
+				await _measure(game)
+			get_tree().quit(0)
+			return
 		if arg.begins_with("--puzzle-shot="):   # --puzzle-shot=1_1:susun_gerbang: a mission puzzle, solved card by card
 			var which := arg.trim_prefix("--puzzle-shot=").split(":")
 			Game.save["seen"].append_array(["kampung_intro", "tip_kawalan"])

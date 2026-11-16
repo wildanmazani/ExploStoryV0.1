@@ -34,6 +34,7 @@ const LAMPS := {
 }
 const WARM := Color(1.0, 0.72, 0.38)
 const FOG_TINT := Color(0.62, 0.64, 0.70)  ## cards inside the Kabus Lupa
+const REGION := Vector2i(48, 32)  ## tiles of ground drawn round the camera (it sees about 32 x 21)
 
 var world: Node2D
 var night := 1.0  ## 1 = night, 0 = day
@@ -48,6 +49,10 @@ var _glow_tex: GradientTexture2D
 var _hero: OmniLight3D  ## a little light that walks with Alif, so he reads at night
 var _cards := {}       ## source node id -> {src, card, kind, entity, tex, fog} (card null = nothing to show)
 var _old_mask := 0
+var _ground: Node3D        ## the patch of ground that wears the picture
+var _ground_cam: Camera2D  ## ... and the 2D camera that takes it
+var _region := REGION
+var _live: Array = []  ## ids in _cards that are brought up to date every frame (the rest: with the scan)
 var _scan_in := 0.0
 var _t := 0.0
 
@@ -141,6 +146,7 @@ func _build_light() -> void:
 	_sun = DirectionalLight3D.new()
 	_sun.rotation_degrees = Vector3(-52, 28, 0)  # from the south-east, onto the fronts of the cards
 	_sun.shadow_enabled = true
+	_sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL  # one shadow pass, not four: a phone has to draw this
 	_sun.directional_shadow_max_distance = 45.0
 	add_child(_sun)
 
@@ -233,21 +239,26 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # ---------------------------------------------------------------- ground
 
-## A second camera on the same 2D world, looking at the whole island from
-## above, sees only the ground layers; the 3D ground wears its picture.
+## A second camera on the same 2D world, looking straight down, sees only the
+## ground layers; the 3D ground wears its picture. Only the part of the island
+## round the 3D camera is drawn (REGION tiles): the whole island is some 7,000
+## canvas items, far too many to redraw every frame, and most are out of sight.
+## The picture and the patch of ground that wears it move with the camera, a
+## whole tile at a time (_follow_ground).
 func _build_ground() -> void:
 	var w: int = world.terrain.width
 	var h: int = world.terrain.height
+	_region = Vector2i(mini(REGION.x, w), mini(REGION.y, h))
 	var vp := SubViewport.new()
-	vp.size = Vector2i(w, h) * 16
+	vp.size = _region * 16
 	vp.world_2d = world.get_viewport().world_2d
 	vp.disable_3d = true
 	vp.canvas_cull_mask = 1 | L_WORLD | L_FOG
 	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS  # the water shimmers, the fog drifts
 	vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
-	var cam := Camera2D.new()
-	cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
-	vp.add_child(cam)
+	_ground_cam = Camera2D.new()
+	_ground_cam.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
+	vp.add_child(_ground_cam)
 	add_child(vp)
 
 	var mat := StandardMaterial3D.new()
@@ -255,21 +266,24 @@ func _build_ground() -> void:
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	mat.roughness = 1.0
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	for cy in range(0, h, CHUNK):
-		for cx in range(0, w, CHUNK):
-			var x1 := minf(cx + CHUNK, w)
-			var z1 := minf(cy + CHUNK, h)
+	_ground = Node3D.new()
+	add_child(_ground)
+	for cy in range(0, _region.y, CHUNK):
+		for cx in range(0, _region.x, CHUNK):
+			var x1 := minf(cx + CHUNK, _region.x)
+			var z1 := minf(cy + CHUNK, _region.y)
 			var st := SurfaceTool.new()
 			st.begin(Mesh.PRIMITIVE_TRIANGLES)
 			for p in [Vector2(cx, cy), Vector2(x1, cy), Vector2(x1, z1), Vector2(cx, cy), Vector2(x1, z1), Vector2(cx, z1)]:
 				st.set_normal(Vector3.UP)
-				st.set_uv(Vector2(p.x / w, p.y / h))
+				st.set_uv(Vector2(p.x / _region.x, p.y / _region.y))
 				st.add_vertex(Vector3(p.x, 0, p.y))
 			var mi := MeshInstance3D.new()
 			mi.mesh = st.commit()
 			mi.material_override = mat
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			add_child(mi)
+			_ground.add_child(mi)
+	_follow_ground()
 	# open sea all around the island
 	var sea := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
@@ -284,23 +298,44 @@ func _build_ground() -> void:
 	add_child(sea)
 
 
+## the patch of ground under the 3D camera: where it looks, a little further up the map
+## than down (the camera sees further away from itself than towards itself)
+func _follow_ground() -> void:
+	if _ground == null or _camera == null:
+		return
+	var at: Vector3 = _camera.position - CAM_OFFSET
+	var origin := Vector2i(floori(at.x - _region.x / 2.0), floori(at.z - _region.y * 0.64))
+	origin.x = clampi(origin.x, 0, world.terrain.width - _region.x)
+	origin.y = clampi(origin.y, 0, world.terrain.height - _region.y)
+	_ground.position = Vector3(origin.x, 0, origin.y)
+	_ground_cam.position = Vector2(origin) * 16.0
+
+
 # ---------------------------------------------------------------- the 2D nodes, in 3D
 
 func _process(delta: float) -> void:
 	_t += delta
 	_scan_in -= delta
+	var scanned := false
 	if _scan_in <= 0.0:  # new arrivals (NPCs, markers, clue glints), and who stands in the fog
 		_scan_in = 0.25
 		_scan()
+		scanned = true
 	_camera.position = _camera.position.lerp(_focus() + CAM_OFFSET, minf(1.0, delta * 6.0))
+	_follow_ground()
 	var hero: Vector2 = world.player.global_position
 	_hero.position = Vector3(hero.x * PX, 1.6, hero.y * PX + 1.6)
-	for id in _cards.keys():
-		var e: Dictionary = _cards[id]
+	# Trees, houses, fences (some 1,500 of them) never move: they are brought up to date four
+	# times a second, with the scan. Only what walks, animates or floats is done every frame.
+	for id in (_cards.keys() if scanned else _live):
+		var e: Dictionary = _cards.get(id, {})
+		if e.is_empty():
+			continue
 		if not is_instance_valid(e["src"]):
 			if e["card"]:
 				e["card"].queue_free()
 			_cards.erase(id)
+			_live.erase(id)
 		elif e["card"]:
 			match e["kind"]:
 				"sprite": _sync_sprite(e)
@@ -329,6 +364,10 @@ func _walk(parent: Node, entity: Node) -> void:
 		var ent: Node = entity if entity else c
 		if not _cards.has(c.get_instance_id()):
 			_cards[c.get_instance_id()] = _mirror(c, ent)
+			# a plain Sprite2D standing by itself under world.objects is scenery; everything
+			# else (people, their parts, markers, anything animated) may change any frame
+			if not (c is Sprite2D and ent == c and not ("cell" in c)):
+				_live.append(c.get_instance_id())
 		if c.get_child_count() > 0:
 			_walk(c, ent)
 

@@ -3,21 +3,29 @@ extends Control
 ## the screen's start, and the paper cards over the game: choose a level, a
 ## revision question, the result. params: {"level": 0..2} skips the level
 ## card; {"auto": true} lets a bot play and answer (dev test).
+## Input is the game's own actions (Game.DEFAULT_KEYS, PAD_MOVES, PAD_DEFAULT):
+## move_* (WASD, arrows, D-pad, left stick, the on-screen D-pad / joystick),
+## interact (Space, Enter, E, the pad's A, the on-screen A), run (Shift, the
+## pad's X / right trigger, the on-screen B). The screen is "pad_free": a
+## controller plays the game itself, and only the cards take its focus ring.
 
 const UI = preload("res://scripts/ui/ui.gd")
 const Stage = preload("res://scripts/screens/warisan_stage.gd")
+const TouchControls = preload("res://scripts/ui/touch_controls.gd")
 
 var params: Dictionary = {}
 var _overlay: Control
 var _questions: Array = []
 var _grass := Color.BLACK
 var _bg: ColorRect
+var _touch: CanvasLayer   ## the on-screen D-pad / joystick, in the games that walk or steer
 var _auto := false
 var stage: Node3D   ## the HD-2D view (warisan_stage.gd) when "Dunia 3D" is on, else null: plain 2D
 
 
 func setup_game(background: Color) -> void:
 	UI.full(self)
+	add_to_group("pad_free")
 	Game.main.set_pau_visible(false)
 	MusicDirector.play("kampung")
 	_auto = bool(params.get("auto", false))
@@ -52,6 +60,28 @@ func make_stage(play: Node2D, painter: Node2D, ground: Rect2) -> Node3D:
 	return stage
 
 
+## the on-screen D-pad / joystick of Tetapan > Kawalan (nothing on a laptop left on Automatik)
+func add_touch_controls() -> void:
+	_touch = TouchControls.new()
+	add_child(_touch)
+
+
+## show them only while the game is being played (not under a card)
+func touch_controls_on(on: bool) -> void:
+	if _touch:
+		_touch.suspended = not on
+
+
+## a press at this screen position belongs to the on-screen controls, not to the playfield
+func on_touch_controls(pos: Vector2) -> bool:
+	return _touch != null and _touch.owns(pos)
+
+
+## which way the player pushes: keys, D-pad, stick, on-screen controls
+func move_vector() -> Vector2:
+	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
+
+
 ## where the mouse / finger is, in the play node's px
 func pointer_on(play: Node2D) -> Vector2:
 	return stage.mouse_px() if stage else play.get_local_mouse_position()
@@ -61,6 +91,7 @@ func pointer_on(play: Node2D) -> Vector2:
 func card(title: String, text: String) -> VBoxContainer:
 	close_card()
 	_overlay = Control.new()
+	_overlay.add_to_group("pad_scope")   # a controller's focus ring stays on the card
 	UI.full(_overlay)
 	_overlay.add_child(UI.dim(0.5))
 	var p := UI.panel("Paper")

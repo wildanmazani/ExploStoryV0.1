@@ -267,20 +267,6 @@ func _finish(victory: bool) -> void:
 
 # ---------------------------------------------------------------- play
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_echo():
-		return
-	if event.is_action_pressed("ui_left"):
-		step(-1)
-	elif event.is_action_pressed("ui_right"):
-		step(1)
-	elif event is InputEventKey and event.pressed:
-		if event.physical_keycode == KEY_A:
-			step(-1)
-		elif event.physical_keycode == KEY_D:
-			step(1)
-
-
 ## one step with the left (-1) or right (1) foot
 func step(side: int) -> void:
 	if state != "main" or me["fallen"] > 0.0:
@@ -345,6 +331,10 @@ func _process(delta: float) -> void:
 		_place()
 		return
 	time += delta
+	if Input.is_action_just_pressed("move_left"):
+		step(-1)
+	elif Input.is_action_just_pressed("move_right"):
+		step(1)
 	if _auto:
 		_auto_in -= delta
 		if _auto_in <= 0.0 and me["fallen"] <= 0.0:

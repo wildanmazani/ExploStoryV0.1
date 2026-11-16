@@ -71,6 +71,7 @@ func _ready() -> void:
 		s.position = CENTRE + Vector2(cos(a) * (R + 84.0), sin(a) * (R + 52.0) + 30.0)
 		s.play("idle_south" if sin(a) < -0.5 else ("idle_east" if cos(a) < 0.0 else "idle_west"))
 		_ring.add_child(s)
+	add_touch_controls()
 	var painter := Ring.new()
 	painter.game = self
 	painter.ground = true
@@ -252,23 +253,15 @@ func _finish(victory: bool) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		_pointer = event.pressed and state == "pusing"
-	elif event.is_action_pressed("ui_accept") and not event.is_echo():
+		_pointer = event.pressed and state == "pusing" and not on_touch_controls(event.position)
+	elif event.is_action_pressed("interact") and not event.is_echo():
 		throw()
 
 
 func _steer() -> Vector2:
 	if _auto:   # the dev bot sits in the middle and outlasts
 		return (-me["p"] / 60.0).limit_length(1.0)
-	var v := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	if Input.is_physical_key_pressed(KEY_A):
-		v.x -= 1.0
-	if Input.is_physical_key_pressed(KEY_D):
-		v.x += 1.0
-	if Input.is_physical_key_pressed(KEY_W):
-		v.y -= 1.0
-	if Input.is_physical_key_pressed(KEY_S):
-		v.y += 1.0
+	var v := move_vector()
 	if v == Vector2.ZERO and _pointer:
 		var to: Vector2 = pointer_on(_ring) - CENTRE - me["p"]
 		if to.length() > 8.0:
@@ -306,6 +299,7 @@ func _process(delta: float) -> void:
 		_sync_tops3()
 	_hud.queue_redraw()
 	_throw.visible = state == "lilit"
+	touch_controls_on(state == "pusing" or state == "lilit")
 	_info.text = "%s %d" % [tr("Pusingan"), mini(score[0] + score[1] + 1, WINS * 2 - 1)] if state != "pilih" else ""
 	if state == "lilit":
 		marker += _dir * delta / SWEEP

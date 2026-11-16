@@ -69,6 +69,7 @@ func _ready() -> void:
 		guards.append(g)
 	_alif = _sprite(Game.skin_folder())
 	_alif.play("idle_north")
+	add_touch_controls()
 	var painter := Court.new()
 	painter.game = self
 	if make_stage(_court, painter, Rect2(-14, -14, W + 28, H + 28)):
@@ -98,7 +99,7 @@ func _ready() -> void:
 	_run_btn.toggle_mode = true
 	_run_btn.focus_mode = Control.FOCUS_NONE
 	col.add_child(_run_btn)
-	var tip := UI.label(tr("Gerak: WASD / anak panah, atau tahan tetikus / jari. Tahan Shift untuk berlari selagi ada stamina. Kena tangkap? Jawab soalan untuk terlepas."), "Small", true)
+	var tip := UI.label(tr("Gerak: WASD / anak panah, atau tahan tetikus / jari. Tahan Shift (controller: X) untuk berlari selagi ada stamina. Kena tangkap? Jawab soalan untuk terlepas."), "Small", true)
 	tip.custom_minimum_size.x = 270
 	col.add_child(tip)
 	var out := UI.button("« Keluar")
@@ -203,21 +204,13 @@ func _finish(victory: bool) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		_pointer = event.pressed and state == "main"
+		_pointer = event.pressed and state == "main" and not on_touch_controls(event.position)
 
 
 func _move_input() -> Vector2:
 	if _auto:
 		return _auto_input()
-	var v := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	if Input.is_physical_key_pressed(KEY_A):
-		v.x -= 1.0
-	if Input.is_physical_key_pressed(KEY_D):
-		v.x += 1.0
-	if Input.is_physical_key_pressed(KEY_W):
-		v.y -= 1.0
-	if Input.is_physical_key_pressed(KEY_S):
-		v.y += 1.0
+	var v := move_vector()
 	if v == Vector2.ZERO and _pointer:
 		var to := pointer_on(_court) - pos
 		if to.length() > 6.0:
@@ -227,6 +220,7 @@ func _move_input() -> Vector2:
 
 func _process(delta: float) -> void:
 	_court.queue_redraw()
+	touch_controls_on(state == "main")
 	if state != "main":
 		_animate(Vector2.ZERO)
 		return

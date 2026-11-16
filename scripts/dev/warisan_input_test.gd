@@ -3,8 +3,10 @@ extends Node
 ## Run:  godot --path . -- --warisan-input [--2d]
 ## Keys go in as input actions and events, clicks as mouse events at the place
 ## of the button, so this checks what a player's hands reach: moving, running,
-## the step / throw / pull / kick buttons, answering a question by clicking it
-## (right and wrong). Prints WARISAN INPUT PASS and quits (exit 1 on a failure).
+## the step / throw / kick buttons, answering a question by clicking it (right
+## and wrong). Then the same games through a controller (joypad button and
+## stick events, and the focus ring of Controller mode on a question card) and
+## through the on-screen D-pad and joystick of a phone (touch events). Prints WARISAN INPUT PASS and quits (exit 1 on a failure).
 ## It saves like a real game does (a guest save).
 
 var _fails: Array = []
@@ -31,7 +33,7 @@ func _screen() -> Node:
 
 
 func _open(screen: String) -> Node:
-	for a in ["ui_up", "ui_down", "ui_left", "ui_right", "ui_accept", "run"]:
+	for a in ["move_up", "move_down", "move_left", "move_right", "interact", "run"]:
 		Input.action_release(a)
 	Game.goto(screen, {"level": 0})
 	await _wait(2.0)
@@ -47,6 +49,44 @@ func _tap(action: String) -> void:
 		ev.pressed = down
 		Input.parse_input_event(ev)
 		await get_tree().process_frame
+
+
+func _joy(button: int, down: bool) -> void:
+	var ev := InputEventJoypadButton.new()
+	ev.button_index = button
+	ev.pressed = down
+	ev.pressure = 1.0 if down else 0.0
+	Input.parse_input_event(ev)
+	await get_tree().process_frame
+
+
+func _joy_tap(button: int) -> void:
+	await _joy(button, true)
+	await get_tree().process_frame
+	await _joy(button, false)
+
+
+func _stick(axis: int, value: float) -> void:
+	var ev := InputEventJoypadMotion.new()
+	ev.axis = axis
+	ev.axis_value = value
+	Input.parse_input_event(ev)
+	await get_tree().process_frame
+
+
+func _finger(at: Vector2, down: bool) -> void:
+	var ev := InputEventScreenTouch.new()
+	ev.index = 0
+	ev.position = at
+	ev.pressed = down
+	Input.parse_input_event(ev)
+	await get_tree().process_frame
+
+
+func _controls(mode: String) -> void:   # Tetapan > Kawalan, without saving it
+	Game.settings["controls"] = mode
+	Game.settings_changed.emit()
+	await _wait(0.4)
 
 
 func _mouse(at: Vector2, down: bool) -> void:
@@ -98,19 +138,19 @@ func _run() -> void:
 	# ---- Galah Panjang
 	var g := await _open("galah")
 	var y0: float = g.pos.y   # (a short walk: the first line is just ahead, and its guard)
-	Input.action_press("ui_down")
+	Input.action_press("move_down")
 	await _wait(0.2)
-	Input.action_release("ui_down")
+	Input.action_release("move_down")
 	_check(g.pos.y > y0 + 15.0 and g.state == "main", "down walks Alif down the court (%.0f -> %.0f)" % [y0, g.pos.y])
 	var x0: float = g.pos.x
-	Input.action_press("ui_left")
+	Input.action_press("move_left")
 	await _wait(0.5)
 	var walked: float = x0 - g.pos.x
 	Input.action_press("run")
 	x0 = g.pos.x
 	await _wait(0.5)
 	Input.action_release("run")
-	Input.action_release("ui_left")
+	Input.action_release("move_left")
 	_check(x0 - g.pos.x > walked * 1.3 and g.stamina < 0.9, "Shift runs faster and uses stamina (%.0f px vs %.0f, stamina %.2f)" % [x0 - g.pos.x, walked, g.stamina])
 	g.pos = Vector2(60.0, g.H - g.GAP / 2.0)
 	await _wait(0.2)
@@ -137,14 +177,14 @@ func _run() -> void:
 	await _wait(3.4)
 	_check(u.state == "main", "the race starts after the count")
 	for i in 10:
-		await _tap("ui_left" if i % 2 == 0 else "ui_right")
+		await _tap("move_left" if i % 2 == 0 else "move_right")
 		await _wait(0.27)
 	_check(u.me["steps"] == 10 and u.me["x"] > 150.0 and u.me["fallen"] <= 0.0, "left, right in rhythm pulls the upih (%d steps, %.0f px)" % [u.me["steps"], u.me["x"]])
 	var before: int = u.me["steps"]
 	await _click(u._left)
 	_check(u.me["steps"] == before + 1, "the KIRI button is a step")
 	for i in 14:
-		await _tap("ui_left" if i % 2 == 0 else "ui_right")
+		await _tap("move_left" if i % 2 == 0 else "move_right")
 	await _wait(0.2)
 	_check(u.me["fallen"] > 0.0, "hasty steps roll Pau off")
 
@@ -153,11 +193,11 @@ func _run() -> void:
 	_check(s.state == "soalan", "a round opens with a question")
 	await _answer(s, true)
 	_check(s.state == "lilit" and s.bonus, "a right answer: the bar, with the bonus")
-	await _tap("ui_accept")
+	await _tap("interact")
 	_check(s.state == "pusing" and s.me["spin"] > 0.5, "Space throws the top (spin %.2f)" % s.me["spin"])
-	Input.action_press("ui_left")
+	Input.action_press("move_left")
 	await _wait(0.5)
-	Input.action_release("ui_left")
+	Input.action_release("move_left")
 	_check(s.me["p"].x < -15.0, "left steers the top (x %.0f)" % s.me["p"].x)
 
 	# ---- Dam Haji
@@ -193,7 +233,7 @@ func _run() -> void:
 	while t < 12.0 and not (r.state == "main" and r.ball["to"] == 0 and r.ball["T"] - r.ball["t"] <= 0.06):
 		await get_tree().process_frame
 		t += get_process_delta_time()
-	await _tap("ui_accept")
+	await _tap("interact")
 	_check(r.kicks == 1 and r.timang >= 1, "Space at the landing is a kick (%d timang)" % r.timang)
 	t = 0.0
 	while t < 20.0 and r.lives == r.LIVES:
@@ -207,6 +247,90 @@ func _run() -> void:
 	before = r.kicks
 	await _click(r._kick)
 	_check(r.kicks == before + 1, "the SEPAK button is a kick")
+
+	# ---- a controller: joypad events
+	print("controller")
+	var c := await _open("galah")
+	var cx: float = c.pos.x
+	await _stick(JOY_AXIS_LEFT_X, 1.0)
+	await _wait(0.4)
+	await _stick(JOY_AXIS_LEFT_X, 0.0)
+	_check(c.pos.x > cx + 30.0, "the left stick walks Alif (%.0f -> %.0f)" % [cx, c.pos.x])
+	cx = c.pos.x
+	await _joy(JOY_BUTTON_DPAD_LEFT, true)
+	await _joy(JOY_BUTTON_X, true)
+	await _wait(0.4)
+	await _joy(JOY_BUTTON_X, false)
+	await _joy(JOY_BUTTON_DPAD_LEFT, false)
+	_check(cx - c.pos.x > 70.0 and c.stamina < 0.95, "the D-pad walks and X runs (%.0f px, stamina %.2f)" % [cx - c.pos.x, c.stamina])
+	c = await _open("upih")
+	await _wait(3.4)
+	for i in 6:
+		await _joy_tap(JOY_BUTTON_DPAD_LEFT if i % 2 == 0 else JOY_BUTTON_DPAD_RIGHT)
+		await _wait(0.25)
+	_check(c.me["steps"] == 6 and c.me["x"] > 80.0, "the D-pad steps in Tarik Upih (%d steps)" % c.me["steps"])
+	await _controls("controller")
+	c = await _open("gasing")
+	await _wait(0.8)
+	await _joy_tap(JOY_BUTTON_A)       # the option the ring is on
+	await _wait(0.6)
+	await _joy_tap(JOY_BUTTON_A)       # Teruskan
+	await _wait(0.5)
+	_check(c.state == "lilit", "Controller mode: A answers the question card and closes it (%s)" % c.state)
+	await _joy_tap(JOY_BUTTON_A)
+	await _wait(0.2)
+	_check(c.state == "pusing", "A throws the top (%s)" % c.state)
+	await _stick(JOY_AXIS_LEFT_X, -1.0)
+	await _wait(0.5)
+	await _stick(JOY_AXIS_LEFT_X, 0.0)
+	_check(c.me["p"].x < -15.0, "the stick steers the top (x %.0f)" % c.me["p"].x)
+	c = await _open("raga")
+	t = 0.0
+	while t < 12.0 and not (c.state == "main" and c.ball["to"] == 0 and c.ball["T"] - c.ball["t"] <= 0.06):
+		await get_tree().process_frame
+		t += get_process_delta_time()
+	await _joy_tap(JOY_BUTTON_A)
+	_check(c.kicks == 1, "A kicks in Sepak Raga")
+	c = await _open("dam")
+	await _joy_tap(JOY_BUTTON_DPAD_UP)
+	var first: Dictionary = c.legal[0]
+	_check(c.cur == first["from"], "the D-pad puts the cursor on a buah that can move")
+	await _joy_tap(JOY_BUTTON_A)
+	_check(c.sel == first["from"], "A picks it")
+	var to: int = first["path"][-1]
+	await _joy_tap(JOY_BUTTON_DPAD_UP)
+	await _joy_tap(JOY_BUTTON_DPAD_RIGHT if to % 8 > first["from"] % 8 else JOY_BUTTON_DPAD_LEFT)
+	_check(c.cur == to, "the D-pad moves the cursor to where it goes (%d, wanted %d)" % [c.cur, to])
+	await _joy_tap(JOY_BUTTON_A)
+	await _wait(2.0)
+	_check(c.board[to] == 1 and c.plies >= 2, "A moves the buah, then the rival moves")
+	await _controls("auto")
+
+	# ---- a phone: the on-screen D-pad and joystick (touch events)
+	print("touch")
+	await _controls("dpad")
+	c = await _open("galah")
+	cx = c.pos.x
+	await _finger(Vector2(276, 540), true)   # the right arrow of the D-pad
+	await _wait(0.4)
+	await _finger(Vector2(276, 540), false)
+	_check(c.pos.x > cx + 30.0, "the on-screen D-pad walks Alif (%.0f -> %.0f)" % [cx, c.pos.x])
+	_check(not c._pointer, "a press on the D-pad is not also a walk-to-finger")
+	await _controls("joystick")
+	c = await _open("gasing")
+	await _answer(c, true)
+	await _click(c._throw)
+	await _wait(0.2)
+	_check(c.state == "pusing", "the LEMPAR button throws (%s)" % c.state)
+	await _finger(Vector2(200, 520), true)
+	var drag := InputEventScreenDrag.new()
+	drag.index = 0
+	drag.position = Vector2(120, 520)
+	Input.parse_input_event(drag)
+	await _wait(0.5)
+	await _finger(Vector2(120, 520), false)
+	_check(c.me["p"].x < -12.0, "the on-screen joystick steers the top (x %.0f)" % c.me["p"].x)
+	await _controls("auto")
 
 	if _fails.is_empty():
 		print("WARISAN INPUT PASS")

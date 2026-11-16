@@ -12,7 +12,8 @@ extends "res://scripts/screens/warisan_game.gd"
 ##   the end           a side with no buah, or no move, has lost
 ## When the rival eats one of Alif's buah a revision question comes: answer
 ## right and one buah comes back to life on his home row (three times a game).
-## Mouse / finger: a buah, then where it goes.
+## Mouse / finger: a buah, then where it goes. Keys / controller: move the
+## white cursor (arrows, WASD, D-pad, stick), then Space / Enter / A.
 ##
 ## board[row * 8 + col]: 0 empty, 1 Alif's buah, 2 his haji, -1 / -2 the rival's.
 
@@ -30,6 +31,7 @@ var level := 1
 var state := "pilih"          ## pilih, giliran (Alif picks), gerak (a buah is moving), lawan, soalan, tamat
 var board: Array = []
 var sel := -1
+var cur := -1                 ## the square the keys / controller are on (-1: not used yet)
 var legal: Array = []         ## Alif's moves this turn: {from, path, caps}
 var lifelines := LIFELINES
 var right := 0
@@ -75,7 +77,7 @@ func _ready() -> void:
 	_life = UI.label("", "Small", true)
 	_life.custom_minimum_size.x = 270
 	col.add_child(_life)
-	var tip := UI.label(tr("Klik buah kau, kemudian petak tujuan. Kalau boleh makan, wajib makan. Sampai hujung papan, buah jadi HAJI."), "Small", true)
+	var tip := UI.label(tr("Klik buah kau, kemudian petak tujuan (kekunci / controller: gerakkan petak putih, kemudian Space atau A). Kalau boleh makan, wajib makan. Sampai hujung papan, buah jadi HAJI."), "Small", true)
 	tip.custom_minimum_size.x = 270
 	col.add_child(tip)
 	var out := UI.button("« Keluar")
@@ -411,7 +413,22 @@ func centre(cell: int) -> Vector2:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		cur = -1
 		click(cell_at(pointer_on(_board)))
+	elif state == "giliran" and not event.is_echo():
+		var d := Vector2i.ZERO
+		if event.is_action_pressed("move_left"): d.x = -1
+		elif event.is_action_pressed("move_right"): d.x = 1
+		elif event.is_action_pressed("move_up"): d.y = -1
+		elif event.is_action_pressed("move_down"): d.y = 1
+		if d != Vector2i.ZERO:
+			if cur < 0:   # first press: start on a buah that can move
+				cur = legal[0]["from"]
+			else:
+				cur = clampi(cur / 8 + d.y, 0, 7) * 8 + clampi(cur % 8 + d.x, 0, 7)
+			Sfx.play("tick", -10.0)
+		elif event.is_action_pressed("interact") and cur >= 0:
+			click(cur)
 
 
 func _process(delta: float) -> void:
@@ -462,6 +479,9 @@ class Papan extends Node2D:
 					draw_circle(game.centre(m["path"][-1]), s * 0.2, Color(0.45, 0.95, 0.5, 0.85))
 					for cap in m["caps"]:
 						draw_arc(game.centre(cap), s * 0.46, 0, TAU, 32, Color("ff6a5a"), 4.0, true)
+		if game.cur >= 0 and game.state == "giliran":   # where the keys / controller are
+			var k := o + Vector2(game.cur % 8, game.cur / 8) * s
+			draw_rect(Rect2(k + Vector2(3, 3), Vector2(s - 6, s - 6)), Color.WHITE, false, 4.0)
 		if ground:
 			return
 		for i in 64:
