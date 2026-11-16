@@ -137,6 +137,12 @@ Kandungan sejarah hanya di `data/*.json`; guru boleh ubah teks dan jawapan tanpa
    Sprite ringkas dilukis oleh `tools/gen_warisan_sprites.py`; upih dipotong daripada helaian pelukis oleh `tools/make_upih_sprites.py`.
    Gambar di belakang petak teka-teki seret-dan-padan (`"bg"` pada kad, `assets/puzzle_bg/`): lihat `docs/teka_teki/arahan_codex_gambar.md`.
    (prolog sahaja, lebih cepat: tambah `--only=prologue`)
+3. Video demo permainan (main sendiri, dirakam oleh Movie Maker Godot; kursor, kapsyen dan kekunci dilukis dalam permainan):
+   `godot --path . --write-movie demo.avi --fixed-fps 30 -- --demo-reel --day`, kemudian
+   `ffmpeg -i demo.avi -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a aac demo.mp4`. Isi: log masuk gagal lalu daftar akaun,
+   cerita dipercepatkan, ujian pertama Misi 1.1, Gelanggang 1 lwn 1 (menang), Pesta Warisan (Galah Panjang, Gasing, Dam Haji),
+   bos Bab 1 (Panglima Derhaka) dan maklum balas selepasnya. `--part=<bahagian>` merakam satu bahagian sahaja
+   (masuk, cerita, ujian1, silat, warisan, bos). Kod: `scripts/dev/demo_reel.gd`.
 
 ## Versi web
 
