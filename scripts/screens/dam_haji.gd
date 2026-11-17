@@ -17,6 +17,7 @@ extends "res://scripts/screens/warisan_game.gd"
 ##
 ## board[row * 8 + col]: 0 empty, 1 Alif's buah, 2 his haji, -1 / -2 the rival's.
 
+const KEYS := [["pick", "Pilih buah, petak"], ["pause", "Jeda"]]
 const CELL := 58.0
 const ORIGIN := Vector2(408, 126)
 const RIVAL := "rakan_meiling"
@@ -77,13 +78,13 @@ func _ready() -> void:
 	_life = UI.label("", "Small", true)
 	_life.custom_minimum_size.x = 270
 	col.add_child(_life)
-	var tip := UI.label(tr("Klik buah kau, kemudian petak tujuan (kekunci / controller: gerakkan petak putih, kemudian Space atau A). Kalau boleh makan, wajib makan. Sampai hujung papan, buah jadi HAJI."), "Small", true)
-	tip.custom_minimum_size.x = 270
-	col.add_child(tip)
-	var out := UI.button("« Keluar")
-	out.focus_mode = Control.FOCUS_NONE
-	out.pressed.connect(func(): Game.goto("pesta"))
-	col.add_child(out)
+	col.add_child(HSeparator.new())
+	col.add_child(controls(KEYS))
+	var rule := UI.label(tr("Boleh makan? Wajib makan.
+Sampai hujung papan: HAJI."), "Small", true)
+	rule.custom_minimum_size.x = 270
+	col.add_child(rule)
+	col.add_child(exit_button())
 	side.add_child(col)
 	add_child(side)
 	if params.has("level"):
@@ -128,7 +129,7 @@ func _dress_stage() -> void:
 
 func _level_card() -> void:
 	state = "pilih"
-	level_card("DAM HAJI", tr("Gerakkan buah kau menyerong ke depan. Lompat buah lawan untuk makan; kalau boleh makan, wajib makan. Buah yang sampai ke hujung papan menjadi HAJI dan boleh bergerak jauh.\n\nBuah kau dimakan? Jawab soalan Sejarah: betul, satu buah hidup semula di barisan belakang (tiga kali satu permainan).\n\nHabiskan buah lawan untuk menang."), _start)
+	level_card("DAM HAJI", tr("Gerakkan buah kau menyerong ke depan. Lompat buah lawan untuk makan; kalau boleh makan, wajib makan. Buah yang sampai ke hujung papan menjadi HAJI dan boleh bergerak jauh.\n\nBuah kau dimakan? Jawab soalan Sejarah: betul, satu buah hidup semula di barisan belakang (tiga kali satu permainan).\n\nHabiskan buah lawan untuk menang."), _start, KEYS)
 
 
 func _reset() -> void:

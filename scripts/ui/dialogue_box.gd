@@ -41,7 +41,6 @@ var _more: Control
 var _name: Label
 var _text: Label
 var _next: Button
-var _tag: Label
 var _who := ""
 var _last_who := ""
 var _blip_at := 0
@@ -98,8 +97,6 @@ func _ready() -> void:
 	_name.add_theme_color_override("font_color", Color.WHITE)
 	_plate.add_child(_name)
 	name_row.add_child(_plate)
-	_tag = UI.label("", "InkSmall")
-	name_row.add_child(_tag)
 	col.add_child(name_row)
 	_text = UI.label("", "Ink", true)
 	_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -148,7 +145,6 @@ func _show_line() -> void:
 	_name.text = Game.char_name(who)
 	_plate.visible = _name.text != ""
 	_plate.add_theme_stylebox_override("panel", UI.sb(PLATE.get(who, UI.WOOD), PLATE.get(who, UI.WOOD).darkened(0.35), 3, 6, 4))
-	_tag.text = "(dialog rekaan)" if line.get("rekaan", false) else ""
 	var p := Game.portrait_path(who, str(line.get("e", "")))
 	var left := who in LEFT_SIDE
 	var frame := _portrait_frame if left else _portrait_r_frame

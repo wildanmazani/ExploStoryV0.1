@@ -9,6 +9,7 @@ extends "res://scripts/screens/warisan_game.gd"
 ## wrong one is a mud puddle. First over the line wins.
 ## Keys: left / right arrows or A / D; on a phone the two big buttons.
 
+const KEYS := [["left_right", "Langkah"], ["pause", "Jeda"]]
 const TRACK := 4200.0               ## start line to finish line, px
 const GATES := [0.25, 0.5, 0.75]
 const LANE_RIVAL := 412.0           ## where the feet are, screen y
@@ -109,15 +110,13 @@ func _ready() -> void:
 	_info = UI.label("")
 	_info.custom_minimum_size.x = 150
 	row.add_child(_info)
-	var out := UI.button("« Keluar")
-	out.focus_mode = Control.FOCUS_NONE
-	out.pressed.connect(func(): Game.goto("pesta"))
-	row.add_child(out)
+	row.add_child(controls(KEYS, false, true))
+	row.add_child(exit_button())
 	top.add_child(row)
 	add_child(top)
 
-	_left = _step_button("◀  KIRI", -1)
-	_right = _step_button("KANAN  ▶", 1)
+	_left = _step_button(tr("KIRI"), -1)
+	_right = _step_button(tr("KANAN"), 1)
 	_count = UI.label("", "Heading")
 	_count.add_theme_font_size_override("font_size", 96)
 	_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -202,6 +201,8 @@ func _dress_stage() -> void:
 func _step_button(text: String, side: int) -> Button:
 	var b := UI.button(text, "", 230)
 	b.custom_minimum_size.y = 96
+	b.icon = ControlHint.arrow("left" if side < 0 else "right", 26)
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT if side < 0 else HORIZONTAL_ALIGNMENT_RIGHT
 	b.focus_mode = Control.FOCUS_NONE
 	b.position = Vector2(40.0 if side < 0 else Game.screen_w() - 270.0, 720.0 - 122.0)
 	b.button_down.connect(step.bind(side))
@@ -213,7 +214,7 @@ func _step_button(text: String, side: int) -> Button:
 
 func _level_card() -> void:
 	state = "pilih"
-	level_card("TARIK UPIH", tr("Tarik Pau di atas upih pinang sampai ke garisan penamat sebelum Ravi!\n\nLangkah KIRI, KANAN, KIRI, KANAN ikut rentak: tekan ketika penanda berada di bahagian hijau. Terlalu gopoh, upih bergoyang dan Pau tergolek.\n\nTiga pintu soalan: jawab betul dapat pecutan, salah kena lopak lumpur."), _start)
+	level_card("TARIK UPIH", tr("Tarik Pau di atas upih pinang sampai ke garisan penamat sebelum Ravi!\n\nLangkah KIRI, KANAN, KIRI, KANAN ikut rentak: tekan ketika penanda berada di bahagian hijau. Terlalu gopoh, upih bergoyang dan Pau tergolek.\n\nTiga pintu soalan: jawab betul dapat pecutan, salah kena lopak lumpur."), _start, KEYS)
 
 
 func _reset() -> void:

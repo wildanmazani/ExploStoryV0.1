@@ -801,7 +801,7 @@ func is_locked() -> bool:
 ## on-screen controller for walking (Tetapan > Kawalan): "dpad", "joystick" or
 ## "none". Automatik = D-pad on phones/tablets, nothing on a laptop.
 func touch_mode() -> String:
-	var m := str(settings.get("controls", "auto"))
+	var m := controls_mode()
 	if m == "auto":
 		return "dpad" if DisplayServer.is_touchscreen_available() else "none"
 	return m if m in ["dpad", "joystick"] else "none"
@@ -932,6 +932,7 @@ const PAD_BRAWL := {
 	"menu": [JOY_BUTTON_START],
 }
 var _brawl_on := false
+var fake_pad := false   ## dev tests: Controller mode with pad events but no pad
 
 
 func _setup_input() -> void:
@@ -963,7 +964,16 @@ func _bind(action: String, keys: Array) -> void:
 ## Tetapan > Kawalan > Controller: play with a PS4 pad (focus ring on menus
 ## and quizzes, button prompts, no touch buttons)
 func pad_mode() -> bool:
-	return str(settings.get("controls", "auto")) == "controller"
+	return controls_mode() == "controller"
+
+
+## Tetapan > Kawalan as it applies now: Controller with no pad plugged in
+## works as Automatik until one is
+func controls_mode() -> String:
+	var m := str(settings.get("controls", "auto"))
+	if m == "controller" and Input.get_connected_joypads().is_empty() and not fake_pad:
+		return "auto"
+	return m
 
 
 ## the Gelanggang layout picked in its pause menu ("wasd" or "panah")

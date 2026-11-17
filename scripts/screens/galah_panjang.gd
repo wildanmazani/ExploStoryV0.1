@@ -11,6 +11,7 @@ extends "res://scripts/screens/warisan_game.gd"
 ## Keys: WASD / arrows (or hold the mouse / a finger where Alif should go).
 ## params: {"level": 0..2} skips the level card; {"auto": true} lets a bot play (dev test).
 
+const KEYS := [["move", "Gerak"], ["run", "Lari (tahan)"], ["pause", "Jeda"]]
 const W := 440.0          ## court, in screen px
 const GAP := 104.0        ## between two lines
 const H := GAP * 5.0
@@ -51,6 +52,7 @@ var _auto_wait := 0.0
 var _tired := false
 var _running := false
 var _run_btn: Button
+var _keys_box: Control
 var _stamina_bar: ProgressBar
 
 
@@ -95,16 +97,15 @@ func _ready() -> void:
 	fill.bg_color = Color("f2c14e")
 	_stamina_bar.add_theme_stylebox_override("fill", fill)
 	col.add_child(_stamina_bar)
-	_run_btn = UI.button(tr("LARI (Shift)"), "Blue")
+	_run_btn = UI.button(tr("LARI"), "Blue")
 	_run_btn.toggle_mode = true
 	_run_btn.focus_mode = Control.FOCUS_NONE
 	col.add_child(_run_btn)
-	var tip := UI.label(tr("Gerak: WASD / anak panah, atau tahan tetikus / jari. Tahan Shift (controller: X) untuk berlari selagi ada stamina. Kena tangkap? Jawab soalan untuk terlepas."), "Small", true)
-	tip.custom_minimum_size.x = 270
-	col.add_child(tip)
-	var out := UI.button("« Keluar")
-	out.pressed.connect(func(): Game.goto("pesta"))
-	col.add_child(out)
+	_keys_box = UI.vbox(10)   # hidden on a phone: the on-screen D-pad sits there, A / B name themselves
+	_keys_box.add_child(HSeparator.new())
+	_keys_box.add_child(controls(KEYS))
+	col.add_child(_keys_box)
+	col.add_child(exit_button())
 	side.add_child(col)
 	add_child(side)
 	_refresh_hud()
@@ -144,7 +145,7 @@ func _dress_stage() -> void:
 
 func _level_card() -> void:
 	state = "pilih"
-	level_card("GALAH PANJANG", tr("Lepasi empat garisan, sampai ke hujung, kemudian balik ke tempat mula. Penjaga hanya boleh berlari di atas garisan mereka: tunggu mereka jauh, kemudian lintas!\n\nKena tangkap? Jawab soalan Sejarah: betul, kau terlepas dan penjaga itu terpaku; salah, hilang satu nyawa.\n\nTahan Shift (atau butang LARI) untuk berlari mengelak penjaga. Stamina cepat habis, guna bila perlu sahaja."), _start)
+	level_card("GALAH PANJANG", tr("Lepasi empat garisan, sampai ke hujung, kemudian balik ke tempat mula. Penjaga hanya boleh berlari di atas garisan mereka: tunggu mereka jauh, kemudian lintas!\n\nKena tangkap? Jawab soalan Sejarah: betul, kau terlepas dan penjaga itu terpaku; salah, hilang satu nyawa.\n\nLari untuk mengelak penjaga. Stamina cepat habis, guna bila perlu sahaja."), _start, KEYS)
 
 
 func _start(lv: int) -> void:
@@ -307,6 +308,8 @@ func _refresh_hud() -> void:
 	_stamina_bar.value = stamina
 	_stamina_bar.modulate = Color(1, 0.55, 0.5) if _tired else Color.WHITE
 	_run_btn.disabled = _tired or state != "main"
+	_run_btn.visible = not Game.pad_mode() and not Game.controls_on_screen()   # R2 / the on-screen B run
+	_keys_box.visible = not Game.controls_on_screen()
 
 
 ## dev bot: waits in the middle of a box until the next guard is far to one

@@ -74,8 +74,6 @@ func _paparan() -> void:
 	grid.add_child(_choice([0, 1, 2], ["Kecil", "Sederhana", "Besar"], "text_size"))
 	grid.add_child(UI.label("Kelajuan teks"))
 	grid.add_child(_choice([0, 1, 2], ["Perlahan", "Biasa", "Serta-merta"], "text_speed"))
-	grid.add_child(UI.label("Baca dialog dengan suara"))
-	grid.add_child(_toggle("auto_read"))
 	var sample := UI.panel("Paper")
 	var col := UI.vbox(4)
 	col.add_child(UI.label("Tajuk 1 2 3 4 5 6 7 8 9 0", "InkHeading"))

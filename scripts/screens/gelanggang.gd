@@ -33,6 +33,7 @@ var _card: PanelContainer
 var _q: Label
 var _q_timer: ProgressBar
 var _q_status: Label
+var _q_stakes: HBoxContainer
 var _buttons: Array[Button] = []
 var _banner: PanelContainer
 var _banner_box: VBoxContainer
@@ -347,6 +348,24 @@ const PILLS := {
 }
 
 
+## (tick) [SEMANGAT] + senjata   /   (cross) [LEMAH]
+func _stake(right: bool, pill: String, extra: String) -> HBoxContainer:
+	var row := UI.hbox(6)
+	var b = AnswerMark.Badge.new()
+	b.right = right
+	b.custom_minimum_size = Vector2(26, 26)
+	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(b)
+	var p := _pill(pill)
+	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(p)
+	if extra != "":
+		var l := UI.label(tr(extra), "Ink")
+		l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(l)
+	return row
+
+
 func _pill(kind: String, size := "Small") -> PanelContainer:
 	var p := PanelContainer.new()
 	var l := UI.label("", size)
@@ -397,6 +416,17 @@ func _build_card() -> void:
 	_q_timer.max_value = BrawlRules.ASK_TIME
 	_q_timer.custom_minimum_size = Vector2(0, 14)
 	col.add_child(_q_timer)
+	# what an answer brings, in pictures: (tick) SEMANGAT + senjata, (cross) LEMAH, fastest JURUS!
+	_q_stakes = UI.hbox(22)
+	_q_stakes.add_child(_stake(true, "semangat", "+ senjata"))
+	_q_stakes.add_child(_stake(false, "lemah", ""))
+	var fast := UI.hbox(6)
+	var fl := UI.label(tr("Paling cepat:"), "InkSmall")
+	fl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	fast.add_child(fl)
+	fast.add_child(_pill("jurus"))
+	_q_stakes.add_child(fast)
+	col.add_child(_q_stakes)
 	var qrow := UI.hbox(10)
 	_q = UI.label("", "InkHeading", true)
 	_q.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -498,7 +528,8 @@ func _on_phase(p: String) -> void:
 				b.disabled = not match_node.me.alive()
 				b.theme_type_variation = ""
 				b.modulate = Color.WHITE
-			_q_status.text = tr("Jawab betul untuk dapat SEMANGAT (serangan penuh) dan senjata sekolah!") if match_node.me.alive() else tr("Anda pengsan. Sokong rakan sepasukan!")
+			_q_stakes.visible = match_node.me.alive()
+			_q_status.text = "" if match_node.me.alive() else tr("Anda pengsan. Sokong rakan sepasukan!")
 			_phase.text = tr("SOALAN")
 			_hint.text = ""
 			Sfx.play("pop", -6.0)

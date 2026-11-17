@@ -2067,6 +2067,7 @@ func _find_def(v: Variant, type: String) -> Dictionary:
 ## then a card quiz and a board quiz are finished with the pad alone
 func _check_pad() -> bool:
 	Game.settings["controls"] = "controller"  # not saved: the test leaves no trace
+	Game.fake_pad = true
 	Game.settings_changed.emit()
 	Game.save["prolog_done"] = true
 	Game.goto("world")

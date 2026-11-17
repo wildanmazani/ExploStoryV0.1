@@ -5,6 +5,7 @@ extends Control
 ##    2-4 friends join and the host starts. Needs the online server
 ##    (Supabase, supabase/multiplayer.sql); offline it explains that.
 
+const ControlHint = preload("res://scripts/ui/control_hint.gd")
 const UI = preload("res://scripts/ui/ui.gd")
 const BrawlGuide = preload("res://scripts/ui/brawl_guide.gd")
 
@@ -265,7 +266,12 @@ func _show_fighters() -> void:
 		for f in outfits:
 			if f["folder"] == look or (not _is_outfit(outfits, look) and f["folder"] == Game.skin_folder()):
 				alif = f
-		var b := _fighter_card(str(alif["folder"]), tr("Alif") + " ▾", _is_outfit(outfits, look), true, str(alif["name"]))
+		var b := _fighter_card(str(alif["folder"]), tr("Alif"), _is_outfit(outfits, look), true, str(alif["name"]))
+		var more := TextureRect.new()   # it opens the outfit list
+		more.texture = ControlHint.arrow("down", 18)
+		more.position = Vector2(94, 6)
+		more.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		b.add_child(more)
 		b.pressed.connect(func(): _outfit_menu(b, outfits, look))
 		_fighter_row.add_child(b)
 	for f in friends:

@@ -13,6 +13,7 @@ const UI = preload("res://scripts/ui/ui.gd")
 const Stage = preload("res://scripts/screens/warisan_stage.gd")
 const TouchControls = preload("res://scripts/ui/touch_controls.gd")
 const AnswerMark = preload("res://scripts/ui/answer_mark.gd")
+const ControlHint = preload("res://scripts/ui/control_hint.gd")
 const LETTERS := ["A", "B", "C", "D"]
 
 var params: Dictionary = {}
@@ -23,6 +24,7 @@ var _bg: ColorRect
 var _touch: CanvasLayer   ## the on-screen D-pad / joystick, in the games that walk or steer
 var _auto := false
 var stage: Node3D   ## the HD-2D view (warisan_stage.gd) when "Dunia 3D" is on, else null: plain 2D
+var _paused := false   ## the Jeda card is open (the game itself is paused)
 
 
 func setup_game(background: Color) -> void:
@@ -42,6 +44,71 @@ func setup_game(background: Color) -> void:
 	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	UI.full(_bg)
 	add_child(_bg)
+	var keys := PauseKey.new()   # Esc / Options: the Jeda card, also mid-game
+	keys.game = self
+	add_child(keys)
+
+
+func _exit_tree() -> void:
+	if _paused:
+		get_tree().paused = false
+
+
+## the controls as pictures (keys, controller or phone buttons), see control_hint.gd
+func controls(rows: Array, on_paper := false, one_line := false) -> Control:
+	return ControlHint.new(rows, on_paper, one_line)
+
+
+## the side panel's way out: a button that opens the Jeda card
+func exit_button() -> Button:
+	var b := UI.button(tr("Jeda / Keluar"))
+	b.focus_mode = Control.FOCUS_NONE
+	b.pressed.connect(pause_menu)
+	return b
+
+
+## Jeda: the game stops; Teruskan or back to the fair. Esc / Options / ◯ resume.
+func pause_menu() -> void:
+	if _paused:
+		_resume()
+		return
+	if _overlay:   # a level, question or result card is up: it has its own buttons
+		return
+	_paused = true
+	var col := card(tr("JEDA"), "")
+	_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	var go := UI.button(tr("Teruskan"), "Primary")
+	go.pressed.connect(_resume)
+	col.add_child(go)
+	var out := UI.button(tr("Keluar ke Pesta Warisan"))
+	out.pressed.connect(func():
+		get_tree().paused = false
+		Game.goto("pesta"))
+	col.add_child(out)
+	_overlay.set_meta("pad_back", go)
+	go.grab_focus.call_deferred()
+	get_tree().paused = true
+
+
+func _resume() -> void:
+	if not _paused:
+		return
+	_paused = false
+	get_tree().paused = false
+	close_card()
+
+
+## Esc / the pad's Options, heard even while the tree is paused
+class PauseKey extends Node:
+	var game: Node
+
+	func _ready() -> void:
+		process_mode = Node.PROCESS_MODE_ALWAYS
+
+	func _unhandled_input(e: InputEvent) -> void:
+		if e.is_action_pressed("menu") and not e.is_echo():
+			get_viewport().set_input_as_handled()
+			game.pause_menu()
 
 
 ## With "Dunia 3D" on: the play node goes to a 3D stage (see warisan_stage.gd).
@@ -100,9 +167,10 @@ func card(title: String, text: String) -> VBoxContainer:
 	p.custom_minimum_size = Vector2(640, 0)
 	var col := UI.vbox(12)
 	col.add_child(UI.label(title, "InkHeading"))
-	var l := UI.label(text, "Ink", true)
-	l.custom_minimum_size.x = 600
-	col.add_child(l)
+	if text != "":
+		var l := UI.label(text, "Ink", true)
+		l.custom_minimum_size.x = 600
+		col.add_child(l)
 	p.add_child(col)
 	var c := UI.center(p)
 	UI.full(c)
@@ -112,14 +180,19 @@ func card(title: String, text: String) -> VBoxContainer:
 
 
 func close_card() -> void:
+	if _paused and _overlay:   # a card that replaces Jeda ends the pause too
+		_paused = false
+		get_tree().paused = false
 	if _overlay:
 		_overlay.queue_free()
 		_overlay = null
 
 
-## Mudah / Biasa / Sukar; start.call(level)
-func level_card(title: String, text: String, start: Callable) -> void:
+## Mudah / Biasa / Sukar; start.call(level). keys: the controls, as control_hint.gd rows
+func level_card(title: String, text: String, start: Callable, keys: Array = []) -> void:
 	var col := card(title, text)
+	if not keys.is_empty():
+		col.add_child(controls(keys, true))
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	for i in WarisanRules.LEVELS.size():
@@ -129,6 +202,11 @@ func level_card(title: String, text: String, start: Callable) -> void:
 		if i == 1:
 			b.grab_focus.call_deferred()
 	col.add_child(row)
+	var out := UI.button(tr("Keluar ke Pesta Warisan"))
+	out.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	out.pressed.connect(func(): Game.goto("pesta"))
+	col.add_child(out)
+	_overlay.set_meta("pad_back", out)
 
 
 ## The next revision question. After the player has read the feedback and

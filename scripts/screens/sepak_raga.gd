@@ -10,6 +10,7 @@ extends "res://scripts/screens/warisan_game.gd"
 ## five kicks count double. Reach the level's number of timang to win. The
 ## ball flies faster as the rally goes on.
 
+const KEYS := [["interact", "Sepak"], ["pause", "Jeda"]]
 const CENTRE := Vector2(640, 396)
 const R := 214.0
 const STAND := 0.74          ## of R: where the players stand
@@ -96,10 +97,8 @@ func _ready() -> void:
 	_info = UI.label("")
 	_info.custom_minimum_size.x = 150
 	row.add_child(_info)
-	var out := UI.button("« Keluar")
-	out.focus_mode = Control.FOCUS_NONE
-	out.pressed.connect(func(): Game.goto("pesta"))
-	row.add_child(out)
+	row.add_child(controls(KEYS, false, true))
+	row.add_child(exit_button())
 	top.add_child(row)
 	add_child(top)
 	_hearts = UI.hbox(6)
@@ -127,7 +126,7 @@ func _ready() -> void:
 
 func _level_card() -> void:
 	state = "pilih"
-	level_card("SEPAK RAGA", tr("Timang bola rotan dalam bulatan bersama rakan sekelas. Bila bola datang kepada kau, tekan SEPAK tepat ketika ia sampai ke kaki: bulatan di tanah mengecil bila bola turun.\n\nTepat pada masanya: PADU, dua timang. Terlambat: bola jatuh, hilang satu nyawa.\n\nSetiap sepakan kelima ada soalan: betul, lima sepakan seterusnya dikira dua kali."), _start)
+	level_card("SEPAK RAGA", tr("Timang bola rotan dalam bulatan bersama rakan sekelas. Bila bola datang kepada kau, tekan SEPAK tepat ketika ia sampai ke kaki: bulatan di tanah mengecil bila bola turun.\n\nTepat pada masanya: PADU, dua timang. Terlambat: bola jatuh, hilang satu nyawa.\n\nSetiap sepakan kelima ada soalan: betul, lima sepakan seterusnya dikira dua kali."), _start, KEYS)
 
 
 func spot(i: int) -> Vector2:

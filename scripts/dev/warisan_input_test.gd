@@ -85,6 +85,7 @@ func _finger(at: Vector2, down: bool) -> void:
 
 func _controls(mode: String) -> void:   # Tetapan > Kawalan, without saving it
 	Game.settings["controls"] = mode
+	Game.fake_pad = mode == "controller"
 	Game.settings_changed.emit()
 	await _wait(0.4)
 

@@ -11,6 +11,7 @@ extends "res://scripts/screens/warisan_game.gd"
 ##      loses the most spin, and moving about costs a little: sit tight and
 ##      outlast, or ram and risk the edge.
 
+const KEYS := [["interact", "Lempar"], ["move", "Kawal gasing"], ["pause", "Jeda"]]
 const CENTRE := Vector2(640, 392)
 const R := 214.0            ## the ring
 const TOP := 26.0           ## a top's radius
@@ -90,10 +91,8 @@ func _ready() -> void:
 	_info = UI.label("")
 	_info.custom_minimum_size.x = 190
 	row.add_child(_info)
-	var out := UI.button("« Keluar")
-	out.focus_mode = Control.FOCUS_NONE
-	out.pressed.connect(func(): Game.goto("pesta"))
-	row.add_child(out)
+	row.add_child(controls(KEYS, false, true))
+	row.add_child(exit_button())
 	top.add_child(row)
 	add_child(top)
 	_throw = UI.button(tr("LEMPAR!"), "Primary", 240)
@@ -172,7 +171,7 @@ func _sync_tops3() -> void:
 
 func _level_card() -> void:
 	state = "pilih"
-	level_card("GASING", tr("Lawan gasing Daniel dalam gelanggang. Menang dua pusingan dahulu.\n\nLILIT: tekan LEMPAR ketika penanda di bahagian hijau untuk pusingan paling kuat. Jawab soalan dengan betul dan tali lebih ketat.\n\nDalam gelanggang, kawal gasing kau. Gasing yang berhenti berpusing dahulu kalah (URI), begitu juga gasing yang terkeluar dari gelanggang (PANGKAH)."), _start)
+	level_card("GASING", tr("Lawan gasing Daniel dalam gelanggang. Menang dua pusingan dahulu.\n\nLILIT: tekan LEMPAR ketika penanda di bahagian hijau untuk pusingan paling kuat. Jawab soalan dengan betul dan tali lebih ketat.\n\nDalam gelanggang, kawal gasing kau. Gasing yang berhenti berpusing dahulu kalah (URI), begitu juga gasing yang terkeluar dari gelanggang (PANGKAH)."), _start, KEYS)
 
 
 func _place_tops() -> void:
@@ -439,7 +438,7 @@ class Hud extends Control:
 		var bw := 520.0
 		var b := Vector2((w - bw) / 2.0, size.y - 92.0)
 		draw_rect(Rect2(b.x - 14, b.y - 40, bw + 28, 96), ink)
-		draw_string(font, b + Vector2(0, -14), tr("LILIT TALI: tekan LEMPAR (atau Space) ketika penanda di hijau"), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f6e8c4"))
+		draw_string(font, b + Vector2(0, -14), tr("LILIT TALI: lempar ketika penanda di hijau"), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("f6e8c4"))
 		draw_rect(Rect2(b.x, b.y, bw, 30), Color("c8473c"))
 		draw_rect(Rect2(b.x + bw * 0.45, b.y, bw * 0.55, 30), Color("d9a441"))
 		draw_rect(Rect2(b.x + bw * game.GREEN[0], b.y, bw * (game.GREEN[1] - game.GREEN[0]), 30), Color("58b84c"))
