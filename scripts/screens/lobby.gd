@@ -60,7 +60,7 @@ func _ready() -> void:
 	root.add_child(scroll)
 	var btns := UI.hbox(16)
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
-	var back := UI.button("« KEMBALI", "", 240)
+	var back := UI.button("« Kembali", "", 240)
 	back.pressed.connect(func(): Game.goto("arka"))
 	btns.add_child(back)
 	var prof := UI.button("Profil & Kedai", "Blue", 240)
@@ -69,7 +69,7 @@ func _ready() -> void:
 	var papan := UI.button("Papan Markah", "", 220)
 	papan.pressed.connect(func(): Game.main.open_papan())
 	btns.add_child(papan)
-	var st := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(200, 60), " TETAPAN")
+	var st := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(200, 60), " Tetapan")
 	st.pressed.connect(func(): Game.main.open_settings())
 	btns.add_child(st)
 	root.add_child(UI.margin(btns, 0, 0, 0, 14))
@@ -138,7 +138,7 @@ func _bot_card() -> Control:
 	c.add_child(UI.spacer(false))
 	# both ways in on one row so they stay on screen without scrolling
 	var go_row := UI.hbox(10)
-	var go := UI.button("MASUK GELANGGANG", "Primary", 290)
+	var go := UI.button("Masuk Gelanggang", "Primary", 290)
 	go.pressed.connect(func():
 		Sfx.play("select")
 		Game.goto("gelanggang", {"format": _format, "level": _level, "stage": str(Game.stage_def()["id"])}))

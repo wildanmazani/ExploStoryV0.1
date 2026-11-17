@@ -105,7 +105,7 @@ func _ready() -> void:
 
 	var btns := UI.hbox(16)
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
-	var back := UI.button("« KEMBALI MENEROKA", "", 300)
+	var back := UI.button("« Kembali Meneroka", "", 300)
 	back.pressed.connect(_continue)
 	btns.add_child(back)
 	var nota := UI.icon_button("res://assets/icons/nota.png", "", Vector2(200, 64), " NOTA")
@@ -118,7 +118,7 @@ func _ready() -> void:
 	var st_b := UI.icon_button("res://assets/icons/tetapan.png", "", Vector2(64, 64))
 	st_b.pressed.connect(func(): Game.main.open_settings())
 	btns.add_child(st_b)
-	var go := UI.button("TERUSKAN »", "Primary", 260)
+	var go := UI.button("Teruskan »", "Primary", 260)
 	go.pressed.connect(_continue)
 	btns.add_child(go)
 	root.add_child(UI.margin(btns, 0, 0, 0, 24))

@@ -1234,7 +1234,7 @@ func _finish_penutup(teaser: String) -> bool:
 		elif not Main.dialog_box.visible:
 			var b := find_button(hosted(), "Teruskan")
 			if b == null:
-				b = find_button(hosted(), "KEMBALI")
+				b = find_button(hosted(), "Kembali")
 				if b:
 					await shot("teaser_" + teaser)
 			if b:
@@ -2008,7 +2008,7 @@ func _check_lupa() -> bool:
 	(fields[0] as LineEdit).text = "rahsia123"
 	(fields[1] as LineEdit).text = "rahsia124"
 	for b in pop.find_children("*", "Button", true, false):
-		if (b as Button).text == "TUKAR KATA LALUAN":
+		if (b as Button).text == "Tukar Kata Laluan":
 			(b as Button).pressed.emit()
 	await wait(0.2)
 	var said := false

@@ -38,7 +38,7 @@ func _ready() -> void:
 	scroll.add_child(centre)
 	root.add_child(scroll)
 
-	var back := UI.button("« KEMBALI KE KAMPUNG", "", 320)
+	var back := UI.button("« Kembali ke Kampung", "", 320)
 	back.pressed.connect(func(): Game.goto("world"))
 	var row := UI.hbox(16)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER

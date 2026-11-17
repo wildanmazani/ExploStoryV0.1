@@ -216,7 +216,7 @@ func _teaser() -> void:
 	create_tween().tween_property(col, "modulate:a", 1.0, 1.2)
 	await get_tree().create_timer(1.4).timeout
 	await Game.say(_key("teaser"))
-	var btn := UI.button("KEMBALI MENEROKA", "Primary", 320)
+	var btn := UI.button("Kembali Meneroka", "Primary", 320)
 	btn.position = Vector2(480, 600)
 	add_child(btn)
 	btn.grab_focus()

@@ -80,11 +80,11 @@ func _ready() -> void:
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_status)
 	var row := UI.hbox(12)
-	var back := UI.button("« KEMBALI")
+	var back := UI.button("« Kembali")
 	back.custom_minimum_size.y = 52
 	back.pressed.connect(func(): Game.goto("login"))
 	row.add_child(back)
-	_go = UI.button("DAFTAR", "Primary")
+	_go = UI.button("Daftar", "Primary")
 	_go.custom_minimum_size.y = 52
 	_go.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_go.disabled = true

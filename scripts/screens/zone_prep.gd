@@ -97,7 +97,7 @@ func _ready() -> void:
 
 	var btns := UI.hbox(30)
 	btns.alignment = BoxContainer.ALIGNMENT_CENTER
-	var go := UI.button("MULA MENEROKA!", "Primary", 320)
+	var go := UI.button("Mula Meneroka!", "Primary", 320)
 	go.pressed.connect(_close)
 	btns.add_child(go)
 	root.add_child(UI.margin(btns, 0, 4, 0, 20))

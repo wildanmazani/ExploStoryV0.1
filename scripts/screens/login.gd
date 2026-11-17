@@ -74,13 +74,13 @@ func _ready() -> void:
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_status)
 
-	_login = UI.button("LOG MASUK", "Primary")
+	_login = UI.button("Log Masuk", "Primary")
 	_login.custom_minimum_size.y = 52
 	_login.disabled = true
 	_login.pressed.connect(_do_login)
 	col.add_child(_login)
 	col.add_child(Auth.or_line())
-	var reg := UI.button("DAFTAR AKAUN BAHARU")
+	var reg := UI.button("Daftar Akaun Baharu")
 	reg.pressed.connect(func(): Game.goto("register"))
 	col.add_child(reg)
 	var guest := UI.button("Main sebagai Tetamu", "Flat")
@@ -126,7 +126,7 @@ func _show_recovery() -> void:
 	var msg := UI.label("", "Small", true)
 	msg.custom_minimum_size.x = 480
 	col.add_child(msg)
-	var save := UI.button("TUKAR KATA LALUAN", "Primary")
+	var save := UI.button("Tukar Kata Laluan", "Primary")
 	col.add_child(save)
 	var cancel := UI.button("Batal", "Flat")
 	cancel.pressed.connect(func():

@@ -208,7 +208,7 @@ func _show_travel() -> void:
 		var stack := UI.vbox(6)
 		stack.add_child(row)
 		if ok:
-			var go := UI.button("PERGI", "Primary", 96)
+			var go := UI.button("Pergi", "Primary", 96)
 			go.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			go.pressed.connect(_travel.bind(p))
 			row.add_child(go)
