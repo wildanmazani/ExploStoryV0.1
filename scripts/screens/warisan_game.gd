@@ -12,6 +12,8 @@ extends Control
 const UI = preload("res://scripts/ui/ui.gd")
 const Stage = preload("res://scripts/screens/warisan_stage.gd")
 const TouchControls = preload("res://scripts/ui/touch_controls.gd")
+const AnswerMark = preload("res://scripts/ui/answer_mark.gd")
+const LETTERS := ["A", "B", "C", "D"]
 
 var params: Dictionary = {}
 var _overlay: Control
@@ -138,26 +140,39 @@ func question_card(title: String, right_text: String, wrong_text: String, done: 
 	var q: Dictionary = _questions.pop_front()
 	_questions.append(q)
 	var col := card(title, str(q["q"]))
-	var feedback := UI.label("", "Ink", true)
-	feedback.custom_minimum_size.x = 600
+	# under the choices once answered: Betul! / Belum tepat, the reason, what it costs
+	var feedback := UI.vbox(6)
+	feedback.visible = false
 	var buttons: Array[Button] = []
 	var go := UI.button(tr("Teruskan"), "Primary")
 	go.visible = false
 	for i in q["options"].size():
-		var b := UI.button(str(q["options"][i]))
+		var b := UI.button("%s.  %s" % [LETTERS[i], str(q["options"][i])])
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		buttons.append(b)
 		col.add_child(b)
 		b.pressed.connect(func():
-			var ok: bool = i == int(q["answer"])
-			for other in buttons:
-				other.disabled = true
+			var right := int(q["answer"])
+			var ok: bool = i == right
+			AnswerMark.reveal(buttons, right, i)
+			var head := UI.label(tr("Betul!") if ok else tr("Belum tepat."), "InkHeading")
+			head.add_theme_color_override("font_color", AnswerMark.INK_GREEN if ok else AnswerMark.INK_RED)
+			feedback.add_child(head)
 			if ok:
 				Sfx.play("chime")
-				feedback.text = right_text
+				var rest := right_text.trim_prefix(tr("Betul!")).strip_edges()  # the heading says it
+				if rest != "":
+					feedback.add_child(_ink(rest))
 			else:
 				Sfx.play("bump", -4.0)
-				feedback.text = (tr("Belum tepat. Jawapannya: %s. %s") % [str(q["options"][int(q["answer"])]), str(q.get("explain", ""))] + " " + wrong_text).strip_edges()
+				feedback.add_child(AnswerMark.row(tr("Jawapan betul: %s") % str(q["options"][right]), true, 600))
+				if str(q.get("explain", "")) != "":
+					feedback.add_child(_ink(str(q["explain"])))
+				if wrong_text != "":
+					var cost := _ink(wrong_text)
+					cost.add_theme_color_override("font_color", AnswerMark.INK_RED)
+					feedback.add_child(cost)
+			feedback.visible = true
 			go.visible = true
 			go.grab_focus()
 			go.pressed.connect(func():
@@ -171,6 +186,12 @@ func question_card(title: String, right_text: String, wrong_text: String, done: 
 		buttons[int(q["answer"])].pressed.emit()
 		await get_tree().create_timer(0.4).timeout
 		go.pressed.emit()
+
+
+func _ink(text: String) -> Label:
+	var l := UI.label(text, "Ink", true)
+	l.custom_minimum_size.x = 600
+	return l
 
 
 ## the end: Main Lagi (again.call()) or back to the fair

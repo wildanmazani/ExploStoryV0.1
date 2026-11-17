@@ -12,6 +12,7 @@ extends "res://scripts/puzzles/puzzle_base.gd"
 ## = passed; no hearts left = stats.passed false (the host offers a retry).
 
 const LETTERS := ["A", "B", "C", "D"]
+const AnswerMark = preload("res://scripts/ui/answer_mark.gd")
 
 var questions: Array = []
 var qi: int = 0
@@ -122,7 +123,7 @@ func _show_question() -> void:
 			b.text = "%s.  %s" % [LETTERS[i], opts[i]]
 			b.disabled = false
 			b.theme_type_variation = ""
-			b.modulate = Color.WHITE
+			AnswerMark.clear(b)
 	say_try("Pilih satu jawapan. Tiada had masa.")
 	if bool(Game.settings.get("auto_read", false)):
 		Tts.speak(_q_text())
@@ -135,10 +136,12 @@ func _pick(i: int) -> void:
 		_answered = true
 		if not _wrong_here:
 			stats["first_try"] = int(stats["first_try"]) + 1
-		_buttons[i].theme_type_variation = "Primary"
 		for j in _buttons.size():
-			if j != i:
-				_buttons[j].disabled = true
+			_buttons[j].disabled = true
+			if j == i:
+				AnswerMark.mark(_buttons[j], true)
+			elif not _buttons[j].has_node(AnswerMark.BADGE):  # earlier wrong tries keep their cross
+				AnswerMark.fade(_buttons[j])
 		Sfx.play("chime", -6.0)
 		MusicDirector.stinger("st_correct")
 		pulse(_buttons[i])
@@ -167,7 +170,7 @@ func _pick(i: int) -> void:
 		_wrong_here = true
 		stats["retries"] = int(stats["retries"]) + 1
 		_buttons[i].disabled = true
-		_buttons[i].modulate = Color(1, 1, 1, 0.5)
+		AnswerMark.mark(_buttons[i], false)
 		shake(_buttons[i])
 		Sfx.play("bump", -4.0)
 		say_try(["Hampir! Cuba jawapan lain.", "Belum tepat. Baca soalan sekali lagi.", "Tak apa, cuba lagi."].pick_random())
@@ -188,12 +191,7 @@ func _lose_heart(i: int) -> void:
 	var opts: Array = _q()["options"]
 	stats["wrong"].append({"q": _q()["q"], "picked": opts[i], "right": opts[right],
 		"explain": _q().get("explain", ""), "zon": _q().get("zon", "")})
-	for j in _buttons.size():
-		_buttons[j].disabled = true
-		if j == i:
-			_buttons[j].modulate = Color(1, 0.6, 0.6)
-	_buttons[right].theme_type_variation = "Primary"
-	_buttons[right].modulate = Color.WHITE
+	AnswerMark.reveal(_buttons, right, i)
 	say_try(tr("Jawapan betul: %s. ") % LETTERS[right] + str(_q().get("explain", "")))
 	if _hearts.count <= 0:
 		stats["passed"] = false

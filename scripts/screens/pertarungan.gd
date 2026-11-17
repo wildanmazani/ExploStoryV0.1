@@ -4,6 +4,7 @@ extends Control
 ## the last player standing wins. params: {"mode": "bot", "bots": 2..4} or
 ## {"mode": "online", "code": "ABC123"} (online needs Supabase, see Backend).
 
+const AnswerMark = preload("res://scripts/ui/answer_mark.gd")
 const UI = preload("res://scripts/ui/ui.gd")
 const LETTERS := ["A", "B", "C", "D"]
 
@@ -324,7 +325,7 @@ func _new_question(s: Dictionary) -> void:
 		b.text = "%s.  %s" % [LETTERS[i], q["options"][i]]
 		b.disabled = not alive
 		b.theme_type_variation = ""
-		b.modulate = Color.WHITE
+		AnswerMark.clear(b)
 	Sfx.play("pop", -6.0)
 	if bool(Game.settings.get("auto_read", false)):
 		Tts.speak(_q.text)
@@ -343,11 +344,9 @@ func _answer(i: int) -> void:
 func _show_reveal(s: Dictionary) -> void:
 	var ans := int(s["answer"])
 	var mine := int(battle.me().get("answer", -1))
-	for i in _buttons.size():
-		# the right answer stays bright green (a disabled button would turn grey)
-		_buttons[i].disabled = i != ans
-		_buttons[i].theme_type_variation = "Primary" if i == ans else ""
-		_buttons[i].modulate = Color.WHITE if i == ans or i == mine else Color(1, 1, 1, 0.45)
+	for b in _buttons:
+		b.theme_type_variation = ""
+	AnswerMark.reveal(_buttons, ans, mine)
 	var me: Dictionary = battle.me()
 	if me.get("alive", false) or mine >= 0:
 		_info.text = (tr("Betul! ") if mine == ans else tr("Jawapan betul: %s. ") % LETTERS[ans]) + str(s.get("explain", ""))

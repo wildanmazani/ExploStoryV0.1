@@ -5,6 +5,7 @@ extends Control
 ## pass. Passing goes on to the penutup (which marks the chapter done);
 ## failing offers a retry with new questions or a trip back to revise.
 
+const AnswerMark = preload("res://scripts/ui/answer_mark.gd")
 const UI = preload("res://scripts/ui/ui.gd")
 const Objektif = preload("res://scripts/puzzles/objektif.gd")
 const BossStage = preload("res://scripts/battle/boss_stage.gd")
@@ -236,14 +237,12 @@ func _wrong_list(wrong: Array) -> Control:
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for i in wrong.size():
 		var w: Dictionary = wrong[i]
-		var item := UI.vbox(2)
+		var item := UI.vbox(6)
+		if i > 0:
+			item.add_child(HSeparator.new())
 		item.add_child(UI.label("%d. %s" % [i + 1, w.get("q", "")], "Ink", true))
-		var mine := UI.label(tr("Jawapan kau: %s") % w.get("picked", ""), "InkSmall", true)
-		mine.add_theme_color_override("font_color", Color("b03a2e"))
-		item.add_child(mine)
-		var right := UI.label(tr("Jawapan betul: %s") % w.get("right", ""), "InkSmall", true)
-		right.add_theme_color_override("font_color", Color("2e7d32"))
-		item.add_child(right)
+		item.add_child(AnswerMark.row(tr("Jawapan kau: %s") % w.get("picked", ""), false))
+		item.add_child(AnswerMark.row(tr("Jawapan betul: %s") % w.get("right", ""), true))
 		if str(w.get("explain", "")) != "":
 			item.add_child(UI.label(str(w["explain"]), "InkSmall", true))
 		list.add_child(item)

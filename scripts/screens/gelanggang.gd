@@ -14,6 +14,7 @@ extends Control
 ## against the boss with that chapter's questions; winning goes back to the
 ## Ujian screen (the win scene and the penutup), losing offers another go.
 
+const AnswerMark = preload("res://scripts/ui/answer_mark.gd")
 const UI = preload("res://scripts/ui/ui.gd")
 const TouchControls = preload("res://scripts/ui/touch_controls.gd")
 const BrawlGuide = preload("res://scripts/ui/brawl_guide.gd")
@@ -507,8 +508,12 @@ func _on_phase(p: String) -> void:
 		"keputusan":
 			for c in _banner_box.get_children():
 				c.queue_free()
-			var head := UI.label(tr("Jawapan: %s. %s") % [LETTERS[match_node.answer_index], match_node.q["options"][match_node.answer_index]], "Heading", true)
-			_banner_box.add_child(head)
+			var ai := match_node.answer_index
+			var opts: Array = match_node.q["options"]
+			_banner_box.add_child(AnswerMark.row(tr("Jawapan betul: %s.  %s") % [LETTERS[ai], opts[ai]], true))
+			var mine := int(match_node.answers.get(match_node.me.id, {}).get("i", -1))
+			if mine >= 0 and mine != ai:
+				_banner_box.add_child(AnswerMark.row(tr("Jawapan kau: %s.  %s") % [LETTERS[mine], opts[mine]], false))
 			if match_node.explain != "":
 				_banner_box.add_child(UI.label(match_node.explain, "Small", true))
 			for r in match_node.results:
