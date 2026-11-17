@@ -34,6 +34,8 @@ var _q: Label
 var _q_timer: ProgressBar
 var _q_status: Label
 var _q_stakes: HBoxContainer
+var _gone := {}           ## online: players who left after the match (id -> true)
+var _again_row: HBoxContainer   ## online result: Main Lagi (host) or waiting for the host
 var _buttons: Array[Button] = []
 var _banner: PanelContainer
 var _banner_box: VBoxContainer
@@ -168,9 +170,54 @@ func _on_net(event: String, p: Dictionary) -> void:
 				match_node.remote_input[str(p.get("id", ""))] = p
 			"ans":
 				match_node.remote_answer(str(p.get("id", "")), int(p.get("i", -1)))
+			"bye":
+				_gone[str(p.get("id", ""))] = true
+				_fill_again()
 	elif event == "snap":
 		_last_snap = 0.0
 		match_node.apply_snapshot(p)
+	elif event == "again":   # the host plays the room again: the same screen, a new match
+		_leaving = true
+		Game.goto("gelanggang", params)
+	elif event == "bye" and str(p.get("id", "")) == str(params.get("host_id", "")):
+		_gone["host"] = true
+		_fill_again()
+
+
+## online: tell the others this player is gone, then back to the Arena
+func _leave_online() -> void:
+	_leaving = true
+	if _net:
+		_net.send("bye", {"id": str(params.get("my_id", ""))})
+		await get_tree().create_timer(0.3).timeout
+	Game.goto("lobby")
+
+
+## online result card: the host's Main Lagi, or what the others wait for
+func _fill_again() -> void:
+	if _again_row == null or not is_instance_valid(_again_row):
+		return
+	for c in _again_row.get_children():
+		c.queue_free()
+	if _host:
+		var left: Array = params.get("players", []).filter(func(p): return not _gone.has(str(p["id"])))
+		var enough: bool = left.size() >= 2 or str(params.get("team", "pvp")) == "coop"
+		var again := UI.button(tr("Main Lagi") if enough else tr("Rakan dah keluar"), "Primary", 240)
+		again.disabled = not enough
+		again.pressed.connect(func():
+			_leaving = true
+			_net.send("again", {})
+			await get_tree().create_timer(0.4).timeout   # the message goes out before the channel closes
+			var next := params.duplicate()
+			next["players"] = left
+			Game.goto("gelanggang", next))
+		_again_row.add_child(again)
+		if enough:
+			again.grab_focus.call_deferred()
+	else:
+		var wait := UI.label(tr("Tuan bilik dah keluar.") if _gone.has("host") else tr("Menunggu tuan bilik tekan Main Lagi..."), "InkSmall")
+		wait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_again_row.add_child(wait)
 
 
 func _online_tick(delta: float) -> void:
@@ -638,12 +685,20 @@ func _show_result() -> void:
 	c.add_child(note)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	if not _online:  # online: the room is over, open a new one from the Arena
-		var again := UI.button("Main lagi", "Primary", 200)
+	if _online:  # the same room again, nobody leaves the screen (the host decides)
+		_again_row = UI.hbox(12)
+		row.add_child(_again_row)
+		_fill_again()
+	else:
+		var again := UI.button("Main Lagi", "Primary", 200)
 		again.pressed.connect(func(): Game.goto("gelanggang", params))
 		row.add_child(again)
 	var back := UI.button("Kembali", "", 200)
-	back.pressed.connect(func(): Game.goto("lobby"))
+	back.pressed.connect(func():
+		if _online:
+			_leave_online()
+		else:
+			Game.goto("lobby"))
 	row.add_child(back)
 	if params.has("ujian"):  # the chapter test: win to go on, or try again
 		for b in row.get_children():
@@ -690,8 +745,7 @@ func _open_pause(first := false) -> void:
 		return
 	if _online:  # the others keep fighting: no pause, only a way out
 		if await Main.ask(tr("Keluar dari gelanggang dalam talian? Pertarungan diteruskan tanpa anda."), "Keluar", "Terus main"):
-			_leaving = true
-			Game.goto("lobby")
+			_leave_online()
 		return
 	if not first:  # (the intro comes before the match: nothing to stop, and
 		get_tree().paused = true  # pausing would freeze the screen fade-in)
