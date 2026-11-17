@@ -234,6 +234,10 @@ class Fighter extends VBoxContainer:
 		_status.add_theme_color_override("font_color", Color("ff8a7a") if not is_alive else Color("9fe8a0"))
 		if alive and not is_alive:
 			_fall()
+		elif not alive and is_alive:   # back up for the next match
+			_sprite.rotation_degrees = 0.0
+			_sprite.modulate = Color.WHITE
+			_name.modulate.a = 1.0
 		alive = is_alive
 		_stage.queue_redraw()
 
@@ -295,6 +299,11 @@ func _on_state(s: Dictionary) -> void:
 	var status := str(s.get("status", ""))
 	var me: Dictionary = battle.me()
 	if status == "question":
+		if _result and _last_status == "over":   # the host pressed Main Lagi: a new match, same room
+			_result.queue_free()
+			_result = null
+			_last_round = -1
+			MusicDirector.puzzle(true)
 		if int(s["round"]) != _last_round:
 			_last_round = int(s["round"])
 			_new_question(s)
@@ -406,9 +415,26 @@ func _show_result(s: Dictionary) -> void:
 	c.add_child(note)
 	var row := UI.hbox(12)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var again := UI.button("Main lagi", "Primary", 200)
-	again.pressed.connect(func(): Game.goto("pertarungan", params))
-	row.add_child(again)
+	if battle is OnlineBattle:  # the same room again: the host restarts it, everyone stays
+		if str(s.get("host", "")) == battle.my_id:
+			var again := UI.button("Main Lagi", "Primary", 200)
+			again.pressed.connect(func():
+				again.disabled = true
+				var res: String = await Backend.restart_battle(battle.code)
+				if res != "ok":
+					again.disabled = false
+					Game.toast(tr({"too_few": "Rakan dah keluar.", "not_host": "Bilik ini sudah tamat."}.get(res,
+						"Tak boleh main lagi. Pastikan pelayan sudah dikemas kini (patch_bilik_nombor.sql).")), Color("ff9a8a")))
+			row.add_child(again)
+			again.grab_focus.call_deferred()
+		else:
+			var wait := UI.label(tr("Menunggu tuan bilik tekan Main Lagi..."), "InkSmall")
+			wait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			row.add_child(wait)
+	else:
+		var again := UI.button("Main Lagi", "Primary", 200)
+		again.pressed.connect(func(): Game.goto("pertarungan", params))
+		row.add_child(again)
 	var back := UI.button("Kembali", "", 200)
 	back.pressed.connect(func(): Game.goto("lobby"))
 	row.add_child(back)

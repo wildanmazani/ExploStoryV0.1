@@ -107,6 +107,8 @@ func _poll() -> void:
 			if int(p.get("answer", -1)) < 0 and int(old.get("answer", -1)) >= 0:
 				p["answer"] = old["answer"]  # our answer may not have arrived yet
 	state = s
+	if str(s.get("status", "")) == "question":
+		_rewarded = false   # (Main Lagi: the next match pays again)
 	if str(s.get("status", "")) == "over" and not _rewarded:
 		_rewarded = true
 		var b: Dictionary = Game.save["battle"]

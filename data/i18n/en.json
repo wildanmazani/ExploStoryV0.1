@@ -646,5 +646,8 @@
   " Tetapan": " Settings",
   "Rakan dah keluar": "Friends have left",
   "Tuan bilik dah keluar.": "The host has left.",
-  "Menunggu tuan bilik tekan Main Lagi...": "Waiting for the host to press Play Again..."
+  "Menunggu tuan bilik tekan Main Lagi...": "Waiting for the host to press Play Again...",
+  "Rakan dah keluar.": "Friends have left.",
+  "Bilik ini sudah tamat.": "This room has ended.",
+  "Tak boleh main lagi. Pastikan pelayan sudah dikemas kini (patch_bilik_nombor.sql).": "Cannot play again. Make sure the server is updated (patch_bilik_nombor.sql)."
 }
