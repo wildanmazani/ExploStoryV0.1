@@ -541,6 +541,13 @@ func join_room(code: String) -> String:
 	return str(r["data"]) if r["ok"] else "error"
 
 
+## the host of a finished Kuiz room plays it again with the same players
+## (supabase/patch_bilik_nombor.sql); "ok" or why not
+func restart_battle(code: String) -> String:
+	var r := await db_call("restart_battle", {"p_code": code})
+	return str(r["data"]) if r["ok"] else "error"
+
+
 func room_state(code: String) -> Dictionary:
 	var r := await db_call("battle_state", {"p_code": code})
 	return r["data"] if r["ok"] and r["data"] is Dictionary else {}
