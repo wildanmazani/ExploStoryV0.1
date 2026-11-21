@@ -135,7 +135,9 @@ func _run() -> void:
 				if other.begins_with("--level="):
 					lv = int(other.trim_prefix("--level="))
 			Game.goto(arg.trim_prefix("--warisan-shot="), {"auto": true, "level": lv})
-			for i in 4:
+			for i in (30 if "--to-end" in OS.get_cmdline_user_args() else 4):   # --to-end: up to 75 s, until the game is over
+				if i >= 4 and _screen().get("state") == "tamat":
+					break
 				await _wait(2.5)
 				await _shot("lihat")
 			get_tree().quit(0)

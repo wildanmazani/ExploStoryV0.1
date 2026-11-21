@@ -16,10 +16,13 @@ const R := 214.0            ## the ring
 const TOP := 26.0           ## a top's radius
 const ACCEL := 560.0
 const MAX_SPEED := 270.0
-const FRICTION := 1.6
+const FRICTION := 2.2
+const KNOCK := 0.8          ## how hard two tops push each other apart: (1 + bounce) / 2, bounce 0.6
 const SPIN_DECAY := 0.042   ## of a full spin per second
 const SPIN_MOVE := 0.00016  ## ... more per px/s moved
 const HIT_SPIN := 0.24      ## spin a full-speed hit takes
+const HIT_MIN := 70.0       ## px/s the tops must meet at for a knock to count
+const HIT_GAP := 0.35       ## seconds before the next knock counts
 const BONUS := 0.2          ## spin for a right answer
 const GREEN := [0.70, 0.88] ## the best part of the LILIT bar
 const SWEEP := 1.15         ## seconds for the marker to cross the bar
@@ -53,6 +56,7 @@ var _pointer := false
 var _dir := 1.0
 var _mood := 0.0
 var _chasing := false
+var _hit_wait := 0.0
 var _tops3: Array = []   ## HD-2D: the two tops as 3D things [Alif's, the rival's]
 
 
@@ -176,8 +180,8 @@ func _level_card() -> void:
 
 
 func _place_tops() -> void:
-	me = {"p": Vector2(0, 118), "v": Vector2.ZERO, "spin": 0.0, "angle": 0.0, "out": 0.0}
-	rival = {"p": Vector2(0, -118), "v": Vector2.ZERO, "spin": 0.0, "angle": 1.0, "out": 0.0}
+	me = {"p": Vector2(0, 84), "v": Vector2.ZERO, "spin": 0.0, "angle": 0.0, "out": 0.0}
+	rival = {"p": Vector2(0, -84), "v": Vector2.ZERO, "spin": 0.0, "angle": 1.0, "out": 0.0}
 
 
 func _start(lv: int) -> void:
@@ -227,6 +231,7 @@ func _end_round(i_won: bool, how: String) -> void:
 	score[0 if i_won else 1] += 1
 	Sfx.play("chime" if i_won else "gedebuk")
 	Game.toast(how, Color("f2c14e") if i_won else Color("e0705f"))
+	print("gasing round: %s  (%.1f s so far, spin %.2f vs %.2f)" % [how, time, me["spin"], rival["spin"]])
 	await get_tree().create_timer(0.3 if _auto else 2.0).timeout
 	if not is_inside_tree():
 		return
@@ -314,6 +319,7 @@ func _process(delta: float) -> void:
 			t["angle"] += (6.0 + 34.0 * float(t["spin"])) * delta * (1.0 if state == "rehat" else 0.0)
 		return
 	time += delta
+	_hit_wait = maxf(0.0, _hit_wait - delta)
 	_move(me, _steer(), ACCEL, MAX_SPEED, delta)
 	_move(rival, _rival_steer(delta), RIVAL_ACCEL[level], RIVAL_SPEED[level], delta)
 
@@ -324,11 +330,17 @@ func _process(delta: float) -> void:
 		var a: float = me["v"].dot(n)        # Alif's speed into the rival
 		var b: float = rival["v"].dot(-n)    # the rival's into Alif
 		if a + b > 0.0:
-			me["v"] += n * (-a - b * 1.15)
-			rival["v"] += n * (b + a * 1.15)
-			me["spin"] = maxf(0.0, me["spin"] - 0.015 - HIT_SPIN * maxf(b, 0.0) / MAX_SPEED)
-			rival["spin"] = maxf(0.0, rival["spin"] - 0.015 - HIT_SPIN * maxf(a, 0.0) / MAX_SPEED)
-			Sfx.play("thwack", -4.0)
+			# an impulse along the line between them: afterwards they move apart (at 0.6 of the
+			# speed they met at), so one meeting is one knock, not one every frame they touch
+			me["v"] -= n * (a + b) * KNOCK
+			rival["v"] += n * (a + b) * KNOCK
+			# only a real knock costs spin, and each top what the OTHER brought to it: a top
+			# that just leans on another (many light touches a second) takes nothing off it
+			if a + b >= HIT_MIN and _hit_wait <= 0.0:
+				_hit_wait = HIT_GAP
+				me["spin"] = maxf(0.0, me["spin"] - HIT_SPIN * maxf(b, 0.0) / MAX_SPEED)
+				rival["spin"] = maxf(0.0, rival["spin"] - HIT_SPIN * maxf(a, 0.0) / MAX_SPEED)
+				Sfx.play("thwack", -4.0)
 		var push := (TOP * 2.0 - d.length()) / 2.0
 		me["p"] -= n * push
 		rival["p"] += n * push
